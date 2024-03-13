@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\sem\\patterntest1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{20ED2CDC-7E7C-473D-A6F9-574376C488AB}|patterntest1\\patterntest1.vcxproj|C:\\sem\\patterntest1\\patterntest1\\patterntest1.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{20ED2CDC-7E7C-473D-A6F9-574376C488AB}|patterntest1\\patterntest1.vcxproj|solutionrelative:patterntest1\\patterntest1.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "patterntest1.cpp",
+              "DocumentMoniker": "C:\\sem\\patterntest1\\patterntest1\\patterntest1.cpp",
+              "RelativeDocumentMoniker": "patterntest1\\patterntest1.cpp",
+              "ToolTip": "C:\\sem\\patterntest1\\patterntest1\\patterntest1.cpp",
+              "RelativeToolTip": "patterntest1\\patterntest1.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-13T12:14:14.151Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
