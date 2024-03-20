@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>학번 이름 입력</title>
+<link rel="stylesheet" href="C:\sem\HW\HW02\html\Css\style.css">
+<style>
+ 
+</style>
+<script>
+  function drawCircle() {
+      var canvas = document.createElement("canvas");
+      canvas.width = 500; // 가로 길이를 현재의 반으로 설정
+      canvas.height = 500; // 세로 길이를 현재의 반으로 설정
+      var ctx = canvas.getContext("2d");
+      ctx.beginPath();
+      ctx.arc(250, 250, 250, 0, 2 * Math.PI); // 반지름을 현재의 반으로 설정
+      ctx.fillStyle = "white";
+      ctx.fill();
+      
+      var dRight = document.getElementById("d_right");
+      dRight.innerHTML = ""; // 우측 영역 초기화
+      dRight.appendChild(canvas); // Canvas 추가
+
+      var emptyScreen = document.querySelector(".empty-screen");
+      if (emptyScreen) {
+        emptyScreen.style.display = "none"; // 빈화면 글 숨기기
+      }
+  }
+
+ 
+  function addButton2Content() {
+    var dRight = document.getElementById("d_right");
+    dRight.innerHTML = ""; // 우측 영역 초기화
+    
+    // 이미지를 넣을 공간 생성
+    var imageContainer = document.createElement("div");
+    imageContainer.classList.add("image-container");
+    
+    // 이미지 요소 생성 및 추가
+    var img = document.createElement("img");
+    img.src = "KakaoTalk_20240320_182914035.png"; // 이미지 파일 경로 지정
+    img.alt = "로스트아크";
+    img.style.width = "70%"; // 이미지 너비를 자동으로 조정
+    img.style.height = "100%"; // 이미지 높이를 100%로 설정하여 16:9 비율 유지
+    img.style.float = "left"; // 이미지를 왼쪽으로 정렬
+    imageContainer.appendChild(img);
+
+    
+    
+    // 설명을 담을 목록 요소 생성 및 추가
+    var ul = document.createElement("ul");
+    
+    // 설명 항목 추가
+    var descriptions = ["내가 좋아하는 게임 : 로스트아크 ", "출시 년도 :2018.11.07", "장르 : MMORPG / PC", "좋아하는 이유 : 보스 레이드 하는 걸 좋아해서"]; // 설명 목록 예시
+    descriptions.forEach(function(description) {
+      var li = document.createElement("li");
+      li.textContent = description;
+      ul.appendChild(li);
+    });
+    
+    imageContainer.appendChild(ul);
+    dRight.appendChild(imageContainer);
+
+    // d_left 공간 활성화
+    var dLeft = document.getElementById("d_left");
+    dLeft.style.display = "flex";
+
+    dLeft.style.justifyContent = "center";
+  }
+    
+    
+</script>
+</head>
+<body>
+  <div id="d_top">
+    <div id="student_info">
+      <span id="student_id">학번: 202127037</span>
+      <span id="student_name">이름: 이경민</span>
+    </div>
+  </div>
+  <div style="display: flex; flex-direction: row;">
+    <div id="d_left">
+      <button class="button" onclick="drawCircle()">버튼 1</button>
+      <button class="button" onclick="addButton2Content()">버튼 2</button>
+    </div>
+    <div id="d_right">
+      <!-- 우측 영역 -->
+      <span class="empty-screen">빈화면</span>
+    </div>
+  </div>
+</body>
+</html>
