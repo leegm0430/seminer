@@ -1,4 +1,5 @@
-﻿#include <glfw3.h>
+﻿#pragma comment(lib, "Opengl32.lib")
+#include <glfw3.h>
 #include <iostream>
 
 // 색깔 정의
@@ -88,7 +89,26 @@ int main(void) {
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
     glfwSetCursorPosCallback(window, cursorPosCallback);
 
-    // 렌더링 루프
+    /*  int render()
+      {
+          glBegin(GL_TRIANGLES);
+
+          glColor3f(0.7f, 0.8f, 0.85f);
+          glVertex2f(0.0f, 0.5f);
+          glColor3f(0.7f, 0.8f, 0.85f);
+          glVertex2f(-0.2f, 0.0f);
+          glColor3f(0.7f, 0.8f, 0.85f);
+          glVertex2f(0.0f, 0.0f);
+
+          glColor3f(0.7f, 0.8f, 0.85f);
+          glVertex2f(0.0f, -0.5f);
+          glColor3f(0.7f, 0.8f, 0.85f);
+          glVertex2f(0.2f, 0.0f);
+          glColor3f(0.7f, 0.8f, 0.85f);
+          glVertex2f(0.0f, 0.0f);
+      }*/
+
+      // 렌더링 루프
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT); // 버퍼 지우기
         glClearColor(currentColor[0], currentColor[1], currentColor[2], currentColor[3]); // 현재 색으로 설정
