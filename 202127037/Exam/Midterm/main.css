@@ -1,0 +1,16 @@
+body {
+    background-color: rgb(72, 153, 242);
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* 캔버스를 수직 중앙에 정렬하기 위해 추가 */
+}
+
+canvas {
+    background-color: rgb(180, 180, 180); /* 캔버스 배경색 (RGB 180, 180, 180) */
+    display: block; /* 캔버스를 블록 요소로 설정 */
+    margin: 50px;/* 좌우 여백 자동 설정 */
+    position: absolute; /* 절대 위치 지정 */
+ 
+}
