@@ -5,27 +5,44 @@
     <title>24 : Reactive: Midterm Game</title>
     <link rel="stylesheet" type="text/css" href="main.css">
     <style>
-
+    
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="480" height="800"></canvas>
+    <div id="Start">
+        <p>게임을 시작하려면 아래 버튼을 클릭하세요.</p>
+        <button class="button" onclick="startGame()">Start</button>
+    </div>
+    <!-- 캔버스 요소 추가 -->
+    <canvas id="gameCanvas" width="480" height="800" style="display: none;"></canvas>
+    <canvas id="Canvas1" width="200" height="800" style="display: none;"></canvas>
+    <canvas id="Canvas2" width="200" height="800" style="display: none;"></canvas>
+    <canvas id="Canvas3" width="800" height="100" style="display: none;"></canvas>
+    <canvas id="Canvas4" width="800" height="100" style="display: none;"></canvas>
+    
     <script>
         // 캔버스 요소 가져오기
-        var canvas = document.getElementById('gameCanvas');
-        canvas.width = 480;
-        canvas.height = 800;
-        var ctx = canvas.getContext('2d');
+        var gameCanvas = document.getElementById('gameCanvas');
+        var canvas1 = document.getElementById('Canvas1');
+        var canvas2 = document.getElementById('Canvas2');
+        var canvas3 = document.getElementById('Canvas3');
+        var canvas4 = document.getElementById('Canvas4');
+        gameCanvas.width = 480;
+        gameCanvas.height = 800;
+        var ctx = gameCanvas.getContext('2d');
 
         // 캔버스에 그리기
-        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.translate(gameCanvas.width / 2, gameCanvas.height / 2);
 
         // 별 그리기 함수
-        function drawStar(cx, cy, spikes, outerRadius, innerRadius) {
+        function drawStar(cx, cy, spikes, outerRadius, innerRadius, angle) {
             var rot = Math.PI / 2 * 3;
             var x = cx;
             var y = cy;
             var step = Math.PI / spikes;
+
+            ctx.save(); // 현재 캔버스 상태 저장
+            ctx.rotate(angle); // 회전 적용
 
             ctx.strokeStyle = "black";
             ctx.beginPath();
@@ -47,45 +64,167 @@
             ctx.stroke();
             ctx.fillStyle = 'yellow';
             ctx.fill();
+
+            ctx.restore(); // 이전 캔버스 상태로 복원
         }
 
         // 하트 그리기 함수
         function drawHeart(x, y, size) {
             
+            ctx.save(); // 현재 캔버스 상태 저장
             ctx.beginPath();
-            ctx.moveTo(x, y - size / 2);
-            ctx.bezierCurveTo(x + size, y - size, x + size * 2, y - size / 3, x, y + size);
-            ctx.bezierCurveTo(x - size * 2, y - size / 3, x - size, y - size, x, y - size / 2);
+            ctx.moveTo(0, -size / 2);
+            ctx.bezierCurveTo(size, -size, size * 2, -size / 3, 0, size);
+            ctx.bezierCurveTo(-size * 2, -size / 3, -size, -size, 0, -size / 2);
             ctx.fillStyle = 'red';
             ctx.fill();
             ctx.strokeStyle = 'black'; // 테두리 색상
             ctx.lineWidth = 2; // 테두리 두께
             ctx.stroke(); // 테두리 그리기
             ctx.closePath();
+
+            ctx.restore(); // 이전 캔버스 상태로 복원
         }
 
         // 캔버스 지우기 함수
         function clearCanvas() {
-            ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+            ctx.clearRect(-gameCanvas.width / 2, -gameCanvas.height / 2, gameCanvas.width, gameCanvas.height);
         }
 
-        // 하트 위치 업데이트 함수
+        // 별의 초기 위치
+        var starX = getRandomNumber(-gameCanvas.width / 2, gameCanvas.width / 2); // x 좌표
+        var starY = getRandomNumber(-gameCanvas.height / 2, gameCanvas.height / 2); // y 좌표
+
+        // 별 위치 업데이트 함수
         function updateStarPosition() {
             clearCanvas();
-            drawStar(getRandomNumber(-canvas.width / 2, canvas.width / 2), getRandomNumber(-canvas.height / 2, canvas.height / 2), 5, 15, 7.5); // 별을 랜덤 위치에 그리기
+            drawStar(starX, starY, 5, 15, 7.5, 0); // 별을 초기 위치에 그리기
             drawHeart(0, 0, 40); // 하트를 화면 중앙에 그리기
         }
+
+        // 방향키 입력을 감지하는 이벤트 리스너 추가
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowUp') {
+                // 위쪽 방향키가 눌렸을 때
+                starY -= 5; // 별의 y 좌표를 5만큼 감소시켜 위쪽으로 이동
+            } else if (event.key === 'ArrowDown') {
+                // 아래쪽 방향키가 눌렸을 때
+                starY += 5; // 별의 y 좌표를 5만큼 증가시켜 아래쪽으로 이동
+            } else if (event.key === 'ArrowLeft') {
+                // 왼쪽 방향키가 눌렸을 때
+                starX -= 5; // 별의 x 좌표를 5만큼 감소시켜 왼쪽으로 이동
+            } else if (event.key === 'ArrowRight') {
+                // 오른쪽 방향키가 눌렸을 때
+                starX += 5; // 별의 x 좌표를 5만큼 증가시켜 오른쪽으로 이동
+            }
+
+            // 변경된 별의 위치를 캔버스에 다시 그리기
+            updateStarPosition();
+        });
+
+        // 초기 그림 그리기
+        updateStarPosition();
 
         // 랜덤 숫자 생성 함수
         function getRandomNumber(min, max) {
             return Math.random() * (max - min) + min;
         }
 
-        // 초기 그림 그리기
-        updateStarPosition();
+        // 적 정보를 저장할 배열
+        var enemies = [];
 
-        // 하트 위치 업데이트 함수를 2초마다 호출
-        setInterval(updateStarPosition, 2000);
+        // 적 생성 함수
+        function createEnemies() {
+            // 적 수 랜덤하게 선택 (5~15개)
+            var enemyCount = Math.floor(Math.random() * 11) + 5;
+            for (var i = 0; i < enemyCount; i++) {
+                // 녹색 영역 안에서 랜덤한 위치에 적 생성
+                var enemyX = getRandomNumber(-gameCanvas.width / -1 + 100, gameCanvas.width / -1 - 100);
+                var enemyY = getRandomNumber(-gameCanvas.height / -1 + 100, gameCanvas.height / -1 - 100);
+                
+                // 적의 크기 설정
+                var enemySize = getRandomNumber(5, 10); // 작은 원으로 설정
+                
+                // 적 정보를 enemies 배열에 추가
+                enemies.push({ x: enemyX, y: enemyY, size: enemySize });
+            }
+        }
+
+        // 적 그리기 함수
+        function drawEnemies() {
+            for (var i = 0; i < enemies.length; i++) {
+                var enemy = enemies[i];
+                ctx.beginPath();
+                ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
+                ctx.fillStyle = getRandomColor();
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+    
+        // 적 위치 업데이트 함수
+        function updateEnemies() {
+            // 플레이어(별) 위치 가져오기
+            var playerX = starX;
+            var playerY = starY;
+            
+            // 적을 플레이어 캐릭터 방향으로 이동시키기
+            for (var i = 0; i < enemies.length; i++) {
+                var enemy = enemies[i];
+                // 적이 플레이어 캐릭터 방향으로 이동하도록 설정
+                var dx = playerX - enemy.x;
+                var dy = playerY - enemy.y;
+                var distance = Math.sqrt(dx * dx + dy * dy); // 플레이어와 적 사이의 거리 계산
+                var speed = 5; // 이동 속도를 2로 지정
+
+                // 플레이어 캐릭터 쪽으로 이동
+                enemy.x += dx / distance * speed;
+                enemy.y += dy / distance * speed;
+            }
+        }
+
+        // 적 생성 타이머 설정
+        var intervalId; // 타이머 ID를 저장하기 위한 변수
+
+        function startGame() {
+            // 게임 시작 버튼 비활성화
+            document.getElementById('Start').style.display = 'none';
+            // 캔버스 보이도록 설정
+            document.getElementById('gameCanvas').style.display = 'block';
+            document.getElementById('Canvas1').style.display = 'block';
+            document.getElementById('Canvas2').style.display = 'block';
+            document.getElementById('Canvas3').style.display = 'block';
+            document.getElementById('Canvas4').style.display = 'block';
+            // 1초 후에 게임 시작
+            setTimeout(function() {
+                // 게임 시작
+                intervalId = setInterval(function() {
+                    createEnemies(); // 새로운 적 생성
+                    updateCanvas(); 
+                }, 1000); // 1000ms = 1초
+            }, 1000); // 1000ms = 1초
+        }
+
+        // 캔버스 업데이트 함수에 적 관련 함수 추가
+        function updateCanvas() {
+            clearCanvas();
+            updateStarPosition();
+            drawEnemies(); // 적 그리기 추가
+            updateEnemies(); // 적 위치 업데이트
+        }
+
+        // 페이지 로드 후 캔버스 업데이트 함수 호출
+        window.onload = function() {
+            updateCanvas();
+        };
     </script>    
 </body>
 </html>

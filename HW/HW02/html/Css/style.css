@@ -111,3 +111,21 @@ body, html {
   .image-container li {
     margin-bottom: 5px; /* 각 항목의 아래 여백 설정 */
 }
+
+.button {
+    font-size: 5em; /* 버튼 텍스트 크기를 5배로 키웁니다. */
+    padding: 20px 40px; /* 버튼 내부 여백을 설정합니다. */
+}
+
+.button:hover {
+    /* 마우스가 버튼 위에 올라갔을 때의 스타일 */
+    background-color: #ddd; /* 배경색을 회색으로 변경합니다. */
+    color: #333; /* 텍스트 색상을 어두운 회색으로 변경합니다. */
+    cursor: pointer; /* 마우스 커서를 포인터로 변경합니다. */
+}
+
+.button:active {
+    /* 버튼이 눌렸을 때의 스타일 */
+    background-color: #bbb; /* 배경색을 밝은 회색으로 변경합니다. */
+    color: #111; /* 텍스트 색상을 짙은 회색으로 변경합니다. */
+}
