@@ -34,6 +34,13 @@
         // 캔버스에 그리기
         ctx.translate(gameCanvas.width / 2, gameCanvas.height / 2);
 
+        var playerHP = 3; // 플레이어의 최대 HP
+        var currentPlayerHP = playerHP; // 플레이어의 현재 HP
+        var playerColliderRadius = 20; // 플레이어의 충돌체 크기
+
+        var playerX = 0;
+        var PlayerY = 0;
+
         // 별 그리기 함수
         function drawStar(cx, cy, spikes, outerRadius, innerRadius, angle) {
             var rot = Math.PI / 2 * 3;
@@ -120,6 +127,9 @@
 
             // 변경된 별의 위치를 캔버스에 다시 그리기
             updateStarPosition();
+
+            // 충돌 체크
+            checkCollision();
         });
 
         // 초기 그림 그리기
@@ -145,8 +155,11 @@
                 // 적의 크기 설정
                 var enemySize = getRandomNumber(5, 10); // 작은 원으로 설정
                 
+                // 적의 색상 설정
+                var enemyColor = getRandomColor(); // 랜덤 색상
+                
                 // 적 정보를 enemies 배열에 추가
-                enemies.push({ x: enemyX, y: enemyY, size: enemySize });
+                enemies.push({ x: enemyX, y: enemyY, size: enemySize, color: enemyColor });
             }
         }
 
@@ -156,20 +169,12 @@
                 var enemy = enemies[i];
                 ctx.beginPath();
                 ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
-                ctx.fillStyle = getRandomColor();
+                ctx.fillStyle = enemy.color; // 적의 색상 설정
                 ctx.fill();
                 ctx.closePath();
             }
         }
-        function getRandomColor() {
-            var letters = '0123456789ABCDEF';
-            var color = '#';
-            for (var i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
-        }
-    
+
         // 적 위치 업데이트 함수
         function updateEnemies() {
             // 플레이어(별) 위치 가져오기
@@ -191,9 +196,66 @@
             }
         }
 
+        // 충돌 체크 함수
+        function checkCollision() {
+            for (var i = 0; i < enemies.length; i++) {
+                var enemy = enemies[i];
+                // 플레이어와 적의 거리 계산
+                var dx = starX - enemy.x;
+                var dy = starY - enemy.y;
+                var distance = Math.sqrt(dx * dx + dy * dy);
+
+                // 충돌 체크
+                if (distance < playerColliderRadius + enemy.size) {
+                    // 충돌 발생
+                    currentPlayerHP--; // 플레이어 HP 감소
+                    enemies.splice(i, 1); // 충돌한 적 삭제
+                    i--; // 배열 인덱스 조정
+                }
+            }
+        }
+
+        // 플레이어의 현재 HP가 0이 되었을 때 메인 화면으로 돌아가는 함수
+        function checkPlayerHP() {
+            if (currentPlayerHP <= 0) {
+                // 플레이어의 현재 HP가 0 이하일 때
+                clearInterval(intervalId); // 게임 타이머 종료
+                currentPlayerHP = playerHP; // 플레이어의 현재 HP 초기화
+                // 메인 화면으로 되돌아가기
+                document.getElementById('Start').style.display = 'block'; // 시작 버튼 보이기
+                gameCanvas.style.display = 'none'; // 게임 캔버스 숨기기
+                canvas1.style.display = 'none';
+                canvas2.style.display = 'none';
+                canvas3.style.display = 'none';
+                canvas4.style.display = 'none';
+            }
+        }
+
+        // 캔버스 업데이트 함수에 플레이어 HP 체크 함수 추가
+        function updateCanvas() {
+            clearCanvas();
+            updateStarPosition();
+            drawEnemies(); // 적 그리기 추가
+            updateEnemies(); // 적 위치 업데이트
+            drawHP(); // HP 그리기 추가
+            checkPlayerHP(); // 플레이어 HP 체크
+        }
+
+        // HP 그리기 함수
+        function drawHP() {
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText("HP: " + currentPlayerHP, -gameCanvas.width / 2 + 20, -gameCanvas.height / 2 + 30);
+        }
+
+        // 페이지 로드 후 캔버스 업데이트 함수 호출
+        window.onload = function() {
+            updateCanvas();
+        };
+
         // 적 생성 타이머 설정
         var intervalId; // 타이머 ID를 저장하기 위한 변수
-
+    
         function startGame() {
             // 게임 시작 버튼 비활성화
             document.getElementById('Start').style.display = 'none';
@@ -210,21 +272,18 @@
                     createEnemies(); // 새로운 적 생성
                     updateCanvas(); 
                 }, 1000); // 1000ms = 1초
-            }, 1000); // 1000ms = 1초
+            }, 1000 ); // 1000ms = 1초
         }
 
-        // 캔버스 업데이트 함수에 적 관련 함수 추가
-        function updateCanvas() {
-            clearCanvas();
-            updateStarPosition();
-            drawEnemies(); // 적 그리기 추가
-            updateEnemies(); // 적 위치 업데이트
+        // 적의 색상 랜덤 생성 함수
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
         }
-
-        // 페이지 로드 후 캔버스 업데이트 함수 호출
-        window.onload = function() {
-            updateCanvas();
-        };
     </script>    
 </body>
 </html>
