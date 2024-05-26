@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>24 : Reactive: Midterm Game</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+    <div id="Start">
+        <p>게임을 시작하려면 아래 버튼을 클릭하세요.</p>
+        <button class="button" onclick="startGame()">Start</button>
+    </div>
+    <!-- 캔버스 요소 추가 -->
+    <canvas id="gameCanvas" width="480" height="800" style="display: none;"></canvas>
+    <canvas id="Canvas1" width="200" height="800" style="display: none;"></canvas>
+    <canvas id="Canvas2" width="200" height="800" style="display: none;"></canvas>
+    <canvas id="Canvas3" width="800" height="100" style="display: none;"></canvas>
+    <canvas id="Canvas4" width="800" height="100" style="display: none;"></canvas>
+    
+    <div id="GameOver" style="display: none;">
+        <p>게임 오버!</p>
+        <button class="button" onclick="restartGame()">Restart</button>
+    </div>
+
+    <script src="main.js"></script>    
+</body>
+</html>

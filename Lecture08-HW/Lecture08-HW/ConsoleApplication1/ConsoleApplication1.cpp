@@ -1,6 +1,8 @@
 ﻿#include <GLFW/glfw3.h>
 #include <cmath>
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -129,22 +131,37 @@ void draw(GLFWwindow* window) {
 int main() {
     if (!glfwInit()) return -1;
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Solar System", NULL, NULL);
-    if (!window) {
-        glfwTerminate();
-        return -1;
+    int count = 0;
+
+    Chrono :: steady_clock::time_point start = Chrono::steady_clock::now();
+    Chrono::steady_clock::time _point end = Chorono::steady_clock::now();
+
+    while (count < 10)
+    {
+        prey_end = end;
+        end = Chrono::steady_clock::now();
+
+        count++;
+        cout << count << endl;
+
+
     }
+    //GLFWwindow* window = glfwCreateWindow(800, 600, "Solar System", NULL, NULL);
+    //if (!window) {
+    //    glfwTerminate();
+    //    return -1;
+    //}
 
-    glfwMakeContextCurrent(window);
+    //glfwMakeContextCurrent(window);
 
-    while (!glfwWindowShouldClose(window)) {
-        draw(window);
-        sunRotAngle += sunRotSpeed / 50;   // 태양의 회전 각도 업데이트
-        earthRotAngle -= earthRotSpeed / 20; // 지구의 회전 각도 업데이트 (지구 중심으로)
-        moonRotAngle += moonRotSpeed / 15;   // 달의 회전 각도 업데이트
+    //while (!glfwWindowShouldClose(window)) {
+    //    draw(window);
+    //    sunRotAngle += sunRotSpeed / 50;   // 태양의 회전 각도 업데이트
+    //    earthRotAngle -= earthRotSpeed / 20; // 지구의 회전 각도 업데이트 (지구 중심으로)
+    //    moonRotAngle += moonRotSpeed / 15;   // 달의 회전 각도 업데이트
 
-        glfwPollEvents();
-    }
+    //    glfwPollEvents();
+    //}
 
     glfwTerminate();
     return 0;

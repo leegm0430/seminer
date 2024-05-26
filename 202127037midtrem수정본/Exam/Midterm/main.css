@@ -1,0 +1,65 @@
+body {
+    background-color: rgb(72, 153, 242);
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* 캔버스를 수직 중앙에 정렬하기 위해 추가 */
+    
+}
+
+canvas {
+    background-color: rgb(180, 180, 180); /* 캔버스 배경색 (RGB 180, 180, 180) */
+    display: block; /* 캔버스를 블록 요소로 설정 */
+    margin: 50px;/* 좌우 여백 자동 설정 */
+    position: absolute; /* 절대 위치 지정 */
+ 
+}
+
+#Canvas1 {
+    position: absolute;
+    left: 5%;
+    margin:0;
+    display: block;
+     /* Canvas1을 canvas의 상단에 위치시킵니다. */
+    background-color: green;
+}
+#Canvas2 {
+    position: absolute;
+    right: 5%;
+    margin: 0; /* Canvas1의 넓이의 반만큼 왼쪽으로 이동 */
+    display: block; /* Canvas1을 canvas의 상단에 위치시킵니다. */
+    background-color: green;
+}
+#Canvas3 {
+    position: absolute;
+
+     /* Canvas1의 넓이의 반만큼 왼쪽으로 이동 */
+    top: -100px; /* Canvas1을 canvas의 상단에 위치시킵니다. */
+    background-color: green;
+}
+#Canvas4 {
+    position: absolute;
+    margin : 0;
+     /* Canvas1의 넓이의 반만큼 왼쪽으로 이동 */
+    bottom: -50px; /* Canvas1을 canvas의 상단에 위치시킵니다. */
+    background-color: green;
+}
+
+.button {
+    font-size: 5em; /* 버튼 텍스트 크기를 5배로 키웁니다. */
+    padding: 20px 40px; /* 버튼 내부 여백을 설정합니다. */
+}
+
+.button:hover {
+    /* 마우스가 버튼 위에 올라갔을 때의 스타일 */
+    background-color: yellow; /* 배경색을 회색으로 변경합니다. */
+    color: #333; /* 텍스트 색상을 어두운 회색으로 변경합니다. */
+    cursor: pointer; /* 마우스 커서를 포인터로 변경합니다. */
+}
+
+.button:active {
+    /* 버튼이 눌렸을 때의 스타일 */
+    background-color: blue; /* 배경색을 밝은 회색으로 변경합니다. */
+    color: #111; /* 텍스트 색상을 짙은 회색으로 변경합니다. */
+}
