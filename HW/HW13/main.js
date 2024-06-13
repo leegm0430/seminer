@@ -16,12 +16,27 @@ function drawTriangle() {
     ctx.rotate(triangle.angle);
     ctx.beginPath();
     ctx.moveTo(triangle.x1 - 400, triangle.y1 - 300);
-    ctx.lineTo(triangle.x2 - 450, triangle.y2 - 300);
-    ctx.lineTo(triangle.x3 - 300, triangle.y3 - 300);
+    ctx.lineTo(triangle.x2 - 500, triangle.y2 - 300);
+    ctx.lineTo(triangle.x3 - 400, triangle.y3 - 300);
     ctx.closePath();
     ctx.fillStyle = triangle.color;
     ctx.fill();
     ctx.restore();
+}
+
+function rotatePoint(px, py, angle) {
+    const s = Math.sin(angle);
+    const c = Math.cos(angle);
+    // translate point back to origin:
+    px -= 400;
+    py -= 300;
+    // rotate point
+    const xnew = px * c - py * s;
+    const ynew = px * s + py * c;
+    // translate point back:
+    px = xnew + 400;
+    py = ynew + 300;
+    return { x: px, y: py };
 }
 
 function isPointInTriangle(px, py, ax, ay, bx, by, cx, cy) {
@@ -35,19 +50,19 @@ canvas.addEventListener('click', (e) => {
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    const transformedX = x - 400;
-    const transformedY = y - 300;
-    
 
-    if (isPointInTriangle(transformedX, transformedY,
-        triangle.x1 - 400, triangle.y1 - 300,
-        triangle.x2 - 450, triangle.y2 - 300,
-        triangle.x3 - 400, triangle.y3 - 300)) {
-       if(triangle.color ==='blue') {
-        triangle.color = 'red';
-    }
-    } else if(triangle.color === 'red')
-    {
+    const rotatedA = rotatePoint(triangle.x1, triangle.y1, triangle.angle);
+    const rotatedB = rotatePoint(triangle.x2, triangle.y2, triangle.angle);
+    const rotatedC = rotatePoint(triangle.x3, triangle.y3, triangle.angle);
+
+    if (isPointInTriangle(x, y,
+        rotatedA.x, rotatedA.y,
+        rotatedB.x, rotatedB.y,
+        rotatedC.x, rotatedC.y)) {
+        if (triangle.color === 'blue') {
+            triangle.color = 'red';
+        }
+    } else if (triangle.color === 'red') {
         triangle.color = 'blue';
     }
     drawTriangle();

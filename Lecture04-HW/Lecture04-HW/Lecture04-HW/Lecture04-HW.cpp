@@ -2,7 +2,6 @@
 #include <glfw3.h>
 #include <iostream>
 
-// 색깔 정의
 const GLfloat clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f }; // 검정색
 const GLfloat redColor[] = { 1.0f, 0.0f, 0.0f, 1.0f };    // 빨간색
 const GLfloat greenColor[] = { 0.0f, 1.0f, 0.0f, 1.0f };  // 녹색
@@ -35,7 +34,8 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     }
     // 마우스 버튼 뗄 때
     else if (action == GLFW_RELEASE) {
-        currentColor[0] = clearColor[0];
+        currentColor[0] = clearColor[0];// 색깔 정의
+
         currentColor[1] = clearColor[1];
         currentColor[2] = clearColor[2];
         currentColor[3] = clearColor[3];
