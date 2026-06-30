@@ -1,0 +1,7 @@
+2L Milk,345005,3.87,2022/10/14
+500g Cottage Cheese,452005,4.28,2022/11/9
+1 Can Mushroom Soup,744006,1.99
+SuperValu QuickWash, 990006, 499.99, Washer
+15kg Dog Food,230004,29.99,2025/2/19
+Crystal Clean Dishwasher, 993002, 649.99, Dishwasher
+Crystal Clean Dishwasher (Sale), 993002, 449.99, Dishwasher

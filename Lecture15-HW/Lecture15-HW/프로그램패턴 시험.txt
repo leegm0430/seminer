@@ -1,0 +1,5 @@
+c# 게임루프 안에 어떤 문법(event)이 들어가는가 glfw
+충돌 처리 aabb 식쓰는거로 
+60초 프레임마다 transform rotate scale 3가지 유형의 시험이 나올 예정
+ callback 함수 컨트
+60 프레임 초를 빠르게 받아 올 수 있는 게임?
