@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<!-- 뱀서라이크 협동 웹 게임 프로토타입: 이동, 자동공격, 몬스터 스폰, 레벨업 카드, 다운/부활, 결과 화면을 담은 플레이 가능한 데모. -->
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLOODFALL — 플레이 가능 프로토타입</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js"></script>
+<style>
+  :root{
+    --void:#0b0710; --panel:#1c1120; --panel-2:#150d1a;
+    --blood:#c81e3a; --moon:#a78bda; --teal:#7fd3d0;
+    --bone:#ece4d3; --bone-dim:#a89d8c; --gold:#d4af37;
+    --line: rgba(236,228,211,0.14);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; background:var(--void); color:var(--bone); font-family:'EB Garamond', serif;}
+  h1,h2,h3,.display{font-family:'Cinzel', serif; margin:0;}
+  .mono{font-family:'Press Start 2P', monospace;}
+  button{font-family:'Cinzel', serif; cursor:pointer;}
+
+  .stage{
+    position:relative;
+    width:900px; max-width:100vw;
+    margin:0 auto;
+    padding-top:28px;
+  }
+  h1.title{
+    text-align:center; font-size:34px; letter-spacing:0.06em; margin-bottom:4px;
+    text-shadow:0 0 30px rgba(200,30,58,0.35);
+  }
+  h1.title span{ color:var(--blood); }
+  .subtitle{ text-align:center; color:var(--bone-dim); font-style:italic; margin-bottom:16px; font-size:14px; }
+
+  .game-wrap{
+    position:relative;
+    width:900px; height:560px; max-width:100%;
+    margin:0 auto;
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+    background:#100a15;
+    box-shadow:0 30px 60px rgba(0,0,0,0.5);
+  }
+  canvas{ display:block; width:100%; height:100%; }
+
+  /* ---------- HUD ---------- */
+  #hud{ position:absolute; inset:0; pointer-events:none; z-index:4; }
+  .hp-block{ position:absolute; top:12px; left:12px; display:flex; flex-direction:column; gap:6px; }
+  .hp-row{ display:flex; align-items:center; gap:8px; }
+  .hp-tag{ font-family:'Press Start 2P', monospace; font-size:8px; width:22px; }
+  .hp-tag.p1{ color:var(--moon); } .hp-tag.p2{ color:var(--teal); }
+  .hp-bar{ width:140px; height:10px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:2px; overflow:hidden; }
+  .hp-fill{ height:100%; background:linear-gradient(90deg, var(--blood), #ff6b81); transition:width .15s linear; }
+  .lv-tag{ font-family:'Press Start 2P', monospace; font-size:8px; color:var(--bone-dim); }
+
+  .timer-chip{
+    position:absolute; top:12px; left:50%; transform:translateX(-50%);
+    font-family:'Press Start 2P', monospace; font-size:16px;
+    background:rgba(0,0,0,0.45); padding:7px 16px; border-radius:20px; border:1px solid var(--line);
+  }
+  .stage-label{
+    position:absolute; top:44px; left:50%; transform:translateX(-50%);
+    font-family:'EB Garamond', serif; font-style:italic; font-size:12px; color:var(--bone-dim);
+    text-align:center; white-space:nowrap;
+  }
+  .kill-count{ position:absolute; top:12px; right:12px; text-align:right; font-family:'Press Start 2P', monospace; font-size:11px; color:var(--gold); }
+  .kill-count .small{ display:block; font-size:8px; color:var(--bone-dim); margin-top:4px; }
+
+  .down-flag{
+    position:absolute; transform:translate(-50%,-140%);
+    font-family:'Press Start 2P', monospace; font-size:9px; color:var(--blood);
+    text-shadow:0 0 6px rgba(200,30,58,0.8);
+    display:none;
+  }
+
+  .boss-hp-wrap{
+    position:absolute; top:68px; left:50%; transform:translateX(-50%);
+    width:620px; max-width:88%;
+    z-index:4; text-align:center;
+    transition:opacity .2s ease;
+  }
+  .boss-hp-label{
+    font-family:'Press Start 2P', monospace; font-size:10px; color:#ff6b81;
+    margin-bottom:6px; letter-spacing:0.1em; text-shadow:0 0 10px rgba(255,45,77,0.7);
+  }
+  .boss-hp-bar{
+    width:100%; height:14px; background:rgba(0,0,0,0.55);
+    border:1px solid rgba(255,45,77,0.55); border-radius:3px; overflow:hidden;
+  }
+  .boss-hp-fill{
+    height:100%; background:linear-gradient(90deg, #7a1130, #ff2d4d);
+    transition:width .15s linear;
+  }
+
+  /* ---------- overlays ---------- */
+  .overlay{
+    position:absolute; inset:0; z-index:10;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+    background:rgba(6,3,9,0.86);
+    text-align:center; padding:24px;
+  }
+  .hidden{ display:none !important; }
+
+  .btn{
+    font-weight:600; letter-spacing:0.03em; padding:13px 26px; border-radius:2px;
+    border:1px solid var(--line); font-size:15px; background:transparent; color:var(--bone);
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .btn-primary{ background:var(--blood); border-color:var(--blood); }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 8px 22px rgba(200,30,58,0.35); }
+  .btn-ghost:hover{ border-color:var(--gold); color:var(--gold); }
+
+  .mode-row{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+  .controls-help{ font-size:13px; color:var(--bone-dim); max-width:520px; line-height:1.7; }
+  .controls-help b{ color:var(--bone); }
+  .code-input{
+    font-family:'Press Start 2P', monospace; font-size:16px; letter-spacing:0.15em;
+    text-align:center; text-transform:uppercase; width:140px;
+    padding:12px; border-radius:2px; border:1px solid var(--line);
+    background:var(--panel-2); color:var(--gold);
+  }
+  .net-status{
+    font-size:13px; color:var(--bone-dim); text-align:center; min-height:20px;
+  }
+  .net-status.err{ color:#ff6b81; }
+  .net-status .room-code{
+    font-family:'Press Start 2P', monospace; font-size:20px; color:var(--gold);
+    letter-spacing:0.2em; display:block; margin:8px 0;
+  }
+
+  .levelup-title{ font-family:'Press Start 2P', monospace; font-size:13px; color:var(--gold); }
+  .cards{ display:flex; gap:18px; flex-wrap:wrap; justify-content:center; }
+  .card{
+    width:190px; background:var(--panel-2); border:1px solid var(--line); border-radius:6px;
+    padding:20px 16px; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover{ transform:translateY(-5px); box-shadow:0 10px 26px rgba(200,30,58,0.2); }
+  .card .rarity{ font-family:'Press Start 2P', monospace; font-size:8px; color:var(--bone-dim); display:block; margin-bottom:8px; }
+  .card h3{ font-size:16px; margin-bottom:6px; }
+  .card p{ font-size:12px; color:var(--bone-dim); margin:0; }
+  .card-icon{ width:52px; height:52px; margin:0 auto 12px; }
+  .card-icon svg{ width:100%; height:100%; display:block; }
+
+  .result-stats{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .stat{ background:var(--panel-2); border:1px solid var(--line); border-radius:4px; padding:14px 22px; min-width:120px; }
+  .stat .v{ font-family:'Press Start 2P', monospace; font-size:18px; color:var(--gold); }
+  .stat .l{ font-size:12px; color:var(--bone-dim); margin-top:6px; }
+
+  footer{ text-align:center; color:var(--bone-dim); font-size:12px; padding:22px 0 40px; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <h1 class="title">BLOOD<span>FALL</span></h1>
+  <p class="subtitle">협동 생존 로그라이트 — 플레이 가능 프로토타입</p>
+
+  <div class="game-wrap" id="gameWrap">
+    <canvas id="canvas" width="900" height="560"></canvas>
+
+    <div id="hud">
+      <div class="hp-block">
+        <div class="hp-row"><span class="hp-tag p1">P1</span><div class="hp-bar"><div class="hp-fill" id="hpP1" style="width:100%"></div></div><span class="lv-tag" id="lvP1">Lv1</span></div>
+        <div class="hp-row" id="rowP2"><span class="hp-tag p2">P2</span><div class="hp-bar"><div class="hp-fill" id="hpP2" style="width:100%"></div></div><span class="lv-tag" id="lvP2">Lv1</span></div>
+      </div>
+      <div class="timer-chip" id="timerChip">03:00</div>
+      <div class="stage-label" id="stageLabel">STAGE 1 · 잠긴 묘지</div>
+      <div class="kill-count" id="killCount">0 KILLS<span class="small">TEAM SCORE</span></div>
+      <div class="down-flag" id="downFlagP1">P1 DOWN</div>
+      <div class="down-flag" id="downFlagP2">P2 DOWN</div>
+      <div class="boss-hp-wrap hidden" id="bossHpWrap">
+        <div class="boss-hp-label" id="bossHpLabel">BLOOD BARON</div>
+        <div class="boss-hp-bar"><div class="boss-hp-fill" id="bossHpFill" style="width:100%"></div></div>
+      </div>
+    </div>
+
+    <!-- 시작 화면 -->
+    <div class="overlay" id="menuOverlay">
+      <h2 class="mono" style="font-size:13px; color:var(--gold);">SELECT MODE</h2>
+      <div class="mode-row">
+        <button class="btn btn-primary" id="btnSolo">1인 플레이</button>
+        <button class="btn btn-primary" id="btnCoop">2인 협동 (로컬)</button>
+      </div>
+      <div class="mode-row">
+        <button class="btn btn-ghost" id="btnHost">온라인 방 만들기 (P2P)</button>
+        <button class="btn btn-ghost" id="btnJoinShow">온라인 참가하기</button>
+      </div>
+
+      <div class="mode-row hidden" id="joinPanel">
+        <input type="text" id="joinCodeInput" maxlength="4" placeholder="방 코드 4자리" class="code-input">
+        <button class="btn btn-primary" id="btnJoinGo">참가</button>
+      </div>
+
+      <div id="netStatus" class="net-status hidden"></div>
+
+      <p class="controls-help">
+        <b>온라인 / 1인</b> — W A S D 이동 · <b>마우스로 조준</b> · <b>Space</b> 키를 누르는 동안 발사<br>
+        <b>로컬 2인 협동의 P2</b> — 방향키 이동 · <b>Enter</b>로 발사 (이동 방향이 곧 조준 방향)<br>
+        체력이 0이 되면 <b>다운</b> 상태가 됩니다. 파트너가 가까이 다가가 잠시 머물면 부활합니다.<br>
+        <span style="color:var(--bone-dim); font-size:11px;">※ 온라인 모드는 PeerJS 기반 실제 P2P(WebRTC) 연결입니다. 방화벽/네트워크 환경에 따라 연결이 안 될 수 있습니다.</span>
+      </p>
+    </div>
+
+    <!-- 레벨업 카드 선택 -->
+    <div class="overlay hidden" id="levelupOverlay">
+      <div class="levelup-title" id="levelupTitle">P1 LEVEL UP</div>
+      <div class="cards" id="cardsRow"></div>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div class="overlay hidden" id="resultOverlay">
+      <h2 id="resultTitle" style="font-size:26px;">생존 성공</h2>
+      <div class="result-stats" id="resultStats"></div>
+      <div class="mode-row">
+        <button class="btn btn-primary" id="btnRetry">다시 도전</button>
+        <button class="btn btn-ghost" id="btnMenu">모드 선택으로</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>BLOODFALL 프로토타입 v0.1 · 기획서 §9 Must-Have 범위 기준 구현</footer>
+</div>
+
+<script>
+/* 게임 전체 상태와 조절 수치를 이 CONFIG 한곳에 모아둔다. 난이도 조절은 여기서만 한다. */
+const CONFIG = {
+  ROUND_SECONDS: 180,           // 라운드 길이(초). 기획서 기준 10~15분이나, 테스트 편의상 3분으로 설정.
+  ARENA_W: 900,
+  ARENA_H: 560,
+  PLAYER: {
+    speed: 170,
+    maxHp: 100,
+    radius: 14,
+    reviveRadius: 46,
+    reviveTime: 2.6,
+    pickupRadius: 55,
+  },
+  WEAPON: {
+    bullet: { damage: 11, cooldown: 0.28, range: 300, speed: 480 },
+    whip: { damage: 14, cooldown: 0.62, range: 78 },
+    aura: { damage: 3,  cooldown: 0.22, radius: 58 },
+    shuriken: { damage: 5, cooldown: 0.4, radius: 55, band: 18, count: 3, spinSpeed: 2.4 },
+    drone: { damage: 15, cooldown: 1.5, range: 220, hoverRadius: 46, hoverSpeed: 1.1, boltSpeed: 420 },
+  },
+  MONSTER: {
+    // grade: common(일반) / elite(정예) / ranged(원거리) / boss(보스)
+    ghoul:  { grade:'common', hp: 16, speed: 68, damage: 7,  radius: 12, exp: 5,   color:'#8c3a52' },
+    wraith: { grade:'elite',  hp: 55, speed: 92, damage: 13, radius: 16, exp: 14,  color:'#c23a63',
+              dashRange: 150, dashSpeed: 340, dashWindup: 0.35, dashDuration: 0.4, dashCooldown: 3.2, dashDamageMul: 1.6 },
+    caster: { grade:'ranged', hp: 30, speed: 58, damage: 5,  radius: 13, exp: 11,  color:'#6a3a9c',
+              keepDistance: 170, approachDistance: 230, fireRange: 260, fireCooldown: 2.0, boltSpeed: 210, boltDamage: 9 },
+    boss:   { grade:'boss',   hp: 900, speed: 40, damage: 22, radius: 34, exp: 150, color:'#ff2d4d' },
+    curseMother:  { grade:'boss', hp: 780,  speed: 50, damage: 14, radius: 30, exp: 200, color:'#4a2064' },
+    nightfallDuke:{ grade:'boss', hp: 1150, speed: 42, damage: 26, radius: 36, exp: 280, color:'#3a0a1a' },
+  },
+  // 보스 전용 특수 패턴. telegraph(예고 시간) 동안 경고 이펙트를 보여준 뒤 실제 공격이 발동한다.
+  BOSS_ATTACKS: {
+    slam:    { telegraph: 0.8, radius: 130, damage: 30, cooldown: 4.5 },               // 넓은 범위 강타
+    burst:   { telegraph: 0.6, count: 10, boltSpeed: 220, boltDamage: 14, cooldown: 6 }, // 전방위 탄막
+    summon:  { telegraph: 0.5, count: 2, cooldown: 8 },                                 // 구울 소환 (2페이즈부터)
+    charge:  { telegraph: 0.5, speed: 560, duration: 0.45, damage: 26, cooldown: 5 },    // 돌진 (3페이즈부터)
+    // 스테이지 2 보스 — 커스 마더 (원거리·소환 특화)
+    curseBarrage:  { telegraph: 0.6, count: 5, spread: Math.PI/3, boltSpeed: 200, boltDamage: 12, cooldown: 3.5 },
+    summonCaster:  { telegraph: 0.5, count: 2, cooldown: 9 },
+    poisonFog:     { telegraph: 0.7, radius: 70, damage: 4, tickInterval: 0.5, duration: 4, cooldown: 9 },
+    teleportBurst: { telegraph: 0.4, count: 8, boltSpeed: 230, boltDamage: 13, cooldown: 6 },
+    // 스테이지 3(최종) 보스 — 나이트폴 공작 (근접+범위 혼합)
+    summonWraith:  { telegraph: 0.5, count: 2, cooldown: 10 },
+    bloodRail:     { telegraph: 0.9, width: 46, damage: 32, cooldown: 7 },
+    bloodRain:     { telegraph: 0.5, count: 6, radius: 55, damage: 22, spreadDuration: 2.2, cooldown: 12 },
+  },
+  // 보스 종류별로 페이즈에 따라 사용 가능한 패턴 목록
+  BOSS_PATTERNS: {
+    boss:          { 1:['slam','burst'], 2:['slam','burst','summon'], 3:['slam','burst','summon','charge'] },
+    curseMother:   { 1:['curseBarrage'], 2:['curseBarrage','summonCaster'], 3:['curseBarrage','summonCaster','poisonFog','teleportBurst'] },
+    nightfallDuke: { 1:['slam','summonWraith'], 2:['slam','summonWraith','bloodRail'], 3:['slam','summonWraith','bloodRail','charge','bloodRain'] },
+  },
+  // 스테이지 구성: 라운드를 3구간으로 나누고, 구간마다 다른 보스가 등장한다
+  STAGE: {
+    count: 3,
+    names: ['잠긴 묘지', '저주받은 안뜰', '나이트폴 첨탑'],
+    bosses: ['boss', 'curseMother', 'nightfallDuke'],
+    bossNames: { boss:'블러드 배런', curseMother:'커스 마더', nightfallDuke:'나이트폴 공작' },
+    bgTint: ['rgba(200,30,58,0.05)', 'rgba(74,32,100,0.10)', 'rgba(58,10,26,0.16)'],
+  },
+  SPAWN: {
+    baseInterval: 1.15,
+    minInterval: 0.30,
+    intervalDecayPerSec: 0.0045,
+    wraithChanceAt300s: 0.4,     // 시간이 지날수록 레이스 등장 확률이 이 값까지 증가
+    casterChanceAt300s: 0.22,    // 저주술사 등장 확률 상한
+    countMultiplier: (n) => 1 + 0.7 * (n - 1),  // 기획서 §6.2 인원 비례 스폰 공식
+  },
+  LEVEL: { baseExp: 20, growth: 1.15 },
+  ITEM_BOX: {
+    dropChance: 0.05,     // 몬스터(보스 제외) 처치 시 박스가 등장할 확률
+    healPercent: 0.10,    // 포션: 최대 체력의 10% 회복
+    bombKillCount: 10,    // 폭탄: 캐릭터 기준 가까운 몬스터 10마리 처치 (보스 제외)
+    magnetDuration: 3.0,  // 자석: 지속 시간(초)
+  },
+};
+
+// ---------- DOM 참조 ----------
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const menuOverlay = document.getElementById('menuOverlay');
+const levelupOverlay = document.getElementById('levelupOverlay');
+const resultOverlay = document.getElementById('resultOverlay');
+const cardsRow = document.getElementById('cardsRow');
+const levelupTitle = document.getElementById('levelupTitle');
+const hpP1 = document.getElementById('hpP1'), hpP2 = document.getElementById('hpP2');
+const lvP1 = document.getElementById('lvP1'), lvP2 = document.getElementById('lvP2');
+const timerChip = document.getElementById('timerChip');
+const killCountEl = document.getElementById('killCount');
+const rowP2 = document.getElementById('rowP2');
+const downFlagP1 = document.getElementById('downFlagP1');
+const downFlagP2 = document.getElementById('downFlagP2');
+const bossHpWrap = document.getElementById('bossHpWrap');
+const bossHpFill = document.getElementById('bossHpFill');
+const bossHpLabel = document.getElementById('bossHpLabel');
+const stageLabel = document.getElementById('stageLabel');
+const btnHost = document.getElementById('btnHost');
+const btnJoinShow = document.getElementById('btnJoinShow');
+const btnJoinGo = document.getElementById('btnJoinGo');
+const joinPanel = document.getElementById('joinPanel');
+const joinCodeInput = document.getElementById('joinCodeInput');
+const netStatus = document.getElementById('netStatus');
+
+let game = null; // 현재 진행중인 게임 상태 객체
+
+// ---------- 몬스터/카드용 SVG 이미지 준비 ----------
+// SVG 문자열을 캔버스에 그릴 수 있는 Image 객체로 변환한다.
+function svgToImage(svgString){
+  const img = new Image();
+  img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+  return img;
+}
+
+// 몬스터 3종 일러스트 (동글동글 귀여운 스타일)
+const MONSTER_SVG = {
+  ghoul: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <path d="M30 42 Q34 20 46 30" fill="none" stroke="#7a3a56" stroke-width="9" stroke-linecap="round"/>
+    <path d="M90 42 Q86 20 74 30" fill="none" stroke="#7a3a56" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="60" cy="66" r="38" fill="#7a3a56"/>
+    <circle cx="44" cy="58" r="12" fill="#fff"/>
+    <circle cx="76" cy="58" r="12" fill="#fff"/>
+    <circle cx="45" cy="60" r="5" fill="#2b0f18"/>
+    <circle cx="77" cy="60" r="5" fill="#2b0f18"/>
+    <path d="M50 82 Q60 90 70 82" stroke="#2b0f18" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M52 84 L54 90 L58 84 Z" fill="#fff"/>
+    <path d="M68 84 L66 90 L62 84 Z" fill="#fff"/>
+  </svg>`,
+  wraith: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <path d="M38 30 L30 12 L48 24 Z" fill="#9c2d52"/>
+    <path d="M82 30 L90 12 L74 24 Z" fill="#9c2d52"/>
+    <path d="M60 20 C85 20 100 45 96 70 C92 95 76 105 60 105 C44 105 28 95 24 70 C20 45 35 20 60 20 Z" fill="#9c2d52"/>
+    <circle cx="46" cy="58" r="12" fill="#fff"/>
+    <circle cx="74" cy="58" r="12" fill="#fff"/>
+    <circle cx="47" cy="60" r="5" fill="#3a0d1e"/>
+    <circle cx="75" cy="60" r="5" fill="#3a0d1e"/>
+    <path d="M50 80 Q60 87 70 80" stroke="#3a0d1e" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>`,
+  boss: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <path d="M34 30 L26 10 L46 22 Z" fill="#7a1130"/>
+    <path d="M86 30 L94 10 L74 22 Z" fill="#7a1130"/>
+    <circle cx="60" cy="68" r="46" fill="#7a1130"/>
+    <circle cx="42" cy="60" r="15" fill="#fff"/>
+    <circle cx="78" cy="60" r="15" fill="#fff"/>
+    <circle cx="43" cy="63" r="6" fill="#ff2d4d"/>
+    <circle cx="79" cy="63" r="6" fill="#ff2d4d"/>
+    <path d="M46 88 Q60 98 74 88" stroke="#2b0f18" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M48 90 L50 98 L54 90 Z" fill="#fff"/>
+    <path d="M72 90 L70 98 L66 90 Z" fill="#fff"/>
+  </svg>`,
+  caster: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <path d="M60 14 L38 44 L82 44 Z" fill="#6a3a9c"/>
+    <circle cx="60" cy="66" r="32" fill="#6a3a9c"/>
+    <circle cx="48" cy="60" r="10" fill="#fff"/>
+    <circle cx="72" cy="60" r="10" fill="#fff"/>
+    <circle cx="49" cy="62" r="4" fill="#2b0f3a"/>
+    <circle cx="73" cy="62" r="4" fill="#2b0f3a"/>
+    <path d="M52 80 Q60 85 68 80" stroke="#2b0f3a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="60" cy="98" r="8" fill="#c46bff" opacity="0.85"/>
+  </svg>`,
+  curseMother: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <path d="M60 8 L34 46 L86 46 Z" fill="#4a2064"/>
+    <circle cx="60" cy="70" r="38" fill="#4a2064"/>
+    <circle cx="46" cy="62" r="13" fill="#fff"/>
+    <circle cx="74" cy="62" r="13" fill="#fff"/>
+    <circle cx="47" cy="64" r="5" fill="#c46bff"/>
+    <circle cx="75" cy="64" r="5" fill="#c46bff"/>
+    <path d="M50 86 Q60 92 70 86" stroke="#2b0f3a" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="60" cy="104" r="9" fill="#c46bff" opacity="0.9"/>
+  </svg>`,
+  nightfallDuke: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <path d="M30 26 L20 6 L42 20 Z" fill="#3a0a1a"/>
+    <path d="M90 26 L100 6 L78 20 Z" fill="#3a0a1a"/>
+    <path d="M60 2 L52 22 L68 22 Z" fill="#d4af37"/>
+    <circle cx="60" cy="70" r="44" fill="#3a0a1a"/>
+    <circle cx="44" cy="62" r="14" fill="#fff"/>
+    <circle cx="76" cy="62" r="14" fill="#fff"/>
+    <circle cx="45" cy="65" r="6" fill="#ff2d4d"/>
+    <circle cx="77" cy="65" r="6" fill="#ff2d4d"/>
+    <path d="M46 90 Q60 100 74 90" stroke="#1a0510" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </svg>`,
+};
+const MONSTER_IMAGES = {
+  ghoul: svgToImage(MONSTER_SVG.ghoul),
+  wraith: svgToImage(MONSTER_SVG.wraith),
+  caster: svgToImage(MONSTER_SVG.caster),
+  boss: svgToImage(MONSTER_SVG.boss),
+  curseMother: svgToImage(MONSTER_SVG.curseMother),
+  nightfallDuke: svgToImage(MONSTER_SVG.nightfallDuke),
+};
+
+// 캐릭터 2종 일러스트 (사람 형태, 몸통만 - 총은 따로 그려서 회전시킨다)
+// 몸통을 계속 회전시키면 위/아래를 지날 때 반드시 한 번은 뒤집혀 보이는 이음매가 생기므로,
+// 몸통은 좌우 반전(2단계)만 하고, 총만 원하는 각도로 자유롭게 회전시키는 방식으로 바꿨다.
+const PLAYER_SVG = {
+  P1: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect x="36" y="66" width="9" height="24" rx="4" fill="#5c4a7a"/>
+    <rect x="50" y="66" width="9" height="24" rx="4" fill="#5c4a7a"/>
+    <ellipse cx="48" cy="56" rx="19" ry="23" fill="#a78bda"/>
+    <circle cx="48" cy="30" r="15" fill="#a78bda"/>
+    <circle cx="54" cy="27" r="3" fill="#fff"/>
+    <circle cx="55" cy="27" r="1.3" fill="#2b0f2f"/>
+  </svg>`,
+  P2: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect x="36" y="66" width="9" height="24" rx="4" fill="#2f6b68"/>
+    <rect x="50" y="66" width="9" height="24" rx="4" fill="#2f6b68"/>
+    <ellipse cx="48" cy="56" rx="19" ry="23" fill="#7fd3d0"/>
+    <circle cx="48" cy="30" r="15" fill="#7fd3d0"/>
+    <circle cx="54" cy="27" r="3" fill="#fff"/>
+    <circle cx="55" cy="27" r="1.3" fill="#0f2f2b"/>
+  </svg>`,
+};
+const PLAYER_IMAGES = {
+  P1: svgToImage(PLAYER_SVG.P1),
+  P2: svgToImage(PLAYER_SVG.P2),
+};
+
+
+// 오라 장판 / 수리검 / 드론 일러스트
+const EQUIP_SVG = {
+  aura: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="46" fill="none" stroke="#a78bda" stroke-width="2" opacity="0.5"/>
+    <circle cx="50" cy="50" r="34" fill="#a78bda" opacity="0.10"/>
+    <circle cx="50" cy="50" r="34" fill="none" stroke="#cbb6ee" stroke-width="2" stroke-dasharray="6 8" opacity="0.8"/>
+    <circle cx="50" cy="50" r="14" fill="none" stroke="#cbb6ee" stroke-width="2" opacity="0.7"/>
+  </svg>`,
+  shuriken: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+    <path d="M20 2 L24 16 L38 20 L24 24 L20 38 L16 24 L2 20 L16 16 Z" fill="#ece4d3"/>
+    <circle cx="20" cy="20" r="4" fill="#2b0f18"/>
+  </svg>`,
+  drone: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">
+    <line x1="10" y1="10" x2="22" y2="22" stroke="#d4af37" stroke-width="3"/>
+    <line x1="50" y1="10" x2="38" y2="22" stroke="#d4af37" stroke-width="3"/>
+    <line x1="10" y1="50" x2="22" y2="38" stroke="#d4af37" stroke-width="3"/>
+    <line x1="50" y1="50" x2="38" y2="38" stroke="#d4af37" stroke-width="3"/>
+    <circle cx="10" cy="10" r="6" fill="none" stroke="#d4af37" stroke-width="2"/>
+    <circle cx="50" cy="10" r="6" fill="none" stroke="#d4af37" stroke-width="2"/>
+    <circle cx="10" cy="50" r="6" fill="none" stroke="#d4af37" stroke-width="2"/>
+    <circle cx="50" cy="50" r="6" fill="none" stroke="#d4af37" stroke-width="2"/>
+    <rect x="20" y="22" width="20" height="16" rx="5" fill="#d4af37"/>
+    <circle cx="30" cy="30" r="4" fill="#3a2405"/>
+  </svg>`,
+};
+const EQUIP_IMAGES = {
+  aura: svgToImage(EQUIP_SVG.aura),
+  shuriken: svgToImage(EQUIP_SVG.shuriken),
+  drone: svgToImage(EQUIP_SVG.drone),
+};
+
+// 몬스터 처치 시 낮은 확률로 등장하는 아이템 박스
+const BOX_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <rect x="4" y="16" width="32" height="20" rx="3" fill="#7a4a2a"/>
+  <rect x="4" y="16" width="32" height="8" fill="#8f5a34"/>
+  <rect x="16" y="16" width="8" height="20" fill="#d4af37"/>
+  <circle cx="20" cy="24" r="3" fill="#2b0f18"/>
+  <rect x="2" y="11" width="36" height="6" rx="2" fill="#d4af37"/>
+</svg>`;
+const BOX_IMAGE = svgToImage(BOX_SVG);
+
+// 몬스터 피격 플래시(흰색 번쩍임)를 스프라이트 모양대로만 그리기 위한 오프스크린 캔버스
+const flashCanvas = document.createElement('canvas');
+flashCanvas.width = 160; flashCanvas.height = 160;
+const flashCtx = flashCanvas.getContext('2d');
+function drawFlashedImage(destCtx, img, x, y, size, flashAlpha){
+  flashCtx.clearRect(0, 0, flashCanvas.width, flashCanvas.height);
+  flashCtx.drawImage(img, 0, 0, size, size);
+  flashCtx.globalCompositeOperation = 'source-atop';
+  flashCtx.globalAlpha = flashAlpha;
+  flashCtx.fillStyle = '#ffffff';
+  flashCtx.fillRect(0, 0, size, size);
+  flashCtx.globalCompositeOperation = 'source-over';
+  flashCtx.globalAlpha = 1;
+  destCtx.drawImage(flashCanvas, 0, 0, size, size, x, y, size, size);
+}
+
+// 레벨업 카드 아이콘 (DOM에 직접 삽입되는 인라인 SVG)
+const CARD_ICON = {
+  whip: `<svg viewBox="0 0 60 60"><path d="M10 50 L50 10" stroke="#ece4d3" stroke-width="6" stroke-linecap="round"/><circle cx="10" cy="50" r="6" fill="#ece4d3"/></svg>`,
+  bullet: `<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="8" fill="#cbb6ee"/><circle cx="30" cy="30" r="18" fill="none" stroke="#a78bda" stroke-width="3" opacity="0.6"/></svg>`,
+  aura: `<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="10" fill="none" stroke="#a78bda" stroke-width="4"/><circle cx="30" cy="30" r="22" fill="none" stroke="#a78bda" stroke-width="2" opacity="0.5"/></svg>`,
+  speed: `<svg viewBox="0 0 60 60"><path d="M8 20 L36 20 M8 30 L48 30 M8 40 L30 40" stroke="#7fd3d0" stroke-width="4" stroke-linecap="round"/></svg>`,
+  hp: `<svg viewBox="0 0 60 60"><path d="M30 48 C10 34 6 18 18 12 C25 8 30 14 30 18 C30 14 35 8 42 12 C54 18 50 34 30 48 Z" fill="#c81e3a"/></svg>`,
+  cooldown: `<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="20" fill="none" stroke="#d4af37" stroke-width="4"/><path d="M30 18 L30 30 L40 36" stroke="#d4af37" stroke-width="4" stroke-linecap="round" fill="none"/></svg>`,
+  pickup: `<svg viewBox="0 0 60 60"><path d="M10 30 Q30 10 50 30 Q30 50 10 30 Z" fill="none" stroke="#d4af37" stroke-width="3"/><circle cx="30" cy="30" r="6" fill="#d4af37"/></svg>`,
+  synergy: `<svg viewBox="0 0 60 60"><path d="M30 8 L38 24 L54 26 L42 38 L46 54 L30 46 L14 54 L18 38 L6 26 L22 24 Z" fill="#d4af37"/></svg>`,
+  shuriken: `<svg viewBox="0 0 60 60"><path d="M30 6 L35 24 L54 30 L35 36 L30 54 L25 36 L6 30 L25 24 Z" fill="#ece4d3"/><circle cx="30" cy="30" r="5" fill="#2b0f18"/></svg>`,
+  drone: `<svg viewBox="0 0 60 60"><rect x="20" y="24" width="20" height="14" rx="5" fill="#d4af37"/><circle cx="12" cy="14" r="7" fill="none" stroke="#d4af37" stroke-width="2"/><circle cx="48" cy="14" r="7" fill="none" stroke="#d4af37" stroke-width="2"/><line x1="12" y1="14" x2="24" y2="26" stroke="#d4af37" stroke-width="2"/><line x1="48" y1="14" x2="36" y2="26" stroke="#d4af37" stroke-width="2"/></svg>`,
+};
+
+// ---------- 입력 처리 ----------
+const keys = {};
+const BLOCK_KEYS = [' ', 'enter', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'];
+window.addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  keys[k] = true;
+  if (BLOCK_KEYS.includes(k)) e.preventDefault(); // 스페이스바 스크롤, 엔터 포커스 이동 등을 막는다
+});
+window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+
+// 마우스 커서 위치 (P1의 조준 방향으로 사용) - 캔버스 표시 크기와 실제 해상도 비율을 보정한다
+const mouse = { x: CONFIG.ARENA_W/2, y: CONFIG.ARENA_H/2 };
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = (e.clientX - rect.left) * (CONFIG.ARENA_W / rect.width);
+  mouse.y = (e.clientY - rect.top) * (CONFIG.ARENA_H / rect.height);
+});
+
+// ---------- 유틸 ----------
+function dist(a, b){ return Math.hypot(a.x - b.x, a.y - b.y); }
+function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+function fmtTime(s){
+  s = Math.max(0, Math.ceil(s));
+  const m = Math.floor(s / 60), r = s % 60;
+  return String(m).padStart(2,'0') + ':' + String(r).padStart(2,'0');
+}
+
+// ---------- 플레이어 생성 ----------
+function makePlayer(id, x, y, color, weaponType, controlScheme, isRemote){
+  return {
+    id, x, y, color, controlScheme,
+    isRemote: !!isRemote, // true면 이 플레이어는 네트워크로 전달된 입력/상태로만 움직인다
+    attackKey: controlScheme === 'wasd' ? ' ' : 'enter', // 공격키: P1=스페이스, P2=엔터
+    facing: { x: 1, y: 0 },
+    hp: CONFIG.PLAYER.maxHp, maxHp: CONFIG.PLAYER.maxHp,
+    speed: CONFIG.PLAYER.speed, radius: CONFIG.PLAYER.radius,
+    pickupRadius: CONFIG.PLAYER.pickupRadius,
+    downed: false, reviveProgress: 0,
+    magnetTimer: 0, hitFlash: 0,
+    level: 1, exp: 0, expToNext: CONFIG.LEVEL.baseExp,
+    weapons: [{ type: weaponType, level: 1, timer: 0, manual: weaponType === 'bullet' }],
+    hitCooldown: 0,
+  };
+}
+
+// ---------- 게임 초기화 ----------
+// netRole: null(오프라인) | 'host'(내가 P1, 상대는 P2로 네트워크 입력을 받음) | 'guest'(내가 P2, 호스트가 시뮬레이션을 전담)
+function startGame(mode, role){
+  netRole = role || null;
+  const n = (mode === 'coop' || netRole) ? 2 : 1;
+  const players = [];
+  if (netRole === 'guest'){
+    players.push(makePlayer('P1', 380, 280, '#a78bda', 'bullet', 'wasd', true));   // 호스트가 조종 (원격)
+    players.push(makePlayer('P2', 520, 280, '#7fd3d0', 'bullet', 'wasd', false));  // 내 캐릭터
+  } else {
+    players.push(makePlayer('P1', 380, 280, '#a78bda', 'bullet', 'wasd', false));
+    if (n === 2){
+      // 온라인(호스트)일 땐 상대도 WASD+마우스를 쓰는 원격 플레이어, 로컬 협동일 땐 같은 키보드의 방향키 플레이어
+      players.push(makePlayer('P2', 520, 280, '#7fd3d0', 'bullet', netRole === 'host' ? 'wasd' : 'arrows', netRole === 'host'));
+    }
+  }
+  rowP2.style.display = (n === 2) ? 'flex' : 'none';
+
+  game = {
+    mode: (n === 2 ? 'coop' : 'solo'), n, players,
+    monsters: [], projectiles: [], enemyProjectiles: [], hazards: [], orbs: [], effects: [], boxes: [], pendingHazards: [],
+    elapsed: 0, spawnTimer: 0, bossSpawned: new Array(CONFIG.STAGE.count).fill(false), stage: 1,
+    kills: 0, state: 'playing', levelupQueue: [], synergyBond: false,
+    globalCooldownMul: 1, screenFlash: 0,
+  };
+  menuOverlay.classList.add('hidden');
+  resultOverlay.classList.add('hidden');
+  levelupOverlay.classList.add('hidden');
+}
+
+// ---------- 몬스터 스폰 ----------
+function pickMonsterType(){
+  const t = game.elapsed;
+  const wraithChance = t > 25 ? Math.min(CONFIG.SPAWN.wraithChanceAt300s, t/300*CONFIG.SPAWN.wraithChanceAt300s + 0.05) : 0;
+  const casterChance = t > 45 ? Math.min(CONFIG.SPAWN.casterChanceAt300s, t/300*CONFIG.SPAWN.casterChanceAt300s + 0.03) : 0;
+  const r = Math.random();
+  if (r < casterChance) return 'caster';
+  if (r < casterChance + wraithChance) return 'wraith';
+  return 'ghoul';
+}
+function spawnMonster(){
+  const edge = Math.floor(Math.random() * 4);
+  let x, y;
+  if (edge === 0){ x = -20; y = Math.random() * CONFIG.ARENA_H; }
+  else if (edge === 1){ x = CONFIG.ARENA_W + 20; y = Math.random() * CONFIG.ARENA_H; }
+  else if (edge === 2){ x = Math.random() * CONFIG.ARENA_W; y = -20; }
+  else { x = Math.random() * CONFIG.ARENA_W; y = CONFIG.ARENA_H + 20; }
+
+  const type = pickMonsterType();
+  const t = CONFIG.MONSTER[type];
+  const m = { type, x, y, hp: t.hp, maxHp: t.hp, speed: t.speed, damage: t.damage, radius: t.radius, exp: t.exp, color: t.color, hitCooldown: 0 };
+  if (type === 'wraith'){ m.dashState = 'chase'; m.dashTimer = 1.2 + Math.random()*1.5; m.dashDir = { x:0, y:0 }; }
+  if (type === 'caster'){ m.fireTimer = 0.6 + Math.random()*0.8; }
+  game.monsters.push(m);
+}
+function spawnBoss(type){
+  const t = CONFIG.MONSTER[type];
+  game.monsters.push({
+    type, x: CONFIG.ARENA_W/2, y: -40, hp: t.hp, maxHp: t.hp, speed: t.speed, damage: t.damage, radius: t.radius, exp: t.exp, color: t.color, hitCooldown: 0,
+    phase: 1, patternState: 'idle', attackTimer: 2.5, currentPattern: null, telegraphTime: 0,
+    chargeDir: { x:0, y:0 }, chargeTimeLeft: 0, telegraphTarget: { x:0, y:0 },
+  });
+}
+
+// ---------- 카드(레벨업 선택지) ----------
+function buildCardPool(p){
+  const has = type => p.weapons.some(w => w.type === type);
+  const weaponOf = type => p.weapons.find(w => w.type === type);
+  const pool = [];
+
+  ['bullet','whip','aura','shuriken','drone'].forEach(type => {
+    if (has(type)){
+      const w = weaponOf(type);
+      if (w.level < 5){
+        pool.push({
+          id:'up_'+type, rarity:'WEAPON UP', icon: CARD_ICON[type], iconKey: type,
+          title: (type==='bullet'?'총알':type==='whip'?'채찍':type==='aura'?'오라':type==='shuriken'?'수리검':'드론') + ' 강화',
+          desc: '피해량 증가, 재사용 대기시간 감소',
+          apply: pl => { const ww = weaponOf(type); ww.level++; }
+        });
+      }
+    } else {
+      pool.push({
+        id:'new_'+type, rarity:'NEW WEAPON', icon: CARD_ICON[type], iconKey: type,
+        title: type==='whip' ? '회전 채찍' : type==='aura' ? '지속 오라' : type==='shuriken' ? '수리검' : type==='drone' ? '드론' : '총알',
+        desc: type==='whip' ? '주변 적에게 자동으로 근접 피해'
+            : type==='aura' ? '캐릭터 주변에 자동으로 지속 피해'
+            : type==='shuriken' ? '몸 주위를 도는 수리검이 스치는 적에게 피해'
+            : type==='drone' ? '주기적으로 근처 적을 자동 조준해 사격'
+            : '공격키를 누르면 바라보는 방향으로 발사',
+        apply: pl => { pl.weapons.push({ type, level:1, timer:0, manual: type === 'bullet', phase: Math.random()*Math.PI*2 }); }
+      });
+    }
+  });
+
+  pool.push({ id:'p_speed', rarity:'PASSIVE', icon: CARD_ICON.speed, iconKey:'speed', title:'질풍의 가호', desc:'이동속도 +10%', apply: pl => { pl.speed *= 1.10; } });
+  pool.push({ id:'p_hp', rarity:'PASSIVE', icon: CARD_ICON.hp, iconKey:'hp', title:'불사의 심장', desc:'최대 체력 +20, 즉시 회복', apply: pl => { pl.maxHp += 20; pl.hp = Math.min(pl.maxHp, pl.hp + 20); } });
+  pool.push({ id:'p_cd', rarity:'PASSIVE', icon: CARD_ICON.cooldown, iconKey:'cooldown', title:'광기의 손놀림', desc:'모든 무기 재사용 대기시간 -8%', apply: () => { game.globalCooldownMul *= 0.92; } });
+  pool.push({ id:'p_pick', rarity:'PASSIVE', icon: CARD_ICON.pickup, iconKey:'pickup', title:'탐욕의 시야', desc:'경험치 획득 범위 +30%', apply: pl => { pl.pickupRadius *= 1.3; } });
+
+  if (game.mode === 'coop' && !game.synergyBond){
+    pool.push({ id:'synergy', rarity:'SYNERGY', icon: CARD_ICON.synergy, iconKey:'synergy', title:'협동의 맹세', desc:'파트너와 가까이 있으면 팀 전체 공격력 +8%', apply: () => { game.synergyBond = true; } });
+  }
+
+  // 무작위 3개 선택 (중복 없이)
+  const shuffled = pool.sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 3);
+}
+
+function openLevelUp(p){
+  game.state = 'levelup';
+  const cards = buildCardPool(p);
+
+  if (p.isRemote){
+    // 원격(게스트) 플레이어의 레벨업 - 카드를 게스트에게 전송하고 선택을 기다린다 (로컬 오버레이는 띄우지 않음)
+    pendingGuestCards = cards;
+    pendingGuestPlayer = p;
+    netSend({ t:'levelup', cards: cards.map(c => ({ id:c.id, rarity:c.rarity, title:c.title, desc:c.desc, iconKey:c.iconKey })) });
+    return;
+  }
+
+  levelupTitle.textContent = p.id + ' LEVEL UP';
+  cardsRow.innerHTML = '';
+  cards.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<div class="card-icon">${c.icon}</div><span class="rarity">${c.rarity}</span><h3>${c.title}</h3><p>${c.desc}</p>`;
+    div.onclick = () => {
+      c.apply(p);
+      levelupOverlay.classList.add('hidden');
+      processLevelupQueue();
+    };
+    cardsRow.appendChild(div);
+  });
+  levelupOverlay.classList.remove('hidden');
+}
+function processLevelupQueue(){
+  if (game.levelupQueue.length > 0){
+    const p = game.levelupQueue.shift();
+    openLevelUp(p);
+  } else {
+    game.state = 'playing';
+  }
+}
+
+// ---------- 경험치/레벨 처리 ----------
+function gainExp(p, amount){
+  p.exp += amount;
+  while (p.exp >= p.expToNext){
+    p.exp -= p.expToNext;
+    p.level++;
+    p.expToNext = Math.round(CONFIG.LEVEL.baseExp * Math.pow(CONFIG.LEVEL.growth, p.level - 1));
+    game.levelupQueue.push(p);
+  }
+  if (game.state === 'playing' && game.levelupQueue.length > 0){
+    processLevelupQueue();
+  }
+}
+
+// ---------- 업데이트 ----------
+function updatePlayerMovement(p, dt){
+  p.hitFlash = Math.max(0, (p.hitFlash || 0) - dt); // 피격 플래시 감소는 다운 상태에서도 계속 진행
+  if (p.downed) return;
+
+  if (p.isRemote){
+    // 원격 플레이어: 이 컴퓨터의 키보드/마우스가 아니라, 네트워크로 받은 입력(netInput)을 사용한다
+    let dx = 0, dy = 0;
+    if (netInput.up) dy -= 1; if (netInput.down) dy += 1;
+    if (netInput.left) dx -= 1; if (netInput.right) dx += 1;
+    if (dx !== 0 || dy !== 0){
+      const len = Math.hypot(dx, dy);
+      p.x = clamp(p.x + (dx/len) * p.speed * dt, p.radius, CONFIG.ARENA_W - p.radius);
+      p.y = clamp(p.y + (dy/len) * p.speed * dt, p.radius, CONFIG.ARENA_H - p.radius);
+    }
+    if (typeof netInput.angle === 'number'){
+      p.facing.x = Math.cos(netInput.angle); p.facing.y = Math.sin(netInput.angle);
+    }
+    return;
+  }
+
+  let dx = 0, dy = 0;
+  if (p.controlScheme === 'wasd'){
+    if (keys['w']) dy -= 1; if (keys['s']) dy += 1;
+    if (keys['a']) dx -= 1; if (keys['d']) dx += 1;
+  } else {
+    if (keys['arrowup']) dy -= 1; if (keys['arrowdown']) dy += 1;
+    if (keys['arrowleft']) dx -= 1; if (keys['arrowright']) dx += 1;
+  }
+  if (dx !== 0 || dy !== 0){
+    const len = Math.hypot(dx, dy);
+    const nx = dx / len, ny = dy / len;
+    p.x = clamp(p.x + nx * p.speed * dt, p.radius, CONFIG.ARENA_W - p.radius);
+    p.y = clamp(p.y + ny * p.speed * dt, p.radius, CONFIG.ARENA_H - p.radius);
+    if (p.controlScheme !== 'wasd'){
+      p.facing.x = nx; p.facing.y = ny; // 마우스가 없는 플레이어는 이동 방향을 조준 방향으로 사용
+    }
+  }
+  if (p.controlScheme === 'wasd'){
+    // 이동(WASD)과 조준(마우스)을 분리: 항상 마우스 커서를 바라보는 방향으로 조준한다
+    const ang = Math.atan2(mouse.y - p.y, mouse.x - p.x);
+    p.facing.x = Math.cos(ang); p.facing.y = Math.sin(ang);
+  }
+}
+
+function nearestMonster(p, maxRange){
+  let best = null, bestD = Infinity;
+  for (const m of game.monsters){
+    const d = dist(p, m);
+    if (d < bestD && d <= maxRange){ bestD = d; best = m; }
+  }
+  return best;
+}
+
+function damageMonster(m, dmg, p){
+  m.hp -= dmg;
+  m.hitFlash = 0.15;   // 피격 순간 흰색으로 번쩍이는 시간
+  m.hpBarTimer = 1.4;  // 피격 후 체력바를 잠깐 보여주는 시간 (구울처럼 평소 숨겨진 몬스터용)
+  if (m.hp <= 0 && !m.dead){
+    m.dead = true;
+    game.kills++;
+    game.orbs.push({ x:m.x, y:m.y, exp:m.exp, r:5 });
+    if (!isBossType(m.type) && Math.random() < CONFIG.ITEM_BOX.dropChance){
+      game.boxes.push({ x:m.x, y:m.y, r:14 });
+    }
+  }
+}
+
+function teamDamageMul(p){
+  if (game.synergyBond && game.players.length === 2){
+    const other = game.players.find(o => o !== p);
+    if (other && dist(p, other) < 120) return 1.08;
+  }
+  return 1;
+}
+
+function updateWeapons(p, dt){
+  if (p.downed) return;
+  const attackHeld = p.isRemote ? !!netInput.attack : !!keys[p.attackKey]; // 공격키를 누르고 있는 동안만 수동 무기가 발사된다
+
+  for (const w of p.weapons){
+    // 드론은 쿨다운과 상관없이 매 프레임 호버링 위치를 갱신한다 (플레이어 주위를 맴돈다)
+    if (w.type === 'drone'){
+      const db = CONFIG.WEAPON.drone;
+      const ang = game.elapsed * db.hoverSpeed + (w.phase || 0);
+      w.hx = p.x + Math.cos(ang) * db.hoverRadius;
+      w.hy = p.y + Math.sin(ang) * db.hoverRadius;
+    }
+
+    w.timer -= dt;
+    if (w.timer > 0) continue;
+    if (w.manual && !attackHeld) continue; // 자동 발사 없음: 키 입력이 없으면 대기
+    const base = CONFIG.WEAPON[w.type];
+    const lvMul = 1 + (w.level - 1) * 0.16;
+    const cd = base.cooldown * Math.pow(0.94, w.level - 1) * game.globalCooldownMul;
+
+    if (w.type === 'bullet'){
+      const ang = Math.atan2(p.facing.y, p.facing.x); // 자동 조준 없이, 현재 바라보는 방향으로만 발사
+      game.projectiles.push({ x:p.x, y:p.y, vx:Math.cos(ang)*base.speed, vy:Math.sin(ang)*base.speed, dmg: base.damage * lvMul * teamDamageMul(p), life:1.0, owner:p, color:p.color });
+      w.timer = cd;
+    } else if (w.type === 'whip'){
+      const range = base.range * (1 + (w.level-1)*0.05);
+      for (const m of game.monsters){
+        if (dist(p, m) <= range){ damageMonster(m, base.damage * lvMul * teamDamageMul(p), p); }
+      }
+      game.effects.push({ type:'whip', x:p.x, y:p.y, r:range, life:0.18, maxLife:0.18 });
+      w.timer = cd;
+    } else if (w.type === 'aura'){
+      const radius = base.radius * (1 + (w.level-1)*0.08);
+      for (const m of game.monsters){
+        if (dist(p, m) <= radius){ damageMonster(m, base.damage * lvMul * teamDamageMul(p), p); }
+      }
+      game.effects.push({ type:'aura', x:p.x, y:p.y, r:radius, life:0.12, maxLife:0.12 });
+      w.timer = cd;
+    } else if (w.type === 'shuriken'){
+      // 몸 주위 고리 형태 범위 안의 적에게 지속적으로 피해 (탕탕특공대류 회전 투사체 참고)
+      const radius = base.radius * (1 + (w.level-1)*0.04);
+      const band = base.band;
+      for (const m of game.monsters){
+        const d = dist(p, m);
+        if (d >= radius - band && d <= radius + band){ damageMonster(m, base.damage * lvMul * teamDamageMul(p), p); }
+      }
+      w.timer = cd;
+    } else if (w.type === 'drone'){
+      // 플레이어 주위를 맴돌다가 주기적으로 가까운 적을 자동 조준해 사격
+      const target = nearestMonster({ x:w.hx, y:w.hy }, base.range);
+      if (target){
+        const ang = Math.atan2(target.y - w.hy, target.x - w.hx);
+        game.projectiles.push({ x:w.hx, y:w.hy, vx:Math.cos(ang)*base.boltSpeed, vy:Math.sin(ang)*base.boltSpeed, dmg: base.damage * lvMul * teamDamageMul(p), life:1.0, owner:p, color:'#d4af37' });
+      }
+      w.timer = cd;
+    }
+  }
+}
+
+function aliveNonDownedPlayers(){
+  return game.players.filter(p => !p.downed);
+}
+
+
+function nearestTarget(m, targets){
+  let target = targets[0], bestD = dist(m, target);
+  for (const p of targets){ const d = dist(m,p); if (d < bestD){ bestD = d; target = p; } }
+  return target;
+}
+
+function applyDamageToPlayer(target, dmg){
+  if (target.downed) return;
+  target.hp -= dmg;
+  target.hitFlash = 0.15; // 몬스터와 동일한 피격 플래시
+  if (target.hp <= 0){
+    target.hp = 0; target.downed = true; target.reviveProgress = 0;
+    checkDefeat();
+  }
+}
+
+// 일반(구울): 단순 추적만 한다
+function updateBasicChase(m, dt, target){
+  const ang = Math.atan2(target.y - m.y, target.x - m.x);
+  m.x += Math.cos(ang) * m.speed * dt;
+  m.y += Math.sin(ang) * m.speed * dt;
+}
+
+// 정예(레이스): 평소엔 추적하다가, 가까워지면 예고 후 빠르게 돌진한다
+function updateWraith(m, dt, target){
+  const cfg = CONFIG.MONSTER.wraith;
+  if (m.dashState === 'chase'){
+    const ang = Math.atan2(target.y - m.y, target.x - m.x);
+    m.x += Math.cos(ang) * m.speed * dt;
+    m.y += Math.sin(ang) * m.speed * dt;
+    m.dashTimer -= dt;
+    if (m.dashTimer <= 0 && dist(m, target) < cfg.dashRange){
+      m.dashState = 'windup';
+      m.dashTimer = cfg.dashWindup;
+      m.dashDir = { x: Math.cos(ang), y: Math.sin(ang) };
+    }
+  } else if (m.dashState === 'windup'){
+    m.dashTimer -= dt; // 제자리에서 잠깐 멈춰 예고 동작을 보여준다
+    if (m.dashTimer <= 0){ m.dashState = 'dash'; m.dashTimer = cfg.dashDuration; }
+  } else if (m.dashState === 'dash'){
+    m.x += m.dashDir.x * cfg.dashSpeed * dt;
+    m.y += m.dashDir.y * cfg.dashSpeed * dt;
+    m.dashTimer -= dt;
+    if (m.dashTimer <= 0){ m.dashState = 'chase'; m.dashTimer = cfg.dashCooldown; }
+  }
+}
+
+// 원거리(저주술사): 거리를 유지하며 주기적으로 저주 탄환을 발사한다
+function updateCaster(m, dt, target){
+  const cfg = CONFIG.MONSTER.caster;
+  const d = dist(m, target);
+  const ang = Math.atan2(target.y - m.y, target.x - m.x);
+  if (d < cfg.keepDistance){
+    m.x -= Math.cos(ang) * m.speed * dt;
+    m.y -= Math.sin(ang) * m.speed * dt;
+  } else if (d > cfg.approachDistance){
+    m.x += Math.cos(ang) * m.speed * dt;
+    m.y += Math.sin(ang) * m.speed * dt;
+  }
+  m.fireTimer -= dt;
+  if (m.fireTimer <= 0 && d <= cfg.fireRange){
+    game.enemyProjectiles.push({ x:m.x, y:m.y, vx:Math.cos(ang)*cfg.boltSpeed, vy:Math.sin(ang)*cfg.boltSpeed, dmg:cfg.boltDamage, life:2.5, color:'#c46bff' });
+    m.fireTimer = cfg.fireCooldown;
+  }
+}
+
+// 보스: 체력에 따라 페이즈가 바뀌며, 예고(telegraph) 후 특수 패턴을 발동한다
+function bossAvailablePatterns(m){
+  const table = CONFIG.BOSS_PATTERNS[m.type] || CONFIG.BOSS_PATTERNS.boss;
+  return table[m.phase] || table[1];
+}
+function startBossAttack(m, target){
+  const patterns = bossAvailablePatterns(m);
+  const name = patterns[Math.floor(Math.random()*patterns.length)];
+  const cfg = CONFIG.BOSS_ATTACKS[name];
+  m.currentPattern = name;
+  m.patternState = 'telegraph';
+  m.telegraphTime = cfg.telegraph;
+  if (name === 'charge' || name === 'bloodRail'){
+    const ang = Math.atan2(target.y - m.y, target.x - m.x);
+    m.chargeDir = { x: Math.cos(ang), y: Math.sin(ang) };
+  }
+  if (name === 'poisonFog'){
+    m.telegraphTarget = { x: target.x, y: target.y };
+  }
+  if (name === 'teleportBurst'){
+    // 예고가 뜨는 새 위치로 즉시 순간이동한 뒤, 그 자리에서 예고 후 탄막을 발사한다
+    m.x = 80 + Math.random() * (CONFIG.ARENA_W - 160);
+    m.y = 80 + Math.random() * (CONFIG.ARENA_H - 160);
+  }
+}
+function executeBossAttack(m){
+  const name = m.currentPattern;
+  const cfg = CONFIG.BOSS_ATTACKS[name];
+  const cdMul = m.phase === 3 ? 0.7 : 1;
+
+  if (name === 'slam'){
+    game.hazards.push({ x:m.x, y:m.y, radius:cfg.radius, damage:cfg.damage, life:0.3, hitPlayers:new Set() });
+    m.patternState = 'idle'; m.attackTimer = cfg.cooldown * cdMul;
+
+  } else if (name === 'burst' || name === 'teleportBurst'){
+    for (let i=0;i<cfg.count;i++){
+      const ang = (Math.PI*2/cfg.count) * i;
+      game.enemyProjectiles.push({ x:m.x, y:m.y, vx:Math.cos(ang)*cfg.boltSpeed, vy:Math.sin(ang)*cfg.boltSpeed, dmg:cfg.boltDamage, life:2.2, color:'#ff2d4d' });
+    }
+    m.patternState = 'idle'; m.attackTimer = cfg.cooldown * cdMul;
+
+  } else if (name === 'summon'){
+    for (let i=0;i<cfg.count;i++){
+      const a = Math.random()*Math.PI*2;
+      const t = CONFIG.MONSTER.ghoul;
+      game.monsters.push({ type:'ghoul', x:m.x+Math.cos(a)*50, y:m.y+Math.sin(a)*50, hp:t.hp, maxHp:t.hp, speed:t.speed, damage:t.damage, radius:t.radius, exp:t.exp, color:t.color, hitCooldown:0 });
+    }
+    m.patternState = 'idle'; m.attackTimer = cfg.cooldown;
+
+  } else if (name === 'charge'){
+    m.patternState = 'charging'; m.chargeTimeLeft = cfg.duration;
+
+  } else if (name === 'curseBarrage'){
+    const ang0 = Math.atan2((m.telegraphTarget && m.telegraphTarget.y || 0) - m.y, (m.telegraphTarget && m.telegraphTarget.x || 0) - m.x);
+    // 저주 연사는 항상 최신 타깃 방향을 다시 계산 (플레이어가 움직였을 수 있으므로 텔레그래프 시작 시 위치 대신 현재 마지막 target 방향 재사용)
+    const baseAng = m._curseAimAngle != null ? m._curseAimAngle : ang0;
+    for (let i=0;i<cfg.count;i++){
+      const off = (i - (cfg.count-1)/2) * (cfg.spread/(cfg.count-1));
+      const ang = baseAng + off;
+      game.enemyProjectiles.push({ x:m.x, y:m.y, vx:Math.cos(ang)*cfg.boltSpeed, vy:Math.sin(ang)*cfg.boltSpeed, dmg:cfg.boltDamage, life:2.5, color:'#c46bff' });
+    }
+    m.patternState = 'idle'; m.attackTimer = cfg.cooldown * cdMul;
+
+  } else if (name === 'summonCaster'){
+    for (let i=0;i<cfg.count;i++){
+      const a = Math.random()*Math.PI*2;
+      const t = CONFIG.MONSTER.caster;
+      game.monsters.push({ type:'caster', x:m.x+Math.cos(a)*60, y:m.y+Math.sin(a)*60, hp:t.hp, maxHp:t.hp, speed:t.speed, damage:t.damage, radius:t.radius, exp:t.exp, color:t.color, hitCooldown:0, fireTimer: 0.6 });
+    }
+    m.patternState = 'idle'; m.attackTimer = cfg.cooldown;
+
+  } else if (name === 'poisonFog'){
+    const at = m.telegraphTarget || { x:m.x, y:m.y };
+    game.hazards.push({ x:at.x, y:at.y, radius:cfg.radius, damage:cfg.damage, life:cfg.duration, hitPlayers:new Set(), lingering:true, tickInterval:cfg.tickInterval, tickTimer:0 });
+    m.patternState = 'idle'; m.attackTimer = cfg.cooldown;
+
+  } else if (name === 'summonWraith'){
+    for (let i=0;i<cfg.count;i++){
+      const a = Math.random()*Math.PI*2;
+      const t = CONFIG.MONSTER.wraith;
+      game.monsters.push({ type:'wraith', x:m.x+Math.cos(a)*60, y:m.y+Math.sin(a)*60, hp:t.hp, maxHp:t.hp, speed:t.speed, damage:t.damage, radius:t.radius, exp:t.exp, color:t.color, hitCooldown:0, dashState:'chase', dashTimer:1.5, dashDir:{x:0,y:0} });
+    }
+    m.patternState = 'idle'; m.attackTimer = cfg.cooldown;
+
+  } else if (name === 'bloodRail'){
+    game.hazards.push({ x:m.x, y:m.y, angle: Math.atan2(m.chargeDir.y, m.chargeDir.x), width:cfg.width, length:1200, damage:cfg.damage, life:0.25, hitPlayers:new Set(), rail:true });
+    m.patternState = 'idle'; m.attackTimer = cfg.cooldown * cdMul;
+
+  } else if (name === 'bloodRain'){
+    for (let i=0;i<cfg.count;i++){
+      const x = 60 + Math.random() * (CONFIG.ARENA_W - 120);
+      const y = 60 + Math.random() * (CONFIG.ARENA_H - 120);
+      game.pendingHazards.push({ delay: Math.random() * cfg.spreadDuration, x, y, radius:cfg.radius, damage:cfg.damage, spawned:false });
+    }
+    m.patternState = 'idle'; m.attackTimer = cfg.cooldown;
+  }
+}
+function updateBoss(m, dt, target){
+  const hpRatio = m.hp / m.maxHp;
+  m.phase = hpRatio > 0.6 ? 1 : hpRatio > 0.3 ? 2 : 3;
+
+  if (m.patternState === 'idle'){
+    const ang = Math.atan2(target.y - m.y, target.x - m.x);
+    const speedMul = m.phase === 3 ? 1.35 : 1;
+    m.x += Math.cos(ang) * m.speed * speedMul * dt;
+    m.y += Math.sin(ang) * m.speed * speedMul * dt;
+    m.attackTimer -= dt;
+    if (m.attackTimer <= 0) startBossAttack(m, target);
+  } else if (m.patternState === 'telegraph'){
+    if (m.currentPattern === 'curseBarrage'){
+      m._curseAimAngle = Math.atan2(target.y - m.y, target.x - m.x); // 발사 직전까지 조준을 갱신
+    }
+    m.telegraphTime -= dt;
+    if (m.telegraphTime <= 0) executeBossAttack(m);
+  } else if (m.patternState === 'charging'){
+    const cfg = CONFIG.BOSS_ATTACKS.charge;
+    m.x += m.chargeDir.x * cfg.speed * dt;
+    m.y += m.chargeDir.y * cfg.speed * dt;
+    m.chargeTimeLeft -= dt;
+    if (m.chargeTimeLeft <= 0){ m.patternState = 'idle'; m.attackTimer = cfg.cooldown; }
+  }
+}
+
+function monsterContactDamage(m){
+  if (m.type === 'wraith' && m.dashState === 'dash') return m.damage * CONFIG.MONSTER.wraith.dashDamageMul;
+  if (m.patternState === 'charging') return CONFIG.BOSS_ATTACKS.charge.damage;
+  return m.damage;
+}
+
+function isBossType(type){
+  return CONFIG.MONSTER[type] && CONFIG.MONSTER[type].grade === 'boss';
+}
+
+function updateMonsters(dt){
+  const targets = aliveNonDownedPlayers();
+  for (const m of game.monsters){
+    m.hitFlash = Math.max(0, (m.hitFlash || 0) - dt);
+    m.hpBarTimer = Math.max(0, (m.hpBarTimer || 0) - dt);
+    if (targets.length === 0) continue;
+    const target = nearestTarget(m, targets);
+
+    if (isBossType(m.type)) updateBoss(m, dt, target);
+    else if (m.type === 'wraith') updateWraith(m, dt, target);
+    else if (m.type === 'caster') updateCaster(m, dt, target);
+    else updateBasicChase(m, dt, target);
+
+    const bestD = dist(m, target);
+    m.hitCooldown -= dt;
+    if (bestD <= m.radius + target.radius && m.hitCooldown <= 0){
+      applyDamageToPlayer(target, monsterContactDamage(m));
+      m.hitCooldown = 0.6;
+    }
+  }
+  game.monsters = game.monsters.filter(m => !m.dead);
+  updateHazards(dt);
+  updateEnemyProjectiles(dt);
+  updatePendingHazards(dt);
+}
+
+function distToSegment(px, py, x1, y1, x2, y2){
+  const A = px-x1, B = py-y1, C = x2-x1, D = y2-y1;
+  const lenSq = C*C + D*D;
+  let t = lenSq !== 0 ? (A*C + B*D) / lenSq : -1;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(px - (x1 + t*C), py - (y1 + t*D));
+}
+
+function updateHazards(dt){
+  for (const h of game.hazards){
+    h.life -= dt;
+    if (h.rail){
+      const x2 = h.x + Math.cos(h.angle) * h.length, y2 = h.y + Math.sin(h.angle) * h.length;
+      for (const p of game.players){
+        if (p.downed || h.hitPlayers.has(p.id)) continue;
+        if (distToSegment(p.x, p.y, h.x, h.y, x2, y2) <= h.width/2 + p.radius){
+          applyDamageToPlayer(p, h.damage);
+          h.hitPlayers.add(p.id);
+        }
+      }
+    } else if (h.lingering){
+      h.tickTimer -= dt;
+      if (h.tickTimer <= 0){
+        h.tickTimer = h.tickInterval;
+        for (const p of game.players){
+          if (p.downed) continue;
+          if (dist(h, p) <= h.radius + p.radius) applyDamageToPlayer(p, h.damage);
+        }
+      }
+    } else {
+      for (const p of game.players){
+        if (p.downed || h.hitPlayers.has(p.id)) continue;
+        if (dist(h, p) <= h.radius + p.radius){
+          applyDamageToPlayer(p, h.damage);
+          h.hitPlayers.add(p.id);
+        }
+      }
+    }
+  }
+  game.hazards = game.hazards.filter(h => h.life > 0);
+}
+
+// 블러드 레인처럼 예고 후 시차를 두고 여기저기 떨어지는 범위 공격을 처리한다
+function updatePendingHazards(dt){
+  for (const ph of game.pendingHazards){
+    ph.delay -= dt;
+    if (ph.delay <= 0 && !ph.spawned){
+      ph.spawned = true;
+      game.hazards.push({ x:ph.x, y:ph.y, radius:ph.radius, damage:ph.damage, life:0.3, hitPlayers:new Set() });
+    }
+  }
+  game.pendingHazards = game.pendingHazards.filter(ph => !ph.spawned);
+}
+
+function updateEnemyProjectiles(dt){
+  for (const pr of game.enemyProjectiles){
+    pr.x += pr.vx * dt; pr.y += pr.vy * dt; pr.life -= dt;
+    for (const p of game.players){
+      if (p.downed || pr.dead) continue;
+      if (dist(pr, p) <= p.radius + 5){
+        applyDamageToPlayer(p, pr.dmg);
+        pr.dead = true;
+      }
+    }
+    if (pr.x < -40 || pr.x > CONFIG.ARENA_W+40 || pr.y < -40 || pr.y > CONFIG.ARENA_H+40) pr.dead = true;
+  }
+  game.enemyProjectiles = game.enemyProjectiles.filter(pr => !pr.dead && pr.life > 0);
+}
+
+function checkDefeat(){
+  if (game.players.every(p => p.downed)){
+    endGame('defeat');
+  }
+}
+
+function updateRevive(dt){
+  if (game.players.length < 2) return;
+  const [a,b] = game.players;
+  [[a,b],[b,a]].forEach(([downedP, helperP]) => {
+    if (downedP.downed && !helperP.downed && dist(downedP, helperP) <= CONFIG.PLAYER.reviveRadius){
+      downedP.reviveProgress += dt;
+      if (downedP.reviveProgress >= CONFIG.PLAYER.reviveTime){
+        downedP.downed = false;
+        downedP.hp = Math.round(downedP.maxHp * 0.5);
+        downedP.reviveProgress = 0;
+      }
+    } else if (downedP.downed){
+      downedP.reviveProgress = Math.max(0, downedP.reviveProgress - dt * 0.5);
+    }
+  });
+}
+
+function updateProjectiles(dt){
+  for (const pr of game.projectiles){
+    pr.x += pr.vx * dt; pr.y += pr.vy * dt; pr.life -= dt;
+    for (const m of game.monsters){
+      if (!pr.dead && dist(pr, m) <= m.radius + 4){
+        damageMonster(m, pr.dmg, pr.owner);
+        pr.dead = true;
+      }
+    }
+    if (pr.x < -30 || pr.x > CONFIG.ARENA_W+30 || pr.y < -30 || pr.y > CONFIG.ARENA_H+30) pr.dead = true;
+  }
+  game.projectiles = game.projectiles.filter(pr => !pr.dead && pr.life > 0);
+}
+
+function updateOrbs(dt){
+  // 자석 효과 지속시간 감소
+  for (const p of game.players) p.magnetTimer = Math.max(0, (p.magnetTimer || 0) - dt);
+
+  for (const o of game.orbs){
+    let closest = null, bestD = Infinity;
+    for (const p of game.players){
+      if (p.downed) continue;
+      const d = dist(o, p);
+      if (d < bestD){ bestD = d; closest = p; }
+    }
+    if (!closest) continue;
+    const magnetActive = closest.magnetTimer > 0;
+    const inRange = magnetActive || bestD <= closest.pickupRadius;
+    if (inRange){
+      const ang = Math.atan2(closest.y - o.y, closest.x - o.x);
+      const pull = magnetActive ? 520 : 320;
+      o.x += Math.cos(ang) * pull * dt;
+      o.y += Math.sin(ang) * pull * dt;
+      if (bestD <= 14){
+        gainExp(closest, o.exp);
+        o.dead = true;
+      }
+    }
+  }
+  game.orbs = game.orbs.filter(o => !o.dead);
+}
+
+// ---------- 아이템 박스 (포션 / 폭탄 / 자석) ----------
+function applyBoxEffect(p){
+  const roll = Math.random();
+  if (roll < 1/3){
+    // 포션: 최대 체력의 10% 회복
+    p.hp = Math.min(p.maxHp, p.hp + p.maxHp * CONFIG.ITEM_BOX.healPercent);
+  } else if (roll < 2/3){
+    // 폭탄: 캐릭터 기준 가까운 몬스터 최대 10마리 즉시 처치 (보스 제외)
+    const targets = game.monsters.filter(m => !isBossType(m.type) && !m.dead)
+      .sort((a,b) => dist(p,a) - dist(p,b))
+      .slice(0, CONFIG.ITEM_BOX.bombKillCount);
+    targets.forEach(m => damageMonster(m, m.hp + 9999, p));
+    game.screenFlash = 0.35; // 화면 깜박이는 폭발 연출
+  } else {
+    // 자석: 일정 시간 동안 맵의 모든 경험치가 자동으로 끌려온다
+    p.magnetTimer = CONFIG.ITEM_BOX.magnetDuration;
+  }
+}
+
+function updateBoxes(dt){
+  for (const b of game.boxes){
+    for (const p of game.players){
+      if (p.downed || b.dead) continue;
+      if (dist(b, p) <= b.r + p.radius){
+        applyBoxEffect(p);
+        game.effects.push({ type:'boxbreak', x:b.x, y:b.y, life:0.35, maxLife:0.35 });
+        b.dead = true;
+      }
+    }
+  }
+  game.boxes = game.boxes.filter(b => !b.dead);
+}
+
+function updateEffects(dt){
+  for (const e of game.effects) e.life -= dt;
+  game.effects = game.effects.filter(e => e.life > 0);
+}
+
+function updateSpawns(dt){
+  game.spawnTimer -= dt;
+  const mul = CONFIG.SPAWN.countMultiplier(game.n);
+  const interval = Math.max(CONFIG.SPAWN.minInterval, CONFIG.SPAWN.baseInterval - CONFIG.SPAWN.intervalDecayPerSec * game.elapsed) / mul;
+  if (game.spawnTimer <= 0){
+    spawnMonster();
+    game.spawnTimer = interval;
+  }
+
+  const stageDuration = CONFIG.ROUND_SECONDS / CONFIG.STAGE.count;
+  game.stage = Math.min(CONFIG.STAGE.count, Math.floor(game.elapsed / stageDuration) + 1);
+
+  CONFIG.STAGE.bosses.forEach((bossType, i) => {
+    const spawnAt = stageDuration * (i + 1) * 0.9; // 각 스테이지 구간의 90% 지점에서 그 스테이지의 보스 등장
+    if (!game.bossSpawned[i] && game.elapsed >= spawnAt){
+      spawnBoss(bossType);
+      game.bossSpawned[i] = true;
+    }
+  });
+}
+
+// ---------- 결과 처리 ----------
+let lastResult = null; // 호스트가 게스트에게 전송할 결과 데이터
+function endGame(result){
+  game.state = 'ended';
+  const survived = Math.min(game.elapsed, CONFIG.ROUND_SECONDS);
+  const avgLevel = Math.round(game.players.reduce((s,p)=>s+p.level,0) / game.players.length);
+  lastResult = { survived, kills: game.kills, avgLevel, result };
+  showResultOverlay(lastResult);
+}
+function showResultOverlay(info){
+  document.getElementById('resultTitle').textContent = (info.result === 'victory') ? '생존 성공' : '전멸';
+  const stats = document.getElementById('resultStats');
+  stats.innerHTML = `
+    <div class="stat"><div class="v">${fmtTime(info.survived)}</div><div class="l">생존 시간</div></div>
+    <div class="stat"><div class="v">${info.kills}</div><div class="l">총 처치 수</div></div>
+    <div class="stat"><div class="v">Lv ${info.avgLevel}</div><div class="l">평균 레벨</div></div>
+    <div class="stat"><div class="v">${info.result === 'victory' ? 'CLEAR' : 'FAIL'}</div><div class="l">결과</div></div>
+  `;
+  resultOverlay.classList.remove('hidden');
+}
+
+// ---------- 네트워크 (PeerJS 기반 실제 P2P WebRTC) ----------
+let netRole = null;   // null(오프라인) | 'host' | 'guest'
+let peer = null;
+let conn = null;
+const netInput = { up:false, down:false, left:false, right:false, attack:false, angle:0 };
+let pendingGuestCards = null;
+let pendingGuestPlayer = null;
+let netBroadcastTimer = 0;
+let netInputTimer = 0;
+
+function makeRoomCode(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 헷갈리는 0/O, 1/I 제외
+  let code = '';
+  for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+function netSend(obj){
+  if (conn && conn.open) conn.send(obj);
+}
+function showNetStatus(html, isErr){
+  netStatus.classList.remove('hidden');
+  netStatus.classList.toggle('err', !!isErr);
+  netStatus.innerHTML = html;
+}
+
+const PEER_TIMEOUT_MS = 12000; // 이 시간 안에 연결이 안 열리면 오류로 안내한다
+let lastJoinCode = '';
+
+function retryBtn(label, onclickCode){
+  return `<button class="btn btn-ghost" onclick="${onclickCode}" style="margin-top:10px; padding:8px 16px; font-size:12px;">${label}</button>`;
+}
+
+// ---- 호스트: 방 생성 ----
+function startHosting(){
+  if (typeof Peer === 'undefined'){
+    showNetStatus('P2P 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인하고 새로고침 해주세요.', true);
+    return;
+  }
+  const code = makeRoomCode();
+  showNetStatus('방을 여는 중...');
+
+  let opened = false;
+  const timeoutId = setTimeout(() => {
+    if (!opened){
+      if (peer){ try{ peer.destroy(); } catch(e){} peer = null; }
+      showNetStatus('연결 서버에 접속하지 못했습니다 (시간 초과). 인터넷 연결을 확인해주세요.<br>' + retryBtn('다시 시도', 'startHosting()'), true);
+    }
+  }, PEER_TIMEOUT_MS);
+
+  try {
+    peer = new Peer('bloodfall-' + code);
+  } catch (e){
+    clearTimeout(timeoutId);
+    showNetStatus('P2P 연결 생성에 실패했습니다: ' + e.message, true);
+    return;
+  }
+
+  peer.on('open', () => {
+    opened = true;
+    clearTimeout(timeoutId);
+    showNetStatus('방 코드<span class="room-code">' + code + '</span>친구에게 이 코드를 알려주고 기다려주세요.');
+  });
+  peer.on('connection', (c) => {
+    conn = c;
+    conn.on('open', () => {
+      showNetStatus('플레이어가 접속했습니다. 시작합니다...');
+      startGame('coop', 'host');
+      netSend({ t:'start' });
+    });
+    conn.on('data', handleHostData);
+    conn.on('close', () => { showNetStatus('상대방과의 연결이 끊어졌습니다.', true); });
+  });
+  peer.on('error', (err) => {
+    clearTimeout(timeoutId);
+    const type = err && err.type ? err.type : '알 수 없는 오류';
+    showNetStatus('연결 오류가 발생했습니다 (' + type + ').<br>' + retryBtn('다시 시도', 'startHosting()'), true);
+  });
+}
+
+// ---- 게스트: 방 참가 ----
+function joinRoom(code){
+  lastJoinCode = code;
+  if (typeof Peer === 'undefined'){
+    showNetStatus('P2P 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인하고 새로고침 해주세요.', true);
+    return;
+  }
+  showNetStatus('연결하는 중...');
+
+  let opened = false;
+  const timeoutId = setTimeout(() => {
+    if (!opened){
+      if (peer){ try{ peer.destroy(); } catch(e){} peer = null; }
+      showNetStatus('연결 시간이 초과됐습니다. 방 코드와 인터넷 연결을 확인해주세요.<br>' + retryBtn('다시 시도', 'joinRoom(lastJoinCode)'), true);
+    }
+  }, PEER_TIMEOUT_MS);
+
+  try {
+    peer = new Peer();
+  } catch (e){
+    clearTimeout(timeoutId);
+    showNetStatus('P2P 연결 생성에 실패했습니다: ' + e.message, true);
+    return;
+  }
+
+  peer.on('open', () => {
+    conn = peer.connect('bloodfall-' + code.toUpperCase());
+    conn.on('open', () => {
+      opened = true;
+      clearTimeout(timeoutId);
+      showNetStatus('호스트에 연결됨. 게임 시작을 기다리는 중...');
+    });
+    conn.on('data', handleGuestData);
+    conn.on('close', () => { showNetStatus('호스트와의 연결이 끊어졌습니다.', true); });
+  });
+  peer.on('error', (err) => {
+    clearTimeout(timeoutId);
+    const type = err && err.type ? err.type : '알 수 없는 오류';
+    const msg = (type === 'peer-unavailable') ? '해당 방 코드를 찾을 수 없습니다. 코드를 다시 확인해주세요.' : '연결에 실패했습니다 (' + type + ').';
+    showNetStatus(msg + '<br>' + retryBtn('다시 시도', 'joinRoom(lastJoinCode)'), true);
+  });
+}
+
+// ---- 호스트가 게스트의 메시지를 처리 ----
+function handleHostData(data){
+  if (data.t === 'input'){
+    netInput.up = data.up; netInput.down = data.down;
+    netInput.left = data.left; netInput.right = data.right;
+    netInput.attack = data.attack; netInput.angle = data.angle;
+  } else if (data.t === 'levelupChoice'){
+    if (pendingGuestCards && pendingGuestPlayer){
+      const card = pendingGuestCards.find(c => c.id === data.id) || pendingGuestCards[0];
+      card.apply(pendingGuestPlayer);
+      pendingGuestCards = null; pendingGuestPlayer = null;
+      processLevelupQueue();
+    }
+  }
+}
+
+// ---- 게스트가 호스트의 메시지를 처리 ----
+function handleGuestData(data){
+  if (data.t === 'start'){
+    startGame('coop', 'guest');
+  } else if (data.t === 'snap'){
+    applySnapshot(data);
+  } else if (data.t === 'levelup'){
+    showGuestLevelUp(data.cards);
+  }
+}
+
+// ---- 호스트 → 게스트: 상태 스냅샷 생성 ----
+function buildSnapshot(){
+  return {
+    t:'snap',
+    state: game.state, elapsed: game.elapsed, kills: game.kills, screenFlash: game.screenFlash, stage: game.stage,
+    result: game.state === 'ended' ? lastResult : null,
+    players: game.players.map(p => ({
+      x:p.x, y:p.y, hp:p.hp, maxHp:p.maxHp, level:p.level, downed:p.downed,
+      reviveProgress:p.reviveProgress, facing:p.facing, hitFlash:p.hitFlash, magnetTimer:p.magnetTimer,
+      weapons: p.weapons.map(w => ({ type:w.type, level:w.level, hx:w.hx, hy:w.hy })),
+    })),
+    monsters: game.monsters.map(m => ({
+      type:m.type, x:m.x, y:m.y, hp:m.hp, maxHp:m.maxHp, radius:m.radius, color:m.color, hitFlash:m.hitFlash, hpBarTimer:m.hpBarTimer,
+      dashState:m.dashState, phase:m.phase, patternState:m.patternState, currentPattern:m.currentPattern,
+      telegraphTime:m.telegraphTime, chargeDir:m.chargeDir, telegraphTarget:m.telegraphTarget,
+    })),
+    projectiles: game.projectiles.map(pr => ({ x:pr.x, y:pr.y, color:pr.color })),
+    enemyProjectiles: game.enemyProjectiles.map(pr => ({ x:pr.x, y:pr.y, color:pr.color })),
+    boxes: game.boxes.map(b => ({ x:b.x, y:b.y })),
+    hazards: game.hazards.map(h => ({ x:h.x, y:h.y, radius:h.radius, life:h.life, rail:h.rail, angle:h.angle, width:h.width, length:h.length, lingering:h.lingering })),
+    pendingHazards: game.pendingHazards.map(ph => ({ x:ph.x, y:ph.y, radius:ph.radius, delay:ph.delay, spawned:ph.spawned })),
+    orbs: game.orbs.map(o => ({ x:o.x, y:o.y, r:o.r })),
+    effects: game.effects.map(e => ({ type:e.type, x:e.x, y:e.y, r:e.r, life:e.life, maxLife:e.maxLife })),
+  };
+}
+
+// ---- 게스트: 받은 스냅샷을 그대로 게임 상태에 반영 (게스트는 직접 시뮬레이션하지 않는다) ----
+function applySnapshot(snap){
+  if (!game) return;
+  game.state = (snap.state === 'levelup') ? 'playing' : snap.state; // 호스트의 일시정지는 화면이 멈추는 것으로 자연히 표현됨
+  game.elapsed = snap.elapsed; game.kills = snap.kills; game.screenFlash = snap.screenFlash; game.stage = snap.stage || 1;
+
+  snap.players.forEach((sp, i) => {
+    const p = game.players[i];
+    if (!p) return;
+    p.x=sp.x; p.y=sp.y; p.hp=sp.hp; p.maxHp=sp.maxHp; p.level=sp.level; p.downed=sp.downed;
+    p.reviveProgress=sp.reviveProgress; p.facing=sp.facing; p.hitFlash=sp.hitFlash; p.magnetTimer=sp.magnetTimer;
+    p.weapons = sp.weapons;
+  });
+
+  game.monsters = snap.monsters;
+  game.projectiles = snap.projectiles;
+  game.enemyProjectiles = snap.enemyProjectiles;
+  game.boxes = snap.boxes;
+  game.hazards = snap.hazards;
+  game.pendingHazards = snap.pendingHazards || [];
+  game.orbs = snap.orbs;
+  game.effects = snap.effects;
+
+  if (snap.state === 'ended' && resultOverlay.classList.contains('hidden')){
+    showResultOverlay(snap.result || { survived: snap.elapsed, kills: snap.kills, avgLevel: 1, result: 'defeat' });
+  }
+}
+
+// ---- 게스트: 호스트가 보내준 레벨업 카드를 표시 ----
+function showGuestLevelUp(cards){
+  levelupTitle.textContent = 'P2 LEVEL UP';
+  cardsRow.innerHTML = '';
+  cards.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<div class="card-icon">${CARD_ICON[c.iconKey] || ''}</div><span class="rarity">${c.rarity}</span><h3>${c.title}</h3><p>${c.desc}</p>`;
+    div.onclick = () => {
+      netSend({ t:'levelupChoice', id: c.id });
+      levelupOverlay.classList.add('hidden');
+    };
+    cardsRow.appendChild(div);
+  });
+  levelupOverlay.classList.remove('hidden');
+}
+
+// ---- 게스트: 내 로컬 입력(WASD+마우스+Space)을 모아 호스트에게 전송 ----
+function sendGuestInput(){
+  const p2 = game.players[1];
+  const angle = p2 ? Math.atan2(mouse.y - p2.y, mouse.x - p2.x) : 0;
+  netSend({
+    t:'input',
+    up: !!keys['w'], down: !!keys['s'], left: !!keys['a'], right: !!keys['d'],
+    attack: !!keys[' '], angle,
+  });
+}
+
+
+// ---------- 메인 루프 ----------
+let lastT = 0;
+function loop(t){
+  const dt = Math.min(0.05, (t - lastT) / 1000 || 0);
+  lastT = t;
+
+  if (netRole === 'guest'){
+    // 게스트: 시뮬레이션을 직접 돌리지 않고, 입력만 보내고 호스트의 스냅샷으로만 그린다
+    if (game && (game.state === 'playing' || game.state === 'ended')){
+      netInputTimer -= dt;
+      if (netInputTimer <= 0){ sendGuestInput(); netInputTimer = 0.05; } // 초당 약 20회 전송
+    }
+  } else if (game && game.state === 'playing'){
+    // 오프라인(솔로/로컬 협동) 또는 호스트: 기존처럼 전체 시뮬레이션을 실행
+    game.elapsed += dt;
+    game.players.forEach(p => updatePlayerMovement(p, dt));
+    game.players.forEach(p => updateWeapons(p, dt));
+    updateMonsters(dt);
+    updateRevive(dt);
+    updateProjectiles(dt);
+    updateOrbs(dt);
+    updateBoxes(dt);
+    updateEffects(dt);
+    updateSpawns(dt);
+    game.screenFlash = Math.max(0, game.screenFlash - dt);
+
+    if (game.elapsed >= CONFIG.ROUND_SECONDS) endGame('victory');
+  }
+
+  if (netRole === 'host' && game){
+    netBroadcastTimer -= dt;
+    if (netBroadcastTimer <= 0){ netSend(buildSnapshot()); netBroadcastTimer = 0.05; } // 초당 약 20회 전송
+  }
+
+  render();
+  requestAnimationFrame(loop);
+}
+
+// ---------- 렌더링 ----------
+function render(){
+  ctx.fillStyle = '#100a15';
+  ctx.fillRect(0,0,CONFIG.ARENA_W,CONFIG.ARENA_H);
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+  for (let x=0;x<CONFIG.ARENA_W;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,CONFIG.ARENA_H); ctx.stroke(); }
+  for (let y=0;y<CONFIG.ARENA_H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(CONFIG.ARENA_W,y); ctx.stroke(); }
+
+  if (!game){ return; }
+
+  // 스테이지별 배경 색조 (진행 중인 스테이지 분위기를 은은하게 표현)
+  ctx.fillStyle = CONFIG.STAGE.bgTint[(game.stage || 1) - 1] || CONFIG.STAGE.bgTint[0];
+  ctx.fillRect(0, 0, CONFIG.ARENA_W, CONFIG.ARENA_H);
+
+  // 이펙트 (채찍/오라/박스 파괴)
+  for (const e of game.effects){
+    const alpha = e.life / e.maxLife;
+    if (e.type === 'boxbreak'){
+      // 박스가 열릴 때 사방으로 퍼지는 반짝이는 파편 연출
+      ctx.strokeStyle = `rgba(212,175,55,${alpha})`;
+      ctx.lineWidth = 2;
+      const spread = (1 - alpha) * 28;
+      for (let i = 0; i < 8; i++){
+        const ang = (Math.PI*2/8) * i;
+        ctx.beginPath();
+        ctx.moveTo(e.x + Math.cos(ang)*6, e.y + Math.sin(ang)*6);
+        ctx.lineTo(e.x + Math.cos(ang)*(6+spread), e.y + Math.sin(ang)*(6+spread));
+        ctx.stroke();
+      }
+      continue;
+    }
+    ctx.strokeStyle = e.type === 'whip' ? `rgba(200,30,58,${alpha*0.7})` : `rgba(167,139,218,${alpha*0.5})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, Math.PI*2); ctx.stroke();
+  }
+
+  // 경험치 오브
+  for (const o of game.orbs){
+    ctx.fillStyle = '#d4af37';
+    ctx.beginPath(); ctx.arc(o.x, o.y, o.r, 0, Math.PI*2); ctx.fill();
+  }
+
+  // 아이템 박스 (몬스터 처치 시 낮은 확률로 등장, 살짝 위아래로 흔들리며 은은하게 빛난다)
+  for (const b of game.boxes){
+    const bob = Math.sin(game.elapsed*4 + b.x) * 3;
+    const glow = 0.4 + Math.sin(game.elapsed*4 + b.x) * 0.2;
+    ctx.save();
+    ctx.shadowColor = '#d4af37'; ctx.shadowBlur = 10 + glow*10;
+    if (BOX_IMAGE.complete && BOX_IMAGE.naturalWidth > 0){
+      ctx.drawImage(BOX_IMAGE, b.x - 18, b.y - 18 + bob, 36, 36);
+    } else {
+      ctx.fillStyle = '#d4af37';
+      ctx.beginPath(); ctx.arc(b.x, b.y + bob, b.r, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // 오라 장판 (오라 무기를 보유한 동안 계속 표시되는 지속 이미지)
+  for (const p of game.players){
+    if (p.downed) continue;
+    const auraW = p.weapons.find(w => w.type === 'aura');
+    if (!auraW) continue;
+    const radius = CONFIG.WEAPON.aura.radius * (1 + (auraW.level-1)*0.08);
+    const img = EQUIP_IMAGES.aura;
+    if (img && img.complete && img.naturalWidth > 0){
+      ctx.save();
+      ctx.globalAlpha = 0.85;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(game.elapsed * 0.6);
+      ctx.drawImage(img, -radius, -radius, radius*2, radius*2);
+      ctx.restore();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // 자석 효과 오라 (자석 아이템 사용 중인 플레이어 주위에 회전하는 링)
+  for (const p of game.players){
+    if (p.downed || !(p.magnetTimer > 0)) continue;
+    const t = Math.min(1, p.magnetTimer / CONFIG.ITEM_BOX.magnetDuration);
+    const pulse = 30 + Math.sin(game.elapsed*10) * 4;
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.setLineDash([6,6]);
+    ctx.strokeStyle = `rgba(212,175,55,${t*0.85})`;
+    ctx.lineWidth = 2;
+    ctx.rotate(game.elapsed * 3);
+    ctx.beginPath(); ctx.arc(0, 0, pulse, 0, Math.PI*2); ctx.stroke();
+    ctx.rotate(-game.elapsed * 5);
+    ctx.strokeStyle = `rgba(212,175,55,${t*0.5})`;
+    ctx.beginPath(); ctx.arc(0, 0, pulse + 14, 0, Math.PI*2); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  // 몬스터 (SVG 일러스트 이미지, 로딩 전이면 원으로 대체)
+  for (const m of game.monsters){
+    const mIsBoss = isBossType(m.type);
+    // 보스 특수 패턴 예고(텔레그래프) 표시 - 공격이 실제로 나가기 전에 미리 경고한다
+    if (mIsBoss && m.patternState === 'telegraph'){
+      const progress = 1 - (m.telegraphTime / CONFIG.BOSS_ATTACKS[m.currentPattern].telegraph);
+      const alpha = 0.35 + progress * 0.5;
+      if (m.currentPattern === 'slam'){
+        const r = CONFIG.BOSS_ATTACKS.slam.radius * progress;
+        ctx.strokeStyle = `rgba(255,45,77,${alpha})`; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(m.x, m.y, r, 0, Math.PI*2); ctx.stroke();
+      } else if (m.currentPattern === 'burst' || m.currentPattern === 'teleportBurst' || m.currentPattern === 'curseBarrage'){
+        ctx.strokeStyle = `rgba(196,107,255,${alpha})`; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(m.x, m.y, 46 + progress*10, 0, Math.PI*2); ctx.stroke();
+      } else if (m.currentPattern === 'summon' || m.currentPattern === 'summonCaster' || m.currentPattern === 'summonWraith'){
+        ctx.strokeStyle = `rgba(167,139,218,${alpha})`; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(m.x, m.y, 50, 0, Math.PI*2); ctx.stroke();
+      } else if (m.currentPattern === 'charge'){
+        ctx.strokeStyle = `rgba(255,45,77,${alpha})`; ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(m.x, m.y);
+        ctx.lineTo(m.x + m.chargeDir.x*400, m.y + m.chargeDir.y*400);
+        ctx.stroke();
+      } else if (m.currentPattern === 'bloodRail'){
+        const w = CONFIG.BOSS_ATTACKS.bloodRail.width;
+        ctx.save();
+        ctx.translate(m.x, m.y);
+        ctx.rotate(Math.atan2(m.chargeDir.y, m.chargeDir.x));
+        ctx.fillStyle = `rgba(255,45,77,${alpha*0.4})`;
+        ctx.fillRect(0, -w/2, 1200, w);
+        ctx.restore();
+      } else if (m.currentPattern === 'poisonFog' && m.telegraphTarget){
+        ctx.strokeStyle = `rgba(120,200,90,${alpha})`; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(m.telegraphTarget.x, m.telegraphTarget.y, CONFIG.BOSS_ATTACKS.poisonFog.radius * progress, 0, Math.PI*2); ctx.stroke();
+      }
+    }
+    // 레이스 돌진 예고 - 잠깐 멈춰서 붉게 빛난다
+    const isWraithWindup = (m.type === 'wraith' && m.dashState === 'windup');
+
+    const img = MONSTER_IMAGES[m.type];
+    const flash = m.hitFlash || 0;
+    const scale = 1 + (flash / 0.15) * 0.18; // 맞는 순간 살짝 부풀어 오르는 타격감
+    const size = m.radius * 2.6 * scale;
+    if (mIsBoss){ ctx.save(); ctx.shadowColor = '#ff2d4d'; ctx.shadowBlur = 20; }
+    if (isWraithWindup){ ctx.save(); ctx.shadowColor = '#ff2d4d'; ctx.shadowBlur = 16; }
+    if (img && img.complete && img.naturalWidth > 0){
+      if (flash > 0){
+        // 오프스크린 캔버스에서 스프라이트 모양대로만 흰색을 덧씌운다 (사각 박스 방지)
+        drawFlashedImage(ctx, img, m.x - size/2, m.y - size/2, size, Math.min(1, flash / 0.15) * 0.85);
+      } else {
+        ctx.drawImage(img, m.x - size/2, m.y - size/2, size, size);
+      }
+    } else {
+      ctx.fillStyle = flash > 0 ? '#ffffff' : m.color;
+      ctx.beginPath(); ctx.arc(m.x, m.y, m.radius * scale, 0, Math.PI*2); ctx.fill();
+    }
+    if (mIsBoss) ctx.restore();
+    if (isWraithWindup) ctx.restore();
+    // 체력바: 정예/원거리/보스는 항상, 구울은 맞았을 때만 잠깐 표시
+    const showHpBar = m.type !== 'ghoul' || m.hpBarTimer > 0;
+    if (showHpBar){
+      const barAlpha = m.type !== 'ghoul' ? 1 : Math.min(1, m.hpBarTimer / 1.4);
+      const w = m.radius*2;
+      ctx.globalAlpha = barAlpha;
+      ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(m.x-w/2, m.y-m.radius-10, w, 4);
+      ctx.fillStyle = '#c81e3a'; ctx.fillRect(m.x-w/2, m.y-m.radius-10, w*(m.hp/m.maxHp), 4);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // 블러드 레인 등 예고 후 낙하하는 범위 공격의 경고 표시
+  for (const ph of game.pendingHazards){
+    if (ph.spawned) continue;
+    const alpha = ph.delay < 0.6 ? Math.min(0.9, (0.6-ph.delay)/0.6 + 0.2) : 0.2;
+    ctx.strokeStyle = `rgba(255,45,77,${alpha})`; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(ph.x, ph.y, ph.radius, 0, Math.PI*2); ctx.stroke();
+  }
+
+  // 보스 강타/독안개/블러드 레일 등 실제 피해 범위 표시
+  for (const h of game.hazards){
+    if (h.rail){
+      const alpha = Math.max(0, h.life / 0.25) * 0.65;
+      ctx.save();
+      ctx.translate(h.x, h.y);
+      ctx.rotate(h.angle);
+      ctx.fillStyle = `rgba(255,45,77,${alpha})`;
+      ctx.fillRect(0, -h.width/2, h.length, h.width);
+      ctx.restore();
+    } else if (h.lingering){
+      const alpha = 0.2 + Math.sin(game.elapsed*5) * 0.05;
+      ctx.fillStyle = `rgba(120,200,90,${alpha})`;
+      ctx.beginPath(); ctx.arc(h.x, h.y, h.radius, 0, Math.PI*2); ctx.fill();
+    } else {
+      const alpha = Math.max(0, h.life / 0.3) * 0.5;
+      ctx.fillStyle = `rgba(255,45,77,${alpha})`;
+      ctx.beginPath(); ctx.arc(h.x, h.y, h.radius, 0, Math.PI*2); ctx.fill();
+    }
+  }
+
+  // 적 투사체 (저주술사 저주탄, 보스 탄막)
+  for (const pr of game.enemyProjectiles){
+    ctx.fillStyle = pr.color || '#ff2d4d';
+    ctx.beginPath(); ctx.arc(pr.x, pr.y, 5, 0, Math.PI*2); ctx.fill();
+  }
+
+  // 투사체 (플레이어별 색상)
+  for (const pr of game.projectiles){
+    ctx.fillStyle = pr.color || '#cbb6ee';
+    ctx.beginPath(); ctx.arc(pr.x, pr.y, 4, 0, Math.PI*2); ctx.fill();
+  }
+
+  // 플레이어 (몸통은 좌우 반전만, 총은 조준 방향으로 자유롭게 회전 - 회전 이음매로 인한 스핀 현상 방지)
+  for (const p of game.players){
+    ctx.globalAlpha = p.downed ? 0.35 : 1;
+    const img = PLAYER_IMAGES[p.id];
+    const flash = p.hitFlash || 0;
+    const scale = 1 + (flash / 0.15) * 0.12;
+    const size = p.radius * 2.9 * scale;
+    const angle = Math.atan2(p.facing.y, p.facing.x);
+
+    // 몸통: 회전시키지 않고 왼쪽을 볼 때만 좌우로 뒤집는다 (두 가지 상태만 존재해 스핀이 생기지 않는다)
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    if (p.facing.x < 0) ctx.scale(-1, 1);
+    if (img && img.complete && img.naturalWidth > 0){
+      if (flash > 0){
+        drawFlashedImage(ctx, img, -size/2, -size/2, size, Math.min(1, flash / 0.15) * 0.85);
+      } else {
+        ctx.drawImage(img, -size/2, -size/2, size, size);
+      }
+    } else {
+      ctx.fillStyle = flash > 0 ? '#ffffff' : p.color;
+      ctx.beginPath(); ctx.arc(0, 0, p.radius * scale, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
+
+    // 총: 몸통과 별개로, 조준 방향을 향해 자유롭게(360도) 회전한다
+    if (!p.downed){
+      ctx.save();
+      ctx.translate(p.x, p.y - 4);
+      ctx.rotate(angle);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(4, -4, 24, 8);
+      ctx.beginPath(); ctx.arc(30, 0, 5, 0, Math.PI*2); ctx.fillStyle = '#2b0f2f'; ctx.fill();
+      ctx.restore();
+    }
+
+    ctx.globalAlpha = 1;
+    if (p.downed && p.reviveProgress > 0){
+      ctx.strokeStyle = '#d4af37'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.radius+8, -Math.PI/2, -Math.PI/2 + (p.reviveProgress/CONFIG.PLAYER.reviveTime)*Math.PI*2); ctx.stroke();
+    }
+  }
+
+  // 수리검 / 드론 (플레이어 주위를 도는 장비, 캐릭터 위에 그린다)
+  for (const p of game.players){
+    if (p.downed) continue;
+    const shuW = p.weapons.find(w => w.type === 'shuriken');
+    if (shuW){
+      const base = CONFIG.WEAPON.shuriken;
+      const radius = base.radius * (1 + (shuW.level-1)*0.04);
+      const count = base.count + (shuW.level - 1);
+      const img = EQUIP_IMAGES.shuriken;
+      for (let i=0; i<count; i++){
+        const ang = game.elapsed * base.spinSpeed + i * (Math.PI*2/count);
+        const sx = p.x + Math.cos(ang) * radius;
+        const sy = p.y + Math.sin(ang) * radius;
+        const s = 20;
+        ctx.save();
+        ctx.translate(sx, sy);
+        ctx.rotate(game.elapsed * 6); // 수리검 자체 회전
+        if (img && img.complete && img.naturalWidth > 0){
+          ctx.drawImage(img, -s/2, -s/2, s, s);
+        } else {
+          ctx.fillStyle = '#ece4d3'; ctx.beginPath(); ctx.arc(0,0,6,0,Math.PI*2); ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+    const droneW = p.weapons.find(w => w.type === 'drone');
+    if (droneW && droneW.hx !== undefined){
+      const img = EQUIP_IMAGES.drone;
+      const s = 30;
+      ctx.strokeStyle = 'rgba(212,175,55,0.35)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(droneW.hx, droneW.hy); ctx.stroke();
+      if (img && img.complete && img.naturalWidth > 0){
+        ctx.drawImage(img, droneW.hx - s/2, droneW.hy - s/2, s, s);
+      } else {
+        ctx.fillStyle = '#d4af37'; ctx.beginPath(); ctx.arc(droneW.hx, droneW.hy, 8, 0, Math.PI*2); ctx.fill();
+      }
+    }
+  }
+
+  // 폭탄 아이템 사용 시 화면 전체가 깜박이는 연출
+  if (game.screenFlash > 0){
+    const a = Math.min(1, game.screenFlash / 0.35);
+    ctx.fillStyle = `rgba(255,80,60,${a*0.55})`;
+    ctx.fillRect(0, 0, CONFIG.ARENA_W, CONFIG.ARENA_H);
+  }
+
+  // ---- HUD DOM 업데이트 ----
+  const p1 = game.players[0], p2 = game.players[1];
+  hpP1.style.width = Math.max(0,(p1.hp/p1.maxHp*100)) + '%';
+  lvP1.textContent = 'Lv' + p1.level;
+  downFlagP1.style.display = p1.downed ? 'block' : 'none';
+  downFlagP1.style.left = p1.x + 'px'; downFlagP1.style.top = p1.y + 'px';
+
+  if (p2){
+    hpP2.style.width = Math.max(0,(p2.hp/p2.maxHp*100)) + '%';
+    lvP2.textContent = 'Lv' + p2.level;
+    downFlagP2.style.display = p2.downed ? 'block' : 'none';
+    downFlagP2.style.left = p2.x + 'px'; downFlagP2.style.top = p2.y + 'px';
+  }
+
+  timerChip.textContent = fmtTime(CONFIG.ROUND_SECONDS - game.elapsed);
+  killCountEl.innerHTML = game.kills + ' KILLS<span class="small">TEAM SCORE</span>';
+  stageLabel.textContent = 'STAGE ' + game.stage + ' · ' + CONFIG.STAGE.names[game.stage - 1];
+
+  // 보스 전용 대형 체력바 (화면 상단, 보스가 있을 때만 표시)
+  const boss = game.monsters.find(m => isBossType(m.type));
+  if (boss){
+    bossHpWrap.classList.remove('hidden');
+    bossHpFill.style.width = Math.max(0, (boss.hp / boss.maxHp * 100)) + '%';
+    bossHpLabel.textContent = (CONFIG.STAGE.bossNames[boss.type] || boss.type).toUpperCase();
+  } else {
+    bossHpWrap.classList.add('hidden');
+  }
+}
+
+// ---------- 버튼 이벤트 ----------
+function resetNetworking(){
+  if (conn){ try{ conn.close(); } catch(e){} conn = null; }
+  if (peer){ try{ peer.destroy(); } catch(e){} peer = null; }
+  netRole = null;
+  netStatus.classList.add('hidden');
+  joinPanel.classList.add('hidden');
+}
+
+document.getElementById('btnSolo').onclick = () => { resetNetworking(); startGame('solo'); };
+document.getElementById('btnCoop').onclick = () => { resetNetworking(); startGame('coop'); };
+btnHost.onclick = () => { resetNetworking(); startHosting(); };
+btnJoinShow.onclick = () => { joinPanel.classList.toggle('hidden'); };
+btnJoinGo.onclick = () => {
+  const code = joinCodeInput.value.trim();
+  if (code.length !== 4){ showNetStatus('4자리 방 코드를 입력해주세요.', true); return; }
+  resetNetworking();
+  joinRoom(code);
+};
+document.getElementById('btnRetry').onclick = () => {
+  if (netRole === 'host'){
+    startGame('coop', 'host');
+    netSend({ t:'start' });
+  } else if (netRole === 'guest'){
+    showNetStatus('호스트가 다시 시작하기를 기다리는 중...');
+  } else {
+    startGame(game.mode);
+  }
+};
+document.getElementById('btnMenu').onclick = () => {
+  resultOverlay.classList.add('hidden');
+  menuOverlay.classList.remove('hidden');
+  resetNetworking();
+  game = null;
+};
+
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
