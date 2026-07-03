@@ -70,6 +70,12 @@
     font-size: 24px;
     flex-shrink: 0;
   }
+  .crow-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 50%;
+  }
   .header-info { flex: 1; min-width: 0; }
   .header-info .name {
     font-size: 16px; font-weight: 700; color: var(--gold);
@@ -202,7 +208,7 @@
   }
   .chips::-webkit-scrollbar { height: 0; }
   .chip {
-    flex: 1 1 0;              /* 칩 6개가 줄 전체를 균등하게 나눠 가져 빈 공간 없음 */
+    flex: 1 1 auto;           /* 줄 전체를 채우되, 글자가 긴 칩은 그만큼 넓게 */
     text-align: center;
     background: transparent;
     border: 1px solid var(--border-soft);
@@ -253,10 +259,52 @@
 </head>
 <body>
 
+<!-- 크로우 아바타 원본 그림 (한 번만 정의하고 <use>로 재사용)
+     콘셉트: 갓을 쓰고 금 고리를 단 까마귀 상인 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="crowBg" cx="35%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#4a3d75"/>
+      <stop offset="100%" stop-color="#221a3c"/>
+    </radialGradient>
+    <g id="crow-face">
+      <!-- 배경 원 -->
+      <circle cx="50" cy="50" r="50" fill="url(#crowBg)"/>
+      <!-- 가슴: 점박이 흰 배 -->
+      <ellipse cx="48" cy="88" rx="27" ry="18" fill="#241d33"/>
+      <ellipse cx="48" cy="93" rx="19" ry="12" fill="#cfc6de"/>
+      <circle cx="41" cy="89" r="1.7" fill="#241d33"/>
+      <circle cx="49" cy="91" r="1.7" fill="#241d33"/>
+      <circle cx="57" cy="89" r="1.7" fill="#241d33"/>
+      <!-- 머리 -->
+      <ellipse cx="50" cy="58" rx="24" ry="21" fill="#17121f"/>
+      <ellipse cx="42" cy="50" rx="10" ry="7" fill="#2a2140" opacity="0.55"/>
+      <!-- 부리 -->
+      <path d="M68 52 Q88 57 91 62 Q84 68 67 66 Q71 59 68 52 Z" fill="#0d0a14"/>
+      <path d="M68 52 Q88 57 91 62 L71 60 Z" fill="#2a2140"/>
+      <!-- 눈 -->
+      <circle cx="60" cy="52" r="6" fill="#f4efe2"/>
+      <circle cx="62" cy="53" r="3" fill="#17121f"/>
+      <circle cx="63.2" cy="51.3" r="1.1" fill="#ffffff"/>
+      <!-- 금 고리 3개 -->
+      <g fill="none" stroke="#e8b84b" stroke-width="2.6">
+        <circle cx="34" cy="52" r="4.5"/>
+        <circle cx="30" cy="62" r="4.5"/>
+        <circle cx="34" cy="72" r="4.5"/>
+      </g>
+      <!-- 갓 (전통 모자) -->
+      <path d="M31 36 L37 13 Q50 9 63 13 L69 36 Z" fill="#0b0812" opacity="0.96"/>
+      <ellipse cx="50" cy="36" rx="34" ry="7" fill="#0b0812" opacity="0.92"/>
+      <ellipse cx="50" cy="36" rx="34" ry="7" fill="none" stroke="#3a3158" stroke-width="1"/>
+      <path d="M37 13 Q50 9 63 13" fill="none" stroke="#3a3158" stroke-width="1"/>
+    </g>
+  </defs>
+</svg>
+
 <div class="chat-frame">
   <!-- 헤더: 캐릭터 정보 + 초기화 버튼 -->
   <div class="chat-header">
-    <div class="avatar">🦅</div>
+    <div class="avatar"><svg class="crow-svg" viewBox="0 0 100 100"><use href="#crow-face"/></svg></div>
     <div class="header-info">
       <div class="name">크로우 (Crow) 💎</div>
       <div class="desc">기억과 행운을 거래하는 영리한 까마귀 상인</div>
@@ -284,7 +332,7 @@
 
 // 첫 인사말 (챗봇을 처음 열었을 때)
 const GREETING =
-  '까악! 반짝이는 영혼을 가진 손님이 찾아왔군. 난 행운과 기억을 파는 만물상, 크로우라구! 🦅 오늘은 나랑 어떤 반짝이는 거래를 해볼 텐가? 자, 어서 주머니를 열어보라구!';
+  '까악! 반짝이는 영혼을 가진 손님이 찾아왔군. 난 행운과 기억을 파는 만물상, 크로우라구! 🐦‍⬛ 오늘은 나랑 어떤 반짝이는 거래를 해볼 텐가? 자, 어서 주머니를 열어보라구!';
 
 // 초기화 버튼을 눌렀을 때 (첫 인사와 다른 전용 대사)
 const RESET_MESSAGE =
@@ -302,7 +350,7 @@ const RESPONSES = [
   {
     category: '인사',
     keywords: ['안녕', 'hi', '하이', '반가워', 'hello', '헬로'],
-    reply: '까악! 새로운 단골손님이 오셨군. 여기선 좋은 기억과 행운을 거래한다구. 들어와, 들어와! 🦅',
+    reply: '까악! 새로운 단골손님이 오셨군. 여기선 좋은 기억과 행운을 거래한다구. 들어와, 들어와! 🐦‍⬛',
   },
   {
     category: '이름 소개',
@@ -315,9 +363,11 @@ const RESPONSES = [
     reply: '네가 바라는 행운의 길을 찾아내거나, 쓸모없는 나쁜 기억을 대신 먹어 치우는 게 내 전문이라구! 까악!',
   },
   {
-    category: '고민 상담',
-    keywords: ['고민', '힘들', '속상', '우울', '슬퍼', '지쳤'],
-    reply: '고민이라… 인간들의 고민은 꽤 묵직한 가치가 있지. 까악, 나한테 털어놓고 가벼운 행운 하나 가져가겠어? 🍀',
+    category: '고민 상담 (감정 쓰레기통)',
+    keywords: ['고민', '힘들', '속상', '우울', '슬퍼', '지쳤', '망했', '깨졌', '스트레스'],
+    // 1턴: 고민을 물어보고 → 다음 입력(고민 내용)에 '쪼아먹기' 응답 (2턴 대화)
+    reply: '고민이라… 인간들의 고민은 꽤 묵직한 가치가 있지. 까악, 어떤 고민인지 나한테 털어놔 보라구! 나쁜 기억을 통째로 쪼아 먹는 게 내 전문이니까! 🍀',
+    action: 'worry',
   },
   {
     category: '칭찬받았을 때',
@@ -361,6 +411,29 @@ const RESPONSES = [
     keywords: ['행운', '뽑기', '운세', '점 봐', '오늘 운', '타로'],
     reply: '까악! 운세 거래 성립! 대가는 손님의 비밀 하나로 받아두지. 자, 내 낡은 타로 뭉치에서 운명의 카드를 한 장 뽑아볼 테니 잠깐 기다리라구… 🔮',
     action: 'tarot', // 이 규칙이 걸리면 타로 API 호출로 이어짐
+  },
+
+  // ---------- 생활 정보 카테고리 (2차 확장) ----------
+  {
+    category: '밸런스 게임', // "짜장 vs 짬뽕" — 메뉴 추천보다 먼저 검사해야 함 ("뭐 먹지"가 섞여도 양자택일 우선)
+    keywords: ['vs', '아니면', '골라줘', '선택해'],
+    reply: '', action: 'balance',
+  },
+  {
+    category: '시간/날짜',
+    keywords: ['몇 시', '몇시', '시간', '날짜', '며칠', '요일'],
+    reply: '', action: 'time',
+  },
+  {
+    category: '날씨',
+    keywords: ['날씨', '기온', '더워', '추워', '더운', '추운'],
+    reply: '까악! 잠깐 기다리라구. 정찰 까마귀들을 하늘로 날려서 알아봐 주지! 🌤️',
+    action: 'weather',
+  },
+  {
+    category: '메뉴 추천',
+    keywords: ['뭐 먹', '메뉴', '배고', '야식', '먹을 거', '먹을거'],
+    reply: '', action: 'menu',
   },
 ];
 
@@ -446,7 +519,265 @@ const AVOID_COLORS = [
 ];
 
 // 추천 키워드 칩 목록 (사용자가 탭 한 번으로 대화 시작 가능)
-const SUGGESTED_CHIPS = ['안녕', '넌 누구야?', '특기가 뭐야?', '운세 봐줘', '심심해', '고민 있어'];
+const SUGGESTED_CHIPS = ['안녕', '운세 봐줘', '날씨 알려줘', '메뉴 추천', '심심해', '고민 있어'];
+
+/* ============================================================
+   1-3. 생활 정보 기능 데이터 (시간/메뉴/밸런스 게임/날씨)
+   ============================================================ */
+
+// 시간대별 크로우의 한마디
+const TIME_BANDS = [
+  { from: 5,  to: 9,  comment: '부지런한 새가 반짝이는 벌레를 잡는 법! 오늘도 좋은 거래 하라구!' },
+  { from: 9,  to: 12, comment: '오전의 맑은 눈으로 반짝이는 기회를 찾아보라구!' },
+  { from: 12, to: 14, comment: '슬슬 배를 채워야 오후 거래에 힘이 나지. 밥은 먹었어?' },
+  { from: 14, to: 18, comment: '슬슬 반짝이는 퇴근/하교 시간이 다가오는군!' },
+  { from: 18, to: 21, comment: '하루 동안 주운 반짝이는 것들을 정리할 시간이라구!' },
+  { from: 21, to: 24, comment: '밤은 까마귀의 시간! 하지만 손님은 슬슬 잘 준비를 하라구.' },
+  { from: 0,  to: 5,  comment: '까악?! 이 시간엔 자야 내일 행운을 주울 수 있다구! 어서 눈 붙이라구!' },
+];
+
+function timeReply() {
+  const now = new Date();
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+  const h = now.getHours();
+  const band = TIME_BANDS.find((b) => h >= b.from && h < b.to);
+  const ampm = h < 12 ? '오전' : '오후';
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return '까악! 지금은 ' + (now.getMonth() + 1) + '월 ' + now.getDate() + '일 ' +
+    days[now.getDay()] + '요일, ' + ampm + ' ' + h12 + '시 ' + now.getMinutes() + '분이라구! ⏰ ' + band.comment;
+}
+
+// 메뉴 추천 — 까마귀의 시선(반짝임, 잡식성)으로 능청스럽게
+const MENUS = [
+  { name: '삼겹살', line: '기름기가 자르르 돌아 반짝반짝 빛나는 삼겹살! 불판 위에서 구워지는 소리가 꼭 동전 부딪히는 소리 같다구!' },
+  { name: '치킨', line: '황금빛 튀김옷을 입은 치킨! …같은 새로서 마음이 좀 복잡하지만, 맛 하나는 보증한다구.' },
+  { name: '라면', line: '꼬불꼬불 황금빛 면발! 김치 한 조각 올리면 그게 바로 서민의 보물이라구.' },
+  { name: '초밥', line: '반들반들 윤기가 흐르는 초밥! 특히 연어의 주황빛은 거의 보석 수준이라구, 까악!' },
+  { name: '김치찌개', line: '보글보글 끓는 새빨간 국물! 뜨끈한 게 나쁜 기억까지 싹 녹여준다구.' },
+  { name: '떡볶이', line: '루비처럼 새빨간 떡볶이! 매콤한 게 정신이 번쩍 들어서 거래하기 딱 좋은 상태가 된다구.' },
+  { name: '국밥', line: '든든한 국밥 한 그릇! 가성비로 치면 이만한 거래가 없어. 확실히 남는 장사라구, 까악!' },
+  { name: '마라탕', line: '얼얼한 마라탕! 혀가 마비되면 오늘의 고민도 같이 마비된다구, 까악!' },
+  { name: '김밥', line: '알록달록한 보석들을 김으로 돌돌 만 김밥! 한 줄에 온갖 반짝이는 게 다 들었다구.' },
+  { name: '피자', line: '치즈가 쭉쭉 늘어나는 피자! 황금빛 치즈는 먹을 수 있는 금이라구, 까악!' },
+];
+
+function menuReply() {
+  const pick = MENUS[Math.floor(Math.random() * MENUS.length)];
+  return '까악! 내 부리를 걸고 추천하는 오늘의 메뉴는… "' + pick.name + '"! 🍽️ ' + pick.line;
+}
+
+// 고민 내용을 들은 뒤(2턴째) 나오는 '나쁜 기억 쪼아먹기' 응답
+const WORRY_EAT_REPLIES = [
+  '카악?! 그 꿀꿀한 기억은 내가 홀라당 쪼아 먹어 버렸으니 걱정 말라구! 액땜했다 치고 내일은 더 반짝이는 행운이 굴러들어 올 거야. 기운 내서 나랑 다음 거래나 하자구, 단골손님!',
+  '까악… 듣고 보니 꽤 묵직한 기억이군. 하지만 늦었어, 이미 내 배 속이라구! 꿀꺽! 이제 그 빈자리엔 반짝이는 행운이 들어설 차례야!',
+  '그런 일이 있었군. 까악, 그 나쁜 기억은 방금 내가 맛있게 먹어 치웠다구! 대가로 행운의 깃털 하나를 손님 주머니에 몰래 넣어뒀으니 나중에 확인해보라구! 🪶',
+];
+
+// 밸런스 게임 — 영악한 까마귀의 기준으로 하나를 골라줌
+// 주제별 카테고리: 질문 속 키워드로 주제를 감지해 그에 맞는 이유를 댐
+const BALANCE_TOPICS = [
+  {
+    topic: '음식 대결',
+    keywords: ['먹', '맛', '짜장', '짬뽕', '치킨', '피자', '탕수육', '떡볶이', '라면', '분식', '한식', '중식', '일식', '양식'],
+    reasons: [
+      '음식은 기름기가 자르르 흘러서 더 반짝이는 쪽이 이기는 법이라구!',
+      '내 부리 감정 결과, 그쪽에서 더 맛있는 냄새가 난다구. 까마귀 코는 못 속여!',
+      '고민될 땐 더 뜨끈한 쪽이 정답이야. 식은 음식은 식은 거래처럼 매력이 없다구.',
+    ],
+  },
+  {
+    topic: '외출 vs 집',
+    keywords: ['나갈', '나가', '외출', '약속', '집에', '집에서', '쉴까', '집콕', '밖에'],
+    pickPattern: /나가|나갈|외출|약속|밖/, // 크로우는 무조건 바깥 편!
+    reasons: [
+      '집에만 있으면 길가에 떨어진 반짝이는 동전이나 보석을 주울 기회가 완전히 사라지잖아? 당장 주머니 챙겨서 나가라구!',
+      '바깥세상엔 반짝이는 게 널렸다구. 둥지에만 있는 새는 보물을 못 모으는 법이야!',
+    ],
+  },
+  {
+    topic: '살까 말까',
+    keywords: ['살까', '지를까', '질러', '구매', '살지', '사도 될까'],
+    reasons: [
+      '장부를 튕겨보니 그쪽이 더 남는 거래라구. 난 밑지는 장사는 절대 안 시켜!',
+      '반짝이는 물건 앞에서 망설이는 건 죄악이지만… 손님 지갑 사정은 손님이 제일 잘 알 거라구, 까악!',
+    ],
+  },
+  {
+    topic: '할까 말까 (공부·일·휴식)',
+    keywords: ['공부', '숙제', '일할', '운동', '게임', '휴식', '잘까', '놀까', '할까'],
+    reasons: [
+      '뭘 하든 확실하게 하는 쪽이 남는 장사라구. 어중간한 게 제일 손해야!',
+      '지금 그쪽을 골라야 나중에 "후회"라는 이자가 안 붙는다구, 까악!',
+    ],
+  },
+];
+
+// 주제가 감지되지 않을 때 쓰는 범용 이유
+const BALANCE_REASONS = [
+  '내 부리가 그쪽으로 확 끌렸다구. 까마귀의 직감은 금값이야!',
+  '장부를 튕겨보니 그쪽이 더 남는 장사군. 난 밑지는 선택은 안 시킨다구!',
+  '그쪽이 훨씬 더 반짝여 보인다구. 반짝이는 쪽이 언제나 정답이야!',
+  '어젯밤 별자리가 그쪽을 가리키고 있었다구. 이건 운명이야, 까악!',
+];
+
+// "A vs B" / "A 아니면 B" 문장에서 선택지 두 개를 추출 (실패 시 null)
+function parseBalance(text) {
+  const cleaned = text.replace(/[?!.~]/g, '');
+  let m = cleaned.match(/(.+?)\s+(?:vs|VS|Vs|vS)\s+(.+)/) || cleaned.match(/(.+?)(?:vs|VS)(.+)/);
+  if (!m) m = cleaned.match(/(.+?)\s*아니면\s*(.+)/);
+  if (!m) return null;
+  // 뒤에 붙는 "중에 뭐가 나아" 같은 질문 꼬리 제거
+  const tail = /\s*(중에|중)?\s*(뭐|무엇|어느|어떤|골라|선택|추천|낫|더).*$/;
+  const a = m[1].replace(tail, '').trim();
+  const b = m[2].replace(tail, '').trim();
+  if (!a || !b) return null;
+  return [a, b];
+}
+
+function balanceReply(text) {
+  const pair = parseBalance(text);
+  if (!pair) {
+    return '까악? 고르는 건 내 전문이지만, "짜장 vs 짬뽕"처럼 저울에 올릴 두 개를 나란히 줘야 감정을 하지! 다시 물어보라구!';
+  }
+  // 질문 속 키워드로 주제를 감지 → 주제에 맞는 이유 풀 사용
+  const topic = BALANCE_TOPICS.find((t) => t.keywords.some((k) => text.includes(k)));
+  let choice;
+  if (topic && topic.pickPattern) {
+    // 주제에 크로우의 확고한 취향이 있으면 그쪽을 선택 (예: 외출파)
+    choice = pair.find((p) => topic.pickPattern.test(p)) || pair[Math.floor(Math.random() * 2)];
+  } else {
+    choice = pair[Math.floor(Math.random() * 2)];
+  }
+  const pool = topic ? topic.reasons : BALANCE_REASONS;
+  const reason = pool[Math.floor(Math.random() * pool.length)];
+  return '까악! 고민할 것도 없군. 내 선택은… "' + choice + '"! ⚖️ ' + reason;
+}
+
+/* ============================================================
+   1-4. 날씨 기능 데이터 (Open-Meteo API — 무료, 키 불필요)
+   ============================================================ */
+
+const GEO_API = 'https://geocoding-api.open-meteo.com/v1/search';
+const FORECAST_API = 'https://api.open-meteo.com/v1/forecast';
+
+const WEATHER_ERROR =
+  '까악… 정찰 까마귀들이 길을 잃었나 보군. 하늘 소식이 안 들려온다구. 바람이 잦아들면 다시 물어보라구! 🌫️';
+
+// WMO 날씨 코드 → 한국어 설명 + 크로우의 한마디
+const WEATHER_DESC = [
+  { codes: [0], desc: '구름 한 점 없이 맑음', comment: '햇빛에 내 깃털이 보석처럼 반짝이는 날이라구! ☀️' },
+  { codes: [1, 2], desc: '대체로 맑음', comment: '구름 사이 햇살이 꼭 스포트라이트 같군. 나가서 반짝이는 거라도 주워오라구! 🌤️' },
+  { codes: [3], desc: '흐림', comment: '하늘이 꼭 내 깃털 색이군. 꽤 멋진 날이라구! ☁️' },
+  { codes: [45, 48], desc: '안개', comment: '안개 속은 보물 숨기기 딱 좋지. 하지만 손님은 앞을 잘 보고 다니라구! 🌫️' },
+  { codes: [51, 53, 55, 56, 57], desc: '이슬비', comment: '깃털이 살짝 촉촉해지는 정도야. 우산은 손님 자유라구. 🌦️' },
+  { codes: [61, 63, 65, 66, 67], desc: '비', comment: '비 오는 날엔 지렁이가… 아니, 아무것도 아니라구! 우산 꼭 챙기라구! ☔' },
+  { codes: [71, 73, 75, 77], desc: '눈', comment: '하늘에서 은화가 쏟아지는군! 길이 미끄러우니 조심하라구! ❄️' },
+  { codes: [80, 81, 82], desc: '소나기', comment: '갑자기 쏟아지는 비는 나도 질색이야. 피할 처마를 미리 봐두라구! 🌧️' },
+  { codes: [85, 86], desc: '소낙눈', comment: '눈보라 치는 날엔 둥지가 최고지. 따뜻하게 입으라구! ⛄' },
+  { codes: [95, 96, 99], desc: '뇌우', comment: '천둥 치는 날엔 하늘 장사도 쉬는 날이야. 손님도 실내에 있으라구! ⚡' },
+];
+
+function describeWeather(code) {
+  return WEATHER_DESC.find((w) => w.codes.includes(code))
+    || { desc: '정체불명의 하늘', comment: '이런 하늘은 내 장부에도 없군, 까악!' };
+}
+
+// 입력 문장에서 지역명 추출 (없으면 null → 크로우가 되물음)
+// ① 등록된 지역 키워드(KNOWN_CITIES)가 문장 어디에 있든 인식: "날씨 알려줘 부천" ⭕
+// ② 미등록 지역은 "지역명 + 날씨/기온" 패턴으로 추출: "목포 날씨 어때?" ⭕
+function parseCity(text) {
+  for (const name of Object.keys(KNOWN_CITIES)) {
+    if (text.includes(name)) return name;
+  }
+  const m = text.match(/([가-힣a-zA-Z]+)\s*(?:의)?\s*(?:날씨|기온)/);
+  const notCity = ['오늘', '지금', '현재', '요즘', '내일', '모레', '이', '그', '저', '우리'];
+  if (m && !notCity.includes(m[1])) return m[1];
+  return null;
+}
+
+// 주요 도시 좌표 내장 테이블 — API 없이 즉시 응답 (지오코딩 API의 축약 지명 미지원·속도 제한 대비)
+const KNOWN_CITIES = {
+  '서울': [37.5665, 126.9780], '부산': [35.1796, 129.0756], '인천': [37.4563, 126.7052],
+  '대구': [35.8714, 128.6014], '대전': [36.3504, 127.3845], '광주': [35.1595, 126.8526],
+  '울산': [35.5384, 129.3114], '세종': [36.4800, 127.2890], '수원': [37.2636, 127.0286],
+  '부천': [37.4989, 126.7831], '고양': [37.6584, 126.8320], '용인': [37.2411, 127.1776],
+  '성남': [37.4200, 127.1265], '창원': [35.2281, 128.6811], '전주': [35.8242, 127.1480],
+  '청주': [36.6424, 127.4890], '천안': [36.8151, 127.1139], '제주': [33.4996, 126.5312],
+  '춘천': [37.8813, 127.7298], '강릉': [37.7519, 128.8761], '포항': [36.0190, 129.3435],
+  '안산': [37.3219, 126.8309], '안양': [37.3943, 126.9568], '평택': [36.9921, 127.1129],
+};
+
+// 지오코딩 1회 조회 (실패는 빈 배열로 흡수)
+async function fetchGeo(name) {
+  try {
+    const r = await fetch(GEO_API + '?name=' + encodeURIComponent(name) + '&count=3&language=ko');
+    if (!r.ok) return [];
+    return ((await r.json()).results || [])
+      .filter((p) => !p.country_code || p.country_code === 'KR');
+  } catch (e) {
+    return [];
+  }
+}
+
+// 지오코딩: DB가 정식 행정명만 정확히 찾으므로 ("부천"❌ / "부천시"⭕)
+// 접미사 변형을 순차 조회하고, 도시급(인구 5만 이상) 결과가 나오면 조기 종료.
+// 간헐적 요청 실패에 대비해 전부 비면 한 번 재시도.
+async function geocodeCity(city) {
+  // 1단계: 내장 테이블에 있으면 즉시 반환
+  const base = city.replace(/(특별|광역)?(시|자치시|자치도|도)$/, '');
+  const hit = KNOWN_CITIES[city] || KNOWN_CITIES[base];
+  if (hit) return { name: base || city, latitude: hit[0], longitude: hit[1] };
+
+  // 2단계: 지오코딩 API 조회
+  const variants = [city + '시', city, city + '광역시', city + '특별시'];
+  let found = [];
+  for (const v of variants) {
+    found = found.concat(await fetchGeo(v));
+    found.sort((a, b) => (b.population || 0) - (a.population || 0));
+    if (found[0] && (found[0].population || 0) >= 50000) return found[0];
+  }
+  if (!found.length) {
+    for (const v of variants) found = found.concat(await fetchGeo(v));
+    found.sort((a, b) => (b.population || 0) - (a.population || 0));
+  }
+  return found[0] || null;
+}
+
+// 날씨 전체 연출: 지역명이 있으면 바로 정찰, 없으면 되물어서 대화를 이어감 (2턴)
+function weatherReading(text, introText) {
+  const city = parseCity(text);
+  if (!city) {
+    pendingWeather = true; // 다음 입력을 지역명 답변으로 받음
+    botReplyWithTyping('까악! 어느 동네 하늘을 정찰해줄까? 도시 이름을 말해보라구! (예: 서울, 부천, 부산…) 🗺️');
+    return;
+  }
+  botReplyWithTyping(introText);
+  runWeather(city, 1500);
+}
+
+// 실제 날씨 조회·보고 (city는 확정된 지역명)
+function runWeather(city, delay) {
+  setTimeout(async () => {
+    const row = showTypingBubble();
+    try {
+      const spot = await geocodeCity(city);
+      if (!spot) {
+        resolveBubble(row, '까악? "' + city + '"라는 동네는 내 하늘 지도에 없는데? 도시 이름을 다시 확인해보라구!');
+        return;
+      }
+      const res = await fetch(FORECAST_API + '?latitude=' + spot.latitude +
+        '&longitude=' + spot.longitude + '&current=temperature_2m,weather_code&timezone=auto');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const wx = await res.json();
+      const temp = Math.round(wx.current.temperature_2m);
+      const info = describeWeather(wx.current.weather_code);
+      resolveBubble(row, '까악! 정찰 보고 도착! 지금 ' + spot.name + ' 하늘은 "' + info.desc +
+        '", 기온은 ' + temp + '도라구! 🌡️ ' + info.comment);
+    } catch (e) {
+      resolveBubble(row, WEATHER_ERROR); // 오프라인/서버 오류에도 캐릭터답게
+    }
+  }, delay || 600);
+}
 
 /* ============================================================
    2. 챗봇 동작 로직
@@ -456,6 +787,10 @@ const chatBody = document.getElementById('chatBody');
 const userInput = document.getElementById('userInput');
 const chipsEl = document.getElementById('chips');
 
+// 이어지는 대화(2턴) 상태
+let pendingWorry = false;   // 고민을 물어본 뒤, 다음 입력을 '고민 내용'으로 받는 중
+let pendingWeather = false; // 지역을 물어본 뒤, 다음 입력을 '지역명'으로 받는 중
+
 // 말풍선 한 개를 대화 영역에 추가
 function addBubble(text, who) {
   const row = document.createElement('div');
@@ -464,7 +799,7 @@ function addBubble(text, who) {
   if (who === 'bot') {
     const av = document.createElement('div');
     av.className = 'mini-avatar';
-    av.textContent = '🦅';
+    av.innerHTML = '<svg class="crow-svg" viewBox="0 0 100 100"><use href="#crow-face"/></svg>';
     row.appendChild(av);
   }
 
@@ -483,7 +818,7 @@ function showTypingBubble() {
   const row = document.createElement('div');
   row.className = 'row bot';
   row.innerHTML =
-    '<div class="mini-avatar">🦅</div>' +
+    '<div class="mini-avatar"><svg class="crow-svg" viewBox="0 0 100 100"><use href="#crow-face"/></svg></div>' +
     '<div class="bubble"><span class="typing"><span></span><span></span><span></span></span></div>';
   chatBody.appendChild(row);
   chatBody.scrollTop = chatBody.scrollHeight;
@@ -526,9 +861,14 @@ function findRule(input) {
 }
 
 // 규칙의 응답 문자열만 필요할 때 (매칭 실패 시 회피 대사 랜덤)
+// reply가 배열이면 매번 랜덤으로 하나를 골라 반복 대화에도 신선함 유지
 function findReply(input) {
   const rule = findRule(input);
-  if (rule) return rule.reply;
+  if (rule) {
+    return Array.isArray(rule.reply)
+      ? rule.reply[Math.floor(Math.random() * rule.reply.length)]
+      : rule.reply;
+  }
   return FALLBACK_REPLIES[Math.floor(Math.random() * FALLBACK_REPLIES.length)];
 }
 
@@ -631,16 +971,49 @@ function sendMessage() {
   userInput.focus();
 
   const rule = findRule(text);
-  if (rule && rule.action === 'tarot') {
-    tarotReading(rule.reply);   // 운세 키워드면 타로 API 연동 흐름으로
+
+  // ── 이어지는 대화(2턴) 처리 ──
+  // 고민을 물어본 상태: 다음 입력(다른 규칙에 안 걸리거나 고민 계열이면)을 고민 내용으로 받아 쪼아먹기 응답
+  if (pendingWorry && (!rule || rule.action === 'worry')) {
+    pendingWorry = false;
+    botReplyWithTyping(WORRY_EAT_REPLIES[Math.floor(Math.random() * WORRY_EAT_REPLIES.length)]);
+    return;
+  }
+  // 지역을 물어본 상태: 다음 입력이 다른 규칙에 안 걸리면 지역명 답변으로 간주
+  if (pendingWeather && !rule) {
+    pendingWeather = false;
+    const word = text.match(/[가-힣a-zA-Z]+/);
+    runWeather(word ? word[0] : text);
+    return;
+  }
+  // 다른 주제로 넘어가면 대기 상태 해제
+  pendingWorry = false;
+  pendingWeather = false;
+
+  const action = rule && rule.action;
+  if (action === 'tarot') {
+    tarotReading(rule.reply);           // 타로 API 연동 흐름
+  } else if (action === 'weather') {
+    weatherReading(text, rule.reply);   // 날씨 API 연동 흐름 (지역명 추출을 위해 원문 전달)
+  } else if (action === 'worry') {
+    pendingWorry = true;                // 고민 내용을 기다리는 상태로 전환
+    botReplyWithTyping(rule.reply);
+  } else if (action === 'time') {
+    botReplyWithTyping(timeReply());    // 내부 시계 — API 불필요
+  } else if (action === 'menu') {
+    botReplyWithTyping(menuReply());
+  } else if (action === 'balance') {
+    botReplyWithTyping(balanceReply(text)); // A vs B 추출을 위해 원문 전달
   } else {
     botReplyWithTyping(findReply(text));
   }
 }
 
-// 초기화: 대화 내역을 지우고 리셋 전용 인사말 출력
+// 초기화: 대화 내역과 대기 상태를 지우고 리셋 전용 인사말 출력
 function resetChat() {
   chatBody.innerHTML = '';
+  pendingWorry = false;
+  pendingWeather = false;
   botReplyWithTyping(RESET_MESSAGE);
 }
 
