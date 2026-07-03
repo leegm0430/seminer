@@ -156,6 +156,13 @@
     box-shadow: 0 4px 12px rgba(0,0,0,.4);
   }
   .tarot-img.reversed { transform: rotate(180deg); } /* 역방향이면 카드를 뒤집어 표시 */
+  .tarot-lucky {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border-soft);
+    font-size: 12.5px;
+    color: var(--gold-soft);
+  }
   .row.bot .bubble {
     background: var(--bg-bubble-bot);
     border: 1px solid var(--border-soft);
@@ -419,6 +426,25 @@ const VALUE_KO = {
   page: '페이지', knight: '나이트', queen: '퀸', king: '킹',
 };
 
+// 오늘의 행운/불운 추천 — 반짝이는 것을 좋아하는 까마귀의 관점으로 작성
+const LUCKY_ITEMS = [
+  '반짝이는 동전', '호일 껍질', '은색 볼펜', '유리구슬', '반질반질한 병뚜껑',
+  '금색 단추', '광이 나는 열쇠', '은박 초콜릿 포장지', '작은 손거울', '반짝이는 클립',
+  '유이 나는 조약돌', '광택 나는 배지', '반짝이는 머리핀', '새 지폐', '투명한 구슬 사탕',
+];
+const LUCKY_COLORS = [
+  '금색', '은색', '별빛 노랑', '한밤의 보라', '에메랄드 초록',
+  '새벽하늘 파랑', '진주 흰색', '루비 빨강', '까마귀 깃털의 검보라',
+];
+const AVOID_ITEMS = [
+  '허수아비 인형', '눅눅한 종이상자', '구겨진 영수증', '잉크가 다 된 볼펜', '김빠진 탄산음료',
+  '짝 잃은 양말', '녹슨 못', '먼지 쌓인 액자', '바람 빠진 풍선', '유통기한 지난 쿠폰',
+];
+const AVOID_COLORS = [
+  '잿빛', '흙탕물 갈색', '바랜 베이지', '지푸라기색', '탁한 카키',
+  '곰팡이 회녹색', '먼지 낀 분홍',
+];
+
 // 추천 키워드 칩 목록 (사용자가 탭 한 번으로 대화 시작 가능)
 const SUGGESTED_CHIPS = ['안녕', '넌 누구야?', '특기가 뭐야?', '운세 봐줘', '심심해', '고민 있어'];
 
@@ -554,6 +580,16 @@ function buildTarotNode(card) {
   src.className = 'tarot-src';
   src.textContent = '📜 서쪽 대륙의 옛 장부 원문: "' + meaningEn + '"';
   node.appendChild(src);
+
+  // 마지막 문장: 크로우의 오늘의 행운/피해야 할 물건·색깔 추천
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  const lucky = document.createElement('div');
+  lucky.className = 'tarot-lucky';
+  lucky.textContent =
+    '🍀 행운의 물건: ' + pick(LUCKY_ITEMS) + ' · 행운의 색깔: ' + pick(LUCKY_COLORS) + '\n' +
+    '🚫 피할 물건: ' + pick(AVOID_ITEMS) + ' · 피할 색깔: ' + pick(AVOID_COLORS) + '\n' +
+    '내 보물창고 감정 기준이니 틀림없다구, 까악!';
+  node.appendChild(lucky);
 
   return node;
 }
