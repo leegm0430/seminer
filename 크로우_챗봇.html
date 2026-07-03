@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>크로우의 만물상 — 행운과 기억을 거래하는 챗봇</title>
+<style>
+  /* ============================================================
+     크로우의 만물상 — 규칙 기반 캐릭터 챗봇
+     테마: 밤하늘의 까마귀 상점 (검보라 배경 + 금빛 반짝이 포인트)
+     ============================================================ */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-deep: #14101f;        /* 깊은 밤하늘 */
+    --bg-panel: #1e1830;       /* 상점 내부 패널 */
+    --bg-bubble-bot: #2a2342;  /* 크로우 말풍선 */
+    --bg-bubble-user: #b98a2e; /* 손님(사용자) 말풍선 - 금화 색 */
+    --gold: #e8b84b;           /* 반짝이는 금색 포인트 */
+    --gold-soft: #d9a83f;
+    --text-main: #efe9dc;
+    --text-dim: #9a90b8;
+    --border-soft: #3a3158;
+  }
+
+  body {
+    font-family: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    background:
+      radial-gradient(ellipse at 20% 0%, #2b2145 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 100%, #241b3d 0%, transparent 50%),
+      var(--bg-deep);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    color: var(--text-main);
+  }
+
+  /* ---------- 챗봇 전체 프레임 ---------- */
+  .chat-frame {
+    width: 100%;
+    max-width: 480px;
+    height: 92vh;
+    max-height: 760px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-soft);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(232,184,75,.08);
+  }
+
+  /* ---------- 헤더 ---------- */
+  .chat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #241c3e 0%, #1a1430 100%);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .avatar {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #4a3d75, #221a3c 70%);
+    border: 2px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .header-info { flex: 1; min-width: 0; }
+  .header-info .name {
+    font-size: 16px; font-weight: 700; color: var(--gold);
+    letter-spacing: .5px;
+  }
+  .header-info .desc {
+    font-size: 11.5px; color: var(--text-dim); margin-top: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .reset-btn {
+    background: transparent;
+    border: 1px solid var(--gold-soft);
+    color: var(--gold-soft);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .2s;
+    flex-shrink: 0;
+  }
+  .reset-btn:hover { background: var(--gold-soft); color: #1a1430; }
+
+  /* ---------- 대화 영역 ---------- */
+  .chat-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scroll-behavior: smooth;
+  }
+  .chat-body::-webkit-scrollbar { width: 6px; }
+  .chat-body::-webkit-scrollbar-thumb { background: var(--border-soft); border-radius: 3px; }
+
+  .row { display: flex; gap: 8px; align-items: flex-end; }
+  .row.user { flex-direction: row-reverse; }
+
+  .mini-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #4a3d75, #221a3c 70%);
+    border: 1.5px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .bubble {
+    max-width: 76%;
+    padding: 11px 14px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.55;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    white-space: pre-line;      /* 응답 안의 줄바꿈(\n)을 그대로 표시 */
+    animation: pop .25s ease-out;
+  }
+
+  /* 타로 카드 결과 전용 말풍선 (금테 카드 느낌) */
+  .bubble.tarot {
+    border: 1px solid var(--gold);
+    box-shadow: 0 0 14px rgba(232,184,75,.18);
+  }
+  .tarot-title {
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .tarot-src {
+    margin-top: 8px;
+    font-size: 11.5px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+  .tarot-img {
+    display: block;
+    width: 150px;
+    max-width: 65%;
+    margin: 6px auto 10px;
+    border-radius: 8px;
+    border: 1px solid var(--gold);
+    box-shadow: 0 4px 12px rgba(0,0,0,.4);
+  }
+  .tarot-img.reversed { transform: rotate(180deg); } /* 역방향이면 카드를 뒤집어 표시 */
+  .row.bot .bubble {
+    background: var(--bg-bubble-bot);
+    border: 1px solid var(--border-soft);
+    border-bottom-left-radius: 4px;
+  }
+  .row.user .bubble {
+    background: var(--bg-bubble-user);
+    color: #221a08;
+    font-weight: 500;
+    border-bottom-right-radius: 4px;
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 타이핑 표시 (··· 애니메이션) */
+  .typing { display: inline-flex; gap: 4px; padding: 4px 2px; }
+  .typing span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--text-dim);
+    animation: blink 1.2s infinite;
+  }
+  .typing span:nth-child(2) { animation-delay: .2s; }
+  .typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%,60%,100% { opacity: .25; } 30% { opacity: 1; } }
+
+  /* ---------- 추천 키워드 칩 ---------- */
+  .chips {
+    display: flex;
+    flex-wrap: nowrap;        /* 한 줄 고정 */
+    gap: 4px;
+    padding: 8px 8px;         /* 좌우 여백을 줄여 첫 칩(안녕)이 왼쪽에 붙도록 */
+    border-top: 1px solid var(--border-soft);
+    background: #191330;
+    overflow-x: auto;         /* 아주 좁은 화면에서만 스크롤 (평소엔 전부 보임) */
+  }
+  .chips::-webkit-scrollbar { height: 0; }
+  .chip {
+    flex: 1 1 0;              /* 칩 6개가 줄 전체를 균등하게 나눠 가져 빈 공간 없음 */
+    text-align: center;
+    background: transparent;
+    border: 1px solid var(--border-soft);
+    color: var(--text-dim);
+    border-radius: 999px;
+    padding: 5px 2px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .chip:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ---------- 입력 영역 ---------- */
+  .chat-input {
+    display: flex;
+    gap: 8px;
+    padding: 12px 14px 14px;
+    background: #191330;
+  }
+  .chat-input input {
+    flex: 1;
+    background: var(--bg-bubble-bot);
+    border: 1px solid var(--border-soft);
+    border-radius: 999px;
+    padding: 12px 18px;
+    font-size: 14px;
+    color: var(--text-main);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .chat-input input::placeholder { color: var(--text-dim); }
+  .chat-input input:focus { border-color: var(--gold); }
+  .send-btn {
+    background: linear-gradient(135deg, var(--gold) 0%, #c4922f 100%);
+    color: #221a08;
+    border: none;
+    border-radius: 999px;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .15s, filter .15s;
+  }
+  .send-btn:hover { filter: brightness(1.1); }
+  .send-btn:active { transform: scale(.95); }
+</style>
+</head>
+<body>
+
+<div class="chat-frame">
+  <!-- 헤더: 캐릭터 정보 + 초기화 버튼 -->
+  <div class="chat-header">
+    <div class="avatar">🦅</div>
+    <div class="header-info">
+      <div class="name">크로우 (Crow) 💎</div>
+      <div class="desc">기억과 행운을 거래하는 영리한 까마귀 상인</div>
+    </div>
+    <button class="reset-btn" onclick="resetChat()">🔄 새 거래</button>
+  </div>
+
+  <!-- 대화 영역 -->
+  <div class="chat-body" id="chatBody"></div>
+
+  <!-- 추천 키워드 칩: 사용자가 뭘 물어볼 수 있는지 힌트 제공 -->
+  <div class="chips" id="chips"></div>
+
+  <!-- 입력 영역 -->
+  <div class="chat-input">
+    <input type="text" id="userInput" placeholder="크로우에게 말을 걸어보세요…" autocomplete="off">
+    <button class="send-btn" onclick="sendMessage()">보내기</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   1. 캐릭터 데이터 — 설계표의 내용을 그대로 옮긴 부분
+   ============================================================ */
+
+// 첫 인사말 (챗봇을 처음 열었을 때)
+const GREETING =
+  '까악! 반짝이는 영혼을 가진 손님이 찾아왔군. 난 행운과 기억을 파는 만물상, 크로우라구! 🦅 오늘은 나랑 어떤 반짝이는 거래를 해볼 텐가? 자, 어서 주머니를 열어보라구!';
+
+// 초기화 버튼을 눌렀을 때 (첫 인사와 다른 전용 대사)
+const RESET_MESSAGE =
+  '까악! 거래 장부를 싹 새로 고쳤군! 📜 자, 처음부터 다시 시작해보자구. 오늘 손님의 운세를 바꿀 반짝이는 대화는 뭐지?';
+
+// 키워드가 하나도 안 걸렸을 때 캐릭터답게 둘러대는 대사 (랜덤 선택)
+const FALLBACK_REPLIES = [
+  '까악? 방금 그 말은 내 보물창고에도 없는 희귀한 단어인데? 조금 더 알아듣기 쉬운 빛나는 말로 바꿔서 거래해 보자구! 💎',
+  '음… 그 정보는 내 행운의 장부에 적혀있지 않군. 손님, 내 까마귀 뇌 용량에도 한계가 있다구! 다른 질문을 던져봐, 까악!',
+];
+
+// 키워드 → 응답 규칙표 (위에서부터 순서대로 검사, 먼저 걸리는 규칙이 우선)
+const RESPONSES = [
+  // ---------- 필수 카테고리 8개 ----------
+  {
+    category: '인사',
+    keywords: ['안녕', 'hi', '하이', '반가워', 'hello', '헬로'],
+    reply: '까악! 새로운 단골손님이 오셨군. 여기선 좋은 기억과 행운을 거래한다구. 들어와, 들어와! 🦅',
+  },
+  {
+    category: '이름 소개',
+    keywords: ['이름', '누구', '네이름', '넌 누구'],
+    reply: '내 이름은 크로우! 반짝이는 보물과 비밀을 수집하는 위대한 까마귀 상인이지, 까악! 💎',
+  },
+  {
+    category: '특기/전문분야',
+    keywords: ['특기', '잘해', '전문', '능력', '뭐해', '하는 일'],
+    reply: '네가 바라는 행운의 길을 찾아내거나, 쓸모없는 나쁜 기억을 대신 먹어 치우는 게 내 전문이라구! 까악!',
+  },
+  {
+    category: '고민 상담',
+    keywords: ['고민', '힘들', '속상', '우울', '슬퍼', '지쳤'],
+    reply: '고민이라… 인간들의 고민은 꽤 묵직한 가치가 있지. 까악, 나한테 털어놓고 가벼운 행운 하나 가져가겠어? 🍀',
+  },
+  {
+    category: '칭찬받았을 때',
+    keywords: ['잘한다', '멋져', '최고', '천재', '귀여워', '대단'],
+    reply: '까아악! 그런 반짝이는 칭찬을 나한테 주다니, 손님은 역시 안목이 높구냥! 기분이다, 행운의 깃털 하나 주지! 🪶',
+  },
+  {
+    category: '놀림/무례한 말',
+    keywords: ['바보', '못생', '저리 가', '멍청', '싫어 너'],
+    reply: '까악?! 무례하군! 내 까만 깃털의 광택을 보고도 그런 소리가 나와? 손님, 거래 제한 블랙리스트에 올리기 전에 조심하라구! 😤',
+  },
+  {
+    category: '심심할 때',
+    keywords: ['심심', '놀아줘', '할 거 없', '놀자', '재밌는'],
+    reply: '심심해? 그렇다면 네 머릿속에 있는 재밌는 기억 하나를 나한테 팔아보는 건 어때? 대가는 톡톡히 주지, 까악! 💰',
+  },
+  {
+    category: '작별 인사',
+    keywords: ['잘가', 'bye', '안녕히', '바이', '갈게', '잘 가'],
+    reply: '벌써 가려고? 다음엔 더 반짝이는 이야기나 행운의 조각을 들고 오라구, 단골손님! 까악! 👋',
+  },
+
+  // ---------- 자유 카테고리 4개 ----------
+  {
+    category: '좋아하는 것',
+    keywords: ['좋아하는', '보물', '반짝이', '취향', '취미'],
+    reply: '반지, 동전, 보석, 그리고 손님의 반짝이는 아이디어! 난 빛나는 거라면 사족을 못 쓴다구, 까악! ✨',
+  },
+  {
+    category: '나이',
+    keywords: ['나이', '몇 살', '몇살', '언제 태어'],
+    reply: '까마귀의 시간은 인간의 시간과 다르게 흐른다구. 대충 손님의 증조할아버지가 어린아이였을 때부터 살아왔지, 까악! ⏳',
+  },
+  {
+    category: '두려운 것/약점',
+    keywords: ['무서운', '약점', '싫어하는', '무서워하'],
+    reply: '허수아비? 쳇, 그 가짜 인간 녀석들은 영혼이 없어서 거래할 맛이 안 나니까 싫어하는 것뿐이라구! 절대 무서운 게 아냐, 까악! 🌾',
+  },
+  {
+    category: '행운 거래',
+    keywords: ['행운', '뽑기', '운세', '점 봐', '오늘 운', '타로'],
+    reply: '까악! 운세 거래 성립! 대가는 손님의 비밀 하나로 받아두지. 자, 내 낡은 타로 뭉치에서 운명의 카드를 한 장 뽑아볼 테니 잠깐 기다리라구… 🔮',
+    action: 'tarot', // 이 규칙이 걸리면 타로 API 호출로 이어짐
+  },
+];
+
+/* ============================================================
+   1-2. 타로 운세 데이터 — tarotapi.dev 연동용
+   API는 영어 데이터를 주므로, 크로우가 한국어로 풀이할 수 있게
+   카드명 한글 매핑 + 캐릭터 말투 해석 테이블을 준비한다.
+   ============================================================ */
+
+const TAROT_API = 'https://tarotapi.dev/api/v1/cards/random?n=1';
+
+// API 호출 실패 시(오프라인 등) 캐릭터답게 둘러대는 대사
+const TAROT_ERROR =
+  '까악… 이상하군, 수정구에 안개가 자욱해. 별들의 목소리가 응답하지 않는다구! 바람이 잦아들면 다시 운세를 물어보라구. 🌫️';
+
+// 메이저 아르카나 22장: name_short(ar00~ar21) → 한글 이름
+const MAJOR_KO = {
+  ar00: '바보', ar01: '마법사', ar02: '여사제', ar03: '여황제',
+  ar04: '황제', ar05: '교황', ar06: '연인', ar07: '전차',
+  ar08: '힘', ar09: '은둔자', ar10: '운명의 수레바퀴', ar11: '정의',
+  ar12: '매달린 사람', ar13: '죽음', ar14: '절제', ar15: '악마',
+  ar16: '탑', ar17: '별', ar18: '달', ar19: '태양',
+  ar20: '심판', ar21: '세계',
+};
+
+// 메이저 아르카나 해석 (정방향 up / 역방향 rev — 크로우 말투)
+const MAJOR_FORTUNE = {
+  ar00: { up: '새로운 시작과 자유로운 모험이 손님을 기다리는군!', rev: '무모한 선택은 조심하라구. 한 발씩 천천히 가는 게 이득이야.' },
+  ar01: { up: '재능과 기회가 딱 맞물리는 날이야. 지금 시작하면 통한다구!', rev: '재주를 부리기 전에 준비물부터 챙기라구.' },
+  ar02: { up: '직감이 날카로운 날이군. 마음속 목소리를 믿어보라구.', rev: '비밀이 많아지는 때야. 서두르지 말고 지켜보라구.' },
+  ar03: { up: '풍요와 결실! 뿌려둔 씨앗이 반짝이는 열매가 된다구.', rev: '남 챙기느라 정작 손님 자신이 뒷전이군. 자기부터 돌보라구.' },
+  ar04: { up: '주도권이 손님 손에 있어. 당당하게 밀어붙이라구!', rev: '고집이 화를 부를 수 있으니 오늘은 유연하게 가라구.' },
+  ar05: { up: '좋은 조언자가 나타날 운이야. 귀를 활짝 열어두라구.', rev: '관습에 얽매이지 말고 손님만의 길을 찾아보라구.' },
+  ar06: { up: '인연과 선택의 운! 마음이 끌리는 쪽이 정답이라구.', rev: '갈팡질팡하다간 둘 다 놓친다구. 마음을 정하라구.' },
+  ar07: { up: '거침없는 전진! 오늘은 속도를 올려도 좋은 날이군.', rev: '방향을 잃은 질주는 위험해. 고삐를 단단히 잡으라구.' },
+  ar08: { up: '부드러운 용기가 통하는 날이야. 겁먹지 말라구!', rev: '조급함이 발목을 잡는군. 심호흡 한 번 하고 가라구.' },
+  ar09: { up: '혼자만의 시간이 답을 준다구. 조용히 생각을 정리해보라구.', rev: '너무 움츠러들지 말고 슬슬 둥지 밖으로 나오라구.' },
+  ar10: { up: '운명의 바퀴가 손님 쪽으로 굴러온다구! 흐름에 올라타라구.', rev: '바퀴가 잠시 헛도는 중이야. 조급해 말고 때를 기다리라구.' },
+  ar11: { up: '공정한 결과가 돌아오는 날! 정직이 곧 이득이라구.', rev: '한쪽으로 기운 판단을 조심하라구. 저울을 다시 보라구.' },
+  ar12: { up: '잠깐 멈추면 오히려 보이는 게 많아지는 법이라구.', rev: '희생만 하다간 손해야. 슬슬 손익 장부를 따져보라구.' },
+  ar13: { up: '끝은 곧 새로운 시작! 낡은 것은 과감히 버리라구.', rev: '변화를 미루면 짐만 쌓인다구. 오늘 하나는 정리하라구.' },
+  ar14: { up: '균형이 딱 맞는 날이군. 무리하지 않는 게 최고의 행운이야.', rev: '과유불급! 넘치는 쪽을 조금 덜어내라구.' },
+  ar15: { up: '달콤한 유혹을 조심하라구. 세상에 공짜 반짝이는 없어!', rev: '묶여 있던 것에서 풀려날 기회가 왔다구. 사슬을 끊으라구!' },
+  ar16: { up: '깜짝 놀랄 변화가 온다구. 하지만 무너져야 다시 짓는 법!', rev: '위기를 아슬아슬하게 비껴가는군. 그래도 점검은 필수라구.' },
+  ar17: { up: '희망의 별빛이 손님을 비추는군! 소원 하나 빌어보라구.', rev: '별이 구름에 잠깐 가렸을 뿐, 사라진 게 아니라구.' },
+  ar18: { up: '불안과 착각을 조심하라구. 밤길은 천천히 걷는 거야.', rev: '안개가 걷히고 진실이 드러나는 때가 왔다구.' },
+  ar19: { up: '최고의 카드다, 까악! 성공과 활력이 쏟아지는 날이라구!', rev: '구름이 조금 낀 태양이군. 그래도 끝은 밝다구.' },
+  ar20: { up: '노력의 결산이 나오는 날! 좋은 소식을 기다려보라구.', rev: '지난 일을 너무 붙잡지 말라구. 이제 앞을 볼 시간이야.' },
+  ar21: { up: '완성과 성취! 흩어졌던 조각이 마침내 큰 그림이 된다구.', rev: '마무리 한 조각이 아직 부족하군. 끝까지 가보라구.' },
+};
+
+// 마이너 아르카나: 슈트 한글명 + 슈트별 해석
+const SUIT_KO = { wands: '완드', cups: '컵', swords: '소드', pentacles: '펜타클' };
+const SUIT_FORTUNE = {
+  wands:     { up: '열정과 도전의 기운이 활활 타오르는군! 미뤄둔 일을 저지르기 좋은 날이라구.', rev: '의욕이 앞서다 헛발질할 수 있어. 오늘은 페이스 조절이 행운의 열쇠라구.' },
+  cups:      { up: '마음과 인연의 잔이 가득 차오르는군. 소중한 사람에게 먼저 연락해보라구!', rev: '감정이 출렁이는 날이야. 마음의 잔을 잠시 내려놓고 쉬라구.' },
+  swords:    { up: '머리가 맑아지는 날! 미뤄둔 결단을 내리기 딱 좋다구.', rev: '말이 칼이 되는 날이군. 내뱉기 전에 한 번 더 생각하라구.' },
+  pentacles: { up: '재물과 실속의 기운! 꾸준함이 반짝이는 동전으로 돌아온다구.', rev: '지갑 단속 주의보! 충동구매할 돈은 차라리 이 까마귀한테 맡기라구.' },
+};
+const VALUE_KO = {
+  ace: '에이스', two: '2', three: '3', four: '4', five: '5',
+  six: '6', seven: '7', eight: '8', nine: '9', ten: '10',
+  page: '페이지', knight: '나이트', queen: '퀸', king: '킹',
+};
+
+// 추천 키워드 칩 목록 (사용자가 탭 한 번으로 대화 시작 가능)
+const SUGGESTED_CHIPS = ['안녕', '넌 누구야?', '특기가 뭐야?', '운세 봐줘', '심심해', '고민 있어'];
+
+/* ============================================================
+   2. 챗봇 동작 로직
+   ============================================================ */
+
+const chatBody = document.getElementById('chatBody');
+const userInput = document.getElementById('userInput');
+const chipsEl = document.getElementById('chips');
+
+// 말풍선 한 개를 대화 영역에 추가
+function addBubble(text, who) {
+  const row = document.createElement('div');
+  row.className = 'row ' + who;
+
+  if (who === 'bot') {
+    const av = document.createElement('div');
+    av.className = 'mini-avatar';
+    av.textContent = '🦅';
+    row.appendChild(av);
+  }
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.textContent = text;
+  row.appendChild(bubble);
+
+  chatBody.appendChild(row);
+  chatBody.scrollTop = chatBody.scrollHeight;
+  return row;
+}
+
+// "크로우가 입력 중…" 말풍선을 띄우고, 나중에 내용으로 교체할 수 있게 row를 돌려줌
+function showTypingBubble() {
+  const row = document.createElement('div');
+  row.className = 'row bot';
+  row.innerHTML =
+    '<div class="mini-avatar">🦅</div>' +
+    '<div class="bubble"><span class="typing"><span></span><span></span><span></span></span></div>';
+  chatBody.appendChild(row);
+  chatBody.scrollTop = chatBody.scrollHeight;
+  return row;
+}
+
+// 타이핑 말풍선을 실제 내용(문자열 또는 DOM 노드)으로 교체
+function resolveBubble(row, content) {
+  const bubble = row.querySelector('.bubble');
+  bubble.textContent = '';
+  if (typeof content === 'string') {
+    bubble.textContent = content;
+  } else {
+    bubble.appendChild(content);
+  }
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+// 타이핑 표시 후 500~900ms 랜덤 지연을 두고 답변 출력 (실제 대화 같은 느낌)
+function botReplyWithTyping(text) {
+  const row = showTypingBubble();
+  setTimeout(() => resolveBubble(row, text), 500 + Math.random() * 400);
+}
+
+// 핵심: 입력 문장에서 키워드를 찾아 응답 "규칙"을 매칭 (없으면 null)
+function findRule(input) {
+  // 대소문자 통일 + 공백 제거 버전도 함께 검사 ("네 이름" / "네이름" 모두 대응)
+  const text = input.toLowerCase();
+  const textNoSpace = text.replace(/\s+/g, '');
+
+  for (const rule of RESPONSES) {
+    for (const kw of rule.keywords) {
+      const k = kw.toLowerCase();
+      if (text.includes(k) || textNoSpace.includes(k.replace(/\s+/g, ''))) {
+        return rule;
+      }
+    }
+  }
+  return null;
+}
+
+// 규칙의 응답 문자열만 필요할 때 (매칭 실패 시 회피 대사 랜덤)
+function findReply(input) {
+  const rule = findRule(input);
+  if (rule) return rule.reply;
+  return FALLBACK_REPLIES[Math.floor(Math.random() * FALLBACK_REPLIES.length)];
+}
+
+/* ============================================================
+   2-2. 타로 운세 기능 (tarotapi.dev 연동)
+   흐름: 거래 성립 대사 → 카드 뽑는 연출(타이핑) → API 결과를
+   크로우의 한국어 풀이로 변환해 금테 카드 말풍선으로 출력
+   ============================================================ */
+
+// API 카드 데이터 → 화면에 보여줄 DOM 노드로 변환
+function buildTarotNode(card) {
+  const upright = Math.random() < 0.5;          // 정방향/역방향은 뽑을 때 결정
+  const dir = upright ? '정방향' : '역방향';
+
+  // 카드 이름: 메이저는 고유 이름, 마이너는 "슈트 + 숫자/코트" 조합
+  const koName = card.type === 'major'
+    ? (MAJOR_KO[card.name_short] || card.name)
+    : SUIT_KO[card.suit] + ' ' + (VALUE_KO[card.value] || card.value);
+
+  // 크로우식 한국어 풀이
+  const fortune = card.type === 'major'
+    ? MAJOR_FORTUNE[card.name_short][upright ? 'up' : 'rev']
+    : SUIT_FORTUNE[card.suit][upright ? 'up' : 'rev'];
+
+  // API가 준 영어 의미의 첫 문장만 발췌 (옛 장부 원문 느낌으로 첨부)
+  const meaningEn = (upright ? card.meaning_up : card.meaning_rev).split('.')[0];
+
+  const node = document.createDocumentFragment();
+
+  const title = document.createElement('div');
+  title.className = 'tarot-title';
+  title.textContent = '🎴 ' + koName + ' (' + card.name + ') — ' + dir;
+  node.appendChild(title);
+
+  // 카드 그림: 라이더-웨이트 원본(퍼블릭 도메인). 파일명이 API의 name_short와 일치
+  const img = document.createElement('img');
+  img.className = 'tarot-img' + (upright ? '' : ' reversed');
+  img.src = 'https://www.sacred-texts.com/tarot/pkt/img/' + card.name_short + '.jpg';
+  img.alt = koName + ' 카드';
+  img.onload = () => { chatBody.scrollTop = chatBody.scrollHeight; }; // 그림 로드 후 스크롤 재조정
+  img.onerror = () => img.remove();                                   // 그림만 실패하면 텍스트 운세는 유지
+  node.appendChild(img);
+
+  const body = document.createElement('div');
+  body.textContent = '까악! 운명이 이 카드를 골랐군. ' + fortune;
+  node.appendChild(body);
+
+  const src = document.createElement('div');
+  src.className = 'tarot-src';
+  src.textContent = '📜 서쪽 대륙의 옛 장부 원문: "' + meaningEn + '"';
+  node.appendChild(src);
+
+  return node;
+}
+
+// 타로 운세 전체 연출
+function tarotReading(introText) {
+  // ① 거래 성립 대사
+  botReplyWithTyping(introText);
+
+  // ② 잠시 뒤 카드 뽑는 연출 시작 → API 호출
+  setTimeout(async () => {
+    const row = showTypingBubble();
+    const startedAt = Date.now();
+    try {
+      const res = await fetch(TAROT_API);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const card = data.cards[0];
+
+      // 너무 빨리 결과가 나오면 김이 빠지므로 최소 1.2초는 "뽑는 중" 유지
+      const wait = Math.max(0, 1200 - (Date.now() - startedAt));
+      setTimeout(() => {
+        row.querySelector('.bubble').classList.add('tarot');
+        resolveBubble(row, buildTarotNode(card));
+      }, wait);
+    } catch (e) {
+      resolveBubble(row, TAROT_ERROR); // 오프라인/서버 오류에도 캐릭터답게
+    }
+  }, 1500);
+}
+
+// 메시지 전송 처리
+function sendMessage() {
+  const text = userInput.value.trim();
+  if (!text) return;
+
+  addBubble(text, 'user');
+  userInput.value = '';
+  userInput.focus();
+
+  const rule = findRule(text);
+  if (rule && rule.action === 'tarot') {
+    tarotReading(rule.reply);   // 운세 키워드면 타로 API 연동 흐름으로
+  } else {
+    botReplyWithTyping(findReply(text));
+  }
+}
+
+// 초기화: 대화 내역을 지우고 리셋 전용 인사말 출력
+function resetChat() {
+  chatBody.innerHTML = '';
+  botReplyWithTyping(RESET_MESSAGE);
+}
+
+// 추천 키워드 칩 만들기
+function buildChips() {
+  SUGGESTED_CHIPS.forEach((label) => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = label;
+    btn.onclick = () => {
+      userInput.value = label;
+      sendMessage();
+    };
+    chipsEl.appendChild(btn);
+  });
+}
+
+// Enter 키로도 전송
+userInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+/* ============================================================
+   3. 시작: 첫 인사말 출력
+   ============================================================ */
+buildChips();
+addBubble(GREETING, 'bot');
+userInput.focus();
+</script>
+
+</body>
+</html>
