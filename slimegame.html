@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>슬라임 게임 — 킹 슬라임을 만들어라</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
+<style>
+  :root{
+    --bg-deep:#241B3D;
+    --bg-panel:#332552;
+    --bg-panel-2:#3E2E63;
+    --lavender:#E8E3F5;
+    --slime-green:#7ED957;
+    --gold:#FFD700;
+    --pink:#FF6B9D;
+    --text-light:#F5F1FF;
+    --text-dim:#B9AEDA;
+    --danger:#FF4757;
+    --radius-lg:28px;
+    --radius-md:16px;
+    --shadow-soft:0 10px 30px rgba(0,0,0,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; min-height:100%;
+    background:
+      radial-gradient(circle at 20% -10%, #4B3778 0%, transparent 55%),
+      radial-gradient(circle at 90% 10%, #2E4A6B 0%, transparent 45%),
+      var(--bg-deep);
+    color:var(--text-light);
+    font-family:'Noto Sans KR', sans-serif;
+    -webkit-tap-highlight-color:transparent;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{ font-family:'Baloo 2', 'Noto Sans KR', sans-serif; }
+
+  #app{
+    max-width:920px; margin:0 auto; padding:28px 16px 60px;
+    display:flex; flex-direction:column; align-items:center;
+  }
+
+  .title-row{ text-align:center; margin-bottom:22px; }
+  .title-row .eyebrow{
+    display:inline-block; font-size:12px; letter-spacing:.16em; color:var(--slime-green);
+    background:rgba(126,217,87,0.12); border:1px solid rgba(126,217,87,0.35);
+    padding:4px 12px; border-radius:999px; margin-bottom:10px;
+  }
+  .title-row h1{
+    font-size:38px; font-weight:800; margin:0; letter-spacing:.01em;
+    background:linear-gradient(180deg,#fff, var(--lavender) 60%, var(--slime-green));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 4px 0 rgba(0,0,0,0.15);
+  }
+  .title-row p{ color:var(--text-dim); margin:8px 0 0; font-size:14px; }
+
+  .screen{ width:100%; display:flex; flex-direction:column; align-items:center; gap:18px; }
+  .hidden{ display:none !important; }
+
+  /* ---- menu ---- */
+  .mode-cards{ display:flex; gap:18px; flex-wrap:wrap; justify-content:center; margin-top:6px; }
+  .mode-card{
+    width:260px; text-align:left; cursor:pointer; border:none;
+    background:linear-gradient(155deg, var(--bg-panel-2), var(--bg-panel));
+    border-radius:var(--radius-lg); padding:22px; color:var(--text-light);
+    box-shadow:var(--shadow-soft); transition:transform .15s ease, box-shadow .15s ease;
+    border:1px solid rgba(255,255,255,0.06);
+  }
+  .mode-card:hover{ transform:translateY(-4px); box-shadow:0 16px 34px rgba(0,0,0,.45); }
+  .mode-card .icon{ font-size:34px; display:block; margin-bottom:10px; }
+  .mode-card h3{ margin:0 0 6px; font-size:20px; }
+  .mode-card p{ margin:0; font-size:13px; color:var(--text-dim); line-height:1.5; }
+  .mode-card .tag{
+    display:inline-block; margin-top:12px; font-size:11px; color:var(--bg-deep);
+    background:var(--slime-green); padding:3px 10px; border-radius:999px; font-weight:700;
+  }
+  .mode-card.multi .tag{ background:var(--pink); color:#33001a; }
+
+  /* ---- buttons ---- */
+  .btn{
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:15px;
+    padding:12px 22px; border-radius:14px; border:none; cursor:pointer;
+    background:var(--slime-green); color:#0F2A08; box-shadow:0 6px 0 #4E9C2C;
+    transition:transform .08s ease, box-shadow .08s ease;
+  }
+  .btn:active{ transform:translateY(4px); box-shadow:0 2px 0 #4E9C2C; }
+  .btn.secondary{ background:var(--bg-panel-2); color:var(--text-light); box-shadow:0 6px 0 #1F1638; }
+  .btn.pink{ background:var(--pink); color:#33001a; box-shadow:0 6px 0 #B3305D; }
+  .btn.small{ padding:8px 14px; font-size:13px; border-radius:10px; }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+  .link-back{ background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:13px; text-decoration:underline; }
+
+  /* ---- game layout ---- */
+  .game-wrap{ display:flex; gap:22px; flex-wrap:wrap; justify-content:center; align-items:flex-start; width:100%; }
+  .board-col{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .board-frame{
+    position:relative; border-radius:22px; padding:10px;
+    background:linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
+    box-shadow:var(--shadow-soft); border:1px solid rgba(255,255,255,0.06);
+  }
+  canvas{ display:block; border-radius:14px; background:#160F27; touch-action:none; }
+
+  .hud-row{ display:flex; gap:10px; width:100%; }
+  .hud-box{
+    flex:1; background:var(--bg-panel); border-radius:14px; padding:10px 14px;
+    border:1px solid rgba(255,255,255,0.06);
+  }
+  .hud-box .label{ font-size:11px; color:var(--text-dim); letter-spacing:.06em; }
+  .hud-box .value{ font-size:20px; font-weight:800; font-family:'Baloo 2',sans-serif; }
+  .next-box{ display:flex; align-items:center; gap:10px; }
+  .next-swatch{ width:34px; height:34px; border-radius:50%; box-shadow:inset 0 -4px 6px rgba(0,0,0,.25), 0 2px 4px rgba(0,0,0,.3); flex-shrink:0; }
+
+  .side-panel{
+    width:220px; background:var(--bg-panel); border-radius:18px; padding:16px;
+    border:1px solid rgba(255,255,255,0.06); box-shadow:var(--shadow-soft);
+  }
+  .side-panel h3{ margin:0 0 10px; font-size:15px; color:var(--text-dim); font-weight:600; }
+  .opp-slime{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .opp-swatch{ width:44px; height:44px; border-radius:50%; flex-shrink:0; box-shadow:inset 0 -5px 8px rgba(0,0,0,.25); }
+  .opp-name{ font-family:'Baloo 2',sans-serif; font-size:16px; }
+  .opp-score{ font-size:12px; color:var(--text-dim); }
+  .progress-track{ height:10px; border-radius:999px; background:#1C1330; overflow:hidden; margin-top:6px; }
+  .progress-fill{ height:100%; background:linear-gradient(90deg, var(--slime-green), var(--gold)); width:0%; transition:width .3s ease; }
+
+  /* ---- versus (dual board) ---- */
+  .versus-wrap{ display:flex; gap:16px; align-items:flex-start; justify-content:center; flex-wrap:wrap; width:100%; }
+  .versus-divider{
+    font-family:'Baloo 2',sans-serif; font-size:18px; font-weight:800; color:var(--pink);
+    align-self:center; margin-top:70px; opacity:.8;
+  }
+  .board-header{
+    display:flex; justify-content:space-between; align-items:center; width:100%;
+    margin-bottom:8px; padding:0 4px; font-family:'Baloo 2',sans-serif;
+  }
+  .board-header .header-label{ font-size:14px; color:var(--text-dim); }
+  .board-header.mine .header-label{ color:var(--slime-green); }
+  .board-header.opp .header-label{ color:var(--pink); }
+  .board-header .header-score{ font-size:19px; font-weight:800; }
+  .opp-waiting{
+    position:absolute; inset:10px; display:flex; align-items:center; justify-content:center;
+    text-align:center; color:var(--text-dim); font-size:13px; background:rgba(22,15,39,0.72);
+    border-radius:14px; padding:16px;
+  }
+
+  .chain-list{ display:flex; flex-direction:column; gap:6px; margin-top:14px; max-height:230px; overflow-y:auto; }
+  .chain-item{ display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-dim); }
+  .chain-item .dot{ width:14px; height:14px; border-radius:50%; flex-shrink:0; }
+  .chain-item.reached{ color:var(--text-light); font-weight:700; }
+
+  /* ---- multi setup ---- */
+  .setup-card{
+    width:100%; max-width:420px; background:var(--bg-panel); border-radius:20px; padding:24px;
+    display:flex; flex-direction:column; gap:14px; border:1px solid rgba(255,255,255,0.06);
+  }
+  .setup-card h3{ margin:0; font-size:18px; }
+  .setup-card input{
+    width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.15);
+    background:#1C1330; color:var(--text-light); font-size:15px; font-family:inherit;
+  }
+  .code-display{
+    font-family:'Baloo 2',sans-serif; font-size:22px; letter-spacing:.05em; text-align:center;
+    background:#1C1330; border-radius:12px; padding:14px; user-select:all; word-break:break-all;
+  }
+  .status-line{ font-size:13px; color:var(--text-dim); text-align:center; min-height:18px; }
+  .tab-row{ display:flex; gap:8px; }
+  .tab-row button{ flex:1; }
+
+  /* ---- result overlay ---- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(15,10,26,0.82); backdrop-filter:blur(3px);
+    display:flex; align-items:center; justify-content:center; z-index:50; padding:20px;
+  }
+  .result-card{
+    background:linear-gradient(160deg, var(--bg-panel-2), var(--bg-panel)); border-radius:24px;
+    padding:34px 30px; text-align:center; width:100%; max-width:360px; box-shadow:var(--shadow-soft);
+    border:1px solid rgba(255,255,255,0.08);
+  }
+  .result-card .big-emoji{ font-size:52px; display:block; margin-bottom:6px; }
+  .result-card h2{ margin:4px 0 4px; font-size:26px; }
+  .result-card p{ color:var(--text-dim); margin:4px 0 18px; font-size:14px; }
+  .result-stat{ font-size:34px; font-weight:800; font-family:'Baloo 2',sans-serif; color:var(--gold); }
+  .result-btns{ display:flex; gap:10px; margin-top:18px; justify-content:center; }
+
+  .danger-vignette{
+    position:absolute; inset:0; pointer-events:none; border-radius:14px;
+    box-shadow: inset 0 0 0 0 rgba(255,71,87,0); transition:box-shadow .2s ease;
+  }
+  .danger-vignette.active{ box-shadow: inset 0 0 40px 10px rgba(255,71,87,0.55); }
+
+  @media (max-width:720px){
+    .side-panel{ width:100%; max-width:380px; order:2; }
+    .board-col{ order:1; }
+    .versus-wrap{ flex-direction:column; align-items:center; }
+    .versus-divider{ margin:-4px 0; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="title-row">
+    <span class="eyebrow">SLIME MERGE PUZZLE</span>
+    <h1>슬라임 게임</h1>
+    <p>같은 슬라임을 부딪혀 합치고, 최종 진화 <b>킹 슬라임</b>을 만들어보세요.</p>
+  </div>
+
+  <!-- 메뉴 화면 -->
+  <div id="screen-menu" class="screen">
+    <div class="mode-cards">
+      <button class="mode-card solo" id="btn-solo">
+        <span class="icon">🫧</span>
+        <h3>솔로 모드</h3>
+        <p>혼자 플레이하며 최고 점수를 경신하는 모드입니다. 경고선을 넘으면 게임 오버.</p>
+        <span class="tag">최고 기록 도전</span>
+      </button>
+      <button class="mode-card multi" id="btn-multi">
+        <span class="icon">⚔️</span>
+        <h3>멀티 모드 (P2P 1:1)</h3>
+        <p>친구와 코드로 직접 연결해 대결합니다. 킹 슬라임을 먼저 만드는 사람이 승리!</p>
+        <span class="tag">1:1 실시간 대결</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 솔로 모드 화면 -->
+  <div id="screen-solo" class="screen hidden">
+    <div class="game-wrap">
+      <div class="board-col">
+        <div class="board-frame">
+          <canvas id="canvas-solo"></canvas>
+          <div class="danger-vignette" id="vignette-solo"></div>
+        </div>
+        <div class="hud-row" style="width:100%">
+          <div class="hud-box">
+            <div class="label">점수</div>
+            <div class="value" id="solo-score">0</div>
+          </div>
+          <div class="hud-box">
+            <div class="label">최고 기록 (이번 세션)</div>
+            <div class="value" id="solo-best">0</div>
+          </div>
+        </div>
+        <div class="hud-row" style="width:100%">
+          <div class="hud-box next-box">
+            <div class="next-swatch" id="solo-next-swatch"></div>
+            <div>
+              <div class="label">다음 슬라임</div>
+              <div class="value" id="solo-next-name" style="font-size:14px">-</div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn secondary small" id="solo-restart">↺ 다시하기</button>
+          <button class="link-back" id="solo-back">← 메뉴로</button>
+        </div>
+      </div>
+      <div class="side-panel">
+        <h3>진화 체인</h3>
+        <div class="chain-list" id="solo-chain"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 멀티 설정 화면 -->
+  <div id="screen-multi-setup" class="screen hidden">
+    <div class="setup-card">
+      <div class="tab-row">
+        <button class="btn small" id="tab-host">방 만들기</button>
+        <button class="btn secondary small" id="tab-join">참가하기</button>
+      </div>
+
+      <div id="panel-host">
+        <h3>방 만들기</h3>
+        <p style="font-size:13px;color:var(--text-dim);">아래 코드를 상대에게 전달하세요. 상대가 이 코드로 접속하면 자동으로 대결이 시작됩니다.</p>
+        <div class="code-display" id="host-code">코드 생성 중...</div>
+        <button class="btn small" id="copy-code">코드 복사</button>
+      </div>
+
+      <div id="panel-join" class="hidden">
+        <h3>참가하기</h3>
+        <p style="font-size:13px;color:var(--text-dim);">상대에게 받은 방 코드를 입력하세요.</p>
+        <input type="text" id="join-input" placeholder="방 코드 입력">
+        <button class="btn small" id="join-btn">연결하기</button>
+      </div>
+
+      <div class="status-line" id="multi-status"></div>
+      <button class="link-back" id="multi-setup-back">← 메뉴로</button>
+    </div>
+  </div>
+
+  <!-- 멀티 대결 화면 -->
+  <div id="screen-multi-game" class="screen hidden">
+    <div class="versus-wrap">
+      <div class="board-col">
+        <div class="board-header mine">
+          <span class="header-label">🫧 나</span>
+          <span class="header-score" id="multi-score">0</span>
+        </div>
+        <div class="board-frame">
+          <canvas id="canvas-multi"></canvas>
+          <div class="danger-vignette" id="vignette-multi"></div>
+        </div>
+        <div class="hud-row" style="width:100%">
+          <div class="hud-box next-box">
+            <div class="next-swatch" id="multi-next-swatch"></div>
+            <div>
+              <div class="label">다음 슬라임</div>
+              <div class="value" id="multi-next-name" style="font-size:14px">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="versus-divider">VS</div>
+
+      <div class="board-col">
+        <div class="board-header opp">
+          <span class="header-label">⚔️ 상대방</span>
+          <span class="header-score" id="opp-score-text">0</span>
+        </div>
+        <div class="board-frame">
+          <canvas id="canvas-opponent"></canvas>
+          <div class="danger-vignette" id="vignette-opponent"></div>
+          <div class="opp-waiting" id="opp-waiting">상대방 화면을 기다리는 중...</div>
+        </div>
+        <div class="hud-row" style="width:100%; visibility:hidden;">
+          <div class="hud-box next-box"><div class="next-swatch"></div><div><div class="label">-</div><div class="value">-</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 결과 오버레이 -->
+  <div id="overlay-result" class="overlay hidden">
+    <div class="result-card">
+      <span class="big-emoji" id="result-emoji">🏆</span>
+      <h2 id="result-title">게임 오버</h2>
+      <p id="result-sub">최종 점수</p>
+      <div class="result-stat" id="result-score">0</div>
+      <div class="result-btns">
+        <button class="btn" id="result-retry">다시하기</button>
+        <button class="btn secondary" id="result-menu">메뉴로</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     0. 설정값 — 조절 수치는 모두 이 CONFIG 한곳에 모음
+  ========================================================= */
+  const CONFIG = {
+    containerWidth: 380,
+    containerHeight: 500,
+    wallThickness: 22,
+    topMargin: 46,
+    dangerLineY: 84,
+    dangerOverlapRatio: 0.6,   // 슬라임 몸통이 경고선을 이 비율(60%) 이상 넘었을 때만 위험으로 판정
+    dangerHoldMs: 1600,
+    dropCooldownMs: 420,
+    spawnGraceMs: 550,
+    restitution: 0.22,
+    friction: 0.25,
+    frictionStatic: 0.3,
+    frictionAir: 0.0018,
+    densityBase: 0.0016,
+    maxDropStage: 4,      // 0~4단계(방울~옐로우 큐브)만 낙하 가능
+    gravityY: 1.05,
+    squashLerp: 0.18
+  };
+
+  const STAGES = [
+    { name:"방울 슬라임",        r:15, color:"#FFD1DC", dark:"#F48FB1" },
+    { name:"미니 쁘띠 슬라임",   r:21, color:"#FFB3D1", dark:"#F06292" },
+    { name:"초록 슬라임",        r:27, color:"#7ED957", dark:"#4CAF50" },
+    { name:"블루 슬라임",        r:34, color:"#4FA8DE", dark:"#2E86C1" },
+    { name:"옐로우 큐브 슬라임", r:42, color:"#FFD93D", dark:"#F4B400" },
+    { name:"마법사 슬라임",      r:51, color:"#B57EDC", dark:"#8E44AD" },
+    { name:"메탈 슬라임",        r:61, color:"#C7CCD1", dark:"#8D959E" },
+    { name:"엔젤 슬라임",        r:73, color:"#FDFDFF", dark:"#D8CFF5" },
+    { name:"마그마 슬라임",      r:87, color:"#FF6B3D", dark:"#C0392B" },
+    { name:"퀸 슬라임",          r:102,color:"#FFD700", dark:"#C99A00" },
+    { name:"킹 슬라임",          r:124,color:"#5B3E9E", dark:"#2E1D57" }
+  ];
+  const SCORES = STAGES.map((_, i) => Math.round((i+1)*(i+2)/2 * 8));
+  const KING_INDEX = STAGES.length - 1;
+
+  /* =========================================================
+     1. 화면 전환 유틸
+  ========================================================= */
+  const screens = {
+    menu: document.getElementById('screen-menu'),
+    solo: document.getElementById('screen-solo'),
+    multiSetup: document.getElementById('screen-multi-setup'),
+    multiGame: document.getElementById('screen-multi-game')
+  };
+  function showScreen(name){
+    Object.values(screens).forEach(el => el.classList.add('hidden'));
+    screens[name].classList.remove('hidden');
+  }
+  const overlay = document.getElementById('overlay-result');
+  function showResult(opts){
+    document.getElementById('result-emoji').textContent = opts.emoji;
+    document.getElementById('result-title').textContent = opts.title;
+    document.getElementById('result-sub').textContent = opts.sub;
+    document.getElementById('result-score').textContent = opts.score;
+    overlay.classList.remove('hidden');
+    overlay.dataset.mode = opts.mode;
+  }
+  function hideResult(){ overlay.classList.add('hidden'); }
+
+  /* =========================================================
+     2. 슬라임 게임 보드 클래스 (Matter.js)
+  ========================================================= */
+  const { Engine, Runner, Bodies, Composite, Events, Body, Vector } = Matter;
+
+  class SlimeBoard {
+    constructor(canvas, callbacks){
+      this.canvas = canvas;
+      this.cb = callbacks || {};
+      this.W = CONFIG.containerWidth;
+      this.H = CONFIG.containerHeight;
+      canvas.width = this.W;
+      canvas.height = this.H + CONFIG.topMargin;
+
+      this.engine = Engine.create();
+      this.engine.gravity.y = CONFIG.gravityY;
+      this.world = this.engine.world;
+      this.runner = Runner.create();
+
+      this.score = 0;
+      this.gameOver = false;
+      this.dangerTimer = 0;
+      this.lastDropAt = 0;
+      this.canDrop = true;
+      this.cursorX = this.W/2;
+      this.pendingMerges = [];
+      this.mergedIds = new Set();
+      this.reachedStage = 0;
+
+      this._buildWalls();
+      this._bindEvents();
+      this._bindInput();
+      this._nextStage = this._randomDropStage();
+      this._rollNext();
+      this._raf = null;
+      Runner.run(this.runner, this.engine);
+      this._loop();
+    }
+
+    _buildWalls(){
+      const t = CONFIG.wallThickness;
+      const opts = { isStatic:true, friction:CONFIG.frictionStatic, render:{visible:false} };
+      this.floor = Bodies.rectangle(this.W/2, this.H + CONFIG.topMargin + t/2 - 2, this.W, t, opts);
+      this.leftWall = Bodies.rectangle(t/2 - 4, (this.H+CONFIG.topMargin)/2, t, this.H+CONFIG.topMargin+200, opts);
+      this.rightWall = Bodies.rectangle(this.W - t/2 + 4, (this.H+CONFIG.topMargin)/2, t, this.H+CONFIG.topMargin+200, opts);
+      Composite.add(this.world, [this.floor, this.leftWall, this.rightWall]);
+    }
+
+    _randomDropStage(){
+      return Math.floor(Math.random() * (CONFIG.maxDropStage + 1));
+    }
+
+    _rollNext(){
+      this.currentDropStage = this._nextStage;
+      this._nextStage = this._randomDropStage();
+      if (this.cb.onNext) this.cb.onNext(this.currentDropStage, this._nextStage);
+    }
+
+    _bindInput(){
+      const setX = (clientX) => {
+        const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / rect.width;
+        let x = (clientX - rect.left) * scaleX;
+        const r = STAGES[this.currentDropStage].r;
+        const t = CONFIG.wallThickness;
+        x = Math.max(t + r, Math.min(this.W - t - r, x));
+        this.cursorX = x;
+      };
+      this._onMove = (e) => {
+        if (this.gameOver) return;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        setX(clientX);
+      };
+      this._onDown = (e) => {
+        if (this.gameOver) return;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        setX(clientX);
+        this.drop();
+      };
+      this.canvas.addEventListener('mousemove', this._onMove);
+      this.canvas.addEventListener('mousedown', this._onDown);
+      this.canvas.addEventListener('touchstart', (e)=>{ e.preventDefault(); this._onDown(e); }, {passive:false});
+      this.canvas.addEventListener('touchmove', (e)=>{ e.preventDefault(); this._onMove(e); }, {passive:false});
+      this._onKey = (e) => {
+        if (e.code === 'Space') { e.preventDefault(); if(!this.gameOver) this.drop(); }
+      };
+      window.addEventListener('keydown', this._onKey);
+    }
+
+    _bindEvents(){
+      Events.on(this.engine, 'collisionStart', (evt) => {
+        for (const pair of evt.pairs) {
+          const a = pair.bodyA, b = pair.bodyB;
+          if (a.isStatic || b.isStatic) {
+            this._squash(a.isStatic ? b : a);
+            continue;
+          }
+          this._squash(a); this._squash(b);
+          if (a.slimeStage === undefined || b.slimeStage === undefined) continue;
+          if (a.slimeStage !== b.slimeStage) continue;
+          if (this.mergedIds.has(a.id) || this.mergedIds.has(b.id)) continue;
+          this.mergedIds.add(a.id); this.mergedIds.add(b.id);
+          this.pendingMerges.push([a, b]);
+        }
+      });
+      Events.on(this.engine, 'afterUpdate', () => this._processMerges());
+    }
+
+    _squash(body){
+      if (!body.slimeStage && body.slimeStage !== 0) return;
+      body.squashSx = 1.22;
+      body.squashSy = 0.8;
+    }
+
+    _processMerges(){
+      if (!this.pendingMerges.length) return;
+      const merges = this.pendingMerges.splice(0);
+      for (const [a, b] of merges) {
+        const stage = a.slimeStage;
+        const mx = (a.position.x + b.position.x) / 2;
+        const my = (a.position.y + b.position.y) / 2;
+        Composite.remove(this.world, a);
+        Composite.remove(this.world, b);
+
+        if (stage === KING_INDEX) {
+          // 킹 슬라임끼리 부딪히면 소멸
+          this._addScore(SCORES[KING_INDEX]);
+          continue;
+        }
+        const newStage = stage + 1;
+        const nb = this._createSlime(mx, my, newStage, false);
+        const vx = ((a.velocity.x + b.velocity.x) / 2) * 0.5;
+        const vy = -1.5;
+        Body.setVelocity(nb, { x: vx, y: vy });
+        Composite.add(this.world, nb);
+        this._addScore(SCORES[newStage]);
+        if (newStage > this.reachedStage) {
+          this.reachedStage = newStage;
+          if (this.cb.onStageReached) this.cb.onStageReached(newStage);
+        }
+        if (newStage === KING_INDEX) {
+          if (this.cb.onKingSlime) this.cb.onKingSlime();
+        }
+      }
+    }
+
+    _addScore(v){
+      this.score += v;
+      if (this.cb.onScore) this.cb.onScore(this.score);
+    }
+
+    _createSlime(x, y, stageIndex, isCursor){
+      const s = STAGES[stageIndex];
+      const body = Bodies.circle(x, y, s.r, {
+        restitution: CONFIG.restitution,
+        friction: CONFIG.friction,
+        frictionAir: CONFIG.frictionAir,
+        density: CONFIG.densityBase,
+        isSensor: !!isCursor,
+        isStatic: !!isCursor
+      });
+      body.slimeStage = stageIndex;
+      body.squashSx = 1; body.squashSy = 1;
+      body.spawnedAt = performance.now();
+      return body;
+    }
+
+    drop(){
+      if (this.gameOver || !this.canDrop) return;
+      const now = performance.now();
+      if (now - this.lastDropAt < CONFIG.dropCooldownMs) return;
+      this.lastDropAt = now;
+      const stage = this.currentDropStage;
+      const r = STAGES[stage].r;
+      const body = this._createSlime(this.cursorX, CONFIG.topMargin - 10 + r*0.2, stage, false);
+      Composite.add(this.world, body);
+      this._rollNext();
+      if (this.cb.onDrop) this.cb.onDrop();
+    }
+
+    _checkDanger(){
+      if (this.gameOver) return;
+      const now = performance.now();
+      let over = false;
+      const bodies = Composite.allBodies(this.world).filter(b => !b.isStatic);
+      for (const b of bodies) {
+        if (now - b.spawnedAt < CONFIG.spawnGraceMs) continue;
+        const r = STAGES[b.slimeStage].r;
+        const top = b.position.y - r;
+        // 경고선을 살짝 스친 정도는 무시하고, 몸통 지름의 60% 이상이
+        // 선 위로 넘어왔을 때만 위험 상태로 판정한다.
+        const overlap = CONFIG.dangerLineY - top; // 선을 넘어간 길이
+        const overlapRatio = overlap / (r * 2);
+        if (overlapRatio >= CONFIG.dangerOverlapRatio) {
+          over = true; break;
+        }
+      }
+      if (over) {
+        this.dangerTimer += 16.7;
+        if (this.cb.onDangerTick) this.cb.onDangerTick(this.dangerTimer / CONFIG.dangerHoldMs);
+        if (this.dangerTimer >= CONFIG.dangerHoldMs) {
+          this._triggerGameOver();
+        }
+      } else {
+        if (this.dangerTimer > 0 && this.cb.onDangerTick) this.cb.onDangerTick(0);
+        this.dangerTimer = 0;
+      }
+    }
+
+    _triggerGameOver(){
+      if (this.gameOver) return;
+      this.gameOver = true;
+      if (this.cb.onGameOver) this.cb.onGameOver(this.score);
+    }
+
+    _draw(){
+      const ctx = this.ctx || (this.ctx = this.canvas.getContext('2d'));
+      const W = this.canvas.width, H = this.canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      // 배경
+      ctx.fillStyle = '#160F27';
+      ctx.fillRect(0, 0, W, H);
+
+      // 경고선
+      ctx.save();
+      ctx.strokeStyle = this.dangerTimer > 0 ? '#FF4757' : 'rgba(255,255,255,0.18)';
+      ctx.setLineDash([6,6]);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(CONFIG.wallThickness, CONFIG.dangerLineY);
+      ctx.lineTo(W - CONFIG.wallThickness, CONFIG.dangerLineY);
+      ctx.stroke();
+      ctx.restore();
+
+      const bodies = Composite.allBodies(this.world).filter(b => !b.isStatic);
+      for (const b of bodies) {
+        b.squashSx += (1 - b.squashSx) * CONFIG.squashLerp;
+        b.squashSy += (1 - b.squashSy) * CONFIG.squashLerp;
+        drawSlime(ctx, b.position.x, b.position.y, b.slimeStage, b.squashSx, b.squashSy, b.angle);
+      }
+
+      // 드롭 커서 미리보기
+      if (!this.gameOver) {
+        const r = STAGES[this.currentDropStage].r;
+        drawSlime(ctx, this.cursorX, CONFIG.topMargin - 10 + r*0.2, this.currentDropStage, 1, 1, 0, 0.55);
+      }
+    }
+
+    _loop(){
+      this._checkDanger();
+      this._draw();
+      this._raf = requestAnimationFrame(() => this._loop());
+    }
+
+    destroy(){
+      if (this._raf) cancelAnimationFrame(this._raf);
+      Runner.stop(this.runner);
+      window.removeEventListener('keydown', this._onKey);
+    }
+  }
+
+  /* =========================================================
+     3. 슬라임 렌더링 — 메이플스토리 슬라임 참고
+     (둥근 윗면 + 아래쪽 3단 물방울 프릴 실루엣, 두꺼운 검정 윤곽선,
+      플랫한 셀 셰이딩, 동그란 점 눈 위주의 심플한 표정)
+  ========================================================= */
+  const OUTLINE = '#1A1420';
+
+  // 슬라임 몸통 실루엣 — 옐로우 큐브 슬라임(4단계)만 둥근 정육면체,
+  // 나머지는 메이플스토리 슬라임처럼 윗면은 둥글고 아랫면은 3개의 물방울이
+  // 흘러내리는 듯한 프릴(scallop) 모양.
+  function bodyPath(ctx, r, stageIndex){
+    ctx.beginPath();
+    if (stageIndex === 4) {
+      const rr = r * 0.32, s = r * 0.9;
+      ctx.moveTo(-s + rr, -s);
+      ctx.lineTo(s - rr, -s);
+      ctx.quadraticCurveTo(s, -s, s, -s + rr);
+      ctx.lineTo(s, s - rr);
+      ctx.quadraticCurveTo(s, s, s - rr, s);
+      ctx.lineTo(-s + rr, s);
+      ctx.quadraticCurveTo(-s, s, -s, s - rr);
+      ctx.lineTo(-s, -s + rr);
+      ctx.quadraticCurveTo(-s, -s, -s + rr, -s);
+      ctx.closePath();
+      return;
+    }
+    // 왼쪽 옆면 → 둥근 윗면 → 오른쪽 옆면
+    ctx.moveTo(-r*0.96, -r*0.08);
+    ctx.bezierCurveTo(-r*0.96, -r*1.05, r*0.96, -r*1.05, r*0.96, -r*0.08);
+    // 오른쪽 옆면에서 첫 번째(오른쪽) 물방울 프릴로
+    ctx.bezierCurveTo(r*1.0, r*0.32, r*0.86, r*0.5, r*0.6, r*0.58);
+    // 오른쪽 프릴 봉우리 → 골
+    ctx.bezierCurveTo(r*0.48, r*0.78, r*0.28, r*0.78, r*0.2, r*0.58);
+    // 골 → 가운데(가장 낮은) 프릴 봉우리
+    ctx.bezierCurveTo(r*0.1, r*0.92, -r*0.1, r*0.92, -r*0.2, r*0.58);
+    // 골 → 왼쪽 프릴 봉우리
+    ctx.bezierCurveTo(-r*0.28, r*0.78, -r*0.48, r*0.78, -r*0.6, r*0.58);
+    // 왼쪽 프릴에서 다시 왼쪽 옆면으로
+    ctx.bezierCurveTo(-r*0.86, r*0.5, -r*1.0, r*0.32, -r*0.96, -r*0.08);
+    ctx.closePath();
+  }
+
+  function drawCrown(ctx, r, color, big){
+    const cw = r * (big ? 1.0 : 0.9), ch = r * (big ? 0.46 : 0.4), cy = -r * (big ? 1.0 : 0.92);
+    ctx.lineWidth = Math.max(1.4, r*0.045);
+    ctx.strokeStyle = OUTLINE;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(-cw/2, cy+ch);
+    ctx.lineTo(-cw/2, cy);
+    ctx.lineTo(-cw/4, cy+ch*0.5);
+    ctx.lineTo(0, cy-ch*0.35);
+    ctx.lineTo(cw/4, cy+ch*0.5);
+    ctx.lineTo(cw/2, cy);
+    ctx.lineTo(cw/2, cy+ch);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#FF6B9D';
+    ctx.beginPath(); ctx.arc(0, cy-ch*0.35, r*0.07, 0, Math.PI*2); ctx.fill();
+  }
+
+  function drawLashes(ctx, r, eyeX, eyeY){
+    ctx.strokeStyle = OUTLINE;
+    ctx.lineWidth = Math.max(1, r*0.035);
+    ctx.lineCap = 'round';
+    [-1, 1].forEach(dir => {
+      for (let i = 0; i < 3; i++) {
+        const bx = dir*eyeX + (i-1)*r*0.07;
+        ctx.beginPath();
+        ctx.moveTo(bx, eyeY - r*0.16);
+        ctx.lineTo(bx + dir*r*0.06, eyeY - r*0.3);
+        ctx.stroke();
+      }
+    });
+  }
+
+  // 단계 이름에 맞는 액세서리 (모두 두꺼운 검정 윤곽선으로 몸통과 톤을 맞춤)
+  function drawAccessory(ctx, stageIndex, r, eyeX, eyeY){
+    ctx.lineJoin = 'round';
+    if (stageIndex === 1) { // 미니 쁘띠 슬라임 — 정수리 리본
+      ctx.lineWidth = Math.max(1.2, r*0.045);
+      ctx.strokeStyle = OUTLINE;
+      ctx.fillStyle = '#FF6B9D';
+      [-1,1].forEach(dir=>{
+        ctx.beginPath();
+        ctx.moveTo(0, -r*0.98);
+        ctx.lineTo(dir*r*0.3, -r*1.22);
+        ctx.lineTo(dir*r*0.06, -r*0.98);
+        ctx.lineTo(dir*r*0.3, -r*0.74);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+      });
+      ctx.fillStyle = '#C0397A';
+      ctx.beginPath(); ctx.arc(0, -r*0.98, r*0.09, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    } else if (stageIndex === 4) { // 옐로우 큐브 슬라임 — 모서리 광택으로 "큐브" 느낌 강조
+      ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+      ctx.lineWidth = Math.max(1, r*0.05);
+      ctx.beginPath(); ctx.moveTo(-r*0.55,-r*0.72); ctx.lineTo(r*0.2,-r*0.72); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(r*0.7,-r*0.4); ctx.lineTo(r*0.7,r*0.2); ctx.stroke();
+    } else if (stageIndex === 5) { // 마법사 슬라임 — 뾰족 마법사 모자
+      ctx.lineWidth = Math.max(1.2, r*0.045);
+      ctx.strokeStyle = OUTLINE;
+      ctx.beginPath();
+      ctx.moveTo(-r*0.45, -r*0.92);
+      ctx.lineTo(r*0.45, -r*0.92);
+      ctx.lineTo(0, -r*1.82);
+      ctx.closePath();
+      ctx.fillStyle = '#5B3E9E'; ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(0, -r*0.92, r*0.5, r*0.12, 0, 0, Math.PI*2);
+      ctx.fillStyle = '#43296E'; ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#FFD93D';
+      ctx.beginPath(); ctx.arc(0, -r*1.82, r*0.1, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    } else if (stageIndex === 6) { // 메탈 슬라임 — 은빛 금속 광택 줄무늬
+      ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+      ctx.lineWidth = Math.max(1, r*0.045);
+      [0.4, 0.58, 0.76].forEach(rad=>{
+        ctx.beginPath(); ctx.arc(0, 0, r*rad, Math.PI*1.12, Math.PI*1.42); ctx.stroke();
+      });
+    } else if (stageIndex === 7) { // 엔젤 슬라임 — 날개 + 헤일로
+      ctx.lineWidth = Math.max(1.2, r*0.04);
+      ctx.strokeStyle = '#E0A800';
+      ctx.beginPath(); ctx.ellipse(0, -r*1.18, r*0.3, r*0.09, 0, 0, Math.PI*2); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.92)';
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = Math.max(1.2, r*0.04);
+      [-1,1].forEach(dir=>{
+        ctx.beginPath();
+        ctx.ellipse(dir*r*0.9, -r*0.1, r*0.46, r*0.25, dir*0.5, 0, Math.PI*2);
+        ctx.fill(); ctx.stroke();
+      });
+    } else if (stageIndex === 8) { // 돌연변이 마그마 슬라임 — 둥근 화염 뿔 + 몸통 측면 용암 광택 (얼굴 주변은 비움)
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = Math.max(1, r*0.035);
+      ctx.fillStyle = '#FF9F5A';
+      ctx.lineJoin = 'round';
+      const spikeH = [0.9, 1.0, 0.82, 1.0, 0.9]; // 자연스럽게 높이를 조금씩 다르게
+      for (let k=-2;k<=2;k++){
+        const bx = k*r*0.26, baseY = -r*0.62, tipY = -r*(0.62 + 0.42*spikeH[k+2]);
+        ctx.beginPath();
+        ctx.moveTo(bx - r*0.09, baseY);
+        ctx.quadraticCurveTo(bx, tipY, bx + r*0.09, baseY);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+      }
+      // 몸통 측면의 용암 광택 (얼굴과 겹치지 않는 좌우 아래쪽)
+      ctx.fillStyle = 'rgba(255,210,76,0.55)';
+      [-1,1].forEach(dir=>{
+        ctx.beginPath();
+        ctx.ellipse(dir*r*0.55, r*0.4, r*0.14, r*0.09, dir*0.3, 0, Math.PI*2);
+        ctx.fill();
+      });
+    } else if (stageIndex === 9) { // 퀸 슬라임 — 왕관 + 속눈썹
+      drawCrown(ctx, r, '#FFD700', false);
+      drawLashes(ctx, r, eyeX, eyeY);
+    } else if (stageIndex === 10) { // 킹 슬라임 — 크고 둔탁한 왕관 + 굵은 눈썹
+      drawCrown(ctx, r, '#2E1D57', true);
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = Math.max(1.8, r*0.06);
+      ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-eyeX-r*0.16, eyeY-r*0.3); ctx.lineTo(-eyeX+r*0.15, eyeY-r*0.18); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(eyeX-r*0.15, eyeY-r*0.18); ctx.lineTo(eyeX+r*0.16, eyeY-r*0.3); ctx.stroke();
+    }
+  }
+
+  function drawSlime(ctx, x, y, stageIndex, sx, sy, angle, alpha){
+    const s = STAGES[stageIndex];
+    const r = s.r;
+    ctx.save();
+    ctx.globalAlpha = alpha === undefined ? 1 : alpha;
+    ctx.translate(x, y);
+    ctx.scale(sx, sy);
+
+    // 접지 그림자
+    ctx.beginPath();
+    ctx.ellipse(0, r*0.85, r*0.62, r*0.15, 0, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(0,0,0,0.18)';
+    ctx.fill();
+
+    // 몸통 — 플랫한 셀 셰이딩(그라데이션 폭을 좁혀 메이플 특유의 또렷한 젤리 톤 표현)
+    bodyPath(ctx, r, stageIndex);
+    const grad = ctx.createRadialGradient(-r*0.3, -r*0.5, r*0.06, 0, -r*0.05, r*1.15);
+    grad.addColorStop(0, '#ffffff');
+    grad.addColorStop(0.32, s.color);
+    grad.addColorStop(1, s.dark);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // 두꺼운 검정 윤곽선 — 메이플스토리 특유의 카툰 아웃라인
+    ctx.lineWidth = Math.max(2.2, r*0.07);
+    ctx.strokeStyle = OUTLINE;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // 아랫부분 음영으로 입체감
+    ctx.save();
+    bodyPath(ctx, r, stageIndex);
+    ctx.clip();
+    ctx.beginPath();
+    ctx.ellipse(0, r*0.5, r*0.85, r*0.45, 0, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(0,0,0,0.14)';
+    ctx.fill();
+    ctx.restore();
+
+    // 젤리 광택 (좌상단 하이라이트 한 덩이 — 메이플 슬라임 특유의 심플한 광택)
+    ctx.beginPath();
+    ctx.ellipse(-r*0.32, -r*0.55, r*0.24, r*0.14, -0.5, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fill();
+
+    // 눈 — 동그란 검정 점 눈 (메이플 슬라임 특유의 심플한 표정)
+    const eyeRX = Math.max(1.6, r*0.09), eyeRY = eyeRX * 1.3;
+    const eyeY = -r*0.1, eyeX = r*0.28;
+    ctx.fillStyle = OUTLINE;
+    ctx.beginPath(); ctx.ellipse(-eyeX, eyeY, eyeRX, eyeRY, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(eyeX, eyeY, eyeRX, eyeRY, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.beginPath(); ctx.arc(-eyeX+eyeRX*0.3, eyeY-eyeRY*0.35, eyeRX*0.32, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(eyeX+eyeRX*0.3, eyeY-eyeRY*0.35, eyeRX*0.32, 0, Math.PI*2); ctx.fill();
+
+    // 입 — 기본 5종(방울~옐로우 큐브)은 메이플 슬라임처럼 입 없이 눈만으로 표정을 내고,
+    // 진화한 단계(마법사 이상)만 감정을 더 드러내는 살짝 벌린 입을 그림
+    if (stageIndex >= 5) {
+      ctx.beginPath();
+      ctx.arc(0, r*0.14, r*0.2, 0.15*Math.PI, 0.85*Math.PI);
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = Math.max(1, r*0.045);
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    }
+
+    drawAccessory(ctx, stageIndex, r, eyeX, eyeY);
+    ctx.restore();
+  }
+
+  /* =========================================================
+     4. 사이드 진화 체인 패널 렌더
+  ========================================================= */
+  function renderChainList(container, reachedStage){
+    container.innerHTML = '';
+    STAGES.forEach((s, i) => {
+      const row = document.createElement('div');
+      row.className = 'chain-item' + (i <= reachedStage ? ' reached' : '');
+      row.innerHTML = `<span class="dot" style="background:${s.color}"></span>${i+1}단계 · ${s.name}`;
+      container.appendChild(row);
+    });
+  }
+
+  function setNextUI(prefix, currentStage){
+    document.getElementById(prefix+'-next-swatch').style.background = STAGES[currentStage].color;
+    document.getElementById(prefix+'-next-name').textContent = STAGES[currentStage].name;
+  }
+
+  /* =========================================================
+     5. 솔로 모드
+  ========================================================= */
+  let soloBoard = null;
+  let soloBest = 0;
+
+  function startSolo(){
+    if (soloBoard) soloBoard.destroy();
+    hideResult();
+    showScreen('solo');
+    renderChainList(document.getElementById('solo-chain'), -1);
+    document.getElementById('solo-score').textContent = '0';
+    document.getElementById('solo-best').textContent = soloBest;
+    const vignette = document.getElementById('vignette-solo');
+    vignette.classList.remove('active');
+
+    const canvas = document.getElementById('canvas-solo');
+    soloBoard = new SlimeBoard(canvas, {
+      onScore: (score) => { document.getElementById('solo-score').textContent = score; },
+      onNext: (cur) => setNextUI('solo', cur),
+      onStageReached: (stage) => renderChainList(document.getElementById('solo-chain'), stage),
+      onDangerTick: (ratio) => { vignette.classList.toggle('active', ratio > 0); },
+      onGameOver: (score) => {
+        soloBest = Math.max(soloBest, score);
+        document.getElementById('solo-best').textContent = soloBest;
+        showResult({
+          emoji: '🫧', title: '게임 오버', sub: '최종 점수 · 최고 기록 ' + soloBest,
+          score, mode: 'solo'
+        });
+      }
+    });
+  }
+
+  document.getElementById('btn-solo').addEventListener('click', startSolo);
+  document.getElementById('solo-restart').addEventListener('click', startSolo);
+  document.getElementById('solo-back').addEventListener('click', () => {
+    if (soloBoard) { soloBoard.destroy(); soloBoard = null; }
+    showScreen('menu');
+  });
+
+  /* =========================================================
+     6. 상대방 화면 실시간 렌더러 — 물리 연산 없이 수신된 좌표만 그림
+  ========================================================= */
+  class OpponentView {
+    constructor(canvas){
+      this.canvas = canvas;
+      canvas.width = CONFIG.containerWidth;
+      canvas.height = CONFIG.containerHeight + CONFIG.topMargin;
+      this.ctx = canvas.getContext('2d');
+      this.state = null;
+      this._raf = null;
+      this._tick();
+    }
+    setState(state){ this.state = state; }
+    _tick(){
+      this._draw();
+      this._raf = requestAnimationFrame(() => this._tick());
+    }
+    _draw(){
+      const ctx = this.ctx, W = this.canvas.width, H = this.canvas.height;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#160F27';
+      ctx.fillRect(0, 0, W, H);
+
+      const danger = !!(this.state && this.state.dangerRatio > 0);
+      ctx.save();
+      ctx.strokeStyle = danger ? '#FF4757' : 'rgba(255,255,255,0.18)';
+      ctx.setLineDash([6,6]);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(CONFIG.wallThickness, CONFIG.dangerLineY);
+      ctx.lineTo(W - CONFIG.wallThickness, CONFIG.dangerLineY);
+      ctx.stroke();
+      ctx.restore();
+
+      if (!this.state) return;
+      for (const b of this.state.bodies) {
+        drawSlime(ctx, b.x, b.y, b.stage, b.sx || 1, b.sy || 1, 0);
+      }
+      if (this.state.cursorStage !== undefined) {
+        const r = STAGES[this.state.cursorStage].r;
+        drawSlime(ctx, this.state.cursorX, CONFIG.topMargin - 10 + r*0.2, this.state.cursorStage, 1, 1, 0, 0.55);
+      }
+    }
+    destroy(){ if (this._raf) cancelAnimationFrame(this._raf); }
+  }
+
+  /* =========================================================
+     7. 멀티 모드 (PeerJS 기반 P2P 1:1, 양쪽 화면 실시간 표시)
+  ========================================================= */
+  let peer = null, conn = null, multiBoard = null, opponentView = null;
+  let myResult = null; // 'win' | 'lose' | null
+  let isHost = false;
+  let stateInterval = null;
+  let opponentSeen = false;
+
+  function resetMultiUI(){
+    document.getElementById('opp-score-text').textContent = '0';
+    document.getElementById('opp-waiting').classList.remove('hidden');
+    document.getElementById('vignette-opponent').classList.remove('active');
+    opponentSeen = false;
+  }
+
+  document.getElementById('btn-multi').addEventListener('click', () => {
+    showScreen('multiSetup');
+    document.getElementById('multi-status').textContent = '';
+    startHostFlow();
+  });
+  document.getElementById('multi-setup-back').addEventListener('click', () => {
+    teardownPeer();
+    showScreen('menu');
+  });
+
+  document.getElementById('tab-host').addEventListener('click', () => {
+    document.getElementById('panel-host').classList.remove('hidden');
+    document.getElementById('panel-join').classList.add('hidden');
+    startHostFlow();
+  });
+  document.getElementById('tab-join').addEventListener('click', () => {
+    document.getElementById('panel-host').classList.add('hidden');
+    document.getElementById('panel-join').classList.remove('hidden');
+    teardownPeer();
+  });
+  document.getElementById('copy-code').addEventListener('click', () => {
+    const code = document.getElementById('host-code').textContent;
+    navigator.clipboard && navigator.clipboard.writeText(code);
+    setStatus('코드가 복사되었습니다.');
+  });
+  document.getElementById('join-btn').addEventListener('click', () => {
+    const code = document.getElementById('join-input').value.trim();
+    if (!code) { setStatus('방 코드를 입력해주세요.'); return; }
+    joinRoom(code);
+  });
+
+  function setStatus(msg){ document.getElementById('multi-status').textContent = msg; }
+
+  function teardownPeer(){
+    if (conn) { try{ conn.close(); }catch(e){} conn = null; }
+    if (peer) { try{ peer.destroy(); }catch(e){} peer = null; }
+  }
+
+  function startHostFlow(){
+    teardownPeer();
+    isHost = true;
+    document.getElementById('host-code').textContent = '코드 생성 중...';
+    setStatus('상대방을 기다리는 중...');
+    peer = new Peer();
+    peer.on('open', (id) => {
+      document.getElementById('host-code').textContent = id;
+    });
+    peer.on('connection', (c) => {
+      conn = c;
+      wireConnection();
+    });
+    peer.on('error', (err) => setStatus('연결 오류: ' + err.type));
+  }
+
+  function joinRoom(code){
+    teardownPeer();
+    isHost = false;
+    setStatus('연결 중...');
+    peer = new Peer();
+    peer.on('open', () => {
+      conn = peer.connect(code, { reliable:true });
+      conn.on('open', () => { wireConnection(); });
+    });
+    peer.on('error', (err) => setStatus('연결 오류: ' + err.type));
+  }
+
+  function wireConnection(){
+    setStatus('연결 완료! 대결을 시작합니다.');
+    conn.on('data', handlePeerData);
+    conn.on('close', () => {
+      setStatus('상대방과 연결이 끊어졌습니다.');
+      const waitEl = document.getElementById('opp-waiting');
+      if (waitEl) { waitEl.textContent = '상대방과 연결이 끊어졌습니다.'; waitEl.classList.remove('hidden'); }
+    });
+    startMultiGame();
+  }
+
+  function handlePeerData(data){
+    if (!data || !data.type) return;
+    if (data.type === 'state') {
+      if (!opponentSeen) {
+        opponentSeen = true;
+        document.getElementById('opp-waiting').classList.add('hidden');
+      }
+      document.getElementById('opp-score-text').textContent = data.score;
+      document.getElementById('vignette-opponent').classList.toggle('active', data.dangerRatio > 0);
+      if (opponentView) opponentView.setState(data);
+    } else if (data.type === 'win') {
+      finishMulti('lose', data.score);
+    } else if (data.type === 'lose') {
+      finishMulti('win', null);
+    }
+  }
+
+  function sendPeer(obj){
+    if (conn && conn.open) { try{ conn.send(obj); }catch(e){} }
+  }
+
+  function startMultiGame(){
+    showScreen('multiGame');
+    resetMultiUI();
+    myResult = null;
+    if (multiBoard) multiBoard.destroy();
+    if (opponentView) opponentView.destroy();
+    if (stateInterval) clearInterval(stateInterval);
+    const vignette = document.getElementById('vignette-multi');
+    vignette.classList.remove('active');
+    document.getElementById('multi-score').textContent = '0';
+
+    const canvas = document.getElementById('canvas-multi');
+    multiBoard = new SlimeBoard(canvas, {
+      onScore: (score) => {
+        document.getElementById('multi-score').textContent = score;
+      },
+      onNext: (cur) => setNextUI('multi', cur),
+      onDangerTick: (ratio) => { vignette.classList.toggle('active', ratio > 0); },
+      onKingSlime: () => {
+        if (myResult) return;
+        sendPeer({ type:'win', score: multiBoard.score });
+        finishMulti('win', multiBoard.score);
+      },
+      onGameOver: (score) => {
+        if (myResult) return;
+        sendPeer({ type:'lose' });
+        finishMulti('lose', score);
+      }
+    });
+
+    opponentView = new OpponentView(document.getElementById('canvas-opponent'));
+
+    // 내 보드 상태를 초당 약 12회 상대에게 전송 — 실시간 상대 화면 표시용
+    stateInterval = setInterval(() => {
+      if (!multiBoard || multiBoard.gameOver) return;
+      const bodies = Composite.allBodies(multiBoard.world)
+        .filter(b => !b.isStatic)
+        .map(b => ({
+          x: Math.round(b.position.x), y: Math.round(b.position.y),
+          stage: b.slimeStage,
+          sx: Math.round(b.squashSx * 100) / 100, sy: Math.round(b.squashSy * 100) / 100
+        }));
+      sendPeer({
+        type: 'state',
+        bodies,
+        cursorStage: multiBoard.currentDropStage,
+        cursorX: Math.round(multiBoard.cursorX),
+        score: multiBoard.score,
+        dangerRatio: multiBoard.dangerTimer > 0 ? 1 : 0
+      });
+    }, 80);
+  }
+
+  function finishMulti(result, oppOrScore){
+    if (myResult) return;
+    myResult = result;
+    if (multiBoard) multiBoard.gameOver = true;
+    if (stateInterval) { clearInterval(stateInterval); stateInterval = null; }
+    if (result === 'win') {
+      showResult({ emoji:'👑', title:'승리! 킹 슬라임 완성', sub:'상대보다 먼저 킹 슬라임을 만들었습니다', score: multiBoard ? multiBoard.score : 0, mode:'multi' });
+    } else {
+      showResult({ emoji:'💧', title:'패배', sub:'상대가 먼저 킹 슬라임을 만들었습니다', score: multiBoard ? multiBoard.score : 0, mode:'multi' });
+    }
+  }
+
+  /* =========================================================
+     7. 결과창 버튼
+  ========================================================= */
+  document.getElementById('result-retry').addEventListener('click', () => {
+    const mode = overlay.dataset.mode;
+    hideResult();
+    if (mode === 'solo') startSolo();
+    else startMultiGame();
+  });
+  document.getElementById('result-menu').addEventListener('click', () => {
+    hideResult();
+    if (soloBoard) { soloBoard.destroy(); soloBoard = null; }
+    if (multiBoard) { multiBoard.destroy(); multiBoard = null; }
+    if (opponentView) { opponentView.destroy(); opponentView = null; }
+    if (stateInterval) { clearInterval(stateInterval); stateInterval = null; }
+    teardownPeer();
+    showScreen('menu');
+  });
+
+  /* 초기 화면 */
+  showScreen('menu');
+})();
+</script>
+</body>
+</html>
