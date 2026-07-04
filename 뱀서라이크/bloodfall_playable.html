@@ -166,6 +166,28 @@
     50%{ box-shadow:0 0 18px rgba(212,175,55,0.45); }
   }
 
+  /* ---------- 무정지 카드 선택 패널 (§33): 게임을 멈추지 않고 화면 측면에 표시 ---------- */
+  .choice-panel{
+    position:absolute; top:96px; width:200px; z-index:8;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  #choicePanelP1{ left:12px; }
+  #choicePanelP2{ right:12px; }
+  .choice-title{ font-family:'Press Start 2P', monospace; font-size:9px; color:var(--gold); text-align:center; }
+  .choice-timer{ height:4px; background:rgba(255,255,255,0.10); border-radius:2px; overflow:hidden; }
+  .choice-timer-fill{ height:100%; width:100%; background:linear-gradient(90deg, var(--gold), #ff6b81); }
+  #choiceCardsP1, #choiceCardsP2{ display:flex; flex-direction:column; gap:8px; }
+  .mini-card{
+    background:rgba(21,13,26,0.92); border:1px solid var(--line); border-radius:6px;
+    padding:9px 11px; cursor:pointer; transition:transform .12s ease, border-color .12s ease;
+  }
+  .mini-card:hover{ transform:translateX(3px); border-color:var(--gold); }
+  .mini-card .rarity{ font-family:'Press Start 2P', monospace; font-size:7px; color:var(--bone-dim); display:block; margin-bottom:4px; }
+  .mini-card.evolution{ border-color:rgba(212,175,55,0.7); }
+  .mini-card.evolution .rarity{ color:var(--gold); }
+  .mini-card h4{ font-family:'Cinzel', serif; font-size:13px; margin:0 0 3px; }
+  .mini-card p{ font-size:11px; color:var(--bone-dim); margin:0; line-height:1.45; }
+
   .result-stats{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   .stat{ background:var(--panel-2); border:1px solid var(--line); border-radius:4px; padding:14px 22px; min-width:120px; }
   .stat .v{ font-family:'Press Start 2P', monospace; font-size:18px; color:var(--gold); }
@@ -202,8 +224,8 @@
           <span class="lv-tag" id="lvP2">Lv1</span>
         </div>
       </div>
-      <div class="timer-chip" id="timerChip">03:00</div>
-      <div class="stage-label" id="stageLabel">STAGE 1 · 잠긴 묘지</div>
+      <div class="timer-chip" id="timerChip">20:00</div>
+      <div class="stage-label" id="stageLabel">ACT 1 · 잠긴 묘지</div>
       <div class="kill-count" id="killCount">0 KILLS<span class="small">TEAM SCORE</span></div>
       <div class="down-flag" id="downFlagP1">P1 DOWN</div>
       <div class="down-flag" id="downFlagP2">P2 DOWN</div>
@@ -235,15 +257,22 @@
       <p class="controls-help">
         <b>온라인 / 1인</b> — W A S D 이동 · <b>마우스로 조준</b> · <b>마우스 왼쪽 클릭</b>을 누르는 동안 발사<br>
         <b>로컬 2인 협동의 P2</b> — 방향키 이동 · <b>Enter</b>로 발사 (이동 방향이 곧 조준 방향)<br>
+        시작 시 <b>주무기 카드(피스톨/샷건/레이저)</b>를 10초 안에 1장 선택합니다. 레벨업 카드도 게임이 멈추지 않은 채 10초 안에 선택합니다.<br>
         체력이 0이 되면 <b>다운</b> 상태가 됩니다. 파트너가 가까이 다가가 잠시 머물면 부활합니다.<br>
         <span style="color:var(--bone-dim); font-size:11px;">※ 온라인 모드는 PeerJS 기반 실제 P2P(WebRTC) 연결입니다. 방화벽/네트워크 환경에 따라 연결이 안 될 수 있습니다.</span>
       </p>
     </div>
 
-    <!-- 레벨업 카드 선택 -->
-    <div class="overlay hidden" id="levelupOverlay">
-      <div class="levelup-title" id="levelupTitle">P1 LEVEL UP</div>
-      <div class="cards" id="cardsRow"></div>
+    <!-- 무정지 카드 선택 패널 (§31, §33): 레벨업/시작 드래프트/보스 전리품. 게임을 멈추지 않는다 -->
+    <div class="choice-panel hidden" id="choicePanelP1">
+      <div class="choice-title" id="choiceTitleP1"></div>
+      <div class="choice-timer"><div class="choice-timer-fill" id="choiceTimerP1"></div></div>
+      <div id="choiceCardsP1"></div>
+    </div>
+    <div class="choice-panel hidden" id="choicePanelP2">
+      <div class="choice-title" id="choiceTitleP2"></div>
+      <div class="choice-timer"><div class="choice-timer-fill" id="choiceTimerP2"></div></div>
+      <div id="choiceCardsP2"></div>
     </div>
 
     <!-- 결과 화면 -->
@@ -257,13 +286,15 @@
     </div>
   </div>
 
-  <footer>BLOODFALL 프로토타입 v0.1 · 기획서 §9 Must-Have 범위 기준 구현</footer>
+  <footer>BLOODFALL 프로토타입 v0.9 · 기획서 §27~§33 (보스 게이트 · 주무기 드래프트 · 경험치 분배 · 무정지 레벨업) 반영</footer>
 </div>
 
 <script>
 /* 게임 전체 상태와 조절 수치를 이 CONFIG 한곳에 모아둔다. 난이도 조절은 여기서만 한다. */
 const CONFIG = {
-  ROUND_SECONDS: 180,           // 라운드 길이(초). 기획서 기준 10~15분이나, 테스트 편의상 3분으로 설정.
+  ROUND_SECONDS: 1200,          // 라운드 길이(초). 기획서 §27 기준 20분. 보스 게이트 동안 타이머가 정지하므로 실제 플레이는 더 길다.
+  CHOICE_SECONDS: 10,           // 카드 선택 제한시간(초). 시간 내 미선택 시 무작위 자동 선택 (§33)
+  EXP_SHARE: 0.7,               // 경험치 분배: 직접 주운 사람 100%, 파트너 70% (§32)
   ARENA_W: 900,   // 화면(뷰포트) 크기 - 카메라가 이 크기만큼만 보여준다
   ARENA_H: 560,
   WORLD_W: 2700,  // 실제 맵 크기 (뷰포트의 약 3배) - 카메라가 이 안을 돌아다닌다
@@ -277,6 +308,8 @@ const CONFIG = {
     pickupRadius: 55,
   },
   MAX_LEVEL: 5, // 무기·패시브가 강화될 수 있는 최대 레벨(횟수)
+  MAIN_WEAPONS: ['bullet', 'shotgun', 'laser'],       // 주무기(수동 조준·발사): 시작 드래프트로 정확히 1개 장착 (§30). bullet = 피스톨
+  SUB_WEAPONS: ['whip', 'aura', 'shuriken', 'drone'], // 보조무기(자동 발동): 레벨업 카드로 제한 없이 획득
   WEAPON: {
     bullet: { damage: 11, cooldown: 0.28, range: 300, speed: 480 },
     whip: { damage: 14, cooldown: 0.62, range: 78 },
@@ -304,16 +337,30 @@ const CONFIG = {
               dashRange: 150, dashSpeed: 340, dashWindup: 0.35, dashDuration: 0.4, dashCooldown: 3.2, dashDamageMul: 1.6 },
     caster: { grade:'ranged', hp: 30, speed: 58, damage: 5,  radius: 13, exp: 11,  color:'#6a3a9c',
               keepDistance: 170, approachDistance: 230, fireRange: 260, fireCooldown: 2.0, boltSpeed: 210, boltDamage: 9 },
+    // Act별 해금 신규 몬스터 (§29): 신속형 / 자폭형 / 탱커형
+    bat:    { grade:'swarm',  hp: 8,   speed: 150, damage: 5,  radius: 9,  exp: 4,   color:'#b3455f',
+              packMin: 3, packMax: 5, zigzagFreq: 5, zigzagAmp: 0.7 },
+    bomber: { grade:'bomber', hp: 24,  speed: 82,  damage: 6,  radius: 13, exp: 12,  color:'#7a8f2a',
+              fuseRange: 55, fuseTime: 0.8, blastRadius: 72, blastDamage: 20 },
+    golem:  { grade:'tank',   hp: 220, speed: 34,  damage: 20, radius: 22, exp: 60,  color:'#5a5e6e' },
     boss:   { grade:'boss',   hp: 900, speed: 40, damage: 22, radius: 34, exp: 150, color:'#ff2d4d' },
+    graveWarden:  { grade:'boss', hp: 850,  speed: 44, damage: 20, radius: 32, exp: 220, color:'#8a8a6a' },
     curseMother:  { grade:'boss', hp: 780,  speed: 50, damage: 14, radius: 30, exp: 200, color:'#4a2064' },
     nightfallDuke:{ grade:'boss', hp: 1150, speed: 42, damage: 26, radius: 36, exp: 280, color:'#3a0a1a' },
   },
+  // 붉은 각인 (§29): Act 4 해금. 기존 몬스터가 낮은 확률로 붉은 아우라를 두른 강화 개체로 등장한다
+  RED_MARK: { chance: 0.12, hpMul: 2, speedMul: 1.2, expMul: 2, types: ['ghoul','wraith','caster'] },
   // 보스 전용 특수 패턴. telegraph(예고 시간) 동안 경고 이펙트를 보여준 뒤 실제 공격이 발동한다.
   BOSS_ATTACKS: {
     slam:    { telegraph: 0.8, radius: 130, damage: 30, cooldown: 4.5 },               // 넓은 범위 강타
     burst:   { telegraph: 0.6, count: 10, boltSpeed: 220, boltDamage: 14, cooldown: 6 }, // 전방위 탄막
     summon:  { telegraph: 0.5, count: 2, cooldown: 8 },                                 // 구울 소환 (2페이즈부터)
     charge:  { telegraph: 0.5, speed: 560, duration: 0.45, damage: 26, cooldown: 5 },    // 돌진 (3페이즈부터)
+    // Act 2 보스 — 그레이브 워든 (지형 통제형, §28)
+    chainSweep: { telegraph: 0.7, radius: 150, damage: 24, cooldown: 5 },                 // 보스 주변 회전 광역 + 넉백
+    boneCage:   { telegraph: 0.8, radius: 92, pillarCount: 12, gapSize: 3, pillarRadius: 9, duration: 6, cooldown: 11 }, // 대상 주위 뼈 기둥 링 (일시 충돌 지형, 틈으로 탈출 가능)
+    graveBurst: { telegraph: 0.8, radius: 62, damage: 18, count: 3, searchRadius: 280, cooldown: 8 }, // 주변 묘비 장식(§26.1)이 예고 후 폭발
+    chainSlam:  { telegraph: 0.6, radius: 105, damage: 24, repeats: 3, cooldown: 9 },     // 플레이어를 따라가며 강타 3연속
     // 스테이지 2 보스 — 커스 마더 (원거리·소환 특화)
     curseBarrage:  { telegraph: 0.6, count: 5, spread: Math.PI/3, boltSpeed: 200, boltDamage: 12, cooldown: 3.5 },
     summonCaster:  { telegraph: 0.5, count: 2, cooldown: 9 },
@@ -327,27 +374,32 @@ const CONFIG = {
   // 보스 종류별로 페이즈에 따라 사용 가능한 패턴 목록
   BOSS_PATTERNS: {
     boss:          { 1:['slam','burst'], 2:['slam','burst','summon'], 3:['slam','burst','summon','charge'] },
+    graveWarden:   { 1:['chainSweep','boneCage'], 2:['chainSweep','boneCage','graveBurst'], 3:['chainSweep','boneCage','graveBurst','chainSlam'] },
     curseMother:   { 1:['curseBarrage'], 2:['curseBarrage','summonCaster'], 3:['curseBarrage','summonCaster','poisonFog','teleportBurst'] },
     nightfallDuke: { 1:['slam','summonWraith'], 2:['slam','summonWraith','bloodRail'], 3:['slam','summonWraith','bloodRail','charge','bloodRain'] },
   },
-  // 스테이지 구성: 라운드를 3구간으로 나누고, 구간마다 다른 보스가 등장한다
+  // 구간(Act) 구성 (§27.2): 20분을 4구간으로 나누고, 각 구간이 끝나는 시각에 보스가 등장한다.
+  // 보스 등장 시 진행 타이머가 정지하고, 처치해야 다음 구간으로 넘어가며 신규 몬스터가 해금된다.
   STAGE: {
-    count: 3,
-    names: ['잠긴 묘지', '저주받은 안뜰', '나이트폴 첨탑'],
-    bosses: ['boss', 'curseMother', 'nightfallDuke'],
-    bossNames: { boss:'블러드 배런', curseMother:'커스 마더', nightfallDuke:'나이트폴 공작' },
-    bgTint: ['rgba(200,30,58,0.05)', 'rgba(74,32,100,0.10)', 'rgba(58,10,26,0.16)'],
+    count: 4,
+    names: ['잠긴 묘지', '무너진 납골당', '저주받은 안뜰', '나이트폴 첨탑'],
+    bosses: ['boss', 'graveWarden', 'curseMother', 'nightfallDuke'],
+    bossNames: { boss:'블러드 배런', graveWarden:'그레이브 워든', curseMother:'커스 마더', nightfallDuke:'나이트폴 공작' },
+    bgTint: ['rgba(200,30,58,0.05)', 'rgba(138,138,106,0.07)', 'rgba(74,32,100,0.10)', 'rgba(58,10,26,0.16)'],
     propTypes: ['tombstone', 'deadtree', 'spike'], // 맵 곳곳에 흩어지는 배경 장식(비충돌) 테마
   },
   SPAWN: {
     baseInterval: 1.15,
     minInterval: 0.30,
-    intervalDecayPerSec: 0.0045,
+    intervalDecayPerSec: 0.0009, // 20분 라운드(§27) 기준 재조정 - 약 950초에 걸쳐 최소 간격까지 감소
     wraithChanceAt300s: 0.4,     // 시간이 지날수록 레이스 등장 확률이 이 값까지 증가
-    casterChanceAt300s: 0.22,    // 저주술사 등장 확률 상한
+    casterChance: 0.16,          // 저주술사 등장 확률 (Act 2 해금 후)
+    batChance: 0.14,             // 블러드 배트 등장 확률 (Act 2 해금, 3~5마리 무리 스폰)
+    bomberChance: 0.10,          // 시체폭탄병 등장 확률 (Act 3 해금)
+    golemChance: 0.06,           // 무덤지기 골렘 등장 확률 (Act 4 해금)
     countMultiplier: (n) => 1 + 0.7 * (n - 1),  // 기획서 §6.2 인원 비례 스폰 공식
   },
-  LEVEL: { baseExp: 20, growth: 1.15 },
+  LEVEL: { baseExp: 20, growth: 1.2 }, // §32 분배 경험치(팀 합산 170%)로 빨라진 레벨업 속도를 성장 곡선으로 보정
   ITEM_BOX: {
     dropChance: 0.05,     // 몬스터(보스 제외) 처치 시 박스가 등장할 확률
     healPercent: 0.10,    // 포션: 최대 체력의 10% 회복
@@ -383,10 +435,7 @@ const WORLD_PROPS = (function(){
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const menuOverlay = document.getElementById('menuOverlay');
-const levelupOverlay = document.getElementById('levelupOverlay');
 const resultOverlay = document.getElementById('resultOverlay');
-const cardsRow = document.getElementById('cardsRow');
-const levelupTitle = document.getElementById('levelupTitle');
 const hpP1 = document.getElementById('hpP1'), hpP2 = document.getElementById('hpP2');
 const expP1 = document.getElementById('expP1'), expP2 = document.getElementById('expP2');
 const lvP1 = document.getElementById('lvP1'), lvP2 = document.getElementById('lvP2');
@@ -462,6 +511,45 @@ const MONSTER_SVG = {
     <path d="M52 80 Q60 85 68 80" stroke="#2b0f3a" stroke-width="3" fill="none" stroke-linecap="round"/>
     <circle cx="60" cy="98" r="8" fill="#c46bff" opacity="0.85"/>
   </svg>`,
+  bat: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <path d="M14 52 Q30 34 46 48 L46 62 Q30 74 14 52 Z" fill="#8f3448"/>
+    <path d="M106 52 Q90 34 74 48 L74 62 Q90 74 106 52 Z" fill="#8f3448"/>
+    <circle cx="60" cy="58" r="24" fill="#b3455f"/>
+    <path d="M50 38 L54 26 L58 38 Z" fill="#b3455f"/>
+    <path d="M70 38 L66 26 L62 38 Z" fill="#b3455f"/>
+    <circle cx="52" cy="54" r="7" fill="#fff"/>
+    <circle cx="68" cy="54" r="7" fill="#fff"/>
+    <circle cx="53" cy="56" r="3" fill="#2b0f18"/>
+    <circle cx="69" cy="56" r="3" fill="#2b0f18"/>
+    <path d="M54 68 Q60 72 66 68" stroke="#2b0f18" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </svg>`,
+  bomber: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <path d="M60 26 Q64 12 74 14" fill="none" stroke="#4a5518" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="76" cy="12" r="5" fill="#ffcf5a"/>
+    <circle cx="60" cy="66" r="36" fill="#7a8f2a"/>
+    <circle cx="47" cy="58" r="10" fill="#fff"/>
+    <circle cx="73" cy="58" r="10" fill="#fff"/>
+    <circle cx="48" cy="60" r="4" fill="#22300a"/>
+    <circle cx="74" cy="60" r="4" fill="#22300a"/>
+    <path d="M50 80 Q60 88 70 80" stroke="#22300a" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>`,
+  golem: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <rect x="22" y="30" width="76" height="66" rx="14" fill="#5a5e6e"/>
+    <rect x="10" y="48" width="16" height="34" rx="7" fill="#4a4e5c"/>
+    <rect x="94" y="48" width="16" height="34" rx="7" fill="#4a4e5c"/>
+    <circle cx="46" cy="56" r="10" fill="#fff"/>
+    <circle cx="74" cy="56" r="10" fill="#fff"/>
+    <circle cx="47" cy="58" r="4" fill="#1d2030"/>
+    <circle cx="75" cy="58" r="4" fill="#1d2030"/>
+    <path d="M48 80 L72 80" stroke="#1d2030" stroke-width="4" stroke-linecap="round"/>
+  </svg>`,
+  graveWarden: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <path d="M60 12 C90 12 100 42 98 74 C96 98 80 108 60 108 C40 108 24 98 22 74 C20 42 30 12 60 12 Z" fill="#8a8a6a"/>
+    <path d="M60 22 C82 22 90 44 88 68 L32 68 C30 44 38 22 60 22 Z" fill="#3a3d2e"/>
+    <circle cx="47" cy="52" r="8" fill="#d8ffb0"/>
+    <circle cx="73" cy="52" r="8" fill="#d8ffb0"/>
+    <path d="M24 84 Q42 74 60 84 Q78 94 96 84" fill="none" stroke="#d4af37" stroke-width="5" stroke-linecap="round"/>
+  </svg>`,
   curseMother: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
     <path d="M60 8 L34 46 L86 46 Z" fill="#4a2064"/>
     <circle cx="60" cy="70" r="38" fill="#4a2064"/>
@@ -488,7 +576,11 @@ const MONSTER_IMAGES = {
   ghoul: svgToImage(MONSTER_SVG.ghoul),
   wraith: svgToImage(MONSTER_SVG.wraith),
   caster: svgToImage(MONSTER_SVG.caster),
+  bat: svgToImage(MONSTER_SVG.bat),
+  bomber: svgToImage(MONSTER_SVG.bomber),
+  golem: svgToImage(MONSTER_SVG.golem),
   boss: svgToImage(MONSTER_SVG.boss),
+  graveWarden: svgToImage(MONSTER_SVG.graveWarden),
   curseMother: svgToImage(MONSTER_SVG.curseMother),
   nightfallDuke: svgToImage(MONSTER_SVG.nightfallDuke),
 };
@@ -595,6 +687,9 @@ const CARD_ICON = {
   power: `<svg viewBox="0 0 60 60"><path d="M32 6 L14 34 L26 34 L20 54 L46 26 L32 26 Z" fill="#ff2d4d"/></svg>`,
 };
 
+// 무기 표시 이름. 기본 무기 '총알'은 v0.9부터 '피스톨'로 개명 (§30.1) - 내부 키(bullet)는 유지한다
+const WEAPON_LABEL = { bullet:'피스톨', whip:'채찍', aura:'오라', shuriken:'수리검', drone:'드론', shotgun:'샷건', laser:'레이저' };
+
 // ---------- 입력 처리 ----------
 const keys = {};
 const BLOCK_KEYS = [' ', 'enter', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'];
@@ -673,7 +768,8 @@ function makePlayer(id, x, y, color, weaponType, controlScheme, isRemote){
     magnetTimer: 0, hitFlash: 0, damageTakenMul: 1, // 방탄조끼 패시브로 감소
     level: 1, exp: 0, expToNext: CONFIG.LEVEL.baseExp,
     passivesOwned: { speed:0, hp:0, cooldown:0, pickup:0, armor:0, power:0 }, // 진화 조건/최대 레벨 판정에 사용
-    weapons: [{ type: weaponType, level: 1, timer: 0, manual: weaponType === 'bullet' }],
+    weapons: [], mainWeapon: null,      // 주무기는 시작 드래프트(§31.1)에서 선택해 장착한다
+    pendingChoices: [], choosing: null, // 무정지 카드 선택(§33): 대기열과 현재 선택 상태
     hitCooldown: 0,
   };
 }
@@ -699,25 +795,37 @@ function startGame(mode, role){
 
   game = {
     mode: (n === 2 ? 'coop' : 'solo'), n, players,
-    monsters: [], projectiles: [], enemyProjectiles: [], hazards: [], orbs: [], effects: [], boxes: [], pendingHazards: [],
-    elapsed: 0, spawnTimer: 0, bossSpawned: new Array(CONFIG.STAGE.count).fill(false), stage: 1,
-    kills: 0, state: 'playing', levelupQueue: [], synergyBond: false,
+    monsters: [], projectiles: [], enemyProjectiles: [], hazards: [], orbs: [], effects: [], boxes: [], pendingHazards: [], pillars: [],
+    elapsed: 0, animTime: 0, spawnTimer: 0, bossSpawned: new Array(CONFIG.STAGE.count).fill(false), stage: 1,
+    kills: 0, state: 'draft', synergyBond: false,
     globalCooldownMul: 1, globalDamageMul: 1, screenFlash: 0,
     camera: { x: cx, y: cy },
   };
+  // 시작 무기 드래프트 (§31.1): 각 플레이어에게 주무기 카드 3장을 제시한다. 게스트는 호스트가 카드를 전송해준다
+  if (netRole !== 'guest'){
+    game.players.forEach(p => p.pendingChoices.push({ kind: 'draft' }));
+  }
   menuOverlay.classList.add('hidden');
   resultOverlay.classList.add('hidden');
-  levelupOverlay.classList.add('hidden');
+  hideChoicePanel('P1'); hideChoicePanel('P2'); guestChoice = null;
 }
 
 // ---------- 몬스터 스폰 ----------
 function pickMonsterType(){
+  // Act(§27.2)가 오를수록 스폰 테이블에 신규 몬스터가 해금된다 - 보스 처치가 해금 트리거
+  const act = game.stage;
   const t = game.elapsed;
   const wraithChance = t > 25 ? Math.min(CONFIG.SPAWN.wraithChanceAt300s, t/300*CONFIG.SPAWN.wraithChanceAt300s + 0.05) : 0;
-  const casterChance = t > 45 ? Math.min(CONFIG.SPAWN.casterChanceAt300s, t/300*CONFIG.SPAWN.casterChanceAt300s + 0.03) : 0;
-  const r = Math.random();
-  if (r < casterChance) return 'caster';
-  if (r < casterChance + wraithChance) return 'wraith';
+  const casterChance = act >= 2 ? CONFIG.SPAWN.casterChance : 0;
+  const batChance    = act >= 2 ? CONFIG.SPAWN.batChance : 0;
+  const bomberChance = act >= 3 ? CONFIG.SPAWN.bomberChance : 0;
+  const golemChance  = act >= 4 ? CONFIG.SPAWN.golemChance : 0;
+  let r = Math.random();
+  if ((r -= golemChance) < 0) return 'golem';
+  if ((r -= bomberChance) < 0) return 'bomber';
+  if ((r -= batChance) < 0) return 'bat';
+  if ((r -= casterChance) < 0) return 'caster';
+  if ((r -= wraithChance) < 0) return 'wraith';
   return 'ghoul';
 }
 function spawnAnchor(){
@@ -725,19 +833,36 @@ function spawnAnchor(){
   const alive = aliveNonDownedPlayers();
   return alive.length ? alive[Math.floor(Math.random()*alive.length)] : game.players[0];
 }
-function spawnMonster(){
-  const anchor = spawnAnchor();
-  const angle = Math.random() * Math.PI * 2;
-  const dist = 480 + Math.random() * 100; // 화면 밖 적당한 거리에서 링 형태로 등장
-  const x = clamp(anchor.x + Math.cos(angle)*dist, 0, CONFIG.WORLD_W);
-  const y = clamp(anchor.y + Math.sin(angle)*dist, 0, CONFIG.WORLD_H);
-
-  const type = pickMonsterType();
+function makeMonster(type, x, y){
   const t = CONFIG.MONSTER[type];
   const m = { type, x, y, hp: t.hp, maxHp: t.hp, speed: t.speed, damage: t.damage, radius: t.radius, exp: t.exp, color: t.color, hitCooldown: 0 };
   if (type === 'wraith'){ m.dashState = 'chase'; m.dashTimer = 1.2 + Math.random()*1.5; m.dashDir = { x:0, y:0 }; }
   if (type === 'caster'){ m.fireTimer = 0.6 + Math.random()*0.8; }
-  game.monsters.push(m);
+  if (type === 'bat'){ m.zigPhase = Math.random()*Math.PI*2; }
+  if (type === 'bomber'){ m.fuseState = 'chase'; m.fuseTimer = 0; }
+  // 붉은 각인 (§29): Act 4 해금. 기존 몬스터가 낮은 확률로 강화 개체(체력 2배·속도 1.2배·경험치 2배)가 된다
+  const rm = CONFIG.RED_MARK;
+  if (game.stage >= 4 && rm.types.includes(type) && Math.random() < rm.chance){
+    m.redMark = true;
+    m.hp = m.maxHp = Math.round(m.hp * rm.hpMul);
+    m.speed *= rm.speedMul;
+    m.exp = Math.round(m.exp * rm.expMul);
+  }
+  return m;
+}
+function spawnMonster(){
+  const anchor = spawnAnchor();
+  const type = pickMonsterType();
+  // 블러드 배트(§29)는 3~5마리씩 무리로 스폰된다
+  const cfgB = CONFIG.MONSTER.bat;
+  const count = type === 'bat' ? cfgB.packMin + Math.floor(Math.random()*(cfgB.packMax - cfgB.packMin + 1)) : 1;
+  const angle = Math.random() * Math.PI * 2;
+  const distR = 480 + Math.random() * 100; // 화면 밖 적당한 거리에서 링 형태로 등장
+  for (let i=0;i<count;i++){
+    const x = clamp(anchor.x + Math.cos(angle)*distR + (Math.random()-0.5)*60, 0, CONFIG.WORLD_W);
+    const y = clamp(anchor.y + Math.sin(angle)*distR + (Math.random()-0.5)*60, 0, CONFIG.WORLD_H);
+    game.monsters.push(makeMonster(type, x, y));
+  }
 }
 function spawnBoss(type){
   const anchor = spawnAnchor();
@@ -754,20 +879,22 @@ function spawnBoss(type){
 }
 
 // ---------- 카드(레벨업 선택지) ----------
+// 무기 체계 개편 (§30): 주무기는 장착한 1개의 강화/진화만 등장하고, 다른 주무기는 카드 풀에 나오지 않는다.
+// 보조무기는 신규 획득/강화/진화 모두 등장하며 개수 제한이 없다.
 function buildCardPool(p){
   const has = type => p.weapons.some(w => w.type === type);
   const weaponOf = type => p.weapons.find(w => w.type === type);
   const pool = [];
-  const WEAPON_LABEL = { bullet:'총알', whip:'채찍', aura:'오라', shuriken:'수리검', drone:'드론', shotgun:'샷건', laser:'레이저' };
 
-  ['bullet','whip','aura','shuriken','drone','shotgun','laser'].forEach(type => {
+  const candidates = [p.mainWeapon, ...CONFIG.SUB_WEAPONS].filter(Boolean);
+  candidates.forEach(type => {
     if (has(type)){
       const w = weaponOf(type);
-      if (w.disabled) return; // 상위 무기로 대체되어 비활성화된 무기는 강화/진화 카드 후보에서 제외
       const evo = CONFIG.EVOLUTION[type];
       if (w.level < CONFIG.MAX_LEVEL){
         pool.push({
-          id:'up_'+type, rarity:'WEAPON UP', icon: CARD_ICON[type], iconKey: type,
+          id:'up_'+type, rarity: CONFIG.MAIN_WEAPONS.includes(type) ? 'MAIN WEAPON UP' : 'SUB WEAPON UP',
+          icon: CARD_ICON[type], iconKey: type,
           title: WEAPON_LABEL[type] + ' 강화 (' + w.level + '→' + (w.level+1) + '/' + CONFIG.MAX_LEVEL + ')',
           desc: '피해량 증가, 재사용 대기시간 감소',
           apply: pl => { const ww = weaponOf(type); ww.level++; }
@@ -780,25 +907,15 @@ function buildCardPool(p){
           apply: pl => { const ww = weaponOf(type); ww.evolved = true; }
         });
       }
-    } else {
-      const replacesBullet = (type === 'shotgun' || type === 'laser');
+    } else if (CONFIG.SUB_WEAPONS.includes(type)){
       pool.push({
-        id:'new_'+type, rarity:'NEW WEAPON', icon: CARD_ICON[type], iconKey: type,
-        title: type==='whip' ? '회전 채찍' : type==='aura' ? '지속 오라' : type==='shuriken' ? '수리검' : type==='drone' ? '드론' : type==='shotgun' ? '샷건' : type==='laser' ? '레이저' : '총알',
+        id:'new_'+type, rarity:'NEW SUB WEAPON', icon: CARD_ICON[type], iconKey: type,
+        title: WEAPON_LABEL[type],
         desc: type==='whip' ? '주변 적에게 자동으로 근접 피해'
             : type==='aura' ? '캐릭터 주변에 자동으로 지속 피해'
             : type==='shuriken' ? '몸 주위를 도는 수리검이 스치는 적에게 피해'
-            : type==='drone' ? '주기적으로 근처 적을 자동 조준해 사격'
-            : type==='shotgun' ? '기본 총알을 대체합니다. 공격키를 누르면 부채꼴로 여러 발 발사'
-            : type==='laser' ? '기본 총알을 대체합니다. 바라보는 방향으로 자동 관통 광선 발사'
-            : '공격키를 누르면 바라보는 방향으로 발사',
-        apply: pl => {
-          pl.weapons.push({ type, level:1, timer:0, manual: (type === 'bullet' || type === 'shotgun'), phase: Math.random()*Math.PI*2 });
-          if (replacesBullet){
-            const bulletW = pl.weapons.find(x => x.type === 'bullet');
-            if (bulletW) bulletW.disabled = true; // 기본 총알을 상위 무기로 대체한다
-          }
-        }
+            : '주기적으로 근처 적을 자동 조준해 사격',
+        apply: pl => { pl.weapons.push({ type, level:1, timer:0, manual:false, phase: Math.random()*Math.PI*2 }); }
       });
     }
   });
@@ -834,63 +951,160 @@ function buildCardPool(p){
     if (picked.length >= 3) break;
     if (!picked.some(x => x.id === c.id)) picked.push(c);
   }
+  // 후반에 카드 풀이 완전히 소진되면 응급 처치 카드가 대신 등장한다
+  if (picked.length === 0){
+    picked.push({ id:'heal', rarity:'SUPPLY', icon: CARD_ICON.hp, iconKey:'hp', title:'응급 처치', desc:'최대 체력의 20%를 즉시 회복', apply: pl => { pl.hp = Math.min(pl.maxHp, pl.hp + pl.maxHp*0.2); } });
+  }
   return picked;
 }
 
-function openLevelUp(p){
-  game.state = 'levelup';
-  const cards = buildCardPool(p);
+// ---------- 무정지 카드 선택 시스템 (§33) ----------
+// 게임을 멈추지 않는다: 선택 중인 플레이어만 무적+행동 불가가 되고, 10초 안에 고르지 않으면 무작위 자동 선택된다.
+// 시작 무기 드래프트(§31.1) / 레벨업 / 보스 전리품(§31.2)이 모두 같은 시스템을 공유한다.
 
-  if (p.isRemote){
-    // 원격(게스트) 플레이어의 레벨업 - 카드를 게스트에게 전송하고 선택을 기다린다 (로컬 오버레이는 띄우지 않음)
-    pendingGuestCards = cards;
-    pendingGuestPlayer = p;
-    netSend({ t:'levelup', cards: cards.map(c => ({ id:c.id, rarity:c.rarity, title:c.title, desc:c.desc, iconKey:c.iconKey })) });
-    return;
-  }
+// 시작 무기 드래프트 카드: 주무기 3종 중 1개를 골라 시작한다
+function buildDraftCards(){
+  return [
+    { id:'main_bullet', rarity:'MAIN WEAPON', icon: CARD_ICON.bullet, iconKey:'bullet', title:'피스톨',
+      desc:'표준형 — 단발 조준 사격. 무난한 사거리와 연사', apply: pl => equipMainWeapon(pl, 'bullet') },
+    { id:'main_shotgun', rarity:'MAIN WEAPON', icon: CARD_ICON.shotgun, iconKey:'shotgun', title:'샷건',
+      desc:'근거리형 — 부채꼴 5발 동시 발사. 짧은 사거리, 순간 화력', apply: pl => equipMainWeapon(pl, 'shotgun') },
+    { id:'main_laser', rarity:'MAIN WEAPON', icon: CARD_ICON.laser, iconKey:'laser', title:'레이저',
+      desc:'관통형 — 조준 방향 자동 관통 광선. 일직선 다수 처리', apply: pl => equipMainWeapon(pl, 'laser') },
+  ];
+}
+function equipMainWeapon(p, type){
+  p.mainWeapon = type;
+  p.weapons = p.weapons.filter(w => !CONFIG.MAIN_WEAPONS.includes(w.type));
+  p.weapons.push({ type, level:1, timer:0, manual: (type === 'bullet' || type === 'shotgun'), phase: Math.random()*Math.PI*2 });
+}
 
-  levelupTitle.textContent = p.id + ' LEVEL UP';
-  cardsRow.innerHTML = '';
+// 보스 전리품 카드 (§31.2): 서로 다른 대상의 희귀 강화 2장 + 재정비 1장
+function buildLootCards(p){
+  const cards = [];
+  const ups = p.weapons.filter(w => w.level < CONFIG.MAX_LEVEL).sort(() => Math.random() - 0.5).slice(0, 2);
+  ups.forEach(w => {
+    cards.push({
+      id:'loot_'+w.type, rarity:'RARE UP', icon: CARD_ICON[w.type], iconKey: w.type,
+      title: WEAPON_LABEL[w.type] + ' 희귀 강화 (+2)',
+      desc: '일반 강화 카드 2레벨 분량을 한 번에 얻습니다',
+      apply: pl => { const ww = pl.weapons.find(x => x.type === w.type); if (ww) ww.level = Math.min(CONFIG.MAX_LEVEL, ww.level + 2); }
+    });
+  });
+  cards.push({
+    id:'loot_regroup', rarity:'REGROUP', icon: CARD_ICON.hp, iconKey:'hp', title:'재정비',
+    desc:'팀 전원 체력 50% 회복, 다운된 파트너 즉시 소생',
+    apply: () => {
+      game.players.forEach(q => {
+        if (q.downed){ q.downed = false; q.reviveProgress = 0; q.hp = Math.round(q.maxHp * 0.5); }
+        else q.hp = Math.min(q.maxHp, q.hp + q.maxHp * 0.5);
+      });
+    }
+  });
+  return cards;
+}
+function buildChoiceCards(p, kind){
+  if (kind === 'draft') return buildDraftCards();
+  if (kind === 'loot') return buildLootCards(p);
+  return buildCardPool(p);
+}
+
+const CHOICE_TITLES = { draft:'주무기 선택', levelup:'LEVEL UP', loot:'보스 전리품' };
+function choicePanelEls(pid){
+  const s = pid === 'P1' ? 'P1' : 'P2';
+  return {
+    panel: document.getElementById('choicePanel'+s),
+    title: document.getElementById('choiceTitle'+s),
+    timer: document.getElementById('choiceTimer'+s),
+    cards: document.getElementById('choiceCards'+s),
+  };
+}
+function fillChoicePanel(pid, kind, cards, onPick){
+  const els = choicePanelEls(pid);
+  els.title.textContent = pid + ' · ' + (CHOICE_TITLES[kind] || 'SELECT');
+  els.timer.style.width = '100%';
+  els.cards.innerHTML = '';
   cards.forEach(c => {
     const div = document.createElement('div');
-    div.className = 'card' + (c.rarity === 'EVOLUTION' ? ' evolution' : '');
-    div.innerHTML = `<div class="card-icon">${c.icon}</div><span class="rarity">${c.rarity}</span><h3>${c.title}</h3><p>${c.desc}</p>`;
-    div.onclick = () => {
-      c.apply(p);
-      levelupOverlay.classList.add('hidden');
-      processLevelupQueue();
-    };
-    cardsRow.appendChild(div);
+    div.className = 'mini-card' + (c.rarity === 'EVOLUTION' ? ' evolution' : '');
+    div.innerHTML = `<span class="rarity">${c.rarity}</span><h4>${c.title}</h4><p>${c.desc}</p>`;
+    div.onclick = () => onPick(c.id);
+    els.cards.appendChild(div);
   });
-  levelupOverlay.classList.remove('hidden');
+  els.panel.classList.remove('hidden');
 }
-function processLevelupQueue(){
-  if (game.levelupQueue.length > 0){
-    const p = game.levelupQueue.shift();
-    openLevelUp(p);
+function hideChoicePanel(pid){
+  choicePanelEls(pid).panel.classList.add('hidden');
+}
+function startChoice(p, kind){
+  const cards = buildChoiceCards(p, kind);
+  if (!cards.length) return;
+  p.choosing = { kind, cards, timer: CONFIG.CHOICE_SECONDS, total: CONFIG.CHOICE_SECONDS };
+  if (p.isRemote){
+    // 게스트의 선택: 카드를 전송하고 응답을 기다린다. 시간 초과 판정은 호스트 권위(§33.2) - 왕복 지연만큼 여유를 둔다
+    p.choosing.remote = true;
+    p.choosing.timer = p.choosing.total = CONFIG.CHOICE_SECONDS + 0.8;
+    netSend({ t:'choice', kind, cards: cards.map(c => ({ id:c.id, rarity:c.rarity, title:c.title, desc:c.desc, iconKey:c.iconKey })) });
   } else {
+    fillChoicePanel(p.id, kind, cards, id => resolveChoice(p, id));
+  }
+}
+function resolveChoice(p, cardId){
+  const ch = p.choosing;
+  if (!ch) return;
+  // 시간 초과(무선택) 시 무작위 자동 선택 (§33.1) - 첫 번째 카드 고정이 아니라 무작위라 방치 악용이 불가능하다
+  let card = cardId != null ? ch.cards.find(c => c.id === cardId) : null;
+  if (!card) card = ch.cards[Math.floor(Math.random() * ch.cards.length)];
+  card.apply(p);
+  p.choosing = null;
+  if (ch.remote) netSend({ t:'choiceEnd' });
+  else hideChoicePanel(p.id);
+}
+function updateChoices(dt){
+  for (const p of game.players){
+    if (p.choosing){
+      p.choosing.timer -= dt;
+      if (!p.choosing.remote){
+        const els = choicePanelEls(p.id);
+        els.timer.style.width = Math.max(0, p.choosing.timer / p.choosing.total * 100) + '%';
+      }
+      if (p.choosing.timer <= 0) resolveChoice(p, null);
+    } else if (p.pendingChoices.length){
+      startChoice(p, p.pendingChoices.shift().kind); // 연속 레벨업은 대기열에서 하나씩 이어진다 (§33.1)
+    }
+  }
+  // 전원 시작 드래프트 완료 → 게임 시작
+  if (game.state === 'draft' && game.players.every(p => !p.choosing && !p.pendingChoices.length)){
     game.state = 'playing';
   }
 }
+// 보스 전리품 선택이 남아 있는 동안에는 진행 타이머가 재개되지 않는다 (§31.2)
+function anyLootSelectionActive(){
+  return game.players.some(p => (p.choosing && p.choosing.kind === 'loot') || p.pendingChoices.some(c => c.kind === 'loot'));
+}
 
-// ---------- 경험치/레벨 처리 ----------
+// ---------- 경험치/레벨 처리 (§32 분배 시스템) ----------
 function gainExp(p, amount){
   p.exp += amount;
   while (p.exp >= p.expToNext){
     p.exp -= p.expToNext;
     p.level++;
     p.expToNext = Math.round(CONFIG.LEVEL.baseExp * Math.pow(CONFIG.LEVEL.growth, p.level - 1));
-    game.levelupQueue.push(p);
+    p.pendingChoices.push({ kind: 'levelup' });
   }
-  if (game.state === 'playing' && game.levelupQueue.length > 0){
-    processLevelupQueue();
+}
+// 직접 주운 플레이어 100%, 파트너는 거리와 무관하게 70% 분배 (§32.1)
+function gainExpShared(collector, amount){
+  gainExp(collector, amount);
+  for (const q of game.players){
+    if (q !== collector) gainExp(q, Math.round(amount * CONFIG.EXP_SHARE));
   }
 }
 
 // ---------- 업데이트 ----------
 function updatePlayerMovement(p, dt){
   p.hitFlash = Math.max(0, (p.hitFlash || 0) - dt); // 피격 플래시 감소는 다운 상태에서도 계속 진행
-  if (p.downed) return;
+  if (p.downed || p.choosing) return; // 카드 선택 중에는 이동·공격 불가 + 무적 (§33.1)
 
   if (p.isRemote){
     // 원격 플레이어: 이 컴퓨터의 키보드/마우스가 아니라, 네트워크로 받은 입력(netInput)을 사용한다
@@ -966,7 +1180,7 @@ function teamDamageMul(p){
 }
 
 function updateWeapons(p, dt){
-  if (p.downed) return;
+  if (p.downed || p.choosing) return; // 선택 중에는 보조무기 자동 발동도 함께 멈춘다 - 무적 화력 악용 방지 (§33.1)
   const attackHeld = p.isRemote ? !!netInput.attack : (p.controlScheme === 'wasd' ? mouseDown : !!keys[p.attackKey]); // 공격키를 누르고 있는 동안만 수동 무기가 발사된다
 
   for (const w of p.weapons){
@@ -974,7 +1188,7 @@ function updateWeapons(p, dt){
     // 드론은 쿨다운과 상관없이 매 프레임 호버링 위치를 갱신한다 (플레이어 주위를 맴돈다)
     if (w.type === 'drone'){
       const db = CONFIG.WEAPON.drone;
-      const ang = game.elapsed * db.hoverSpeed + (w.phase || 0);
+      const ang = game.animTime * db.hoverSpeed + (w.phase || 0);
       w.hx = p.x + Math.cos(ang) * db.hoverRadius;
       w.hy = p.y + Math.sin(ang) * db.hoverRadius;
     }
@@ -1066,7 +1280,8 @@ function updateWeapons(p, dt){
 }
 
 function aliveNonDownedPlayers(){
-  return game.players.filter(p => !p.downed);
+  // 카드 선택 중인 플레이어는 몬스터의 추적 대상에서도 제외된다 (§33.1)
+  return game.players.filter(p => !p.downed && !p.choosing);
 }
 
 
@@ -1077,7 +1292,7 @@ function nearestTarget(m, targets){
 }
 
 function applyDamageToPlayer(target, dmg){
-  if (target.downed) return;
+  if (target.downed || target.choosing) return; // 선택 중 무적 (§33.1)
   target.hp -= dmg * (target.damageTakenMul || 1);
   target.hitFlash = 0.15; // 몬스터와 동일한 피격 플래시
   if (target.hp <= 0){
@@ -1136,6 +1351,32 @@ function updateCaster(m, dt, target){
   }
 }
 
+// 신속형(블러드 배트, §29): 지그재그로 접근해 조준을 흔든다
+function updateBat(m, dt, target){
+  const cfg = CONFIG.MONSTER.bat;
+  const ang = Math.atan2(target.y - m.y, target.x - m.x) + Math.sin(game.animTime * cfg.zigzagFreq + m.zigPhase) * cfg.zigzagAmp;
+  m.x += Math.cos(ang) * m.speed * dt;
+  m.y += Math.sin(ang) * m.speed * dt;
+}
+
+// 자폭형(시체폭탄병, §29): 접근 후 예고(부풀며 점멸) 뒤 자폭한다. 예고 중 처치하면 폭발이 취소된다
+function updateBomber(m, dt, target){
+  const cfg = CONFIG.MONSTER.bomber;
+  if (m.fuseState === 'fusing'){
+    m.fuseTimer -= dt;
+    if (m.fuseTimer <= 0 && !m.dead){
+      m.dead = true; m.exploded = true; // 자폭은 '처치'가 아니므로 경험치 오브를 남기지 않는다
+      game.hazards.push({ x:m.x, y:m.y, radius:cfg.blastRadius, damage:cfg.blastDamage, life:0.3, hitPlayers:new Set() });
+    }
+    return; // 예고 중에는 제자리에 멈춘다
+  }
+  updateBasicChase(m, dt, target);
+  if (dist(m, target) < cfg.fuseRange){
+    m.fuseState = 'fusing';
+    m.fuseTimer = cfg.fuseTime;
+  }
+}
+
 // 보스: 체력에 따라 페이즈가 바뀌며, 예고(telegraph) 후 특수 패턴을 발동한다
 function bossAvailablePatterns(m){
   const table = CONFIG.BOSS_PATTERNS[m.type] || CONFIG.BOSS_PATTERNS.boss;
@@ -1152,8 +1393,23 @@ function startBossAttack(m, target){
     const ang = Math.atan2(target.y - m.y, target.x - m.x);
     m.chargeDir = { x: Math.cos(ang), y: Math.sin(ang) };
   }
-  if (name === 'poisonFog'){
+  if (name === 'poisonFog' || name === 'boneCage' || name === 'chainSlam'){
     m.telegraphTarget = { x: target.x, y: target.y };
+  }
+  if (name === 'chainSlam'){
+    m.repeatsLeft = cfg.repeats; // 강타를 플레이어를 따라가며 3연속 시전 (§28.1)
+  }
+  if (name === 'graveBurst'){
+    // 대상 주변의 배경 묘비 장식(§26.1)을 폭발 지점으로 재활용한다. 근처에 묘비가 부족하면 무작위 지점으로 채운다
+    const pts = WORLD_PROPS
+      .filter(pr => pr.type === 'tombstone' && Math.hypot(pr.x - target.x, pr.y - target.y) < cfg.searchRadius)
+      .sort(() => Math.random() - 0.5).slice(0, cfg.count)
+      .map(pr => ({ x: pr.x, y: pr.y }));
+    while (pts.length < cfg.count){
+      const a = Math.random() * Math.PI * 2, d2 = 60 + Math.random() * 180;
+      pts.push({ x: clamp(target.x + Math.cos(a)*d2, 30, CONFIG.WORLD_W-30), y: clamp(target.y + Math.sin(a)*d2, 30, CONFIG.WORLD_H-30) });
+    }
+    m.burstPoints = pts;
   }
   if (name === 'teleportBurst'){
     // 예고가 뜨는 새 위치로 즉시 순간이동한 뒤, 그 자리에서 예고 후 탄막을 발사한다 (타깃 근처로 한정)
@@ -1235,6 +1491,55 @@ function executeBossAttack(m){
       game.pendingHazards.push({ delay: Math.random() * cfg.spreadDuration, x, y, radius:cfg.radius, damage:cfg.damage, spawned:false });
     }
     m.patternState = 'idle'; m.attackTimer = cfg.cooldown;
+
+  } else if (name === 'chainSweep'){
+    // 그레이브 워든 (§28.1): 보스 주변 넓은 원형 휩쓸기 + 넉백
+    game.hazards.push({ x:m.x, y:m.y, radius:cfg.radius, damage:cfg.damage, life:0.3, hitPlayers:new Set() });
+    for (const p of game.players){
+      if (p.downed || p.choosing) continue;
+      const d = dist(m, p);
+      if (d <= cfg.radius + p.radius && d > 0.001){
+        p.x = clamp(p.x + (p.x - m.x)/d * 40, p.radius, CONFIG.WORLD_W - p.radius);
+        p.y = clamp(p.y + (p.y - m.y)/d * 40, p.radius, CONFIG.WORLD_H - p.radius);
+      }
+    }
+    m.patternState = 'idle'; m.attackTimer = cfg.cooldown * cdMul;
+
+  } else if (name === 'boneCage'){
+    // 대상 위치를 둘러싸는 뼈 기둥 링(일시 충돌 지형)을 세운다. 2~3칸의 틈이 열려 있어 탈출 가능 (§28.1)
+    const at = m.telegraphTarget || { x:m.x, y:m.y };
+    const gapStart = Math.floor(Math.random() * cfg.pillarCount);
+    for (let i=0;i<cfg.pillarCount;i++){
+      const inGap = ((i - gapStart + cfg.pillarCount) % cfg.pillarCount) < cfg.gapSize;
+      if (inGap) continue;
+      const a = (Math.PI*2 / cfg.pillarCount) * i;
+      game.pillars.push({
+        x: clamp(at.x + Math.cos(a)*cfg.radius, 20, CONFIG.WORLD_W-20),
+        y: clamp(at.y + Math.sin(a)*cfg.radius, 20, CONFIG.WORLD_H-20),
+        r: cfg.pillarRadius, life: cfg.duration, maxLife: cfg.duration,
+      });
+    }
+    m.patternState = 'idle'; m.attackTimer = cfg.cooldown;
+
+  } else if (name === 'graveBurst'){
+    // 예고해 둔 묘비 지점들이 동시에 폭발한다 (§28.1)
+    (m.burstPoints || []).forEach(pt => {
+      game.hazards.push({ x:pt.x, y:pt.y, radius:cfg.radius, damage:cfg.damage, life:0.3, hitPlayers:new Set() });
+    });
+    m.burstPoints = null;
+    m.patternState = 'idle'; m.attackTimer = cfg.cooldown * cdMul;
+
+  } else if (name === 'chainSlam'){
+    // 플레이어를 따라가며 강타를 연속 시전 - 한 방향으로만 도망치면 다음 강타에 잡힌다 (§28.1)
+    const at = m.telegraphTarget || { x:m.x, y:m.y };
+    game.hazards.push({ x:at.x, y:at.y, radius:cfg.radius, damage:cfg.damage, life:0.3, hitPlayers:new Set() });
+    m.repeatsLeft = (m.repeatsLeft || 1) - 1;
+    if (m.repeatsLeft > 0){
+      m.patternState = 'telegraph';
+      m.telegraphTime = 0.55;
+    } else {
+      m.patternState = 'idle'; m.attackTimer = cfg.cooldown * cdMul;
+    }
   }
 }
 function updateBoss(m, dt, target){
@@ -1251,6 +1556,9 @@ function updateBoss(m, dt, target){
   } else if (m.patternState === 'telegraph'){
     if (m.currentPattern === 'curseBarrage'){
       m._curseAimAngle = Math.atan2(target.y - m.y, target.x - m.x); // 발사 직전까지 조준을 갱신
+    }
+    if (m.currentPattern === 'boneCage' || m.currentPattern === 'chainSlam'){
+      m.telegraphTarget = { x: target.x, y: target.y }; // 발동 직전까지 대상을 따라간다
     }
     m.telegraphTime -= dt;
     if (m.telegraphTime <= 0) executeBossAttack(m);
@@ -1284,7 +1592,9 @@ function updateMonsters(dt){
     if (isBossType(m.type)) updateBoss(m, dt, target);
     else if (m.type === 'wraith') updateWraith(m, dt, target);
     else if (m.type === 'caster') updateCaster(m, dt, target);
-    else updateBasicChase(m, dt, target);
+    else if (m.type === 'bat') updateBat(m, dt, target);
+    else if (m.type === 'bomber') updateBomber(m, dt, target);
+    else updateBasicChase(m, dt, target); // 구울·골렘: 단순 추적
 
     const bestD = dist(m, target);
     m.hitCooldown -= dt;
@@ -1294,12 +1604,21 @@ function updateMonsters(dt){
     }
   }
   const finalBossType = CONFIG.STAGE.bosses[CONFIG.STAGE.bosses.length - 1];
-  const justDefeatedFinalBoss = game.monsters.some(m => m.dead && m.type === finalBossType);
+  let victory = false;
+  for (const m of game.monsters){
+    if (!m.dead || !isBossType(m.type)) continue;
+    if (m.type === finalBossType){ victory = true; continue; }
+    // 보스 게이트 (§27): 중간 보스 처치 → 다음 Act 전환(신규 몬스터 해금) + 보스 전리품 카드(§31.2)
+    const idx = CONFIG.STAGE.bosses.indexOf(m.type);
+    if (idx >= 0) game.stage = Math.max(game.stage, Math.min(CONFIG.STAGE.count, idx + 2));
+    game.players.forEach(p => p.pendingChoices.push({ kind: 'loot' }));
+  }
   game.monsters = game.monsters.filter(m => !m.dead);
-  if (justDefeatedFinalBoss && game.state === 'playing') endGame('victory'); // 최종 보스를 처치해야만 클리어된다
+  if (victory && game.state === 'playing') endGame('victory'); // 최종 보스를 처치해야만 클리어된다
   updateHazards(dt);
   updateEnemyProjectiles(dt);
   updatePendingHazards(dt);
+  updatePillars(dt);
 }
 
 function distToSegment(px, py, x1, y1, x2, y2){
@@ -1344,6 +1663,23 @@ function updateHazards(dt){
   game.hazards = game.hazards.filter(h => h.life > 0);
 }
 
+// 뼈감옥(§28.1) 기둥: 지속시간 동안 플레이어와 충돌하는 임시 지형. 플레이어를 밀어내 통과하지 못하게 한다
+function collidePillars(p){
+  if (p.downed) return;
+  for (const pl of game.pillars){
+    const d = dist(p, pl);
+    const min = pl.r + p.radius;
+    if (d < min && d > 0.001){
+      p.x = clamp(pl.x + (p.x - pl.x) / d * min, p.radius, CONFIG.WORLD_W - p.radius);
+      p.y = clamp(pl.y + (p.y - pl.y) / d * min, p.radius, CONFIG.WORLD_H - p.radius);
+    }
+  }
+}
+function updatePillars(dt){
+  for (const pl of game.pillars) pl.life -= dt;
+  game.pillars = game.pillars.filter(pl => pl.life > 0);
+}
+
 // 블러드 레인처럼 예고 후 시차를 두고 여기저기 떨어지는 범위 공격을 처리한다
 function updatePendingHazards(dt){
   for (const ph of game.pendingHazards){
@@ -1381,7 +1717,7 @@ function updateRevive(dt){
   if (game.players.length < 2) return;
   const [a,b] = game.players;
   [[a,b],[b,a]].forEach(([downedP, helperP]) => {
-    if (downedP.downed && !helperP.downed && dist(downedP, helperP) <= CONFIG.PLAYER.reviveRadius){
+    if (downedP.downed && !helperP.downed && !helperP.choosing && dist(downedP, helperP) <= CONFIG.PLAYER.reviveRadius){
       downedP.reviveProgress += dt;
       if (downedP.reviveProgress >= CONFIG.PLAYER.reviveTime){
         downedP.downed = false;
@@ -1420,7 +1756,7 @@ function updateOrbs(dt){
   for (const o of game.orbs){
     let closest = null, bestD = Infinity;
     for (const p of game.players){
-      if (p.downed) continue;
+      if (p.downed || p.choosing) continue;
       const d = dist(o, p);
       if (d < bestD){ bestD = d; closest = p; }
     }
@@ -1433,7 +1769,7 @@ function updateOrbs(dt){
       o.x += Math.cos(ang) * pull * dt;
       o.y += Math.sin(ang) * pull * dt;
       if (bestD <= 14){
-        gainExp(closest, o.exp);
+        gainExpShared(closest, o.exp); // §32: 직접 획득 100% + 파트너 70% 분배
         o.dead = true;
       }
     }
@@ -1463,7 +1799,7 @@ function applyBoxEffect(p){
 function updateBoxes(dt){
   for (const b of game.boxes){
     for (const p of game.players){
-      if (p.downed || b.dead) continue;
+      if (p.downed || p.choosing || b.dead) continue;
       if (dist(b, p) <= b.r + p.radius){
         applyBoxEffect(p);
         game.effects.push({ type:'boxbreak', x:b.x, y:b.y, life:0.35, maxLife:0.35 });
@@ -1480,42 +1816,35 @@ function updateEffects(dt){
 }
 
 function updateSpawns(dt){
-  const finalBossIndex = CONFIG.STAGE.bosses.length - 1;
-  const finalBossSpawned = game.bossSpawned[finalBossIndex];
-
-  // 최종 보스가 등장한 뒤에는 잡몹을 더 이상 스폰하지 않고 보스전에 집중시킨다
-  if (!finalBossSpawned){
-    game.spawnTimer -= dt;
-    const mul = CONFIG.SPAWN.countMultiplier(game.n);
-    const interval = Math.max(CONFIG.SPAWN.minInterval, CONFIG.SPAWN.baseInterval - CONFIG.SPAWN.intervalDecayPerSec * game.elapsed) / mul;
-    if (game.spawnTimer <= 0){
-      spawnMonster();
-      game.spawnTimer = interval;
-    }
+  // 보스전 중에도 스폰 테이블은 정상 유지된다 (§27.3 v0.9 개정 - 최종 보스전 포함).
+  // 시간 기반 난이도 스케일링(스폰 간격 감소)은 game.elapsed가 보스전 동안 정지하므로(§27.1) 자연히 함께 멈춘다.
+  game.spawnTimer -= dt;
+  const mul = CONFIG.SPAWN.countMultiplier(game.n);
+  const interval = Math.max(CONFIG.SPAWN.minInterval, CONFIG.SPAWN.baseInterval - CONFIG.SPAWN.intervalDecayPerSec * game.elapsed) / mul;
+  if (game.spawnTimer <= 0){
+    spawnMonster();
+    game.spawnTimer = interval;
   }
 
-  const stageDuration = CONFIG.ROUND_SECONDS / CONFIG.STAGE.count;
-  game.stage = Math.min(CONFIG.STAGE.count, Math.floor(game.elapsed / stageDuration) + 1);
-
+  // 보스 게이트 (§27.2): 각 Act가 끝나는 시각에 그 Act의 보스가 등장한다.
+  // 보스가 살아있는 동안 elapsed가 멈추므로, 이전 보스를 처치해야만 다음 보스 시각에 도달할 수 있다.
+  const actDuration = CONFIG.ROUND_SECONDS / CONFIG.STAGE.count;
   CONFIG.STAGE.bosses.forEach((bossType, i) => {
-    const spawnAt = stageDuration * (i + 1) * 0.9; // 각 스테이지 구간의 90% 지점에서 그 스테이지의 보스 등장
-    if (!game.bossSpawned[i] && game.elapsed >= spawnAt){
+    if (!game.bossSpawned[i] && game.elapsed >= actDuration * (i + 1)){
       spawnBoss(bossType);
       game.bossSpawned[i] = true;
     }
   });
-
-  // 안전장치: 무슨 이유로든 라운드 시간이 다 됐는데 최종 보스가 아직 없다면 즉시 등장시킨다
-  if (!game.bossSpawned[finalBossIndex] && game.elapsed >= CONFIG.ROUND_SECONDS){
-    spawnBoss(CONFIG.STAGE.bosses[finalBossIndex]);
-    game.bossSpawned[finalBossIndex] = true;
-  }
 }
 
 // ---------- 결과 처리 ----------
 let lastResult = null; // 호스트가 게스트에게 전송할 결과 데이터
 function endGame(result){
   game.state = 'ended';
+  // 열려 있던 카드 선택은 모두 정리한다
+  game.players.forEach(p => { p.choosing = null; p.pendingChoices = []; });
+  hideChoicePanel('P1'); hideChoicePanel('P2');
+  netSend({ t:'choiceEnd' });
   const survived = Math.min(game.elapsed, CONFIG.ROUND_SECONDS);
   const avgLevel = Math.round(game.players.reduce((s,p)=>s+p.level,0) / game.players.length);
   lastResult = { survived, kills: game.kills, avgLevel, result };
@@ -1538,8 +1867,7 @@ let netRole = null;   // null(오프라인) | 'host' | 'guest'
 let peer = null;
 let conn = null;
 const netInput = { up:false, down:false, left:false, right:false, attack:false, angle:0 };
-let pendingGuestCards = null;
-let pendingGuestPlayer = null;
+let guestChoice = null; // 게스트 자신의 카드 선택 상태 (UI 카운트다운용 - 확정 판정은 호스트 권위 §33.2)
 let netBroadcastTimer = 0;
 let netInputTimer = 0;
 
@@ -1661,13 +1989,10 @@ function handleHostData(data){
     netInput.up = data.up; netInput.down = data.down;
     netInput.left = data.left; netInput.right = data.right;
     netInput.attack = data.attack; netInput.angle = data.angle;
-  } else if (data.t === 'levelupChoice'){
-    if (pendingGuestCards && pendingGuestPlayer){
-      const card = pendingGuestCards.find(c => c.id === data.id) || pendingGuestCards[0];
-      card.apply(pendingGuestPlayer);
-      pendingGuestCards = null; pendingGuestPlayer = null;
-      processLevelupQueue();
-    }
+  } else if (data.t === 'choiceSel'){
+    // 게스트의 카드 선택 응답 - 호스트가 적용을 확정한다 (§33.2 호스트 권위)
+    const p = game && game.players[1];
+    if (p && p.choosing && p.choosing.remote) resolveChoice(p, data.id);
   }
 }
 
@@ -1677,8 +2002,11 @@ function handleGuestData(data){
     startGame('coop', 'guest');
   } else if (data.t === 'snap'){
     applySnapshot(data);
-  } else if (data.t === 'levelup'){
-    showGuestLevelUp(data.cards);
+  } else if (data.t === 'choice'){
+    showGuestChoice(data.kind, data.cards);
+  } else if (data.t === 'choiceEnd'){
+    // 호스트가 선택을 확정(또는 시간 초과로 무작위 선택)했다 - 패널을 닫는다
+    hideChoicePanel('P2'); guestChoice = null;
   }
 }
 
@@ -1691,13 +2019,16 @@ function buildSnapshot(){
     players: game.players.map(p => ({
       x:p.x, y:p.y, hp:p.hp, maxHp:p.maxHp, level:p.level, exp:p.exp, expToNext:p.expToNext, downed:p.downed,
       reviveProgress:p.reviveProgress, facing:p.facing, hitFlash:p.hitFlash, magnetTimer:p.magnetTimer,
+      choosing: !!p.choosing, // 무적(카드 선택 중) 표시 동기화 (§33)
       weapons: p.weapons.map(w => ({ type:w.type, level:w.level, hx:w.hx, hy:w.hy, evolved:w.evolved, disabled:w.disabled })),
     })),
     monsters: game.monsters.map(m => ({
       type:m.type, x:m.x, y:m.y, hp:m.hp, maxHp:m.maxHp, radius:m.radius, color:m.color, hitFlash:m.hitFlash, hpBarTimer:m.hpBarTimer,
       dashState:m.dashState, phase:m.phase, patternState:m.patternState, currentPattern:m.currentPattern,
       telegraphTime:m.telegraphTime, chargeDir:m.chargeDir, telegraphTarget:m.telegraphTarget,
+      redMark:m.redMark, fuseState:m.fuseState, fuseTimer:m.fuseTimer, burstPoints:m.burstPoints,
     })),
+    pillars: game.pillars.map(pl => ({ x:pl.x, y:pl.y, r:pl.r, life:pl.life, maxLife:pl.maxLife })),
     projectiles: game.projectiles.map(pr => ({ x:pr.x, y:pr.y, color:pr.color })),
     enemyProjectiles: game.enemyProjectiles.map(pr => ({ x:pr.x, y:pr.y, color:pr.color })),
     boxes: game.boxes.map(b => ({ x:b.x, y:b.y })),
@@ -1711,7 +2042,7 @@ function buildSnapshot(){
 // ---- 게스트: 받은 스냅샷을 그대로 게임 상태에 반영 (게스트는 직접 시뮬레이션하지 않는다) ----
 function applySnapshot(snap){
   if (!game) return;
-  game.state = (snap.state === 'levelup') ? 'playing' : snap.state; // 호스트의 일시정지는 화면이 멈추는 것으로 자연히 표현됨
+  game.state = snap.state; // v0.9: 일시정지 상태가 사라져 상태를 그대로 반영한다 (draft/playing/ended)
   game.elapsed = snap.elapsed; game.kills = snap.kills; game.screenFlash = snap.screenFlash; game.stage = snap.stage || 1;
   game.bossSpawned = snap.bossSpawned || game.bossSpawned;
 
@@ -1720,10 +2051,12 @@ function applySnapshot(snap){
     if (!p) return;
     p.x=sp.x; p.y=sp.y; p.hp=sp.hp; p.maxHp=sp.maxHp; p.level=sp.level; p.exp=sp.exp; p.expToNext=sp.expToNext; p.downed=sp.downed;
     p.reviveProgress=sp.reviveProgress; p.facing=sp.facing; p.hitFlash=sp.hitFlash; p.magnetTimer=sp.magnetTimer;
+    p.choosing = sp.choosing;
     p.weapons = sp.weapons;
   });
 
   game.monsters = snap.monsters;
+  game.pillars = snap.pillars || [];
   game.projectiles = snap.projectiles;
   game.enemyProjectiles = snap.enemyProjectiles;
   game.boxes = snap.boxes;
@@ -1737,21 +2070,22 @@ function applySnapshot(snap){
   }
 }
 
-// ---- 게스트: 호스트가 보내준 레벨업 카드를 표시 ----
-function showGuestLevelUp(cards){
-  levelupTitle.textContent = 'P2 LEVEL UP';
-  cardsRow.innerHTML = '';
-  cards.forEach(c => {
-    const div = document.createElement('div');
-    div.className = 'card' + (c.rarity === 'EVOLUTION' ? ' evolution' : '');
-    div.innerHTML = `<div class="card-icon">${CARD_ICON[c.iconKey] || ''}</div><span class="rarity">${c.rarity}</span><h3>${c.title}</h3><p>${c.desc}</p>`;
-    div.onclick = () => {
-      netSend({ t:'levelupChoice', id: c.id });
-      levelupOverlay.classList.add('hidden');
-    };
-    cardsRow.appendChild(div);
+// ---- 게스트: 호스트가 보내준 카드(드래프트/레벨업/전리품)를 자기 패널(P2)에 표시 ----
+function showGuestChoice(kind, cards){
+  guestChoice = { timer: CONFIG.CHOICE_SECONDS, total: CONFIG.CHOICE_SECONDS };
+  fillChoicePanel('P2', kind, cards, id => {
+    netSend({ t:'choiceSel', id });
+    hideChoicePanel('P2');
+    guestChoice = null;
   });
-  levelupOverlay.classList.remove('hidden');
+}
+// 게스트 쪽 카운트다운 표시. 0이 되면 패널만 닫는다 - 무작위 확정은 호스트가 한다 (§33.2)
+function updateGuestChoice(dt){
+  if (!guestChoice) return;
+  guestChoice.timer -= dt;
+  const els = choicePanelEls('P2');
+  els.timer.style.width = Math.max(0, guestChoice.timer / guestChoice.total * 100) + '%';
+  if (guestChoice.timer <= 0){ hideChoicePanel('P2'); guestChoice = null; }
 }
 
 // ---- 게스트: 내 로컬 입력(WASD+마우스+Space)을 모아 호스트에게 전송 ----
@@ -1772,26 +2106,35 @@ function loop(t){
   const dt = Math.min(0.05, (t - lastT) / 1000 || 0);
   lastT = t;
 
+  if (game) game.animTime = (game.animTime || 0) + dt; // 연출용 시간: 보스 게이트로 타이머가 정지해도 계속 흐른다
+
   if (netRole === 'guest'){
     // 게스트: 시뮬레이션을 직접 돌리지 않고, 입력만 보내고 호스트의 스냅샷으로만 그린다
     if (game && (game.state === 'playing' || game.state === 'ended')){
       netInputTimer -= dt;
       if (netInputTimer <= 0){ sendGuestInput(); netInputTimer = 0.05; } // 초당 약 20회 전송
     }
-  } else if (game && game.state === 'playing'){
-    // 오프라인(솔로/로컬 협동) 또는 호스트: 기존처럼 전체 시뮬레이션을 실행
-    game.elapsed += dt;
-    game.players.forEach(p => updatePlayerMovement(p, dt));
-    game.players.forEach(p => updateWeapons(p, dt));
-    updateMonsters(dt);
-    updateRevive(dt);
-    updateProjectiles(dt);
-    updateOrbs(dt);
-    updateBoxes(dt);
-    updateEffects(dt);
-    updateSpawns(dt);
-    game.screenFlash = Math.max(0, game.screenFlash - dt);
-    // 시간이 다 돼도 게임이 끝나지 않는다 - 최종 보스(나이트폴 공작)를 처치해야 클리어된다 (승리 판정은 checkFinalBossDefeat에서 처리)
+    updateGuestChoice(dt);
+  } else if (game && (game.state === 'playing' || game.state === 'draft')){
+    // 오프라인(솔로/로컬 협동) 또는 호스트
+    updateChoices(dt); // 무정지 카드 선택 (§33): 드래프트/레벨업/전리품 타이머 진행
+    if (game.state === 'playing'){
+      // 보스 게이트 (§27.1): 보스가 살아있거나 전리품 선택이 끝나지 않은 동안 진행 타이머가 정지한다.
+      // 그 외 시뮬레이션(스폰·전투·이동)은 정상 진행 - 게임 자체는 멈추지 않는다.
+      const gateActive = game.monsters.some(m => isBossType(m.type)) || anyLootSelectionActive();
+      if (!gateActive) game.elapsed = Math.min(CONFIG.ROUND_SECONDS, game.elapsed + dt);
+      game.players.forEach(p => updatePlayerMovement(p, dt));
+      game.players.forEach(p => collidePillars(p)); // 뼈감옥 기둥 충돌 (§28.1)
+      game.players.forEach(p => updateWeapons(p, dt));
+      updateMonsters(dt);
+      updateRevive(dt);
+      updateProjectiles(dt);
+      updateOrbs(dt);
+      updateBoxes(dt);
+      updateEffects(dt);
+      updateSpawns(dt);
+      game.screenFlash = Math.max(0, game.screenFlash - dt);
+    }
   }
 
   if (netRole === 'host' && game){
@@ -1904,8 +2247,8 @@ function render(){
 
   // 아이템 박스 (몬스터 처치 시 낮은 확률로 등장, 살짝 위아래로 흔들리며 은은하게 빛난다)
   for (const b of game.boxes){
-    const bob = Math.sin(game.elapsed*4 + b.x) * 3;
-    const glow = 0.4 + Math.sin(game.elapsed*4 + b.x) * 0.2;
+    const bob = Math.sin(game.animTime*4 + b.x) * 3;
+    const glow = 0.4 + Math.sin(game.animTime*4 + b.x) * 0.2;
     ctx.save();
     ctx.shadowColor = '#d4af37'; ctx.shadowBlur = 10 + glow*10;
     if (BOX_IMAGE.complete && BOX_IMAGE.naturalWidth > 0){
@@ -1929,7 +2272,7 @@ function render(){
       ctx.save();
       ctx.globalAlpha = 0.85;
       ctx.translate(p.x, p.y);
-      ctx.rotate(game.elapsed * 0.6);
+      ctx.rotate(game.animTime * 0.6);
       ctx.drawImage(img, -radius, -radius, radius*2, radius*2);
       ctx.restore();
       ctx.globalAlpha = 1;
@@ -1940,15 +2283,15 @@ function render(){
   for (const p of game.players){
     if (p.downed || !(p.magnetTimer > 0)) continue;
     const t = Math.min(1, p.magnetTimer / CONFIG.ITEM_BOX.magnetDuration);
-    const pulse = 30 + Math.sin(game.elapsed*10) * 4;
+    const pulse = 30 + Math.sin(game.animTime*10) * 4;
     ctx.save();
     ctx.translate(p.x, p.y);
     ctx.setLineDash([6,6]);
     ctx.strokeStyle = `rgba(212,175,55,${t*0.85})`;
     ctx.lineWidth = 2;
-    ctx.rotate(game.elapsed * 3);
+    ctx.rotate(game.animTime * 3);
     ctx.beginPath(); ctx.arc(0, 0, pulse, 0, Math.PI*2); ctx.stroke();
-    ctx.rotate(-game.elapsed * 5);
+    ctx.rotate(-game.animTime * 5);
     ctx.strokeStyle = `rgba(212,175,55,${t*0.5})`;
     ctx.beginPath(); ctx.arc(0, 0, pulse + 14, 0, Math.PI*2); ctx.stroke();
     ctx.setLineDash([]);
@@ -1989,34 +2332,66 @@ function render(){
       } else if (m.currentPattern === 'poisonFog' && m.telegraphTarget){
         ctx.strokeStyle = `rgba(120,200,90,${alpha})`; ctx.lineWidth = 3;
         ctx.beginPath(); ctx.arc(m.telegraphTarget.x, m.telegraphTarget.y, CONFIG.BOSS_ATTACKS.poisonFog.radius * progress, 0, Math.PI*2); ctx.stroke();
+      } else if (m.currentPattern === 'chainSweep'){
+        const r = CONFIG.BOSS_ATTACKS.chainSweep.radius * progress;
+        ctx.strokeStyle = `rgba(212,175,55,${alpha})`; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(m.x, m.y, r, 0, Math.PI*2); ctx.stroke();
+      } else if (m.currentPattern === 'boneCage' && m.telegraphTarget){
+        // 뼈감옥 예고: 대상 주위에 점선 링
+        ctx.save();
+        ctx.setLineDash([8,7]);
+        ctx.strokeStyle = `rgba(236,228,211,${alpha})`; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(m.telegraphTarget.x, m.telegraphTarget.y, CONFIG.BOSS_ATTACKS.boneCage.radius, 0, Math.PI*2); ctx.stroke();
+        ctx.restore();
+      } else if (m.currentPattern === 'chainSlam' && m.telegraphTarget){
+        ctx.strokeStyle = `rgba(255,45,77,${alpha})`; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(m.telegraphTarget.x, m.telegraphTarget.y, CONFIG.BOSS_ATTACKS.chainSlam.radius * progress, 0, Math.PI*2); ctx.stroke();
+      } else if (m.currentPattern === 'graveBurst' && m.burstPoints){
+        // 무덤 폭발 예고: 폭발할 묘비 지점마다 주황 경고 원
+        for (const pt of m.burstPoints){
+          ctx.strokeStyle = `rgba(255,140,60,${alpha})`; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(pt.x, pt.y, CONFIG.BOSS_ATTACKS.graveBurst.radius * progress, 0, Math.PI*2); ctx.stroke();
+        }
       }
     }
     // 레이스 돌진 예고 - 잠깐 멈춰서 붉게 빛난다
     const isWraithWindup = (m.type === 'wraith' && m.dashState === 'windup');
 
+    // 붉은 각인(§29) 강화 개체: 붉은 아우라 링
+    if (m.redMark){
+      ctx.strokeStyle = 'rgba(255,45,77,0.75)'; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(m.x, m.y, m.radius + 7 + Math.sin(game.animTime*6)*2, 0, Math.PI*2); ctx.stroke();
+    }
+
     const img = MONSTER_IMAGES[m.type];
     const flash = m.hitFlash || 0;
-    const scale = 1 + (flash / 0.15) * 0.18; // 맞는 순간 살짝 부풀어 오르는 타격감
+    // 시체폭탄병(§29) 자폭 예고: 몸이 부풀어 오르며 점멸한다 - 이때 처치하면 폭발이 취소된다
+    const fusing = (m.type === 'bomber' && m.fuseState === 'fusing');
+    const fuseBlink = fusing ? (Math.sin(game.animTime*22) > 0 ? 0.55 : 0) : 0;
+    const fuseScale = fusing ? 1 + (1 - Math.max(0, m.fuseTimer || 0) / CONFIG.MONSTER.bomber.fuseTime) * 0.45 : 1;
+    const scale = (1 + (flash / 0.15) * 0.18) * fuseScale; // 맞는 순간 살짝 부풀어 오르는 타격감
     const size = m.radius * 2.6 * scale;
+    const flashA = Math.max(Math.min(1, flash / 0.15) * 0.85, fuseBlink);
     if (mIsBoss){ ctx.save(); ctx.shadowColor = '#ff2d4d'; ctx.shadowBlur = 20; }
     if (isWraithWindup){ ctx.save(); ctx.shadowColor = '#ff2d4d'; ctx.shadowBlur = 16; }
     if (img && img.complete && img.naturalWidth > 0){
-      if (flash > 0){
+      if (flashA > 0){
         // 오프스크린 캔버스에서 스프라이트 모양대로만 흰색을 덧씌운다 (사각 박스 방지)
-        drawFlashedImage(ctx, img, m.x - size/2, m.y - size/2, size, Math.min(1, flash / 0.15) * 0.85);
+        drawFlashedImage(ctx, img, m.x - size/2, m.y - size/2, size, flashA);
       } else {
         ctx.drawImage(img, m.x - size/2, m.y - size/2, size, size);
       }
     } else {
-      ctx.fillStyle = flash > 0 ? '#ffffff' : m.color;
+      ctx.fillStyle = flashA > 0 ? '#ffffff' : m.color;
       ctx.beginPath(); ctx.arc(m.x, m.y, m.radius * scale, 0, Math.PI*2); ctx.fill();
     }
     if (mIsBoss) ctx.restore();
     if (isWraithWindup) ctx.restore();
-    // 체력바: 정예/원거리/보스는 항상, 구울은 맞았을 때만 잠깐 표시
-    const showHpBar = m.type !== 'ghoul' || m.hpBarTimer > 0;
+    // 체력바: 정예/원거리/보스는 항상, 물량 담당(구울·블러드 배트)은 맞았을 때만 잠깐 표시
+    const hideByDefault = (m.type === 'ghoul' || m.type === 'bat');
+    const showHpBar = !hideByDefault || m.hpBarTimer > 0;
     if (showHpBar){
-      const barAlpha = m.type !== 'ghoul' ? 1 : Math.min(1, m.hpBarTimer / 1.4);
+      const barAlpha = !hideByDefault ? 1 : Math.min(1, m.hpBarTimer / 1.4);
       const w = m.radius*2;
       ctx.globalAlpha = barAlpha;
       ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(m.x-w/2, m.y-m.radius-10, w, 4);
@@ -2044,7 +2419,7 @@ function render(){
       ctx.fillRect(0, -h.width/2, h.length, h.width);
       ctx.restore();
     } else if (h.lingering){
-      const alpha = 0.2 + Math.sin(game.elapsed*5) * 0.05;
+      const alpha = 0.2 + Math.sin(game.animTime*5) * 0.05;
       ctx.fillStyle = `rgba(120,200,90,${alpha})`;
       ctx.beginPath(); ctx.arc(h.x, h.y, h.radius, 0, Math.PI*2); ctx.fill();
     } else {
@@ -2052,6 +2427,19 @@ function render(){
       ctx.fillStyle = `rgba(255,45,77,${alpha})`;
       ctx.beginPath(); ctx.arc(h.x, h.y, h.radius, 0, Math.PI*2); ctx.fill();
     }
+  }
+
+  // 뼈감옥 기둥 (§28.1): 일시적 충돌 지형. 사라지기 직전에는 점점 투명해진다
+  for (const pl of game.pillars){
+    const a = Math.min(1, pl.life / 1.2);
+    ctx.save();
+    ctx.globalAlpha = a;
+    ctx.fillStyle = '#cfc6ae';
+    ctx.beginPath(); ctx.ellipse(pl.x, pl.y + 3, pl.r, pl.r*0.55, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#ece4d3';
+    ctx.fillRect(pl.x - pl.r*0.55, pl.y - pl.r*2.2, pl.r*1.1, pl.r*2.4);
+    ctx.beginPath(); ctx.arc(pl.x, pl.y - pl.r*2.2, pl.r*0.55, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
   }
 
   // 적 투사체 (저주술사 저주탄, 보스 탄막)
@@ -2107,6 +2495,16 @@ function render(){
       ctx.strokeStyle = '#d4af37'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(p.x, p.y, p.radius+8, -Math.PI/2, -Math.PI/2 + (p.reviveProgress/CONFIG.PLAYER.reviveTime)*Math.PI*2); ctx.stroke();
     }
+    // 카드 선택 중 무적 표시 (§33.1): 황금빛 회전 보호막 링
+    if (p.choosing){
+      ctx.save();
+      ctx.setLineDash([5,5]);
+      ctx.lineDashOffset = -game.animTime * 20;
+      ctx.strokeStyle = 'rgba(212,175,55,0.9)';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.radius + 10, 0, Math.PI*2); ctx.stroke();
+      ctx.restore();
+    }
   }
 
   // 수리검 / 드론 (플레이어 주위를 도는 장비, 캐릭터 위에 그린다)
@@ -2121,13 +2519,13 @@ function render(){
       const spinSpeed = base.spinSpeed * (evo && evo.spinMul ? evo.spinMul : 1);
       const img = EQUIP_IMAGES.shuriken;
       for (let i=0; i<count; i++){
-        const ang = game.elapsed * spinSpeed + i * (Math.PI*2/count);
+        const ang = game.animTime * spinSpeed + i * (Math.PI*2/count);
         const sx = p.x + Math.cos(ang) * radius;
         const sy = p.y + Math.sin(ang) * radius;
         const s = 20;
         ctx.save();
         ctx.translate(sx, sy);
-        ctx.rotate(game.elapsed * 6); // 수리검 자체 회전
+        ctx.rotate(game.animTime * 6); // 수리검 자체 회전
         if (img && img.complete && img.naturalWidth > 0){
           ctx.drawImage(img, -s/2, -s/2, s, s);
         } else {
@@ -2177,12 +2575,22 @@ function render(){
     downFlagP2.style.left = s2.x + 'px'; downFlagP2.style.top = s2.y + 'px';
   }
 
-  const finalBossIndex = CONFIG.STAGE.bosses.length - 1;
-  const inFinale = game.bossSpawned[finalBossIndex];
-  timerChip.textContent = inFinale ? 'FINAL' : fmtTime(CONFIG.ROUND_SECONDS - game.elapsed);
-  timerChip.classList.toggle('finale', inFinale);
+  // 보스 게이트 (§27.1): 보스전 동안 타이머가 정지하고 붉게 점멸한다 - "보스를 잡아야 시간이 흐른다"
+  const gateBoss = game.monsters.find(m => isBossType(m.type));
+  const hudFinalBossType = CONFIG.STAGE.bosses[CONFIG.STAGE.bosses.length - 1];
+  const remainText = fmtTime(CONFIG.ROUND_SECONDS - game.elapsed);
+  timerChip.textContent = gateBoss ? '⚔ ' + remainText : remainText;
+  timerChip.classList.toggle('finale', !!gateBoss);
   killCountEl.innerHTML = game.kills + ' KILLS<span class="small">TEAM SCORE</span>';
-  stageLabel.textContent = inFinale ? '최종 보스를 처치해야 클리어됩니다' : ('STAGE ' + game.stage + ' · ' + CONFIG.STAGE.names[game.stage - 1]);
+  if (gateBoss){
+    stageLabel.textContent = gateBoss.type === hudFinalBossType
+      ? '최종 보스를 처치해야 클리어됩니다'
+      : '보스를 처치하면 시간이 다시 흐릅니다';
+  } else if (game.state === 'draft'){
+    stageLabel.textContent = '주무기를 선택하세요';
+  } else {
+    stageLabel.textContent = 'ACT ' + game.stage + ' · ' + CONFIG.STAGE.names[game.stage - 1];
+  }
 
   // 보스 전용 대형 체력바 (화면 상단, 보스가 있을 때만 표시)
   const boss = game.monsters.find(m => isBossType(m.type));
