@@ -166,27 +166,10 @@
     50%{ box-shadow:0 0 18px rgba(212,175,55,0.45); }
   }
 
-  /* ---------- 무정지 카드 선택 패널 (§33): 게임을 멈추지 않고 화면 측면에 표시 ---------- */
-  .choice-panel{
-    position:absolute; top:96px; width:200px; z-index:8;
-    display:flex; flex-direction:column; gap:8px;
-  }
-  #choicePanelP1{ left:12px; }
-  #choicePanelP2{ right:12px; }
-  .choice-title{ font-family:'Press Start 2P', monospace; font-size:9px; color:var(--gold); text-align:center; }
-  .choice-timer{ height:4px; background:rgba(255,255,255,0.10); border-radius:2px; overflow:hidden; }
+  /* ---------- 카드 선택 오버레이 (§33): 중앙 대형 카드 UI. 게임은 멈추지 않고 10초 타이머만 흐른다 ---------- */
+  .choice-overlay{ background:rgba(6,3,9,0.62); z-index:8; }
+  .choice-timer{ width:340px; max-width:70%; height:5px; background:rgba(255,255,255,0.10); border-radius:2px; overflow:hidden; }
   .choice-timer-fill{ height:100%; width:100%; background:linear-gradient(90deg, var(--gold), #ff6b81); }
-  #choiceCardsP1, #choiceCardsP2{ display:flex; flex-direction:column; gap:8px; }
-  .mini-card{
-    background:rgba(21,13,26,0.92); border:1px solid var(--line); border-radius:6px;
-    padding:9px 11px; cursor:pointer; transition:transform .12s ease, border-color .12s ease;
-  }
-  .mini-card:hover{ transform:translateX(3px); border-color:var(--gold); }
-  .mini-card .rarity{ font-family:'Press Start 2P', monospace; font-size:7px; color:var(--bone-dim); display:block; margin-bottom:4px; }
-  .mini-card.evolution{ border-color:rgba(212,175,55,0.7); }
-  .mini-card.evolution .rarity{ color:var(--gold); }
-  .mini-card h4{ font-family:'Cinzel', serif; font-size:13px; margin:0 0 3px; }
-  .mini-card p{ font-size:11px; color:var(--bone-dim); margin:0; line-height:1.45; }
 
   .result-stats{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   .stat{ background:var(--panel-2); border:1px solid var(--line); border-radius:4px; padding:14px 22px; min-width:120px; }
@@ -263,16 +246,11 @@
       </p>
     </div>
 
-    <!-- 무정지 카드 선택 패널 (§31, §33): 레벨업/시작 드래프트/보스 전리품. 게임을 멈추지 않는다 -->
-    <div class="choice-panel hidden" id="choicePanelP1">
-      <div class="choice-title" id="choiceTitleP1"></div>
-      <div class="choice-timer"><div class="choice-timer-fill" id="choiceTimerP1"></div></div>
-      <div id="choiceCardsP1"></div>
-    </div>
-    <div class="choice-panel hidden" id="choicePanelP2">
-      <div class="choice-title" id="choiceTitleP2"></div>
-      <div class="choice-timer"><div class="choice-timer-fill" id="choiceTimerP2"></div></div>
-      <div id="choiceCardsP2"></div>
+    <!-- 카드 선택 오버레이 (§31, §33): 레벨업/시작 드래프트/보스 전리품. 게임은 멈추지 않는다 -->
+    <div class="overlay choice-overlay hidden" id="choiceOverlay">
+      <div class="levelup-title" id="choiceTitle">LEVEL UP</div>
+      <div class="choice-timer"><div class="choice-timer-fill" id="choiceTimerFill"></div></div>
+      <div class="cards" id="choiceCards"></div>
     </div>
 
     <!-- 결과 화면 -->
@@ -807,7 +785,7 @@ function startGame(mode, role){
   }
   menuOverlay.classList.add('hidden');
   resultOverlay.classList.add('hidden');
-  hideChoicePanel('P1'); hideChoicePanel('P2'); guestChoice = null;
+  hideChoicePanel(); guestChoice = null;
 }
 
 // ---------- 몬스터 스폰 ----------
@@ -1010,31 +988,25 @@ function buildChoiceCards(p, kind){
 }
 
 const CHOICE_TITLES = { draft:'주무기 선택', levelup:'LEVEL UP', loot:'보스 전리품' };
-function choicePanelEls(pid){
-  const s = pid === 'P1' ? 'P1' : 'P2';
-  return {
-    panel: document.getElementById('choicePanel'+s),
-    title: document.getElementById('choiceTitle'+s),
-    timer: document.getElementById('choiceTimer'+s),
-    cards: document.getElementById('choiceCards'+s),
-  };
-}
+const choiceOverlay = document.getElementById('choiceOverlay');
+const choiceTitleEl = document.getElementById('choiceTitle');
+const choiceTimerFill = document.getElementById('choiceTimerFill');
+const choiceCardsRow = document.getElementById('choiceCards');
 function fillChoicePanel(pid, kind, cards, onPick){
-  const els = choicePanelEls(pid);
-  els.title.textContent = pid + ' · ' + (CHOICE_TITLES[kind] || 'SELECT');
-  els.timer.style.width = '100%';
-  els.cards.innerHTML = '';
+  choiceTitleEl.textContent = pid + ' ' + (CHOICE_TITLES[kind] || 'SELECT');
+  choiceTimerFill.style.width = '100%';
+  choiceCardsRow.innerHTML = '';
   cards.forEach(c => {
     const div = document.createElement('div');
-    div.className = 'mini-card' + (c.rarity === 'EVOLUTION' ? ' evolution' : '');
-    div.innerHTML = `<span class="rarity">${c.rarity}</span><h4>${c.title}</h4><p>${c.desc}</p>`;
+    div.className = 'card' + (c.rarity === 'EVOLUTION' ? ' evolution' : '');
+    div.innerHTML = `<div class="card-icon">${c.icon || CARD_ICON[c.iconKey] || ''}</div><span class="rarity">${c.rarity}</span><h3>${c.title}</h3><p>${c.desc}</p>`;
     div.onclick = () => onPick(c.id);
-    els.cards.appendChild(div);
+    choiceCardsRow.appendChild(div);
   });
-  els.panel.classList.remove('hidden');
+  choiceOverlay.classList.remove('hidden');
 }
-function hideChoicePanel(pid){
-  choicePanelEls(pid).panel.classList.add('hidden');
+function hideChoicePanel(){
+  choiceOverlay.classList.add('hidden');
 }
 function startChoice(p, kind){
   const cards = buildChoiceCards(p, kind);
@@ -1058,18 +1030,20 @@ function resolveChoice(p, cardId){
   card.apply(p);
   p.choosing = null;
   if (ch.remote) netSend({ t:'choiceEnd' });
-  else hideChoicePanel(p.id);
+  else hideChoicePanel();
 }
 function updateChoices(dt){
   for (const p of game.players){
     if (p.choosing){
       p.choosing.timer -= dt;
       if (!p.choosing.remote){
-        const els = choicePanelEls(p.id);
-        els.timer.style.width = Math.max(0, p.choosing.timer / p.choosing.total * 100) + '%';
+        choiceTimerFill.style.width = Math.max(0, p.choosing.timer / p.choosing.total * 100) + '%';
       }
       if (p.choosing.timer <= 0) resolveChoice(p, null);
     } else if (p.pendingChoices.length){
+      // 중앙 오버레이는 한 번에 한 명만 사용: 다른 로컬 플레이어가 선택 중이면 순서를 기다린다.
+      // 대기 중에는 타이머가 흐르지 않으므로 숨은 자동 선택은 발생하지 않는다. (원격 게스트 선택과는 병행 가능)
+      if (!p.isRemote && game.players.some(q => q !== p && q.choosing && !q.choosing.remote)) continue;
       startChoice(p, p.pendingChoices.shift().kind); // 연속 레벨업은 대기열에서 하나씩 이어진다 (§33.1)
     }
   }
@@ -1843,7 +1817,7 @@ function endGame(result){
   game.state = 'ended';
   // 열려 있던 카드 선택은 모두 정리한다
   game.players.forEach(p => { p.choosing = null; p.pendingChoices = []; });
-  hideChoicePanel('P1'); hideChoicePanel('P2');
+  hideChoicePanel();
   netSend({ t:'choiceEnd' });
   const survived = Math.min(game.elapsed, CONFIG.ROUND_SECONDS);
   const avgLevel = Math.round(game.players.reduce((s,p)=>s+p.level,0) / game.players.length);
@@ -2006,7 +1980,7 @@ function handleGuestData(data){
     showGuestChoice(data.kind, data.cards);
   } else if (data.t === 'choiceEnd'){
     // 호스트가 선택을 확정(또는 시간 초과로 무작위 선택)했다 - 패널을 닫는다
-    hideChoicePanel('P2'); guestChoice = null;
+    hideChoicePanel(); guestChoice = null;
   }
 }
 
@@ -2075,7 +2049,7 @@ function showGuestChoice(kind, cards){
   guestChoice = { timer: CONFIG.CHOICE_SECONDS, total: CONFIG.CHOICE_SECONDS };
   fillChoicePanel('P2', kind, cards, id => {
     netSend({ t:'choiceSel', id });
-    hideChoicePanel('P2');
+    hideChoicePanel();
     guestChoice = null;
   });
 }
@@ -2083,9 +2057,8 @@ function showGuestChoice(kind, cards){
 function updateGuestChoice(dt){
   if (!guestChoice) return;
   guestChoice.timer -= dt;
-  const els = choicePanelEls('P2');
-  els.timer.style.width = Math.max(0, guestChoice.timer / guestChoice.total * 100) + '%';
-  if (guestChoice.timer <= 0){ hideChoicePanel('P2'); guestChoice = null; }
+  choiceTimerFill.style.width = Math.max(0, guestChoice.timer / guestChoice.total * 100) + '%';
+  if (guestChoice.timer <= 0){ hideChoicePanel(); guestChoice = null; }
 }
 
 // ---- 게스트: 내 로컬 입력(WASD+마우스+Space)을 모아 호스트에게 전송 ----
