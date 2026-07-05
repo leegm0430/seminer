@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게임 지식 퀴즈</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const Brain = ({ size = 24, style, className }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+        <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/>
+        <path d="M9 13a4.5 4.5 0 0 0 3-4"/>
+        <path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/>
+        <path d="M3.477 10.896a4 4 0 0 1 .585-.396"/>
+        <path d="M6 18a4 4 0 0 1-1.967-.516"/>
+        <path d="M12 13h4"/>
+        <path d="M12 18h6a2 2 0 0 1 2 2v1"/>
+        <path d="M12 8h8"/>
+        <path d="M16 8V5a2 2 0 0 1 2-2"/>
+        <circle cx="16" cy="13" r=".5"/>
+        <circle cx="18" cy="3" r=".5"/>
+        <circle cx="20" cy="21" r=".5"/>
+        <circle cx="20" cy="8" r=".5"/>
+      </svg>
+    );
+
+    const Check = ({ size = 24, style, className }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+        <path d="M20 6 9 17 4 12"/>
+      </svg>
+    );
+
+    const X = ({ size = 24, style, className }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+        <path d="M18 6 6 18"/>
+        <path d="m6 6 12 12"/>
+      </svg>
+    );
+
+    const ArrowRight = ({ size = 24, style, className }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+        <path d="M5 12h14"/>
+        <path d="m12 5 7 7-7 7"/>
+      </svg>
+    );
+
+    const Trophy = ({ size = 24, style, className }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+        <path d="M4 22h16"/>
+        <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+        <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+        <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+      </svg>
+    );
+
+    const TOPICS = ["RPG 게임", "게임 역사", "게임 개발 용어"];
+    const DIFFICULTIES = ["쉬움", "보통", "어려움"];
+
+    function GameQuiz() {
+      const [apiKey, setApiKey] = useState("");
+      const [topic, setTopic] = useState(TOPICS[0]);
+      const [difficulty, setDifficulty] = useState(DIFFICULTIES[0]);
+      const [started, setStarted] = useState(false);
+      const [quiz, setQuiz] = useState(null);
+      const [selected, setSelected] = useState(null);
+      const [loading, setLoading] = useState(false);
+      const [error, setError] = useState("");
+      const [score, setScore] = useState(0);
+      const [total, setTotal] = useState(0);
+
+      const fetchQuiz = async () => {
+        if (!apiKey.trim()) {
+          setError("상단에 API 키를 먼저 입력해주세요.");
+          return;
+        }
+        setError("");
+        setLoading(true);
+        setSelected(null);
+        setQuiz(null);
+
+        const userPrompt = `주제: ${topic}\n난이도: ${difficulty}\n\n위 주제와 난이도에 맞는 4지선다 퀴즈 1개를 다음 JSON 형식으로만 응답하세요 (다른 텍스트 없이 JSON만):\n{"question": "질문", "options": ["A.선택지1","B.선택지2","C.선택지3","D.선택지4"], "answer": "A", "explanation": "해설"}`;
+
+        try {
+          const response = await fetch("https://api.anthropic.com/v1/messages", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": apiKey.trim(),
+              "anthropic-version": "2023-06-01",
+              "anthropic-dangerous-direct-browser-access": "true",
+            },
+            body: JSON.stringify({
+              model: "claude-sonnet-4-6",
+              max_tokens: 400,
+              system:
+                "당신은 게임 퀴즈 출제자입니다. 선택된 주제와 난이도에 맞는 퀴즈를 JSON 형식으로 생성하세요. 형식: {question: '질문', options: ['A.선택지1','B.선택지2','C.선택지3','D.선택지4'], answer: 'A', explanation: '해설'}. 반드시 JSON만 응답하고 다른 설명은 추가하지 마세요.",
+              messages: [{ role: "user", content: userPrompt }],
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.error) {
+            setError(`오류가 발생했습니다: ${data.error.message}`);
+          } else {
+            const text = (data.content || [])
+              .map((b) => (b.type === "text" ? b.text : ""))
+              .join("")
+              .trim();
+            const cleaned = text.replace(/^```json\s*|^```\s*|```$/g, "").trim();
+
+            try {
+              const parsed = JSON.parse(cleaned);
+              setQuiz(parsed);
+            } catch {
+              setError("퀴즈 생성에 실패했습니다. 다시 시도해주세요.");
+            }
+          }
+        } catch (err) {
+          setError("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const handleStart = () => {
+        setStarted(true);
+        setScore(0);
+        setTotal(0);
+        fetchQuiz();
+      };
+
+      const handleSelect = (letter) => {
+        if (selected) return;
+        setSelected(letter);
+        setTotal((t) => t + 1);
+        if (letter === quiz.answer) setScore((s) => s + 1);
+      };
+
+      const handleNext = () => {
+        fetchQuiz();
+      };
+
+      const inputStyle = {
+        background: "#0d0e12",
+        border: "1px solid #2a2c33",
+        color: "#e5e5e5",
+      };
+
+      return (
+        <div
+          className="min-h-screen w-full"
+          style={{ background: "#0d0e12", color: "#e5e5e5", fontFamily: "system-ui, sans-serif" }}
+        >
+          <div className="max-w-xl mx-auto px-4 py-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <Brain size={20} style={{ color: "#4da6ff" }} />
+                <h1 className="text-xl font-semibold" style={{ color: "#e8ecf5" }}>
+                  게임 지식 퀴즈
+                </h1>
+              </div>
+              {started && (
+                <div
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm"
+                  style={{ background: "#16171c", border: "1px solid #2a2c33", color: "#e0b03c" }}
+                >
+                  <Trophy size={14} />
+                  {score} / {total}
+                </div>
+              )}
+            </div>
+
+            <div className="mb-6 p-3 rounded-lg" style={{ background: "#16171c", border: "1px solid #2a2c33" }}>
+              <label className="block text-xs mb-1.5" style={{ color: "#9098a8" }}>
+                Anthropic API 키
+              </label>
+              <input
+                type="password"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="sk-ant-..."
+                className="w-full px-3 py-2 rounded-md text-sm outline-none"
+                style={inputStyle}
+              />
+            </div>
+
+            {!started ? (
+              <div className="p-5 rounded-xl flex flex-col gap-4" style={{ background: "#16171c", border: "1px solid #2a2c33" }}>
+                <div>
+                  <label className="block text-xs mb-1.5" style={{ color: "#9098a8" }}>
+                    퀴즈 주제
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {TOPICS.map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setTopic(t)}
+                        className="py-2 rounded-md text-sm transition-colors"
+                        style={{
+                          background: topic === t ? "#1f3a57" : "#0d0e12",
+                          border: `1px solid ${topic === t ? "#4da6ff" : "#2a2c33"}`,
+                          color: topic === t ? "#4da6ff" : "#a8acb5",
+                        }}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs mb-1.5" style={{ color: "#9098a8" }}>
+                    난이도
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {DIFFICULTIES.map((d) => (
+                      <button
+                        key={d}
+                        onClick={() => setDifficulty(d)}
+                        className="py-2 rounded-md text-sm transition-colors"
+                        style={{
+                          background: difficulty === d ? "#1f3a57" : "#0d0e12",
+                          border: `1px solid ${difficulty === d ? "#4da6ff" : "#2a2c33"}`,
+                          color: difficulty === d ? "#4da6ff" : "#a8acb5",
+                        }}
+                      >
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleStart}
+                  className="mt-2 py-2.5 rounded-md text-sm font-medium"
+                  style={{ background: "linear-gradient(180deg, #4da6ff, #2b7cd1)", color: "#08111c" }}
+                >
+                  퀴즈 시작
+                </button>
+
+                {error && (
+                  <div
+                    className="px-4 py-3 rounded-lg text-sm"
+                    style={{ background: "#2a1620", border: "1px solid #5c2436", color: "#e8a3b5" }}
+                  >
+                    {error}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-2 text-xs" style={{ color: "#7a7f8a" }}>
+                  <span>{topic}</span>
+                  <span>·</span>
+                  <span>{difficulty}</span>
+                </div>
+
+                {loading && (
+                  <div
+                    className="p-8 rounded-xl text-center text-sm"
+                    style={{ background: "#16171c", border: "1px solid #2a2c33", color: "#9098a8" }}
+                  >
+                    퀴즈를 생성하는 중...
+                  </div>
+                )}
+
+                {error && (
+                  <div
+                    className="px-4 py-3 rounded-lg text-sm"
+                    style={{ background: "#2a1620", border: "1px solid #5c2436", color: "#e8a3b5" }}
+                  >
+                    {error}
+                  </div>
+                )}
+
+                {!loading && quiz && (
+                  <div className="p-5 rounded-xl" style={{ background: "#16171c", border: "1px solid #2a2c33" }}>
+                    <h2 className="text-base font-medium mb-4 leading-relaxed" style={{ color: "#e8ecf5" }}>
+                      {quiz.question}
+                    </h2>
+
+                    <div className="flex flex-col gap-2 mb-2">
+                      {quiz.options.map((opt) => {
+                        const letter = opt.trim().charAt(0);
+                        const isAnswer = letter === quiz.answer;
+                        const isSelected = letter === selected;
+                        let bg = "#0d0e12";
+                        let border = "#2a2c33";
+                        let color = "#d8d8d8";
+
+                        if (selected) {
+                          if (isAnswer) {
+                            bg = "#16291c";
+                            border = "#2e7d4f";
+                            color = "#6fd394";
+                          } else if (isSelected) {
+                            bg = "#2a1620";
+                            border = "#7d2e3f";
+                            color = "#e8849b";
+                          }
+                        }
+
+                        return (
+                          <button
+                            key={opt}
+                            onClick={() => handleSelect(letter)}
+                            disabled={!!selected}
+                            className="text-left px-4 py-2.5 rounded-md text-sm flex items-center justify-between transition-colors"
+                            style={{ background: bg, border: `1px solid ${border}`, color, cursor: selected ? "default" : "pointer" }}
+                          >
+                            <span>{opt}</span>
+                            {selected && isAnswer && <Check size={16} />}
+                            {selected && isSelected && !isAnswer && <X size={16} />}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {selected && (
+                      <div
+                        className="mt-4 p-3 rounded-md text-sm leading-relaxed"
+                        style={{
+                          background: selected === quiz.answer ? "#16291c" : "#1c1820",
+                          border: `1px solid ${selected === quiz.answer ? "#2e7d4f" : "#2a2c33"}`,
+                          color: "#c5c9d2",
+                        }}
+                      >
+                        <p className="font-medium mb-1" style={{ color: selected === quiz.answer ? "#6fd394" : "#e0b03c" }}>
+                          {selected === quiz.answer ? "정답입니다!" : "틀렸습니다."}
+                        </p>
+                        <p>{quiz.explanation}</p>
+                      </div>
+                    )}
+
+                    {selected && (
+                      <button
+                        onClick={handleNext}
+                        className="mt-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-md text-sm font-medium"
+                        style={{ background: "linear-gradient(180deg, #4da6ff, #2b7cd1)", color: "#08111c" }}
+                      >
+                        다음 문제
+                        <ArrowRight size={15} />
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                <button
+                  onClick={() => setStarted(false)}
+                  className="text-xs self-center mt-1"
+                  style={{ color: "#7a7f8a" }}
+                >
+                  설정으로 돌아가기
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<GameQuiz />);
+  </script>
+</body>
+</html>
