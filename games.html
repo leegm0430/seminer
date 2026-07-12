@@ -82,6 +82,23 @@
       margin: 0 auto;
       padding: 1rem 2rem 5rem;
     }
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-title:first-child { margin-top: 0; }
+    .section-title .tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--green-lt);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
     .game-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -175,13 +192,15 @@
   <p class="eyebrow">Vibe Coding Games</p>
   <h1>바이브 코딩으로 만든 게임들</h1>
   <p>
-    Claude AI와의 대화만으로 기획하고 구현한 웹 게임 모음입니다.
-    패널을 클릭하면 바로 플레이할 수 있습니다.
+    Claude AI와의 대화만으로 기획하고 구현한 웹 게임과 웹앱·챗봇·기획서 모음입니다.
+    패널을 클릭하면 바로 플레이하거나 열어볼 수 있습니다.
   </p>
 </header>
 
 <!-- GAME GRID -->
 <div class="wrap">
+
+  <h2 class="section-title"><span class="tag">Games</span>게임</h2>
   <div class="game-grid">
 
     <!-- 슬라임 게임 -->
@@ -206,17 +225,6 @@
       </div>
     </a>
 
-    <!-- 크로우의 만물상 -->
-    <a class="game-panel" href="crow_chatbot.html">
-      <div class="game-thumb thumb-navy">🐦‍⬛</div>
-      <div class="game-body">
-        <p class="game-type">캐릭터 챗봇</p>
-        <p class="game-title">크로우의 만물상</p>
-        <p class="game-desc">행운과 기억을 거래하는 상인 캐릭터와 대화하는 AI 챗봇</p>
-        <span class="game-link">플레이하기 →</span>
-      </div>
-    </a>
-
     <!-- 게임 지식 퀴즈 -->
     <a class="game-panel" href="game-quiz.html">
       <div class="game-thumb thumb-teal">❓</div>
@@ -228,6 +236,33 @@
       </div>
     </a>
 
+    <!-- 아이작식 로그라이크 프로토타입 -->
+    <a class="game-panel" href="기획서/isaac-prototype.html">
+      <div class="game-thumb thumb-green">👾</div>
+      <div class="game-body">
+        <p class="game-type">로그라이크</p>
+        <p class="game-title">아이작식 로그라이크 프로토타입</p>
+        <p class="game-desc">몬스터 도감·아이템 시너지·협동 아기 시스템을 검증하는 로그라이크 프로토타입</p>
+        <span class="game-link">플레이하기 →</span>
+      </div>
+    </a>
+
+    <!-- Lucky Friends -->
+    <a class="game-panel" href="기획서/lucky-friends.html">
+      <div class="game-thumb thumb-teal">🎰</div>
+      <div class="game-body">
+        <p class="game-type">P2P 협동</p>
+        <p class="game-title">Lucky Friends — P2P 카지노 협동전</p>
+        <p class="game-desc">친구와 함께 운을 겨루는 P2P 카지노 협동전 프로토타입</p>
+        <span class="game-link">플레이하기 →</span>
+      </div>
+    </a>
+
+  </div>
+
+  <h2 class="section-title"><span class="tag">Web App · Chatbot · Docs</span>웹앱 · 챗봇 · 기획서</h2>
+  <div class="game-grid">
+
     <!-- REELVAULT 영화소개앱 -->
     <a class="game-panel" href="영화소개앱/index.html">
       <div class="game-thumb thumb-blue">🎬</div>
@@ -235,6 +270,28 @@
         <p class="game-type">웹 앱</p>
         <p class="game-title">REELVAULT — 릴볼트</p>
         <p class="game-desc">영화를 탐색하고 소개하는 영화 정보 웹 앱</p>
+        <span class="game-link">열어보기 →</span>
+      </div>
+    </a>
+
+    <!-- 크로우의 만물상 -->
+    <a class="game-panel" href="crow_chatbot.html">
+      <div class="game-thumb thumb-navy">🐦‍⬛</div>
+      <div class="game-body">
+        <p class="game-type">캐릭터 챗봇</p>
+        <p class="game-title">크로우의 만물상</p>
+        <p class="game-desc">행운과 기억을 거래하는 상인 캐릭터와 대화하는 AI 챗봇</p>
+        <span class="game-link">플레이하기 →</span>
+      </div>
+    </a>
+
+    <!-- 실시간 카페 좌석 & 콘센트 지도 미니 기획서 -->
+    <a class="game-panel" href="기획서/실시간_카페_좌석_콘센트_지도_미니기획서.html">
+      <div class="game-thumb thumb-navy">☕</div>
+      <div class="game-body">
+        <p class="game-type">미니 기획서</p>
+        <p class="game-title">실시간 카페 좌석 &amp; 콘센트 지도</p>
+        <p class="game-desc">카페 좌석과 콘센트 현황을 실시간으로 공유하는 서비스 미니 기획서</p>
         <span class="game-link">열어보기 →</span>
       </div>
     </a>
