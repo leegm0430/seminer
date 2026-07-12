@@ -481,20 +481,23 @@
       <p>REELVAULT는 별도 서버 없이 브라우저에서 TMDB API로 바로 요청합니다. <b>사이트 운영자</b>는 아래 절차로 한 번만 설정하면 됩니다.</p>
       <ol>
         <li><a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener">TMDB 설정 페이지</a>에서 이 포트폴리오/데모용 API 키를 새로 발급 (메인 계정 키와 분리)</li>
-        <li>발급받은 키를 <code>index.html</code> 상단의 <code>TMDB_API_KEY</code> 상수에 입력</li>
-        <li>저장 후 파일을 다시 열거나 업로드 — 방문자는 이 화면을 보지 않고 바로 서비스를 이용합니다</li>
+        <li>프로젝트 폴더의 <code>.env.example</code>을 <code>.env</code>로 복사하고 <code>TMDB_API_KEY=발급받은키</code> 입력</li>
+        <li><code>로컬서버실행.bat</code>(node local-server.js)으로 실행 — 서버가 .env를 읽어 키를 주입하며, .env는 git에 올라가지 않습니다</li>
       </ol>
       <p>데모 전용 키이므로 유출되어도 TMDB에서 재발급 후 교체만 하면 되고, 다른 서비스에는 영향이 없습니다.</p>
     </div>
   </div>
 </div>
 
+<script src="env.js"></script>
 <script>
 (function(){
   "use strict";
 
   /* ============ 설정 / 상태 ============ */
-  const TMDB_API_KEY = "cbb97c7551ecbd5fe48fdfe087af59a8";
+  // API 키는 코드에 두지 않고 .env 파일에 보관합니다.
+  // local-server.js가 .env를 읽어 /env.js(window.__ENV__)로 주입합니다.
+  const TMDB_API_KEY = (window.__ENV__ && window.__ENV__.TMDB_API_KEY) || "";
   const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
   const IMG500 = "https://image.tmdb.org/t/p/w500";
@@ -530,7 +533,7 @@
   /* ============ API 유틸 ============ */
   // TMDB에 직접 요청하며, 데모 전용 키를 쿼리 파라미터로 붙입니다.
   function isApiKeyConfigured(){
-    return TMDB_API_KEY && TMDB_API_KEY !== "YOUR_DEMO_TMDB_API_KEY";
+    return TMDB_API_KEY && TMDB_API_KEY !== "YOUR_TMDB_API_KEY";
   }
 
   async function tmdb(path, params){

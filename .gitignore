@@ -399,3 +399,8 @@ FodyWeavers.xsd
 
 # Cloudflare Wrangler local cache
 .wrangler/
+
+# Environment secrets (API keys)
+.env
+.env.*
+!.env.example
