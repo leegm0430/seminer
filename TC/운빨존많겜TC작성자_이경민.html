@@ -1,0 +1,321 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>운빨존많겜TC작성자_이경민 — TC</title>
+<style>
+:root { --bg:#0f172a; --card:#1e293b; --border:#2d3f55; --blue-lt:#60a5fa; --green-lt:#4ade80; --text:#f1f5f9; --text-2:#94a3b8; --text-3:#64748b; }
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif; font-size:14px; }
+.top { position:sticky; top:0; background:rgba(15,23,42,0.97); border-bottom:1px solid var(--border); padding:0.9rem 1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; z-index:10; }
+.top h1 { font-size:1rem; font-weight:700; margin-right:auto; }
+.top a { color:var(--blue-lt); text-decoration:none; font-size:0.82rem; font-weight:600; }
+.top a:hover { color:var(--green-lt); }
+.wrap { padding:1.25rem 1.5rem 3rem; }
+.tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+.tab { background:var(--card); color:var(--text-2); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.9rem; font-size:0.82rem; cursor:pointer; font-family:inherit; }
+.tab.active { color:var(--text); border-color:var(--green-lt); }
+.meta { background:var(--card); border:1px solid var(--border); border-left:3px solid var(--green-lt); border-radius:0 8px 8px 0; padding:0.8rem 1.1rem; margin-bottom:1rem; }
+.meta p { font-size:0.8rem; color:var(--text-2); line-height:1.7; }
+.meta p:first-child { color:var(--text); font-weight:700; }
+.doc { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.3rem 1.5rem; max-width:900px; }
+.doc p { font-size:0.85rem; color:var(--text-2); line-height:1.8; margin-bottom:0.55rem; }
+.doc p:first-child { color:var(--text); font-weight:700; font-size:0.95rem; }
+table.two-head thead th { position:static; }
+.sheet { display:none; }
+.sheet.active { display:block; }
+.tbl-scroll { overflow-x:auto; border:1px solid var(--border); border-radius:8px; }
+table { border-collapse:collapse; width:100%; min-width:700px; }
+th, td { border:1px solid var(--border); padding:0.45rem 0.7rem; text-align:center; vertical-align:middle; font-size:0.8rem; line-height:1.55; color:var(--text-2); white-space:pre-wrap; }
+thead th { background:#162032; color:var(--text); font-weight:600; position:sticky; top:0; }
+tbody tr:nth-child(even) { background:#131f33; }
+tbody tr:hover { background:#1a2a44; }
+td.al { text-align:left; }
+.st-pass { color:var(--green-lt); font-weight:700; }
+.st-fail { color:#f87171; font-weight:700; }
+.st-hold { color:#facc15; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>운빨존많겜TC작성자_이경민</h1>
+  <a href="../TC모음.html">← TC 모음으로</a>
+  <a href="../index.html#tc">포트폴리오 홈</a>
+  <a href="운빨존많겜TC작성자_이경민.xlsx" download>⬇ 원본 엑셀 다운로드</a>
+</div>
+<div class="wrap">
+<div class='tabs'><button class='tab' data-sheet='sheet0'>선정 이유</button><button class='tab' data-sheet='sheet1'>필수항목TC</button><button class='tab' data-sheet='sheet2'>지정항목TC</button></div>
+<div class='sheet' id='sheet0'><div class='doc'><p>운빨존많겜</p><p>TC (Test Case)</p><p>작성자 :  이경민</p><p>게임 선정 이유  : 기존의 랜덤 타워 디펜스 장르가 개인의 라인 방어에 치중했던 것과 달리 운빨존많겜은 유저 간 라인 간섭이 가능한 차별화된 구조를 통해 협동의 비중을 극대화한 타이틀입니다. 이러한 특징은 지정 과제 항목인 협동 모드를 분석함에 있어  유저 간 실시간 상호작용 및 데이터 동기화와 같은 복합적인 변수를 QA 관점에서 심도 있게 검증하기에 매우 훌륭한 표본이라 생각했습니다. 더불어 현재까지도 스토어 상위권을 유지하며 대중성이 입증된 게임인 만큼 실제 라이브 서비스 환경에서의 매칭 안정성과 품질 유지를 분석하기에 최적의 대상이라 판단하여 선정하였습니다.</p><p>우선 순위 설명</p><p>High = 제품의 핵심 기능이며, 오류가 발생하면 사용자에게 치명적인 영향을 미칠정도의 오류임.</p><p>Medium = 기능들에 결함이 있어도 제품의 핵심 기능이 마비되지는 않은정도의 오류임.</p><p>Low = 기능들에 문제가 발생하더라도 제품의 사용성에는 큰 영향을 주지 않는 오류임.</p></div></div>
+<div class='sheet' id='sheet1'><div class='meta'><p>Project name (프로젝트 명칭) : 운빨존많겜</p><p>Platform (플랫폼 종류) : Android / iOS</p><p>Version (버전 정보) : 버전 1.8.9</p></div><div class='tbl-scroll'><table><thead><tr><th>No.</th><th>Priority 
+(우선순위)</th><th>Category 1 (분류 1)</th><th>Category 2 
+(분류 2)</th><th>Category 3 
+(분류 3)</th><th>사전 조건</th><th>Test Details 
+(테스트 내용)</th><th>Expected Result 
+(테스트 기대 결과)</th><th>Comment 
+(비고)</th></tr></thead><tbody><tr><td>1</td><td>High</td><td rowspan='33'>설치 / 실행</td><td rowspan='2'>스토어 접속</td><td>AOS</td><td>인터넷 연결 상태</td><td>AOS 스토어 링크 접속 확인</td><td>스토어 내 게임 상세 페이지가  출력 됨</td><td>구글 플레이스토어 링크</td></tr><tr><td>2</td><td>High</td><td>IOS</td><td>인터넷 연결 상태</td><td>IOS 스토어 링크 접속 확인</td><td>스토어 내 게임 상세 페이지가 출력 됨</td><td>앱 스토어 링크</td></tr><tr><td>3</td><td>High</td><td rowspan='8'>설치 진행</td><td>다운로드</td><td>스토어 페이지 진입 
+상태</td><td>[설치] 혹은 [다운로드] 버튼 클릭시 다운로드
+클릭 시</td><td>다운로드 안내 문구 출력</td><td>스토어 계정 로그인 상태</td></tr><tr><td>4</td><td>High</td><td>다운로드</td><td>다운로드 중</td><td>다운로드 클릭 후 시작 되는 지 확인</td><td>다운로드 바(%) 노출 및 수치 증가 됨</td><td>스토어 계정 로그인 상태</td></tr><tr><td>5</td><td>Medium</td><td>일시 정지</td><td>다운로드 중</td><td>다운로드 중지 시 중단되고 재시작 가능한지 확인</td><td>다운로드 중단 및 재시작 시 이어서 진행 됨</td><td></td></tr><tr><td>6</td><td>High</td><td>네트워크 전환</td><td>다운로드 중</td><td>WIFI에서 데이터로 LTE/5G로 네트워크 변경시
+다운로드 유지 되는 지 확인</td><td>네트워크 환경 변경 안내 팝업 노출 및 중단없이 다운로드 지속 됨</td><td></td></tr><tr><td>7</td><td>High</td><td>용량 부족</td><td>저장공간 부족 상태</td><td>저장 공간 부족한 상태에서 설치 시 
+안내 문구 노출 및 설치 실패 확인</td><td>저장 공간 부족 안내 문구 노출 및 
+설치 프로세스 차단 됨</td><td>여유 공간 100MB 미만 환경 조성 필요</td></tr><tr><td>8</td><td>Medium</td><td>강제 종료</td><td>다운로드 중</td><td>다운로드 중 강제 종료 했을 때 이어 받기 가능한지 확인</td><td>스토어 재 진입 시 기존 다운로드 상태가 유지되거나 재시작 가능 함</td><td></td></tr><tr><td>9</td><td>High</td><td>설치 완료</td><td>다운로드 100% 완료</td><td>다운로드 완료 후 [열기] 버튼 활성화 및 바탕화면에
+아이콘 생성 확인</td><td>앱이 설치되어 [열기] 버튼 활성화 및 아이콘 생성 됨</td><td></td></tr><tr><td>10</td><td>High</td><td>업데이트</td><td>구버전 앱이 설치된 상태</td><td>스토어를 통해 진입 시 [열기] 버튼이 아닌
+ [업데이트] 버튼이 노출 되는지 확인</td><td>[업데이트] 버튼이 노출 됨</td><td></td></tr><tr><td>11</td><td>High</td><td rowspan='23'>앱 실행</td><td>업데이트</td><td>구버전 앱이 설치된 상태</td><td>구버전 실행 시 &quot;새로운 업데이트가 있습니다.&quot; 
+와 같은 문구 노출 및 업데이트 하러 가기 버튼
+활성화 되는지 확인</td><td>업데이트 팝업 노출 및 플레이스토어로 이동 버튼 혹은 아니요 버튼이 노출 됨</td><td></td></tr><tr><td>12</td><td>High</td><td>실행 확인</td><td>앱 설치 완료 상태</td><td>스토어에서 [열기] 버튼 클릭시 정상적으로 
+실행되는지 확인</td><td>로고 노출 후 로딩 화면이 출력 됨</td><td></td></tr><tr><td>13</td><td>Medium</td><td>실행 확인</td><td>앱 설치 완료 상태</td><td>홈 화면의 운빨존많겜 아이콘 터치시 정상적으로
+실행 되는지 확인</td><td>로고 노출 후 로딩 화면이 출력 됨</td><td></td></tr><tr><td>14</td><td>High</td><td>권한 확인</td><td>앱 최초 실행 상태</td><td>앱 구동 시 시스템 권한 요청 팝업이 노출 되는지
+확인</td><td>허용/거부 선택이 가능한 팝업이 
+출력 됨</td><td>초기 실행시</td></tr><tr><td>15</td><td>High</td><td>권한 확인</td><td>권한 팝업 노출 상태</td><td>시스템 (선택)권한을 거부 했을 때도 게임 진입 및 이용이 가능한지 확인</td><td>권한 거부와 상관없이 약관 및 
+로그인 화면으로 정상 진입 됨</td><td>초기 실행시</td></tr><tr><td>16</td><td>High</td><td>권한 확인</td><td>권한 팝업 노출 상태</td><td>시스템 (필수)권한을 거부 했을 때 게임 진입 및 이용이 가능한지 확인</td><td>게임에 진입이 되지 않고 
+&quot;권한 설정이 필요합니다&quot; 라는 
+팝업 노출 및 앱이 종료되거나 
+설정 창으로 이동 됨</td><td>AOS/iOS 정책에 따라 설정 메뉴로 이동</td></tr><tr><td>17</td><td>Medium</td><td>게스트 로그인</td><td>로그인 화면 진입 상태</td><td>게스트 로그인 선택시 별도의 계정 연동 없이 
+게임 진입이 가능한지 확인</td><td>튜토리얼 혹은 로비로 정상 진입 됨</td><td>초기 실행시 튜토리얼
+진입</td></tr><tr><td>18</td><td>Medium</td><td>게스트 로그인</td><td>게스트 로그인 한 상태</td><td>게스트 로그인 시 앱 삭제 후 데이터 삭제 될 수 있음을 고지하는 지 확인</td><td>게스트 로그인 시 데이터 삭제 될 수 있음을 고지하는 팝업이 노출 됨</td><td></td></tr><tr><td>19</td><td>High</td><td>구글 로그인</td><td>로그인 화면 진입 상태</td><td>구글 계정 연동 로그인 시 정상적으로 인증 및 
+진입이 되는지 확인</td><td>연동 성공 시 로비 혹은 튜토리얼 
+진입 됨</td><td>초기 실행시 튜토리얼
+진입</td></tr><tr><td>20</td><td>High</td><td>애플 로그인</td><td>로그인 화면 진입 상태</td><td>애플 계정 연동 로그인 시 정상적으로 인증 및
+진입이 되는지 확인</td><td>연동 성공 시 로비 혹은 튜토리얼 
+진입 됨</td><td>초기 실행시 튜토리얼
+진입</td></tr><tr><td>21</td><td>High</td><td>약관 확인</td><td>계정 연동 혹은 게스트
+로그인 후</td><td>서비스 이용약관 및 개인정보 처리방침 등의 화면이
+노출 되는지 확인</td><td>필수/선택 약관 항목이 명확히 
+노출 됨</td><td>최초 로그인 시</td></tr><tr><td>22</td><td>Medium</td><td>계정 로그인</td><td>로그인 취소</td><td>계정 연동 중 취소 클릭 시 정상적으로 로그인
+화면으로 복귀하는지 확인</td><td>인증 창이 닫히며 기존 로그인 
+대기 화면으로 정상 복귀 됨</td><td></td></tr><tr><td>23</td><td>High</td><td>백그라운드 전환</td><td>게임 로딩 또는 게임 
+진행 상태</td><td>게임 이용 중  홈 화면으로  나가거나 타 앱으로 
+전환 후 다시 복귀 시 로딩 없이 진행 되는지 확인</td><td>별도의 추가 로딩 화면 없이 기존
+플레이 상태가 유지 됨</td><td></td></tr><tr><td>24</td><td>High</td><td>백그라운드 전환</td><td>게임 로딩 또는 게임 
+진행 상태</td><td>게임 이용 중  홈 화면으로  나가거나 타 앱으로 
+전환 후 다시 복귀 시 앱이 재실행 되더라도 마지막
+접속 데이터가 보존 되는지 확인</td><td>앱이 재실행 되더라도 마지막 접속 
+데이터가 보존 됨</td><td></td></tr><tr><td>25</td><td>Medium</td><td>팝업/알림</td><td>게임 진행 상태</td><td>게임 중 전화, 카톡 등 시스템 팝업이 발생 했을 때
+게임이 끊기거나 멈추지 않는지 확인</td><td>정상적으로 게임이 진행 됨</td><td>전화 수신, 문자 수신, 배터리 부족(15%, 5%) 시스템 팝업</td></tr><tr><td>26</td><td>High</td><td>팝업/알림</td><td>게임 진행 상태</td><td>게임 클라이언트가 강제 종료되지 않으며 통화 종료 후 복귀 시 재접속 시도 혹은 현재 스테이지 유지 확인</td><td>게임 클라이언트가 강제 종료 되지
+ 않으며 통화 종료 후 복귀 시 재접속 시도 혹은 현재 스테이지 유지 됨</td><td>게임 중 통화를 받았을 때</td></tr><tr><td>27</td><td>High</td><td>강제 종료</td><td>게임 진행 상태</td><td>작업 관리자에서 앱을 강제로 종료한 후 다시 시작 했을 때</td><td>초기 화면 진입 및 로딩 화면 
+실행 됨</td><td></td></tr><tr><td>28</td><td>High</td><td>네트워크 연결</td><td>게임 진행 상태</td><td>데이터/WIFI가 모두 차단 됐을 때 네트워크 안내 
+팝업이 노출 되는지 확인</td><td>&quot; 네트워크 연결이 불안정합니다.&quot; 
+와 같은 안내 팝업이 정상 출력 됨</td><td></td></tr><tr><td>29</td><td>High</td><td>네트워크 연결</td><td>네트워크 안내 팝업
+노출 상태</td><td>네트워크 재연결 후 팝업 내 확인 버튼 클릭 시
+정상적으로 다음 단계로 진행되는지 확인</td><td>로딩이 재개되어 타이틀 화면으로 
+진입 됨</td><td></td></tr><tr><td>30</td><td>High</td><td>네트워크 연결</td><td>네트워크 신호가 약하여
+무한 로딩 상태</td><td>응답 지연 발생시 앱이 멈추거나 무한 로딩 시 타임아웃 처리가 되는지 확인</td><td>일정시간 동안 로딩 진행 불가 시 
+연결 실패 안내 팝업이 출력 됨</td><td></td></tr><tr><td>31</td><td>High</td><td>OS 버전</td><td>특정 기기 환경</td><td>최신 OS 버전 및 구버전 OS에서 앱 실행 및 
+초기 진입시 호환성 확인</td><td>OS 버전과 상관없이 로딩 화면이 
+정상 출력 됨</td><td>디바이스/환경 차이 고려</td></tr><tr><td>32</td><td>High</td><td>UI/UX</td><td>다양한 해상도 기기</td><td>다양한 디자인 및 화면 비율 기기에서 UI/UX 
+혹은 텍스트 등이 잘림 없는 지 확인</td><td>UI/UX가 화면 밖으로 벗어나거나 
+비어있지 않고 정상적으로 노출 됨</td><td></td></tr><tr><td>33</td><td>High</td><td>메모리 리스크</td><td>저사양 기기 환경</td><td>메모리 점유율 높은 상태에서 게임 실행시 크래시 
+발생 확인</td><td>메모리 부족 안내가 뜨거나 시스템에 
+의해 강제 종료 되지 않고 실행 됨</td><td>저사양 기기 대상</td></tr><tr><td>34</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>35</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>36</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet2'><div class='meta'><p>Project name (프로젝트 명칭) : 운빨존많겜</p><p>Platform (플랫폼 종류) : Android / iOS</p><p>Version (버전 정보) : 버전 1.8.9</p></div><div class='tbl-scroll'><table><thead><tr><th>No.</th><th>Priority 
+(우선순위)</th><th>Category 1 (분류 1)</th><th>Category 2 
+(분류 2)</th><th>Category 3 
+(분류 3)</th><th>사전 조건</th><th>Test Details 
+(테스트 내용)</th><th>Expected Result 
+(테스트 기대 결과)</th><th>Comment 
+(비고)</th></tr></thead><tbody><tr><td>1</td><td>High</td><td rowspan='160'>협동모드</td><td rowspan='9'>매칭</td><td rowspan='2'>매칭 진입</td><td>에너지 5개 이상 보유</td><td>[빠른 시작!] 버튼 터치 시 매칭 중 팝업 노출 확인</td><td>&quot;매칭 중…&quot;  팝업 노출 됨</td><td>에너지 차감 시점 확인
+(차감 x)</td></tr><tr><td>2</td><td>High</td><td>에너지 5개 미만 보유</td><td>[빠른 시작!] 버튼 터치 시 &quot;에너지가 부족합니다&quot; 
+텍스트 노출 및 충전하러 가기 팝업 노출 되는지 확인</td><td>&quot;에너지가 부족합니다&quot; 텍스트 노출 및 
+충전하러 가기 팝업 노출 됨</td><td></td></tr><tr><td>3</td><td>High</td><td>매칭 취소</td><td>매칭 팝업 노출 상태</td><td>[취소] 버튼 터치 시 매칭 중단 되는지 확인</td><td>매칭 팝업 비활성화 및 
+&quot;매칭이 취소되었습니다&quot; 텍스트 노출 됨</td><td>에너지 차감 x</td></tr><tr><td>4</td><td>High</td><td rowspan='6'>매칭 성공</td><td>매칭 중</td><td>파트너 와 매칭 성공 시 재화가 차감되는 지 확인</td><td>게임 진입 시점에 에너지 5개가 차감 됨</td><td>에너지 차감 시점 확인
+(차감 o)</td></tr><tr><td>5</td><td>High</td><td>매칭 중</td><td>파트너 와 매칭 성공 시 로딩 창으로 화면 전환 
+확인</td><td>로딩 화면에 진입 됨</td><td></td></tr><tr><td>6</td><td>Low</td><td>로딩 화면 상태</td><td>자신 과 파트너의 프로필이 화면에 노출 되는지 확인</td><td>자신과 파트너의 프로필이 화면에 노출 됨</td><td></td></tr><tr><td>7</td><td>Low</td><td>프로필 소개 상태</td><td>프로필 소개 화면 비활성화 및 인게임 필드로 
+화면 전환 되는지 확인</td><td>프로필 소개 화면이 비활성화 되고 
+인게임 화면으로 전환 됨</td><td></td></tr><tr><td>8</td><td>Low</td><td>프로필 소개 상태</td><td>자신과 파트너의 [닉네임] 출력 확인</td><td>닉네임 텍스트가 잘리거나 깨짐 없이 
+표시 됨</td><td>TEXT 확인</td></tr><tr><td>9</td><td>Low</td><td>프로필 소개 상태</td><td>자신과 파트너의 [프로필 아이콘] 출력 확인</td><td>프로필 이미지가 깨지거나 뭉개짐 없이
+선명하게 표시 됨</td><td>프로필 이미지 확인</td></tr><tr><td>10</td><td>Low</td><td rowspan='151'>인게임</td><td rowspan='39'>UI</td><td>로딩 완료 후 필드 진입</td><td>왼쪽 상단에 자신의 프로필 아이콘 및 
+플레이어 레벨 출력 확인</td><td>자신의 프로필 아이콘 및 플레이어 
+레벨이 표시 됨</td><td></td></tr><tr><td>11</td><td>Low</td><td rowspan='38'>필드 진입 상태</td><td>왼쪽 상단 자신의 프로필 아이콘 밑에 자신의
+ [닉네임] 표시 확인</td><td>왼쪽 상단 자신의 [닉네임]이 프로필 
+아이콘 밑에 표시 됨</td><td></td></tr><tr><td>12</td><td>Low</td><td>화면 중앙 상단 시계 패널 위에 현재 WAVE 표시 확인</td><td>화면 중앙 상단 시계 패널 위에 현재 WAVE가 표시 됨</td><td></td></tr><tr><td>13</td><td>Medium</td><td>화면 중앙 상단에  시간 표시 패널 확인</td><td>중앙 상단에 시간표시 패널 표시 됨</td><td></td></tr><tr><td>14</td><td>Medium</td><td>시간 패널의 하단에 난이도 표시 확인</td><td>시간 패널 하단에 난이도 표시 됨</td><td></td></tr><tr><td>15</td><td>Low</td><td>오른쪽 상단에 파트너의 프로필 아이콘 및 
+플레이어 레벨 출력 확인</td><td>파트너의 프로필 아이콘 및 플레이어
+레벨이 표시 됨</td><td></td></tr><tr><td>16</td><td>Low</td><td>오른쪽 상단 파트너의 프로필 아이콘 밑에 상대방의
+[닉네임] 표시 확인</td><td>오른쪽 상단 파트너의 [닉네임]이 프로필 
+아이콘 밑에 표시 됨</td><td></td></tr><tr><td>17</td><td>Medium</td><td>시간 패널 아래 해골 아이콘의 게이지 바 및
+몬스터 카운트 표시 확인</td><td>시간 패널 아래 해골 아이콘의 게이지 바 
+및 몬스터 카운트 표시 됨</td><td>게이지 바 안에 몬스터 카운트
+표시</td></tr><tr><td>18</td><td>Medium</td><td>몬스터 카운트에 따라 해골 아이콘의 게이지 바가
+갱신 되는지 확인</td><td>몬스터 카운트에 따라 해골 아이콘의 
+게이지 바가  갱신 됨</td><td></td></tr><tr><td>19</td><td>High</td><td>왼쪽 하단 신화 버튼 표시 확인</td><td>왼쪽 하단 신화 버튼이 표시 됨</td><td></td></tr><tr><td>20</td><td>High</td><td>신화 버튼 내 &quot;신화&quot; 텍스트 출력 확인</td><td>버튼 내 &quot;신화&quot; 텍스트 표시 됨</td><td></td></tr><tr><td>21</td><td>High</td><td>신화 버튼 내 신화 등급을 표시하는 아이콘 출력 
+확인</td><td>신화 등급을 표시하는 아이콘이 표시 됨</td><td></td></tr><tr><td>22</td><td>High</td><td>중앙 하단에 소환 버튼 출력 확인</td><td>중앙 하단에 소환 버튼 표시 됨</td><td>| 소환 | 
+|🪙140|</td></tr><tr><td>23</td><td>High</td><td>소환 버튼 내 &quot;소환&quot; 텍스트 출력 확인</td><td>버튼 내 &quot;소환&quot; 텍스트 표시 됨</td><td></td></tr><tr><td>24</td><td>Medium</td><td>소환 버튼 내 비용 및 재화 아이콘 표시 확인</td><td>재화 아이콘 및 소환에 필요한 비용이 
+표시 됨</td><td>소비 재화 표기</td></tr><tr><td>25</td><td>High</td><td>소환 버튼 하단 강화 버튼 노출 확인</td><td>중앙 하단 소환 버튼 아래에 강화 버튼 
+표시 됨</td><td></td></tr><tr><td>26</td><td>Medium</td><td>강화 버튼 내 ⬆️ 아이콘 표시 확인</td><td>강화 버튼 내 ⬆️ 아이콘 표시 됨</td><td>|⬆️강화|</td></tr><tr><td>27</td><td>Medium</td><td>강화 버튼 내 &quot;강화&quot; 텍스트 표시 확인</td><td>강화 버튼 내 &quot;강화&quot; 텍스트 표시 됨</td><td>|⬆️강화|</td></tr><tr><td>28</td><td>High</td><td>오른쪽 하단 룰렛 버튼 출력 확인</td><td>오른쪽 하단에 룰렛 버튼 출력 됨</td><td>|  💧  |
+| 룰렛|</td></tr><tr><td>29</td><td>Medium</td><td>룰렛 버튼 내 &quot;룰렛&quot; 텍스트 표시 확인</td><td>룰렛 버튼 내 &quot;룰렛&quot; 텍스트 표시 됨</td><td></td></tr><tr><td>30</td><td>Medium</td><td>룰렛 버튼 내 행운석 이미지 표시 확인</td><td>룰렛 버튼 내 행운석 이미지 표시 됨</td><td></td></tr><tr><td>31</td><td>High</td><td>소환 버튼 위 현재 보유중인 코인, 행운석, 
+현재 보유 유닛 / 최대 보유 유닛 표시 확인</td><td>소환 버튼 위 현재 보유중인 코인, 행운석, 
+현재 보유 유닛 / 최대 보유 유닛 표시 됨</td><td>|🪙 0  💧  0 👤 0 / 25 |</td></tr><tr><td>32</td><td>High</td><td>코인 아이콘 및 보유 코인 수치 표시 확인</td><td>코인 아이콘 및 보유 코인 수치 표시 됨</td><td></td></tr><tr><td>33</td><td>High</td><td>행운석 아이콘 및 보유 행운석 수치 표시 확인</td><td>행운석 아이콘 및 보유 행운석 수치 
+표시 됨</td><td></td></tr><tr><td>34</td><td>High</td><td>유닛 아이콘 및 현재 보유 유닛 수치 / 
+최대 보유 유닛 표시 확인</td><td>유닛 아이콘 및 현재 보유 유닛 수치 / 
+최대 보유 유닛 수치 표시 됨</td><td></td></tr><tr><td>35</td><td>High</td><td>보유중인 재화 정보 위에  버프 정보 표시 확인</td><td>화면 중앙 하단 보유 재화 정보 위에 
+버프 정보 표시 됨</td><td></td></tr><tr><td>36</td><td>High</td><td>버프 아이콘 및 수치 출력 표시 확인</td><td>각 버프를 상징하는 아이콘 표시 및 
+아이콘하단에 수치가 표시 됨</td><td>표시 되는 버프의 수치가 잘 적용이 되는지 확인</td></tr><tr><td>37</td><td>High</td><td>버프 아이콘 터치 시 상세 설명 표시 확인</td><td>버프 아이콘 터치 시 상세 설명이 노출 됨</td><td></td></tr><tr><td>38</td><td>High</td><td>우측 하단 룰렛 버튼 위 [이모티콘]/[채팅] 버튼 
+표시 확인</td><td>우측 하단 룰렛 버튼 위 [이모티콘] / [채팅] 
+버튼 표시 됨</td><td></td></tr><tr><td>39</td><td>High</td><td>[이모티콘] / [채팅] 버튼 클릭 시 선택 팝업 활성화 확인</td><td>[이모티콘] / [채팅] 버튼 클릭 시 선택 팝업 
+활성화 됨</td><td>| 😊  💬 |</td></tr><tr><td>40</td><td>High</td><td>[이모티콘] / [채팅]  선택 팝업 활성화 상태에서 터치 시
+선택 팝업 비활성화 확인</td><td>[이모티콘] / [채팅]  선택 팝업 
+비활성화 됨</td><td></td></tr><tr><td>41</td><td>High</td><td>이모티콘 클릭 시 이모티콘 선택 팝업 노출 확인</td><td>이모티콘 선택 팝업이 활성화 됨</td><td></td></tr><tr><td>42</td><td>High</td><td>말풍선 클릭 시  키보드 및 텍스트 입력창 활성화
+확인</td><td>말풍선 클릭 시  키보드 및 텍스트 입력창 
+활성화 됨</td><td></td></tr><tr><td>43</td><td>High</td><td>이모티콘 선택 팝업 활성화 상태에서 x 버튼 표시
+ 확인</td><td>이모티콘 선택 팝업 활성화 상태에서 x 버튼 표시 됨</td><td></td></tr><tr><td>44</td><td>High</td><td>이모티콘 선택 팝업 활성화 상태에서 x 버튼
+클릭 확인</td><td>이모티콘 선택 팝업이 비활성화 됨</td><td></td></tr><tr><td>45</td><td>High</td><td>키보드 및 텍스트 입력창 활성화 상태에서 x버튼
+표시 확인</td><td>키보드 및 텍스트 입력창 활성화 상태에서
+ x버튼 표시 됨</td><td></td></tr><tr><td>46</td><td>High</td><td>키보드 및 텍스트 입력창 활성화 상태에서 x버튼
+클릭 확인</td><td>키보드 및 텍스트 입력창 비활성화 됨</td><td></td></tr><tr><td>47</td><td>High</td><td>배경 리소스 출력 확인</td><td>상단 과 하단의 숲 배경 및 화면 중앙 나의 필드와 파트너의 필드 배경이 깨지거나 ui를 가리지 않고 표시 됨</td><td>화면 중앙 하단 = 나의 필드
+화면 중앙 상단 = 파트너 필드</td></tr><tr><td>48</td><td>High</td><td>게임 화면이 기기 해상도에 맞춰 빈 공간 없이
+꽉 차게 노출 되는지 확인</td><td>게임 화면이 기기 해상도에 맞춰 빈 공간 
+없이 꽉 차게 노출 됨</td><td></td></tr><tr><td>49</td><td>High</td><td rowspan='112'>게임 플레이</td><td rowspan='3'>로딩 완료</td><td>게임 시작 직후 시간 패널의 시간이 3초로 
+변경되는지 확인</td><td>게임 시작 직후 시간 패널의 시간이 3초로 
+변경 됨</td><td></td></tr><tr><td>50</td><td>High</td><td>게임 시작 직후 &quot;뉴비 살려 퀘스트&quot; 텍스트 노출 
+확인</td><td>게임 시작 직후 &quot;뉴비 살려 퀘스트&quot; 텍스트 노출 됨</td><td></td></tr><tr><td>51</td><td>High</td><td>&quot;뉴비 살려 퀘스트&quot; 텍스트 노출 
+후 3초후 비활성화 되는지 확인</td><td>&quot;뉴비 살려 퀘스트&quot; 텍스트 노출 후 3초 후 
+비활성화 됨</td><td></td></tr><tr><td>52</td><td>High</td><td rowspan='11'>일반 웨이브 상태</td><td>게임 시작 직후 0초가 되면 wave가 시작되어 
+시간 패널의 시간이 20초로 바뀌는지 확인</td><td>게임 시작 직후 0초가 되면 wave가 
+시작되어 시간 패널의 시간이 20초로 바뀜</td><td>1 ~ 9 단위의 wave는 20초 
+10 단위의 wave는 60초의
+플레이타임을 가짐</td></tr><tr><td>53</td><td>High</td><td>왼쪽 상단 위 갈색 땅에서 몬스터 생성 되는지 확인</td><td>왼쪽 상단 위 갈색 땅에서 몬스터 생성 됨</td><td></td></tr><tr><td>54</td><td>High</td><td>왼쪽 상단 아래 갈색 땅에서 몬스터 생성 되는지 확인</td><td>왼쪽 상단 아래 갈색 땅에서 몬스터 생성 됨</td><td></td></tr><tr><td>55</td><td>High</td><td>하단에서 생성된 필드 몬스터의 초기 이동 방향 및 경로 확인</td><td>하단 필드 왼쪽 아래 갈색 땅에서 
+몬스터가 생성 된 직후 
+위쪽 방향으로 이동하고  필드 라인을 따라 사각형(ㅁ자) 궤도로 이동하며 
+경로 이탈 없이 순환함</td><td></td></tr><tr><td>56</td><td>High</td><td>상단에서 생선 된 필드 몬스터의 초기 이동 방향 및 
+경로 확인</td><td>상단 필드 왼쪽 위 갈색 땅에서 
+몬스터가 생성 된 직후 
+아래 방향으로 이동하고  필드 라인을 따라 사각형(ㅁ자) 궤도로 이동하며 
+경로 이탈 없이 순환함</td><td></td></tr><tr><td>57</td><td>High</td><td>일반 웨이브 (1 ~ 9 단위) 시간이 20초로 
+설정 되는지 확인</td><td>일반 웨이브 (1 ~ 9 단위) 시간이 20초로 
+설정 됨</td><td></td></tr><tr><td>58</td><td>High</td><td>필드 몬스터 생존 여부와 상관없이 웨이브 타임이 
+0초가 되는 순간 다음 웨이브로 넘어가는지 확인</td><td>필드 몬스터 생존 여부와 상관없이 
+웨이브 타임이 0초가 
+되는 순간 다음 웨이브로 넘어감</td><td></td></tr><tr><td>59</td><td>High</td><td>필드 몬스터 수가 70마리 이상 일 때 해골 게이지 
+이미지 변형 및 애니메이션 작동 하는지 확인</td><td>필드 몬스터 수가 70마리 이상 일 때 
+해골 게이지 이미지 변형 및 애니메이션 
+작동 됨</td><td></td></tr><tr><td>60</td><td>High</td><td>필드 몬스터 수가 70마리 이상 도달 시 화면 연출 
+확인</td><td>필드 몬스터 수가 70마리 이상 도달 시 화면 테두리가 붉은색으로 깜박이는 
+화면 연출이 시작 됨</td><td></td></tr><tr><td>61</td><td>High</td><td>필드 몬스터 수가 69마리 미만 도달 시 화면 연출 
+확인</td><td>필드 몬스터 수가 69마리 미만으로 내려갈 시 화면 테두리가 붉은색으로 깜박이는 
+화면 연출이 종료 됨</td><td></td></tr><tr><td>62</td><td>High</td><td>필드 몬스터 수가 최대 치 도달하여 해골게이지 바가 
+다 채워졌다면 [패배] 처리 되는지 확인</td><td>필드 몬스터 수가 최대 치 도달하여 
+해골게이지 바가 다 채워졌다면 
+[패배] 처리 됨</td><td></td></tr><tr><td>63</td><td>High</td><td rowspan='7'>보스 웨이브 상태</td><td>보스 웨이브 (10단위)진입 시 시간이 60초로 
+설정되는지 확인</td><td>보스 웨이브 (10단위)진입 시 시간이 60초로 
+설정 됨</td><td></td></tr><tr><td>64</td><td>High</td><td>보스 웨이브 진입 시 보스 몬스터 2마리가 
+생성되는지 확인</td><td>보스 웨이브 진입 시 보스 몬스터 2마리가 
+생성 됨</td><td>1마리는 상단(파트너) 필드의 
+왼쪽 위 갈색 땅굴에서 생성
+1마리는 하단(나) 필드의 왼쪽 
+아래 갈색 땅굴에서 생성</td></tr><tr><td>65</td><td>High</td><td>보스 웨이브 중 타이머가 0초가 되는 순간 보스가
+살아있다면 [패배] 처리 되는지 확인</td><td>보스 웨이브 중 타이머가 0초가 되는 순간 
+보스가 살아있다면 [패배] 처리 됨</td><td></td></tr><tr><td>66</td><td>High</td><td>보스 웨이브 중 
+보스 처치 성공 시 [보상 선택] 팝업 노출되는지 확인</td><td>보스 웨이브 중 
+보스 처치 성공 시 [보상 선택] 팝업 노출 됨</td><td></td></tr><tr><td>67</td><td>High</td><td>보스 클리어 보상 [3종 선택지] 노출 및 선택 동작 확인
+[구성 1]
+1. [희귀] 유닛 (확정)
+2. [희귀] 유닛 (확정)
+3. 50% 확률로 [랜덤 영웅] (도박)
+[구성 2]
+1. [영웅] 유닛 (확정)
+2. [영웅] 유닛 (확정)
+3. 25% 확률로 [랜덤 전설] (도박)
+위 3장 중 1장을 선택하여 정상 획득되는지 확인</td><td>보스 클리어 보상 [3종 선택지] 노출 및 선택 동작 확인
+[구성 1]
+1. [희귀] 유닛 (확정)
+2. [희귀] 유닛 (확정)
+3. 50% 확률로 [랜덤 영웅] (도박)
+[구성 2]
+1. [영웅] 유닛 (확정)
+2. [영웅] 유닛 (확정)
+3. 25% 확률로 [랜덤 전설] (도박)
+[구성 1] 혹은 [구성 2] 테이블 중 하나가 선택 되어 위 3장 중 1장을 선택하여 
+정상 획득 됨</td><td></td></tr><tr><td>68</td><td>High</td><td>보스 처치 보상 선택 시 [보상 선택] 팝업 
+비활성화되는지 확인</td><td>보스 처치 보상 선택 시 [보상 선택] 팝업 
+비활성화 됨</td><td></td></tr><tr><td>69</td><td>High</td><td>보스 처치 보상 선택 시 다음 웨이브로 넘어가는지
+확인</td><td>보스 처치 보상 선택 시 다음 웨이브로 
+넘어감</td><td></td></tr><tr><td>70</td><td>High</td><td>몬스터 HP 1이상</td><td>몬스터 피격 시 HP 게이지 감소 확인</td><td>몬스터 피격 시 HP 게이지가 감소 됨</td><td></td></tr><tr><td>71</td><td>High</td><td>몬스터 HP 0 도달</td><td>몬스터 HP가 0이 되는 순간 몬스터 처리 확인</td><td>몬스터 HP가 0이 되는 순간 필드에서 
+몬스터가 사라짐</td><td></td></tr><tr><td>72</td><td>High</td><td>몬스터 사망</td><td>몬스터 사망 시 필드 카운트 감소 확인</td><td>몬스터 사라지는 즉시 상단 [현재 몬스터 수] 카운트가 -1 감소 됨</td><td></td></tr><tr><td>73</td><td>High</td><td>게임 시작 직후</td><td>초기 재화 및 소환 비용 수치 확인</td><td>초기 재화로 100코인 및 소환 비용이 
+20코인으로 표시 됨</td><td></td></tr><tr><td>74</td><td>High</td><td>재화 보유량이 소환 비용보다 많은 상태</td><td>소환 버튼 터치 시 재화 차감 되는지 확인</td><td>소환 버튼 클릭 시 소환 금액 만큼 
+재화가 차감 됨</td><td></td></tr><tr><td>75</td><td>High</td><td>재화 보유량이 소환 비용보다 많은 상태</td><td>소환 버튼을 통해 유닛을 소환 할 때마다 비용이
++2 가 되는지 확인</td><td>소환 버튼을 통해 유닛을 소환 할 때마다 
+비용이 +2 가 됨</td><td></td></tr><tr><td>76</td><td>High</td><td>소환 비용 이상의 코인 보유 및 빈 슬롯 존재한 상태</td><td>소환 버튼 터치 시 나의 필드 빈 공간에 생성 되는지 
+확인</td><td>소환 버튼 터치 시 나의 필드 빈 공간에 생성 됨</td><td></td></tr><tr><td>77</td><td>High</td><td>소환 비용 이상의 코인 미보유 및 빈 슬롯 존재한 상태</td><td>소환 버튼 터치 시 코인이 부족하여 유닛 소환 실패 하는지 확인</td><td>소환 버튼 터치 시 코인이 부족하여 
+유닛 소환 실패 됨</td><td></td></tr><tr><td>78</td><td>High</td><td>소환 비용 이상의 코인 보유 및 빈 슬롯이 없는 상태</td><td>소환 버튼 터치 시 빈 슬롯이 부족하여 유닛 소환 
+실패 하는지 확인</td><td>소환 버튼 터치 시 빈 슬롯이 부족하여 유닛 소환 실패 됨</td><td></td></tr><tr><td>79</td><td>High</td><td>소환 비용 이상의 코인 미보유 및 빈 슬롯이 없는 상태</td><td>소환 버튼 터치 시 빈 슬롯이 부족하며 코인이 부족하여 유닛 소환 실패 하는지 확인</td><td>소환 버튼 터치 시 빈 슬롯이 부족하며 코인이 부족하여 유닛 소환 실패 됨</td><td></td></tr><tr><td>80</td><td>High</td><td>소환 비용 이상의 코인 보유 및 빈 슬롯 존재한 상태</td><td>소환 확률에 따른 등급별 소환 확률 확인</td><td>소환 확률에 따른 등급별 유닛이 소환 됨</td><td>1레벨 기준
+(일반 97.45% / 희귀 1.97% / 
+영웅 0.49% / 전설 0.1%)</td></tr><tr><td>81</td><td>High</td><td>소환 비용 이상의 코인 보유 및 빈 슬롯 존재한 상태</td><td>소환 반복  수행 시 유닛 생성 랜덤성 확인</td><td>소환 반복  수행 시 특정 유닛만 계속 나오지 않고, 서로 다른 종류/등급의 유닛이 소환 됨</td><td></td></tr><tr><td>82</td><td>High</td><td>소환 진행</td><td>자신이 [영웅/전설] 등급 유닛 획득 시 확률 포함 화면 중앙에 알림 노출 확인</td><td>[영웅/전설] 등급 유닛 획득 시 확률 포함 알림 노출 됨</td><td></td></tr><tr><td>83</td><td>High</td><td>소환 진행</td><td>파트너가 [영웅/전설] 등급 유닛 획득 시 확률 포함 화면 중앙에 알림 노출 확인</td><td>[영웅/전설] 등급 유닛 획득 시 확률 포함 알림 노출 됨</td><td></td></tr><tr><td>84</td><td>High</td><td>신화 유닛 소환</td><td>[신화]  등급 유닛 조합 시 알림 문구 노출 확인</td><td>[신화]  등급 유닛 조합 시 알림 문구 노출 됨</td><td></td></tr><tr><td>85</td><td>High</td><td>소환 진행</td><td>소환 알림 메시지가 사라지는지 확인</td><td>소환 알림 메시지가 약 2 ~ 3초간 
+노출 된 후 사라짐</td><td></td></tr><tr><td>86</td><td>High</td><td>소환 진행</td><td>비슷한 타이밍에 [영웅/전설/신화] 유닛을 뽑았을 
+경우 먼저 뽑힌 유닛의 알림 노출 이후 차례대로 
+노출 되는 지 확인</td><td>비슷한 타이밍에 [영웅/전설/신화] 유닛을 
+뽑았을 경우 먼저 뽑힌 유닛의 알림 
+노출 이후 차례대로 노출 됨</td><td></td></tr><tr><td>87</td><td>High</td><td>필드 진입 상태</td><td>[강화] 버튼 터치 시 패널 활성화 확인</td><td>[강화] 버튼 터치 시 패널 활성화 됨</td><td></td></tr><tr><td>88</td><td>High</td><td>강화 패널 노출 상태</td><td>일반 ~ 희귀, 영웅, 전설 ~ 신화 , 소환 확률 
+코인 : 30  코인 : 50  영혼석 : 2  코인 : 100
+위 4가지 항목이 노출 되는 지 확인</td><td>일반 ~ 희귀, 영웅, 전설 ~ 신화 , 소환 확률 
+코인 : 30  코인 : 50  영혼석 : 2  코인 : 100
+위 4가지 항목이 노출 됨</td><td>초기 비용
+ [일반~희귀]: 코인 30
+ [영웅]: 코인 50
+ [전설~신화]: 영혼석 2
+ [소환 확률]: 코인 100</td></tr><tr><td>89</td><td>High</td><td>강화 비용 이상의 코인 보유 중인 상태</td><td>[일반  ~  희귀] 강화 시  비용 차감이 되는지 확인</td><td>[일반  ~  희귀] 강화 시  비용 차감이 됨</td><td>유닛의 정보창에서 실제 수치가 상승했는지 확인 필요</td></tr><tr><td>90</td><td>High</td><td>강화 비용 이상의 코인 보유 중인 상태</td><td>[일반  ~  희귀] 강화 할 때마다 비용이 30 씩 
+증가 되는 지 확인</td><td>[일반  ~  희귀] 강화 할 때마다 비용이 30 씩 
+증가 됨</td><td></td></tr><tr><td>91</td><td>High</td><td>강화 비용 이상의 코인 보유 중인 상태</td><td>[영웅] 강화 시 비용 차감 되는지 확인</td><td>[영웅] 강화 시 비용 차감 됨</td><td>유닛의 정보창에서 실제 수치가 상승했는지 확인 필요</td></tr><tr><td>92</td><td>High</td><td>강화 비용 이상의 코인 보유 중인 상태</td><td>[영웅] 강화 할 때마다 비용이 50씩 증가 되는 지 확인</td><td>[영웅] 강화 할 때마다 비용이 50씩 증가 됨</td><td></td></tr><tr><td>93</td><td>High</td><td>강화 비용 이상의 영혼석 보유 중인 상태</td><td>[전설~신화] 강화 시 재화 차감 되는 지 확인</td><td>[전설~신화] 강화 시 재화 차감 됨</td><td>유닛의 정보창에서 실제 수치가 상승했는지 확인 필요</td></tr><tr><td>94</td><td>High</td><td>강화 비용 이상의 영혼석 보유 중인 상태</td><td>[전설~신화] 강화 할 때마다 비용이 1씩 
+증가 되는 지 확인</td><td>[전설~신화] 강화 할 때마다 비용이 1씩 
+증가 됨</td><td></td></tr><tr><td>95</td><td>High</td><td>강화 비용 이상의 코인 보유 중인 상태</td><td>[소환 확률] 강화 시 비용 차감 되는 지 확인</td><td>[소환 확률] 강화 시 비용 차감 됨</td><td>유닛의 정보창에서 실제 수치가 상승했는지 확인 필요</td></tr><tr><td>96</td><td>High</td><td>소환 확률 레벨 11레벨인 상태</td><td>소환 확률 레벨 11인 상태에서 [소환 확률]  강화 하기 터치 시 강화 버튼이 max 텍스트로 전환 되고 
+버튼이 비활 성화 되는 지 확인</td><td>소환 확률 레벨 11인 상태에서 [소환 확률]  강화 하기 터치 시 강화 버튼이 
+max 텍스트로 전환 되고 
+버튼이 비활 성화 됨</td><td></td></tr><tr><td>97</td><td>High</td><td>강화 패널 노출 상태</td><td>x버튼 터치 했을 때 패널 비활성화 되는지 확인</td><td>x버튼 터치 했을 때 패널 비활성화 됨</td><td></td></tr><tr><td>98</td><td>High</td><td>필드 진입 상태</td><td>[룰렛] 버튼 터치 시 패널 활성화 되는  지 확인</td><td>[룰렛] 버튼 터치 시 패널 활성화 됨</td><td></td></tr><tr><td>99</td><td>High</td><td>룰렛 패널 노출 상태</td><td>희귀 / 영웅 / 전설 3가지 룰렛 항목이 노출되는지 확인</td><td>희귀 / 영웅 / 전설 3가지 룰렛 항목이 
+노출 됨</td><td></td></tr><tr><td>100</td><td>High</td><td>룰렛 패널 노출 상태</td><td>각 룰렛 항목의 비용 및 확률 표시 되는지 확인</td><td>1.희귀: 영혼석 1개 / 확률 60% 
+2. 영웅: 영혼석 1개 / 확률 20% 
+3. 전설: 영혼석 2개 / 확률 10% 
+비용 및 확률이 표시 됨</td><td></td></tr><tr><td>101</td><td>High</td><td>뽑기 비용 이상의 영혼석
+보유 중인 상태</td><td>[희귀 룰렛] 버튼 터치 시 영혼석 소모 되는 지 확인</td><td>[희귀 룰렛] 버튼 터치 시 영혼석 소모 됨</td><td>영혼석 1개 소모</td></tr><tr><td>102</td><td>High</td><td rowspan='3'>[희귀 룰렛] 터치 하여 
+영혼석 소모 된 상태</td><td>[희귀 룰렛] 버튼 터치 시 룰렛 돌아가는 애니메이션 
+작동하는지 확인</td><td>[희귀 룰렛] 버튼 터치 시 룰렛 돌아가는 
+애니메이션 작동 됨</td><td></td></tr><tr><td>103</td><td>High</td><td>[희귀 룰렛]  성공 시 랜덤한 희귀 등급 유닛 
+획득 하는 지 확인</td><td>[희귀 룰렛]  성공 시 랜덤한 희귀 등급 유닛 
+획득 됨</td><td></td></tr><tr><td>104</td><td>High</td><td>[희귀 룰렛]  실패 시 실패 알림 노출 되는 지 확인</td><td>[희귀 룰렛]  실패 시 실패 알림 노출 됨</td><td></td></tr><tr><td>105</td><td>High</td><td>뽑기 비용 이상의 영혼석
+보유 중인 상태</td><td>[영웅 룰렛] 버튼 터치 시 영혼석 소모 되는 지 확인</td><td>[영웅 룰렛] 버튼 터치 시 영혼석 소모 됨</td><td>영혼석 1개 소모</td></tr><tr><td>106</td><td>High</td><td rowspan='3'>[영웅 룰렛] 터치 하여 
+영혼석 소모 된 상태</td><td>[영웅 룰렛] 버튼 터치 시 룰렛 돌아가는 애니메이션 
+작동하는지 확인</td><td>[영웅 룰렛] 버튼 터치 시 룰렛 돌아가는 
+애니메이션 작동 됨</td><td></td></tr><tr><td>107</td><td>High</td><td>[영웅 룰렛]  성공 시 랜덤한 영웅 등급 유닛 
+획득 하는 지 확인</td><td>[영웅 룰렛]  성공 시 랜덤한 영웅 등급 유닛 
+획득 됨</td><td></td></tr><tr><td>108</td><td>High</td><td>[영웅 룰렛]  실패 시 실패 알림 노출 되는 지 확인</td><td>[영웅 룰렛]  실패 시 실패 알림 노출 됨</td><td></td></tr><tr><td>109</td><td>High</td><td>뽑기 비용 이상의 영혼석
+보유 중인 상태</td><td>[전설 룰렛] 버튼 터치 시 영혼석 소모 되는 지 확인</td><td>[전설 룰렛] 버튼 터치 시 영혼석 소모 됨</td><td>영혼석 2개 소모</td></tr><tr><td>110</td><td>High</td><td rowspan='3'>[전설 룰렛] 터치 하여 
+영혼석 소모 된 상태</td><td>[전설 룰렛] 버튼 터치 시 룰렛 돌아가는 애니메이션 
+작동하는지 확인</td><td>[전설 룰렛] 버튼 터치 시 룰렛 돌아가는 
+애니메이션 작동 됨</td><td></td></tr><tr><td>111</td><td>High</td><td>[전설 룰렛]  성공 시 랜덤한 전설 등급 유닛 
+획득 하는 지 확인</td><td>[전설 룰렛]  성공 시 랜덤한 전설 등급 유닛 
+획득 됨</td><td></td></tr><tr><td>112</td><td>High</td><td>[전설 룰렛]  실패 시 실패 알림 노출 되는 지 확인</td><td>[전설 룰렛]  실패 시 실패 알림 노출 됨</td><td></td></tr><tr><td>113</td><td>High</td><td>영혼석이 부족한 상태</td><td>[희귀 룰렛] 터치 시 반응이 있는지 확인</td><td>[희귀 룰렛] 터치 시 아무런 반응이 없음</td><td>무반응이 의도된 결과</td></tr><tr><td>114</td><td>High</td><td>영혼석이 부족한 상태</td><td>[영웅 룰렛] 터치 시 반응이 있는지 확인</td><td>[영웅 룰렛] 터치 시 아무런 반응이 없음</td><td>무반응이 의도된 결과</td></tr><tr><td>115</td><td>High</td><td>영혼석이 부족한 상태</td><td>[전설 룰렛] 터치 시 반응이 있는지 확인</td><td>[전설 룰렛] 터치 시 아무런 반응이 없음</td><td>무반응이 의도된 결과</td></tr><tr><td>116</td><td>High</td><td>룰렛 패널 노출 상태</td><td>x 버튼 터치 시 룰렛 패널이 비활성화 되는지 확인</td><td>x 버튼 터치 시 룰렛 패널이 비활성화 되는지 확인</td><td></td></tr><tr><td>117</td><td>High</td><td>필드 진입 상태</td><td>[신화] 버튼 터치 시 팝업 노출 확인</td><td>[신화] 버튼 터치 시 팝업 노출 됨</td><td></td></tr><tr><td>118</td><td>High</td><td>신화 팝업 노출 상태</td><td>내가 보유한 신화 캐릭터 아이콘이 출력되는지 확인</td><td>내가 보유한 신화 캐릭터 아이콘이 출력 됨</td><td></td></tr><tr><td>119</td><td>High</td><td>신화 팝업 노출 상태</td><td>신화 캐릭터 아이콘 클릭 시 신화 유닛 별 조합법 
+표기 되는지 확인</td><td>신화 캐릭터 아이콘 클릭 시 신화 유닛 별 
+조합법 표기 됨</td><td></td></tr><tr><td>120</td><td>High</td><td>신화 팝업 노출 상태</td><td>신화 유닛 별 진행률 % 표시되는지 확인</td><td>보유한 유닛에 따라  신화 유닛 별 
+진행률% 표시됨</td><td></td></tr><tr><td>121</td><td>High</td><td>재료 부족 상태</td><td>재료가 부족할 때 소환 버튼 비활성화 되어있는 지 확인</td><td>재료가 부족할 때 소환 버튼 비활성화 됨</td><td></td></tr><tr><td>122</td><td>High</td><td>재료 충족 상태</td><td>재료가 모두 충족 되었을 때 신화 유닛 소환 버튼
+활성화 되는 지 확인</td><td>재료가 모두 충족 되었을 때 신화 유닛 소환 버튼 활성화 됨</td><td></td></tr><tr><td>123</td><td>High</td><td>재료 충족 상태</td><td>신화 유닛 소환 시 필드에 있던 재료 유닛들이 모두 사라지는 지 확인</td><td>신화 유닛 소환 시 필드에 있던 재료 유닛들이 모두 사라짐</td><td></td></tr><tr><td>124</td><td>High</td><td>재료 충족 상태</td><td>신화 유닛이 빈 슬롯에 생성 되는지 확인</td><td>신화 유닛이 빈 슬롯에 생성 됨</td><td></td></tr><tr><td>125</td><td>High</td><td>재료 충족 상태</td><td>신화 유닛이 소환 되었을 때 알림 노출 확인</td><td>신화 유닛이 소환 되었을 때 
+&quot;XX(유닛 이름)&quot; 및 신화 등장 알림 노출 됨</td><td></td></tr><tr><td>126</td><td>High</td><td>필드 내 동일 유닛 3개 미만 보유 시</td><td>동일한 유닛이 3개 미만 일 때 버튼 상태 확인</td><td>[합성] 버튼이 비활성화 상태이고 
+판매 버튼만 활성화 됨</td><td></td></tr><tr><td>127</td><td>High</td><td>필드 내 동일 유닛 3개  보유 시</td><td>동일한 유닛 3개 모였을 때 버튼 상태 확인</td><td>[합성] 버튼이 활성화 되어 [합성] 버튼 및 판매 버튼이 활성화 됨</td><td></td></tr><tr><td>128</td><td>High</td><td>합성 버튼 활성화</td><td>[합성] 버튼 터치 시 유닛 소모 및 등급 상승 확인</td><td>재료가 된 동일 유닛 3개가 모두 사라지고
+한 단계 상위 등급의 유닛 1개가 생성 됨</td><td>일반 -&gt; 희귀 -&gt; 영웅 -&gt; 전설</td></tr><tr><td>129</td><td>High</td><td>전설 동일 유닛 3개 
+보유 시</td><td>[합성] 버튼이 비활성화 되는지 확인</td><td>전설 등급 유닛은 합성이 불가능하여 
+[합성] 버튼이 비활성화 됨</td><td></td></tr><tr><td>130</td><td>High</td><td>합성 실행</td><td>합성을 통해 생성된 유닛이 랜덤하게 생성 되는지 
+확인</td><td>합성을 통해 생성된 유닛이 랜덤하게 생성 됨</td><td>등급 상승 및 랜덤 생성 확인</td></tr><tr><td>131</td><td>High</td><td>[일반] 등급 유닛 선택</td><td>일반 등급 선택 시 판매 버튼 활성화 확인</td><td>일반 등급 선택 시 판매 버튼 활성화 됨</td><td></td></tr><tr><td>132</td><td>High</td><td>[일반] 등급 유닛 선택</td><td>일반 등급 판매 시 골드 획득 확인</td><td>일반 등급 판매 시 유닛은 사라지고 
+21골드를 획득 함</td><td></td></tr><tr><td>133</td><td>High</td><td>[희귀] 등급 유닛 선택</td><td>희귀 등급 선택 시 판매 버튼 활성화 확인</td><td>희귀 등급 선택 시 판매 버튼 활성화 됨</td><td></td></tr><tr><td>134</td><td>High</td><td>[희귀] 등급 유닛 선택</td><td>희귀 등급 판매 시 영혼석 획득 확인</td><td>희귀 등급 판매 시 유닛은 사라지고 
+영혼석 1개를 획득 함</td><td></td></tr><tr><td>135</td><td>High</td><td>[영웅] 등급 유닛 선택</td><td>영웅 등급 선택 시 판매 버튼 활성화 확인</td><td>영웅 등급 선택 시 판매 버튼 활성화 됨</td><td></td></tr><tr><td>136</td><td>High</td><td>[영웅] 등급 유닛 선택</td><td>영웅 등급 판매 시 영혼석 획득 확인</td><td>영웅 등급 판매 시 유닛은 사라지고 
+영혼석 2개를 획득 함</td><td></td></tr><tr><td>137</td><td>High</td><td>[전설] 등급 유닛 선택</td><td>전설 등급 선택 시 판매 버튼 활성화 확인</td><td>전설 등급 선택 시 판매 버튼 활성화 됨</td><td></td></tr><tr><td>138</td><td>High</td><td>[전설] 등급 유닛 선택</td><td>전설 등급 판매 시 영혼석 획득 확인</td><td>영웅 등급 판매 시 유닛은 사라지고 
+영혼석 4개를 획득 함</td><td></td></tr><tr><td>139</td><td>High</td><td>[신화] 등급 유닛 선택</td><td>신화 등급 유닛의 판매불가 처리 확인</td><td>신화 등급 유닛 선택 시 [판매] 버튼이 
+비활성화 되어 노출되지 않음</td><td>판매 불가</td></tr><tr><td>140</td><td>High</td><td>필드 진입 상태</td><td>우측 하단 [이모티콘 및 채팅] 버튼 위 [메뉴]버튼 
+터치 시 [메뉴] 팝업 활성화 되는지 확인</td><td>[메뉴] 팝업 활성화 됨</td><td></td></tr><tr><td>141</td><td>High</td><td rowspan='4'>메뉴 팝업 노출</td><td>메뉴 팝업 내 [설정] 버튼 터치 시 동작 확인</td><td>설정창이 활성화 됨</td><td></td></tr><tr><td>142</td><td>High</td><td>메뉴 팝업 내 [미션] 버튼 터치 시 동작 확인</td><td>미션 창이 활성화 됨</td><td></td></tr><tr><td>143</td><td>High</td><td>메뉴 팝업 내 [통계] 버튼 터치 시 동작 확인</td><td>통계 창이 활성화 됨</td><td></td></tr><tr><td>144</td><td>High</td><td>각 창(설정/미션/통계)의 [닫기(X)] 버튼 동작 확인</td><td>메뉴 팝업이 비활성화 됨</td><td></td></tr><tr><td>145</td><td>High</td><td rowspan='16'>미션 팝업 노출</td><td>각 행동 수행시 미션 게이지 및 숫자 갱신 되는 지 
+확인</td><td>각 행동 수행시 미션 게이지 및 숫자 갱신 됨</td><td></td></tr><tr><td>146</td><td>High</td><td>목표 수치 달성 시 [보상 수령] 버튼이 
+활성화 되는 지 확인</td><td>목표 수치 달성 시 [보상 수령] 버튼이 
+활성화 됨</td><td></td></tr><tr><td>147</td><td>High</td><td>이미 보상을 수령한 미션들 위에 따봉 아이콘이 활성화 되는 지 확인</td><td>따봉 아이콘이 활성화 됨</td><td>[보상 수령] 버튼이 비활성화 되어 추가 수령 불가능</td></tr><tr><td>148</td><td>High</td><td>룰렛 소환 시도 20회 달성 하여 보상 수령 시 영혼석 1개 보상 들어오는 지 확인</td><td>룰렛 소환 시도 20회 달성 시 영혼석 1개 보상 들어옴</td><td></td></tr><tr><td>149</td><td>High</td><td>룰렛 소환 실패 10회 달성 하여 보상 수령 시 
+50코인보상 들어오는 지 확인</td><td>룰렛 소환 실패 10회 시 50코인 보상 
+들어옴</td><td></td></tr><tr><td>150</td><td>High</td><td>몬스터 처치 40회 달성 하여 보상 수령 시 
+코인 40 들어오는 지 확인</td><td>몬스터 처치 40회 달성 하여 보상  40 코인 들어옴</td><td></td></tr><tr><td>151</td><td>High</td><td>강화 2회 달성 하여 보상 수령 시 100 코인 
+들어오는지 확인</td><td>강화 2회 달성 하여 보상 수령 시 100 코인 
+들어옴</td><td></td></tr><tr><td>152</td><td>High</td><td>판매하기 5회 달성 하여 보상 수령 시 100코인 들어오는 지 확인</td><td>판매하기 5회 달성 하여 보상 수령 시 100코인 들어옴</td><td></td></tr><tr><td>153</td><td>High</td><td>코인 수집 1000 달성하여 보상 수령시 50코인 들어오는 지 확인</td><td>코인 수집 1000 달성하여 보상 수령시 50코인 들어옴</td><td></td></tr><tr><td>154</td><td>High</td><td>전설 등급 모으기 3회 달성 하여 보상 수령 시 영혼석 2개 들어오는 지 확인</td><td>전설 등급 모으기 3회 달성 하여 보상 수령 시 영혼석 2개 들어옴</td><td></td></tr><tr><td>155</td><td>High</td><td>모든 영웅 등급 찾기 달성하여 보상 수령시 영혼석 1개 들어오는 지 확인</td><td>모든 영웅 등급 찾기 달성하여 보상 수령시 영혼석 1개 들어옴</td><td></td></tr><tr><td>156</td><td>High</td><td>모든 희귀 등급 찾기 달성하여 보상 수령 시 100코인 들어오는 지 확인</td><td>모든 희귀 등급 찾기 달성하여 보상 수령 시 100코인 들어옴</td><td></td></tr><tr><td>157</td><td>High</td><td>모든 일반 등급 찾기 달성하여 보상 수령 시 100코인 들어오는 지 확인</td><td>모든 일반 등급 찾기 달성하여 보상 수령 시 100코인 들어옴</td><td></td></tr><tr><td>158</td><td>High</td><td>전설 룰렛 소환 실패 5회 달성 하여 보상 수령 시 영혼석 1개 들어오는 지 확인</td><td>전설 룰렛 소환 실패 5회 달성 하여 보상 수령 시 영혼석 1개 들어옴</td><td></td></tr><tr><td>159</td><td>High</td><td>소환에서 전설 등급 등장 1회 미션 달성하여 보상 수령 시 100 코인 들어오는 지 확인</td><td>소환에서 전설 등급 등장 1회 미션 달성하여 보상 수령 시 100 코인 들어옴</td><td></td></tr><tr><td>160</td><td>High</td><td>전설 룰렛 소환 성공 3회 달성 하여 보상 수령 시 100코인 들어오는 지 확인</td><td>전설 룰렛 소환 성공 3회 달성 하여 보상 수령 시 100코인 들어옴</td><td></td></tr></tbody></table></div></div>
+</div>
+<script>
+var tabs = document.querySelectorAll('.tab');
+var sheets = document.querySelectorAll('.sheet');
+function show(id) {
+  sheets.forEach(function(s){ s.classList.toggle('active', s.id === id); });
+  tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.sheet === id); });
+}
+tabs.forEach(function(t){ t.addEventListener('click', function(){ show(t.dataset.sheet); }); });
+if (sheets.length) { sheets[0].classList.add('active'); }
+if (tabs.length) { tabs[0].classList.add('active'); }
+</script>
+</body>
+</html>

@@ -1,0 +1,382 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meccha CameleonTC작성자_이경민 — TC</title>
+<style>
+:root { --bg:#0f172a; --card:#1e293b; --border:#2d3f55; --blue-lt:#60a5fa; --green-lt:#4ade80; --text:#f1f5f9; --text-2:#94a3b8; --text-3:#64748b; }
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif; font-size:14px; }
+.top { position:sticky; top:0; background:rgba(15,23,42,0.97); border-bottom:1px solid var(--border); padding:0.9rem 1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; z-index:10; }
+.top h1 { font-size:1rem; font-weight:700; margin-right:auto; }
+.top a { color:var(--blue-lt); text-decoration:none; font-size:0.82rem; font-weight:600; }
+.top a:hover { color:var(--green-lt); }
+.wrap { padding:1.25rem 1.5rem 3rem; }
+.tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+.tab { background:var(--card); color:var(--text-2); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.9rem; font-size:0.82rem; cursor:pointer; font-family:inherit; }
+.tab.active { color:var(--text); border-color:var(--green-lt); }
+.meta { background:var(--card); border:1px solid var(--border); border-left:3px solid var(--green-lt); border-radius:0 8px 8px 0; padding:0.8rem 1.1rem; margin-bottom:1rem; }
+.meta p { font-size:0.8rem; color:var(--text-2); line-height:1.7; }
+.meta p:first-child { color:var(--text); font-weight:700; }
+.doc { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.3rem 1.5rem; max-width:900px; }
+.doc p { font-size:0.85rem; color:var(--text-2); line-height:1.8; margin-bottom:0.55rem; }
+.doc p:first-child { color:var(--text); font-weight:700; font-size:0.95rem; }
+table.two-head thead th { position:static; }
+.sheet { display:none; }
+.sheet.active { display:block; }
+.tbl-scroll { overflow-x:auto; border:1px solid var(--border); border-radius:8px; }
+table { border-collapse:collapse; width:100%; min-width:700px; }
+th, td { border:1px solid var(--border); padding:0.45rem 0.7rem; text-align:center; vertical-align:middle; font-size:0.8rem; line-height:1.55; color:var(--text-2); white-space:pre-wrap; }
+thead th { background:#162032; color:var(--text); font-weight:600; position:sticky; top:0; }
+tbody tr:nth-child(even) { background:#131f33; }
+tbody tr:hover { background:#1a2a44; }
+td.al { text-align:left; }
+.st-pass { color:var(--green-lt); font-weight:700; }
+.st-fail { color:#f87171; font-weight:700; }
+.st-hold { color:#facc15; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>Meccha CameleonTC작성자_이경민</h1>
+  <a href="../TC모음.html">← TC 모음으로</a>
+  <a href="../index.html#tc">포트폴리오 홈</a>
+  <a href="Meccha CameleonTC작성자_이경민.xlsx" download>⬇ 원본 엑셀 다운로드</a>
+</div>
+<div class="wrap">
+<div class='tabs'><button class='tab' data-sheet='sheet0'>로그인, 구매 및 설치TC</button><button class='tab' data-sheet='sheet1'>인게임이벤트TC</button></div>
+<div class='sheet' id='sheet0'><div class='meta'><p>Project name (프로젝트 명칭) : MECCHA CHAMELEON</p><p>Platform (플랫폼 종류) : PC (Steam /Steam Deck)</p><p>Version (버전 정보) : 버전 1.7.0</p></div><div class='tbl-scroll'><table><thead><tr><th>No.</th><th>Priority 
+(우선순위)</th><th>Category 1 (분류 1)</th><th>Category 2 
+(분류 2)</th><th>Category 3 
+(분류 3)</th><th>사전 조건</th><th>Test Details 
+(테스트 내용)</th><th>Expected Result 
+(테스트 기대 결과)</th><th>Comment 
+(비고)</th></tr></thead><tbody><tr><td>1</td><td>High</td><td rowspan='48'>플랫폼
+(Steam)</td><td rowspan='3'>로그인</td><td rowspan='2'>로그인 성공</td><td>스팀 클라이언트 실행 상태</td><td>올바른 스팀 계정 정보 입력 후 로그인 성공 시 
+스팀 플랫폼 기본 메인 창으로 정상 전환되는지 확인</td><td>인게임이 아닌 스팀 상점 또는 라이브러리 등 스팀 기본 클라이언트 메인 화면이 안전하게 출력됨</td><td>스팀 클라이언트 런처 진입 검증</td></tr><tr><td>2</td><td>Medium</td><td>스팀 웹 사이트 실행 
+상태</td><td>올바른 스팀 계정 정보 입력 후 로그인 성공 시 
+스팀 플랫폼 기본 메인 창으로 정상 전환되는지 확인</td><td>인게임이 아닌 스팀 상점 또는 라이브러리 등 스팀 기본 클라이언트 메인 화면이 안전하게 출력됨</td><td></td></tr><tr><td>3</td><td>High</td><td>기본 창 진입(온라인)</td><td>PC 네트워크 연결 상태</td><td>인터넷이 연결된 상태에서 올바른 계정 정보 입력 후
+로그인 시 스팀 플랫폼 메인 창으로 접속 되는지
+확인</td><td>온라인 기능이 포함된 스팀 클라이언트 
+메인 화면이 안전하게 출력 됨</td><td></td></tr><tr><td>4</td><td>High</td><td rowspan='9'>로그인 예외</td><td>연결 문제 UI</td><td>PC 네트워크 비연결
+상태</td><td>인터넷이 끊긴 상태에서 스팀 클라이언트 실행 및
+로그인 시도 시 &quot;연결 문제&quot; 패널 활성화 되는지 확인</td><td>중앙 상단에 &quot;연결 문제&quot; 타이틀이 표시되며
+&quot;Steam과 통신하던 중 오류가 발생했습니다. 나중에 다시 시도해 주세요. 오프라인 모드로 Steam을 실행할 수 있습니다.&quot; 팝업 노출 됨</td><td></td></tr><tr><td>5</td><td>Medium</td><td rowspan='3'>재시도 프로세스</td><td rowspan='2'>&quot;연결 문제&quot; 패널 노출 및
+네트워크 비연결 상태</td><td>파란색[재시도] 버튼 활성화 및 
+회색[오프라인 모드로 전환] 버튼 노출 되는지 확인</td><td>파란색[재시도] 버튼 활성화 및 
+회색[오프라인 모드로 전환] 버튼 노출 됨</td><td></td></tr><tr><td>6</td><td>Medium</td><td>파란색[재시도] 버튼 클릭 시 로그인 패널 노출 및
+로그인 시도 확인</td><td>[재시도] 클릭 시 로그인 패널로 화면으로 전환 및
+다시 로그인 시도할 경우 서버 통신 실패를 감지하고 다시 '연결 문제' 패널로 리턴 됨</td><td>무한 루프가 아닌 
+예외 패널 복귀 검증</td></tr><tr><td>7</td><td>Medium</td><td>&quot;연결 문제&quot; 패널 노출 및
+네트워크 연결 복구 된 상태</td><td>파란색[재시도] 버튼 클릭 시 로그인 패널 노출 및 
+로그인 시도 확인</td><td>[재시도] 클릭 시 로그인 패널로 이동하며, 복구된
+네트워크를 통해 계정 인증에 성공하여 기본 창으로 
+진입 됨</td><td>네트워크 복구 시 정상 진입
+확인</td></tr><tr><td>8</td><td>High</td><td>프로세스 강제 종료</td><td>&quot;연결 문제&quot; 패널이 활성화 된
+상태</td><td>&quot;연결 문제&quot; 패널 노출 된 상태에서 우측 상단 
+x버튼을 클릭하여 강제 종료 확인</td><td>스팀 클라이언트 런처가 종료 됨</td><td></td></tr><tr><td>9</td><td>High</td><td>오프라인 전환</td><td>&quot;연결 문제&quot; 패널 활성화 상태</td><td>회색[오프라인 모드로 전환] 버튼 클릭 시
+동작 및 런처 진입 여부 확인</td><td>무한 로딩이나 크래시 없이 로컬에 저장된 기반으로
+스팀 오프라인 라이브러리 창으로 정상 진입 됨</td><td>로컬 데이터 기반 오프라인
+런처 구동 검증</td></tr><tr><td>10</td><td>High</td><td>인증 실패</td><td>잘못된 계정 정보 입력</td><td>비밀번호 불일치 및 스팀 API 인증에 실패한 
+상태에서 로그인 시도 시  예외 처리 확인</td><td>메인 창으로 진입하지 못하며, &quot;비밀번호와 계정 이름이 맞는지 확인하고 다시 시도하세요.&quot; 로그인 실패 안내 문구가 노출 됨</td><td>인증 오류 예외 처리</td></tr><tr><td>11</td><td>High</td><td>세션 만료</td><td>로그인 유지 상태</td><td>스팀 클라이언트 이용 도중 다른 기기 중복 로그인 등으로 인해 현재 기기의 스팀 세션이 만료되었을 때 확인</td><td>상점 및 커뮤니티 기능 이용 시 실시간 세션 만료 경고가 노출되며 로그인 창으로 안전하게 튕김 처리됨</td><td>실시간 라이선스 세션 체크 검증</td></tr><tr><td>12</td><td>High</td><td>계정 제재(Ban)</td><td>VAC 또는 비정상 유저
+제재 상태</td><td>스팀에서 정지 당한 계정이나 게임 자체 블랙리스트 에 등록된 계정으로 연동 및 로그인 시도 시 확인</td><td>메인화면 진입이 차단되며, &quot;VAC 시스템에 의해 계정에서 보안 관련 위반 사항이 감지되었습니다&quot; 
+경고 문구가 표시 됨</td><td></td></tr><tr><td>13</td><td>High</td><td rowspan='10'>스토어 검색</td><td>게임 검색</td><td>스팀 상점 기본 창 진입
+상태</td><td>상점 검색창에 'MECCHA CHAMELEON' 검색 시 원활하게 게임이 노출되고 상세 페이지로 접속되는지 확인</td><td>검색 결과에 게임이 정상 노출되며, 클릭 시 MECCHA CHAMELEON 상세 페이지로 화면이 원활하게 전환됨</td><td></td></tr><tr><td>14</td><td>High</td><td>검색 실패
+(오프라인)</td><td>스팀 오프라인 모드 또는
+검색  중 네트워크 끊킨 상태</td><td>상점(Store) 탭 메뉴 클릭 시 노출되는 및 안내 문구 확인</td><td>오류 코드:-106' 타이틀과 &quot;서버에 연결할 수 없습니다. 
+서버가 오프라인이거나 이 컴퓨터가 
+인터넷에 연결되어 있지 않습니다.&quot; 문구가 깨짐 없이 정상 노출됨</td><td></td></tr><tr><td>15</td><td>High</td><td>화면 새로 고침</td><td>오류 코드:-106' 화면이 노출 및 
+PC 네트워크 연결이 다시 복구된 상태</td><td>인터넷이 재연결된 후 상점 탭 새로고침 시 화면
+전환 검증</td><td>스팀 상점의 정상적인 온라인 메인 페이지로 
+전환 됨</td><td>네트워크 복구 시 상점 탭 
+재갱신 및 정성화 검증</td></tr><tr><td>16</td><td>High</td><td>구매 버튼 활성화</td><td>유로 게임 상세 페이지
+진입 상태</td><td>유료 게임 빌드 기준 상점 페이지 내 [장바구니에 추가] 버튼이 정상적으로 활성화되어 노출되는지 확인</td><td>[장바구니에 추가] 버튼이 정상 활성화 됨</td><td>상점 UI 구성 검증</td></tr><tr><td>17</td><td>High</td><td>게임 플레이 / 
+라이브러리에 추가</td><td>무료 게임 상세 페이지
+진입 상태</td><td>무료 게임 빌드 기준 상점 페이지 내 
+[게임 플레이], [라이브러리에 추가] 
+버튼이 정상적으로 노출 되는지 확인</td><td>[게임 플레이]. [라이브러리에 추가] 버튼이
+활성화 됨</td><td>상점 UI 구성 검증</td></tr><tr><td>18</td><td>Medium</td><td>지금 실행하기 버튼 
+활성화</td><td>라이브러리에 등록 되어 있는
+상태</td><td>상점 페이지 내 [지금 실행하기] 버튼이 노출 및 
+&quot;이미 라이브러리에 있습니다.&quot; 문구 확인</td><td>&quot;이미 라이브러리에 있습니다.&quot; 문구 노출 및 
+[지금 실행하기] 버튼 활성화 됨</td><td></td></tr><tr><td>19</td><td>Medium</td><td rowspan='3'>게임 구매(무료)</td><td rowspan='2'>무료게임(F2P) 상세 페이지
+진입 상태</td><td>무료 게임 기준 상점 페이지 내 활성화 된 초록색
+[게임 플레이] 버튼 클릭 시 동작 확인</td><td>장바구니나 결제창으로 이동하지 않고, 설치 안내 팝업
+노출 됨</td><td></td></tr><tr><td>20</td><td>Medium</td><td>상점 페이지 내 [라이브러리에 추가] 버튼 클릭 시 
+노출되는 안내 패널의 UI 확인</td><td>&quot;[게임명] 제품이 귀하의 계정에 추가 되었습니다.
+이제 라이브러리에서 사용 가능합니다.&quot; 문구가 정상
+출력 되고 하단에 [확인] 버튼이 활성화 됨</td><td></td></tr><tr><td>21</td><td>Low</td><td>계정 추가 완료 안내 패널 
+활성화 상태</td><td>패널 하단의 [확인] 버튼 클릭 후 상태 확인</td><td>팝업 창이 닫히며, 기존 상점 페이지의 
+[라이브러리에 추가]
+버튼 영역이 [지금 실행하기] 버튼 활성화 됨</td><td></td></tr><tr><td>22</td><td>Medium</td><td rowspan='7'>버튼 활성화</td><td>상점 페이지 진입 상태</td><td>[장바구니에 추가] 버튼 클릭 시 장바구니 안내
+패널 팝업이 노출되는지 확인</td><td>장바구니 패널이 활성화되며 담긴 게임 정보가
+올바르게 표기됨</td><td></td></tr><tr><td>23</td><td>High</td><td rowspan='6'>장바구니</td><td rowspan='3'>장바구니 패널 활성화
+상태</td><td>장바구니 패널 내 [쇼핑 계속하기] 버튼 및
+[내 장바구니 보기] 버튼이 활성화되는지 확인</td><td>장바구니 패널 내 [쇼핑 계속하기] 버튼 및
+[내 장바구니 보기] 버튼이 활성화 됨</td><td></td></tr><tr><td>24</td><td>High</td><td>[내 장바구니 보기] 버튼 클릭 시 전용 장바구니 
+탭 화면으로 정상 전환되는지 확인</td><td>스팀 스토어의 메인 장바구니 화면으로 전환 됨</td><td></td></tr><tr><td>25</td><td>Low</td><td>[쇼핑 계속하기] 버튼 클릭 시 장바구니 패널이 닫히는지 확인</td><td>장바구니 패널이 닫히고 이전 상점 화면으로 노출 됨</td><td></td></tr><tr><td>26</td><td>Low</td><td rowspan='3'>장바구니 탭 화면 진입 상태</td><td>장바구니 탭 내[쇼핑 계속하기] 및 [결제 계속하기] 
+버튼이 활성화되어 있는지 확인</td><td>[쇼핑 계속하기] 및 [결제 계속하기] 
+버튼 활성화 됨</td><td></td></tr><tr><td>27</td><td>High</td><td>장바구니 탭 내[쇼핑 계속하기] 버튼 클릭 시 
+이전 상점 탭 으로 돌아가는지 확인</td><td>[쇼핑 계속하기] 버튼 클릭 시 
+이전 상점 탭 으로 전환 됨</td><td></td></tr><tr><td>28</td><td>Low</td><td>장바구니 탭 내 [결제 계속하기] 
+버튼 클릭 시 결제 패널 노출되는지 확인</td><td>[결제 계속하기] 버튼 클릭 시 결제 패널이 노출 됨</td><td></td></tr><tr><td>29</td><td>High</td><td rowspan='3'>게임 구매</td><td>소유권 획득</td><td>결제 수단 선택 패널 노출 
+및 네트워크 연결 상태</td><td>결제 수단을 선택하고 결제 완료 시 내 
+라이브러리에 게임이 저장되고 [설치] 버튼이 
+활성화 되는지 확인</td><td>결제 수단을 선택하고 결제 완료 시 내 라이브러리에
+게임이 저장되고 [설치] 버튼이 활성화 됨</td><td></td></tr><tr><td>30</td><td>High</td><td rowspan='2'>결제 실패</td><td rowspan='2'>결제 창 팝업이 노출된 결제
+진행 중 상태</td><td>결제 승인 버튼을 누르는 순간 또는 유지 도중 
+네트워크가 비연결 상태로 변경되었을 때 확인</td><td>결제 도중 네트워크 연결이 끊켰습니다. 결제가
+취소되었습니다. 안내와 함께 장바구니 세션이 
+롤백 됨</td><td></td></tr><tr><td>31</td><td>High</td><td>결제 승인 버튼을 눌렀을 때 잔액이 부족할 경우 확인</td><td>잔액이 부족합니다. 안내와 함께 장바구니 세션이 롤백 됨</td><td></td></tr><tr><td>32</td><td>Medium</td><td rowspan='11'>설치 진행</td><td rowspan='6'>설치 패널</td><td>게임 보유중 및 라이브러리 저장된 상태</td><td>[설치] 버튼 클릭 시 설치 안내 패널이 활성화되는지
+확인</td><td>[설치] 버튼 클릭 시 설치 안내 패널이 활성화 됨</td><td>설치 UI 검증</td></tr><tr><td>33</td><td>Medium</td><td>설치 패널 활성화 상태</td><td>패널 내 '바탕 화면에 바로가기 만들기'. 
+'시작 메뉴에 바로가기 만들기' 체크박스 기능 
+및 '설치 위치' 변경 설정이 가능한지 확인</td><td>각 체크박스는 클릭 시 토글(체크/해제)이 정상 작동하며, 드롭다운 메뉴를 통해 PC에 연결된 다른 드라이브 경로를 자유롭게 선택할 수 있음</td><td>사용자 정의 설치 환경
+설정 검증</td></tr><tr><td>34</td><td>Medium</td><td>저장 공간 부족 상태</td><td>디스크 남은 용량이 게임 요구 사양보다 부족한
+상태에서 설치 진행 시도 시 확인</td><td>공간 부족 안내 팝업이 노출되며 다운로드 및 설치 진입
+프로세스가 차단됨</td><td>용량 임계치 체크</td></tr><tr><td>35</td><td>Low</td><td rowspan='3'>설치 패널 활성화 상태</td><td>패널 하단의 [설치] 및 [취소] 버튼이 활성화 되는지
+확인</td><td>패널 하단의 [설치] 및 [취소] 버튼이 활성화 됨</td><td></td></tr><tr><td>36</td><td>Low</td><td>[설치] 버튼 클릭 시 게임 배포전 최종 사용자 
+라이선스 동의를 위한 '약관 패널'이 연동되어 
+활성화되는지 확인</td><td>스팀 배포에 따른 법적 약관 고지 패널이 화면에
+노출 되며 동의 해야만 다운로드로 넘어감</td><td>배포 가이드라인 준수 검증</td></tr><tr><td>37</td><td>Medium</td><td>[취소] 버튼 클릭 시 다운로드 없이 패널이 닫히며,
+[설치] 클릭 시 다음 단계로 진입하는지 확인</td><td>[취소] 버튼 클릭 시 다운로드 없이 패널이 닫히며,
+[설치] 클릭 시 다음 단계로 진입함</td><td>명령 취소 및 승인 매커니즘</td></tr><tr><td>38</td><td>Medium</td><td>다운로드</td><td>약관 동의 후 다운로드 시작
+및 온라인 연결 상태</td><td>다운로드가 시작되었을 때 스팀 하단 바 및 다운로드 창에 [일시정지] 버튼이 활성화 되고 진행 상황이
+퍼센트로 실시간 표시되는지 확인</td><td>[일시정지] 버튼이 활성화 되고 진행 상황이
+퍼센트로 실시간 갱신 되며 표시 됨</td><td>다운로드 UI 검증</td></tr><tr><td>39</td><td>High</td><td>다운로드 중 네트워크 끊킨
+상태</td><td>다운로드가 진행 중인 상태</td><td>다운로드 도중 네트워크 비연결 상태로 전환 되었을 
+때 확인</td><td>다운로드가 일시적으로 중단되는 상태로 전환 됨</td><td></td></tr><tr><td>40</td><td>Medium</td><td>네트워크 재연결 후 
+이어받기</td><td>네트워크 단절로 인해 
+다운로드가 일시 보류 된
+상태</td><td>인터넷 연결이 복구 되었을 때 다운로드 프로세스가
+정상 동작하는지 확인</td><td>다운로드가 재개되며 기존 데이터 시점부터 손상 없이
+이어서 다운로드 됨</td><td>무결성 및 이어받기 검증</td></tr><tr><td>41</td><td>High</td><td>일시 정지 작동</td><td>다운로드 진행 중 상태</td><td>[일시 정지] 버튼 클릭 시 다운로드 프로세스가
+중지되는지 확인</td><td>클릭 즉시 다운로드가 멈추며, 버튼 UI가 [다운로드]
+아이콘으로 전환 됨</td><td>데이터 이어받기 대기 상태
+검증</td></tr><tr><td>42</td><td>Low</td><td>파일 무결성 검사</td><td>다운로드 완료 또는 손상 상태</td><td>스팀 라이브러리 속성 창에서[게임 파일 무결성 검사]
+실행 시 로컬 파일 검증 확인</td><td>파일 전수 검사 프로세스가 가동되며, 꺠지거나 손상된
+청크 파일이 존재할 경우 자동 감지하여 재다운로드/
+복구 됨</td><td>로컬 변조 및 방어 리스크 
+관리</td></tr><tr><td>43</td><td>High</td><td>설치 완료</td><td>실행 버튼 활성화</td><td>다운로드 완료 상태</td><td>파일 다운로드가 완료된 시점에서 스팀 라이브러리의
+기존 설치 버튼이 [플레이] 버튼으로 활성화되는지
+확인</td><td>[플레이] 버튼이 활성화되며, 클릭 시 게임 실행 
+프로세스가 작동 가능한 상태가 됨</td><td>최종 빌드 무결성 완료
+및 실행 대기 검증</td></tr><tr><td>44</td><td>Medium</td><td rowspan='5'>게임 실행</td><td>OS권한</td><td>Windows 일반 사용자 계정
+환경</td><td>비관리자 권한 OS계정 환경에서 게임 구동 및 
+데이터 저장 확인</td><td>윈도우 보안 경고나 권한 거부 오류 없이 정상
+구동되며, 로컬 폴더에 세이브 파일 쓰기/읽기 권한이
+보장 됨</td><td>폴더 쓰기 권한 및
+Windows 보안 리스크 확인</td></tr><tr><td>45</td><td>High</td><td>최초 실행 종속성</td><td rowspan='3'>[플레이] 버튼이 활성화된 상태</td><td>게임을 설치한 후 최초로 [플레이] 버튼을 클릭했을 떄
+동작 확인</td><td>게임 구동에 필요한 필수 종속성 프로그램의 최초 설치
+팝업이 구동 및 완료 후, 게임 클라이언트가 크래시
+없이 정상 실행 됨</td><td>스팀 배포 스크립트 최초 실행
+인터럽트 방어</td></tr><tr><td>46</td><td>Medium</td><td>스팀 커뮤니티 연동</td><td>인게임 상태에서 스팀 오버레이 단축키 입력시
+인터랙션 및 스팀 프로필 상태 확인</td><td>스팀 오버레이 알림이 노출되며 오버레이 창이 활성화
+됨 [게임] 플레이 중으로 실시간 연동 됨</td><td>Steamworks SDK 프로필
+및 인게임 웹뷰 오버레이 기능
+검증</td></tr><tr><td>47</td><td>High</td><td>프로세스 초기화</td><td>[플레이] 버튼을 클릭했을 때 시스템 내부 프로세스가
+구동되는지 확인</td><td>버튼 클릭 시 파란색[중지] 버튼으로 상태가 실시간
+전환되며, Windows 작업 관리자에 게임 실행
+파일 프로세스가 오류 없이 정상적으로 생성 및 등록 됨</td><td>스팀 런처와 클라이언트 간의
+안정성 검증</td></tr><tr><td>48</td><td>High</td><td>인게임 최종 접속</td><td>게임프로세스가 생성되어
+클라이언트 창이 활성화 된 
+상태</td><td>초기 로딩 및 연출 이후 최종 인게임 메인 타이틀 
+화면에 정상 접속 되는지 확인</td><td>멈춤 없이 인게임 메인 타이틀 화면까지 정상적으로
+화면이 전환되며, 입력 장치 조작을 통해
+게임을 시작할 수 있는 상태가 됨</td><td>인게임 빌드 진입 성공 여부
+검증</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet1'><div class='meta'><p>Project name (프로젝트 명칭) : MECCHA CHAMELEON</p><p>Platform (플랫폼 종류) : PC (Steam /Steam Deck)</p><p>Version (버전 정보) : 버전 1.7.0</p></div><div class='tbl-scroll'><table><thead><tr><th>No.</th><th>Priority 
+(우선순위)</th><th>Category 1 (분류 1)</th><th>Category 2 
+(분류 2)</th><th>Category 3 
+(분류 3)</th><th>사전 조건</th><th>Test Details 
+(테스트 내용)</th><th>Expected Result 
+(테스트 기대 결과)</th><th>Comment 
+(비고)</th></tr></thead><tbody><tr><td>1</td><td>High</td><td rowspan='3'>인게임</td><td rowspan='3'>메인 화면</td><td>다국어 버튼</td><td>게임 실행 후 초기 메인 타이틀 화면에 접속한 상태</td><td>하단의 [한국어], [English] 등 다국어 
+버튼 클릭 시 메뉴 텍스트 변환 상태 확인</td><td>선택한 언어에 맞춰 시스템 및 버튼 문구가 실시간 변환되며, 폰트 깨짐 현상이 없음</td><td>다국어 현지화 검증</td></tr><tr><td>2</td><td>Medium</td><td>계정 정보</td><td>스팀 클라이언트를 통해 정상 로그인 후 메인 화면 진입 상태</td><td>화면 최상단 좌측의 연동 정보 데이터 출력 상태 확인</td><td>화면 최상단 좌측의 연동 정보 데이터 출력 상태 확인	스팀 프로필 정보와  유저의 고유 계정명이 밀림 없이 명확하게 표시됨</td><td>스팀 API 정보 연동</td></tr><tr><td>3</td><td>High</td><td>버전 표기</td><td>메인 타이틀 화면 접속 상태</td><td>화면 우측 상단의 라이브 빌드 버전 정보 노출 상태 
+확인</td><td>화면 우측 상단의 라이브 빌드 버전 정보 노출 상태 확인 현재 클라이언트의 패치 버전이 출력됨</td><td>런타임 빌드 버전 노출</td></tr><tr><td>4</td><td>High</td><td rowspan='16'>인게임 매칭</td><td rowspan='8'>서버 찾기</td><td>텍스트 입력</td><td>메인 메뉴에서 [서버 찾기]를 클릭하여 탐색 페이지에 진입한 상태</td><td>게임 내에 표시할 이름을 입력하세요' 창에 30자 이상의 문자 타입 입력 시도</td><td>최대 글자 수(30자)까지만 입력이 허용되며 우측 인디케이터 수치(예: 8/30)가 실시간 동기화됨</td><td>닉네임 글자수 제한 예외 처리</td></tr><tr><td>5</td><td>Medium</td><td>지역 필터</td><td rowspan='2'>서버 찾기 화면 진입 상태</td><td>지역 태그' 영역의 [아시아], [유럽] 등의 버튼을 
+개별적으로 클릭</td><td>클릭한 지역 태그 버튼의 배경 하이라이트(녹색) 상태가 실시간으로 온/오프 전환됨</td><td>필터 UI 토글 검증</td></tr><tr><td>6</td><td>Medium</td><td>모드 필터</td><td>서버 태그' 영역의 [베이직 모드 위주], [초보자 환영] 등의 버튼을 개별적으로 클릭</td><td>클릭한 모드 태그 버튼의 온/오프 상태 및 가두리 컬러가 시각적으로 정상 변경됨</td><td>필터 UI 토글 검증</td></tr><tr><td>7</td><td>Medium</td><td>검색</td><td>공개 멀티플레이 방이 여러 개 생성되어 있는 상태</td><td>[아시아]와 [베이직 모드 위주] 태그를 동시에 복합 활성화한 후 우측 리스트 점검</td><td>우측 '검색 결과' 목록에 해당 조건을 모두 만족하는 방이 필터링되어 노출됨</td><td>다중 조건  데이터  검증</td></tr><tr><td>8</td><td>High</td><td>스크롤 UI</td><td>검색 결과 창에 방 목록이 다수 출력되어 우측 스크롤바가 생성된 상태</td><td>마우스 휠 스크롤 및 우측 흰색 스크롤 바를 하단으로 드래그</td><td>끊김 현상 없이 스크롤이 하단으로 이동하며 하위 방 목록이 노출됨</td><td>서버 리스트 동적 스크롤 UI</td></tr><tr><td>9</td><td>High</td><td rowspan='2'>방 상태</td><td>검색 결과에 아직 게임을 시작하지 않은 방인 상태</td><td>리스트 내 해당 방의 중앙 상태 패널 문구 ”대기중“ 확인</td><td>해당 방 정보 레이아웃에 '대기중' 상태 텍스트 패널이 올바르게 출력됨</td><td>인게임 상태 검증</td></tr><tr><td>10</td><td>High</td><td>검색 결과에 이미 라운드를 진행 중인 방인 상태</td><td>리스트 내 해당 방의 중앙 상태 패널 문구 
+”게임 진행 중“ 확인</td><td>해당 방 정보 레이아웃에 빨간색 배경의 '게임 진행 중' 상태 텍스트 패널이 명확히 출력됨</td><td>인게임 상태 검증</td></tr><tr><td>11</td><td>High</td><td>입장 버튼</td><td>입장 정원 여유가 있는 방 목록 상태 (예: 9/13)</td><td>방 우측에 위치한 [최대 인원] 버튼의 상태 확인 및 
+마우스 좌클릭 시도</td><td>[최대 인원] 버튼이 밝은 녹색 활성화 상태를 유지하며, 클릭 시 방에 진입 됨</td><td></td></tr><tr><td>12</td><td>High</td><td rowspan='6'>서버 입장</td><td>로딩 UI</td><td>서버 목록에서 [최대 인원] 버튼을 정상 클릭한 직후</td><td>서버 데이터를 연결하는 과정 동안 로딩 화면 연출 확인</td><td>검은색 배경과 랜덤 값의 색깔로 변하는 
+3개의 공이 출력 됨</td><td>로딩  그래픽 연출 확인</td></tr><tr><td>13</td><td>High</td><td>로딩 문구</td><td>방 입장 검은색 로딩 화면 진입 상태</td><td>화면 중앙 하단에 노출되는 가이드 안내 텍스트 점검</td><td>&quot;페인트 모드에서 자신의 그림자를 숨길 수 있습니다&quot; 와 같은 문구가 정상 출력됨</td><td>로딩 동안 가이드 문구 출력 확인</td></tr><tr><td>14</td><td>High</td><td>라운드 시작 전</td><td>게임이 진행 중이지 않은 상태</td><td>자신의 캐릭터가 로비에 생성 되었는지 확인 및 
+다른 플레이어들이 보이는 지 확인</td><td>자신의 캐릭터가 로비에 생성 및
+ 다른 플레이어들이 출력 됨</td><td></td></tr><tr><td>15</td><td>High</td><td>모드 설정</td><td rowspan='2'>게임이 진행 중이지 않은 상태  및
+방장 인 상태</td><td>방장이 인게임 설정을 통해 모드를 
+변경하였을 때 적용 되는지 확인</td><td>방장이 인게임 설정을 통해 모드를 
+변경하였을 때 적용 됨</td><td>Ex) 베이직 모드, 감염 모드 등
+모드 변경 되는지 확인</td></tr><tr><td>16</td><td>High</td><td>인게임 방 설정</td><td>방장이 인게임 설정을 통해 숨는 시간을 
+변경하였을 때 적용 되는지 확인</td><td>방장이 인게임 설정을 통해 숨는 시간을 
+변경하였을 때 적용 됨</td><td>인게임 설정 변경 적용 여부 확인</td></tr><tr><td>17</td><td>High</td><td rowspan='2'>역할 추첨</td><td>로딩이 완료되어 대기 필드에 진입한 
+상태</td><td>게임이 시작 되어 중앙 상단 추첨 시간이 흐르는지
+확인</td><td>게임이 시작 되어 중앙 상단 추첨 시간이
+ 흐름</td><td></td></tr><tr><td>18</td><td>Medium</td><td rowspan='2'>게임 시작</td><td>역할 추첨 시간이 0인 상태</td><td>중앙 상단 추첨 시간 타이머가 만료되었을 때
+랜덤하게 술래가 정해지는 지 확인</td><td>전 유저 중 시스템 내부 난수에 의해 헌터(술래)가 무작위 확률로 최종 배정됨</td><td>역할 분배 검증</td></tr><tr><td>19</td><td>Medium</td><td>모드 선택</td><td>게임이 시작 된 상태</td><td>랜덤으로 모드가 선정 되는지 확인</td><td>랜덤으로 모드가 선정되어 적용 됨</td><td>체크 해둔 모드 중 랜덤으로
+지정되는 지 검증특정 모드만 지정 시 
+지정한 모드가적용 되는지 검증</td></tr><tr><td>20</td><td>Medium</td><td rowspan='97'>게임 시작</td><td rowspan='15'>모드</td><td rowspan='4'>베이직 모드</td><td>모드가 선택 된 상태</td><td>베이직 모드가 선택되어 적용되는 지 확인</td><td>베이직 모드가 선택되어 적용 되어
+술래와 도망자, 2개의 팀으로 
+나뉘고 잡힐 시 관전 모드로 전환 됨</td><td></td></tr><tr><td>21</td><td>Low</td><td rowspan='3'>모드가 베이직 모드로 지정 된 상태</td><td>술래가 모든 도망자를 잡았을 때 
+술래의 승리가 되는지 확인</td><td>술래가 모든 도망자를 잡았을 때 
+술래의 승리가 됨</td><td></td></tr><tr><td>22</td><td>Medium</td><td>도망자가 탐색 시간 동안 버텨 생존 했을 경우
+도망자의 승리가 되는지 확인</td><td>도망자가 탐색 시간 동안 버텨 생존 했을 경우
+도망자의 승리가 됨</td><td></td></tr><tr><td>23</td><td>High</td><td>도망자가 술래에게 잡혔을 때 도망자의 모드가
+관전 모드로 전환 되는지 확인</td><td>도망자가 술래에게 잡혔을 때 도망자의 
+모드가 관전 모드로 전환 됨</td><td></td></tr><tr><td>24</td><td>Medium</td><td rowspan='3'>흑백 모드</td><td rowspan='3'>모드가 흑백 모드로 지정 된 상태</td><td>흑백 모드가 적용 되는 지 확인
+(맵이 흑백이 되며, 진한 색은 흑, 연한 색은 백이 된다)</td><td>흑백 모드가 적용 됨
+(맵이 흑백이 되며, 진한 색은 흑, 연한 색은 백이 된다)</td><td>승리 조건은 베이직 모드 와 동일</td></tr><tr><td>25</td><td>High</td><td>도망자가 탐색 시간 동안 버텨 생존 했을 경우
+도망자의 승리가 되는지 확인</td><td>도망자가 탐색 시간 동안 버텨 생존 했을 경우
+도망자의 승리가 됨</td><td></td></tr><tr><td>26</td><td>Low</td><td>도망자가 술래에게 잡혔을 때 도망자의 모드가
+관전 모드로 전환 되는지 확인</td><td>도망자가 술래에게 잡혔을 때 도망자의 
+모드가 관전 모드로 전환 됨</td><td></td></tr><tr><td>27</td><td>High</td><td rowspan='4'>감염 모드</td><td rowspan='3'>모드가 감염 모드로 지정 된 상태</td><td>감염 모드가 적용 되는 지 확인</td><td>감염 모드가 적용 됨
+(헌터에게 도망자가 사냥 당하면 
+감염 되어 헌터가 됨)</td><td></td></tr><tr><td>28</td><td>Low</td><td>도망자 서로 볼 수 없는지 확인</td><td>도망자 서로 볼 수 없음</td><td>술래에게 사냥 되어 감염되면 헌터가
+되기에 숨은 사람 서로 확인 불가</td></tr><tr><td>29</td><td>High</td><td>도망자가 탐색 시간 동안 버텨 생존 했을 경우
+도망자의 승리가 되는지 확인</td><td>도망자가 탐색 시간 동안 버텨 생존 
+했을 경우 도망자의 승리가 됨</td><td></td></tr><tr><td>30</td><td>High</td><td>모든 도망자를 잡아 헌터로 만든
+상태</td><td>헌터의 승리가 되는지 확인</td><td>헌터가 모든 도망자를 잡아 헌터로 만들었을 
+경우 헌터의 승리가 처리 됨</td><td>감염 모드의 승리조건 검증</td></tr><tr><td>31</td><td>High</td><td rowspan='4'>더블 모드</td><td rowspan='3'>모드가 더블 모드로 지정 된 상태</td><td>더블 모드가 적용 되는지 확인</td><td>더블 모드가 적용 됨
+(숨는 시간에 모든 유저가 숨고 탐색 시간에
+모든 유저가 헌터가 됨)</td><td></td></tr><tr><td>32</td><td>Medium</td><td>모든 유저가 숨는 시간에 도망자가 되어 
+숨을 수 있는지 확인</td><td>모든 유저가 숨는 시간에 도망자가 되어 
+숨을 수 있음</td><td></td></tr><tr><td>33</td><td>Medium</td><td>탐색 시간이 시작 되면 모든 유저가 헌터의 역할을
+부여 받는지 확인</td><td>탐색 시간이 시작 되면 모든 유저가 헌터의 역할을 부여 받음</td><td></td></tr><tr><td>34</td><td>Medium</td><td>자신을 포함한 모든 유저를 찾은
+상태</td><td>게임 라운드의 승리자가 되는지 확인</td><td>게임 라운드의 승리자가 됨</td><td>더블 모드의 승리 조건 검증</td></tr><tr><td>35</td><td>Low</td><td rowspan='5'>베이직 모드</td><td rowspan='5'>라운드 시작</td><td rowspan='2'>역할 추첨이 된 상태</td><td>역할이 도망자(카멜레온) 으로 지정 되는지 
+확인</td><td>역할이 도망자 (카멜레온)으로 지정 됨</td><td></td></tr><tr><td>36</td><td>Low</td><td>역할이 헌터로 지정 되는지 확인</td><td>역할이 헌터로 지정 됨</td><td></td></tr><tr><td>37</td><td>Medium</td><td>역할이 도망자(카멜레온)인 상태</td><td>숨는 시간에 필드로 이동 되는지 확인</td><td>숨는 시간에 필드로 이동 됨</td><td></td></tr><tr><td>38</td><td>Medium</td><td rowspan='2'>역할이 헌터인 상태</td><td>샷건이 지급되는지 확인</td><td>샷건이 지급 됨</td><td></td></tr><tr><td>39</td><td>High</td><td>숨는 시간에 필드로 이동 되지 않고 
+로비에 남아 있는지 확인</td><td>숨는 시간에 필드로 이동 되지 않고 
+로비에 남아 있음</td><td></td></tr><tr><td>40</td><td>Medium</td><td rowspan='17'>플레이어 제어</td><td rowspan='4'>캐릭터 이동</td><td>숨는 시간이 0인 상태</td><td>탐색 시간이 시작 되어 헌터 캐릭터가 실제 
+플레이 필드로 즉각 자동 텔레포트 
+이동 처리되는지 확인</td><td>탐색 시간이 시작 되어 헌터 캐릭터가 
+실제 플레이 필드로 즉각 
+자동 텔레포트 이동 됨</td><td>타이머 동기화 및 텔레포트 트리거 
+검증</td></tr><tr><td>41</td><td>Low</td><td rowspan='7'>캐릭터가 스폰 되어있는 상태</td><td>W키를 누르고 있는 상태 일 때 전진하는지 확인</td><td>캐릭터가 앞으로 전진 함</td><td></td></tr><tr><td>42</td><td>Medium</td><td>A키를 누르고 있는 상태 일 때 왼쪽으로 
+이동하는지 확인</td><td>캐릭터가 왼쪽으로 이동 함</td><td></td></tr><tr><td>43</td><td>High</td><td>S키를 누르고 있는 상태 일 때 뒤쪽으로 
+이동하는지 확인</td><td>캐릭터가 뒤쪽으로 이동함</td><td></td></tr><tr><td>44</td><td>Medium</td><td>달리기</td><td>D키를 누르고 있는 상태 일 때 오른쪽으로
+이동하는지 확인</td><td>캐릭터가 오른쪽으로 이동 함</td><td></td></tr><tr><td>45</td><td>High</td><td>점프</td><td>Shift키를 누르고 있는 상태 일 때 달리는지
+확인</td><td>캐릭터 추가 이속을 받아 달려감</td><td></td></tr><tr><td>46</td><td>High</td><td>벽 매달리기</td><td>Space키를 한번 누른 상태 일 때
+점프 하는지 확인</td><td>캐릭터가 위로 점프 됨</td><td></td></tr><tr><td>47</td><td>High</td><td>캐릭터 고정하기</td><td>구조물 앞에서 Space키를 누르고
+있는 상태 일 때 벽을 타는지 확인</td><td>캐릭터가 구조물을 타고 올라감</td><td></td></tr><tr><td>48</td><td>High</td><td>캐릭터 고정 해제</td><td rowspan='10'>역할이 카멜레온 인 상태</td><td>구조물 앞에서 Shift키를 
+한번 누른 상태 일 때 캐릭터가 구조물에 
+고정 되는지 확인</td><td>캐릭터가 구조물에 고정 됨</td><td></td></tr><tr><td>49</td><td>High</td><td rowspan='8'>특수 행동</td><td>캐릭터가 고정 된 상태 일 때
+Shift 키를 한번 입력 했을 경우 고정이 해제 되는지 확인</td><td>Shift 키 입력 했을 때 고정이 해제 됨</td><td></td></tr><tr><td>50</td><td>High</td><td>R 키 홀드로 원형 포즈 선택 패널이 호출되는지
+확인</td><td>R 키 홀드로 원형 포즈 선택 패널이 호출 됨</td><td></td></tr><tr><td>51</td><td>High</td><td>R 키 탭 했을 경우 포즈 선택 패널이 호출되었다가
+비활성화 되는지 확인</td><td>포즈 선택 패널이 호출 되었다가 
+바로 비활성화 됨</td><td></td></tr><tr><td>52</td><td>High</td><td>R키 홀드로 원형 포즈 선택 패널에서
+만세 자세를 선택 했을 경우 포즈가 바뀌는 지
+확인</td><td>캐릭터의 포즈가 만세하는 자세로 변경 됨</td><td></td></tr><tr><td>53</td><td>High</td><td>R키 홀드로 원형 포즈 선택 패널에서
+허리굽히기 자세를 선택 했을 경우 포즈가 바뀌는 지
+확인</td><td>캐릭터의 포즈가 허리굽히기 자세로 변경
+됨</td><td></td></tr><tr><td>54</td><td>High</td><td>R키 홀드로 원형 포즈 선택 패널에서
+옆으로 눕기 자세를 선택 했을 경우 
+포즈가 바뀌는 지 확인</td><td>캐릭터의 포즈가 옆으로 눕기 자세로 변경
+됨</td><td></td></tr><tr><td>55</td><td>High</td><td>R키 홀드로 원형 포즈 선택 패널에서
+바닥 앉기를 선택 했을 경우 
+포즈가 바뀌는 지 확인</td><td>캐릭터의 포즈가 바닥 앉기 자세로 변경 됨</td><td></td></tr><tr><td>56</td><td>High</td><td>R키 홀드로 원형 포즈 선택 패널에서
+대자 눕기를 선택 했을 경우 
+포즈가 바뀌는 지 확인</td><td>캐릭터의 포즈가 대자 눕기 자세로 변경 됨</td><td></td></tr><tr><td>57</td><td>High</td><td rowspan='44'>페인트 모드</td><td rowspan='2'>UI 토글</td><td>R키 홀드로 원형 포즈 선택 패널에서
+거꾸로 엎드리기를 선택 했을 경우 
+포즈가 바뀌는 지 확인</td><td>캐릭터의 포즈가 거꾸로 엎드리기 자세로
+변경 됨</td><td></td></tr><tr><td>58</td><td>High</td><td>인게임 캐릭터 제어 상태</td><td>F키를 탭했을 때 페인트 모드(패널 할성화)로 
+진입하는지 확인</td><td>페인트 모드로 진입 됨</td><td></td></tr><tr><td>59</td><td>High</td><td>감마 프리뷰</td><td>인게임 캐릭터  제어 상태 및 
+페인트 모드 활성화인 상태</td><td>F키를 탭했을 때 페인트 모드(패널 비할성화)가 
+비활성화 되는지 확인</td><td>일반 모드로 돌아감</td><td></td></tr><tr><td>60</td><td>High</td><td rowspan='2'>2D 스포이드</td><td>F 키를 눌러 페인트 모드 패널이 노출된 상태</td><td>패널 상단의 [RGB 프리뷰] 체크박스를 마우스 클릭하여 상태 변환</td><td>체크박스 마킹 표시가 토글 연동되며, 화면에 출력되는 컬러 감마 보정 상태가 실시간 갱신됨</td><td>RGB 색감 보정 동기화 검증</td></tr><tr><td>61</td><td>High</td><td>페인트 도구 창이 켜져 있는 상태</td><td>컬러 디스크 우측에 배치된 [스포이드 픽셀 모양] 
+버튼을 마우스 좌클릭</td><td>기능이 활성화되며 마우스 커서 외형 디자인이 컬러 추출용 조준경 레이아웃으로 
+변경됨</td><td></td></tr><tr><td>62</td><td>High</td><td>3D 스포이드</td><td>스포이드 모드인 상태</td><td>구조물을 클릭 해 클릭한 대상의 색상 값을
+받아 오는지 확인</td><td>클릭한 대상의 색상 값이 추출 됨</td><td></td></tr><tr><td>63</td><td>High</td><td>브러시 스케일링</td><td>주변에 원색 계열 컬러가 적용된 오브젝트가 배치된 상태</td><td>Space 바 키를 길게 누른 채로 3D 표면을 마우스 타겟팅 조작 했을 때 타겟 표면의 
+색상 값이 추출 되는지 확인</td><td>메인 브러시 컬러값과 RGB 수치 창 데이터가  동기화 되어 색상 값이 추출 됨</td><td></td></tr><tr><td>64</td><td>High</td><td>HEX 파싱</td><td>페인트 드로잉 브러시 기능이 ON으로 세팅된 상태</td><td>아이콘에 맞춰 마우스 휠을 상하로 연속 스크롤 화면상의 원형 브러시 크기가 실시간 축소/확대 확장되며 도색되는 두께 데이터가 정상 
+연동되는지 확인</td><td>아이콘에 맞춰 마우스 휠을 상하로 연속 스크롤 화면상의 원형 브러시 크기가 실시간 축소/확대 확장되며 도색되는 두께 
+데이터가 정상 연동 됨</td><td></td></tr><tr><td>65</td><td>High</td><td>수치 기입 (R)</td><td>RGB 코드 입력 텍스트 필드가 활성화된 상태</td><td>코드 입력 칸에 키보드로 특정 헥사 문자열(예: 4E3924FF)을 정확히 수동 입력 시 적용 되는지
+확인</td><td>코드 입력 칸에 키보드로 특정 헥사 문자열(예: 4E3924FF)을 정확히 수동 입력 시 적용 됨</td><td>HEX 파싱은 사람이 읽을 수 있는 ASCII 텍스트 기반의 HEX 파일을 컴퓨터나 컨트롤러가 이해할 수 있는 데이터로 해석하고 변환하는 과정을 말함</td></tr><tr><td>66</td><td>High</td><td>경계값 하한 (R)</td><td rowspan='4'>페인트 모드의  수치 입력 칸 활성화 상태</td><td>텍스트 기입 창에 정상 범위 안의 값을 기입 시 적용
+되는지 확인</td><td>텍스트 기입 창에 정상 범위 안의 값을 기입 시 적용 됨</td><td></td></tr><tr><td>67</td><td>High</td><td>경계값 상한 (R)</td><td>내장 한계값보다 낮은 데이터 값을 넣었을 때
+자동으로 최소 값으로 보정 되는지 확인</td><td>내장 한계값보다 낮은 데이터 값을 넣었을 때
+자동으로 최소 값으로 보정 됨</td><td>하한성 필터링 검증</td></tr><tr><td>68</td><td>High</td><td>포맷 제한 (R)</td><td>상한값을 초과하는 데이터 값을 넣었을 때
+자동으로 최대 값으로 보정되는지 확인</td><td>상한값을 초과하는 데이터 값을 넣었을 때
+자동으로 최대 값으로 보정 됨</td><td>상한선 필터링 검증</td></tr><tr><td>69</td><td>High</td><td>수치 기입 (G)</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않는지 확인</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않음</td><td></td></tr><tr><td>70</td><td>High</td><td>경계값 하한 (G)</td><td rowspan='4'>페인트 모드의  수치 입력 칸 활성화 상태</td><td>텍스트 기입 창에 정상 범위 안의 값을 기입 시 적용
+되는지 확인</td><td>텍스트 기입 창에 정상 범위 안의 값을 기입 시 적용 됨</td><td></td></tr><tr><td>71</td><td>High</td><td>경계값 상한 (G)</td><td>내장 한계값보다 낮은 데이터 값을 넣었을 때
+자동으로 최소 값으로 보정 되는지 확인</td><td>내장 한계값보다 낮은 데이터 값을 넣었을 때
+자동으로 최소 값으로 보정 됨</td><td>하한성 필터링 검증</td></tr><tr><td>72</td><td>High</td><td>포맷 제한 (G)</td><td>상한값을 초과하는 데이터 값을 넣었을 때
+자동으로 최대 값으로 보정되는지 확인</td><td>상한값을 초과하는 데이터 값을 넣었을 때
+자동으로 최대 값으로 보정 됨</td><td>상한선 필터링 검증</td></tr><tr><td>73</td><td>High</td><td>수치 기입 (B)</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않는지 확인</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않음</td><td></td></tr><tr><td>74</td><td>High</td><td>경계값 하한 (B)</td><td rowspan='4'>페인트 모드의  수치 입력 칸 활성화 상태</td><td>텍스트 기입 창에 정상 범위 안의 값을 기입 시 적용
+되는지 확인</td><td>텍스트 기입 창에 정상 범위 안의 값을 기입 시 적용 됨</td><td></td></tr><tr><td>75</td><td>High</td><td>경계값 상한 (B)</td><td>내장 한계값보다 낮은 데이터 값을 넣었을 때
+자동으로 최소 값으로 보정 되는지 확인</td><td>내장 한계값보다 낮은 데이터 값을 넣었을 때
+자동으로 최소 값으로 보정 됨</td><td>하한성 필터링 검증</td></tr><tr><td>76</td><td>High</td><td>포맷 제한 (B)</td><td>상한값을 초과하는 데이터 값을 넣었을 때
+자동으로 최대 값으로 보정되는지 확인</td><td>상한값을 초과하는 데이터 값을 넣었을 때
+자동으로 최대 값으로 보정 됨</td><td>상한선 필터링 검증</td></tr><tr><td>77</td><td>High</td><td>수치 기입 (H)</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않는지 확인</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않음</td><td></td></tr><tr><td>78</td><td>High</td><td>경계값 하한 (H)</td><td>페인트 모드의 H 색상 각도 수치 입력 칸 활성화 상태</td><td>텍스트 기입 창에 정상 범위 안의 값을 기입 시 적용
+되는지 확인</td><td>각도 데이터가  파싱되어 컬러 스펙트럼 위의 타겟 포인터가 해당 색상 위치로 정밀 이동함</td><td></td></tr><tr><td>79</td><td>High</td><td>경계값 상한 (H)</td><td rowspan='3'>페인트 모드의  수치 입력 칸 활성화 상태</td><td>내장 한계값보다 낮은 데이터 값을 넣었을 때
+자동으로 최소 값으로 보정 되는지 확인</td><td>내장 한계값보다 낮은 데이터 값을 넣었을 때
+자동으로 최소 값으로 보정 됨</td><td>하한성 필터링 검증</td></tr><tr><td>80</td><td>High</td><td>포맷 제한 (H)</td><td>상한값을 초과하는 데이터 값을 넣었을 때
+자동으로 최대 값으로 보정되는지 확인</td><td>상한값을 초과하는 데이터 값을 넣었을 때
+자동으로 최대 값으로 보정 됨</td><td>상한선 필터링 검증</td></tr><tr><td>81</td><td>High</td><td>수치 기입 (S)</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않는지 확인</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않음</td><td></td></tr><tr><td>82</td><td>High</td><td>경계값 하한 (S)</td><td>페인트 모드의 S 채도 수치 입력 칸 활성화 상태</td><td>텍스트 기입 창에 정상 범위 안의 값을 기입 시 적용
+되는지 확인</td><td>텍스트 기입 창에 정상 범위 안의 값을 기입 시 적용 됨</td><td></td></tr><tr><td>83</td><td>High</td><td>경계값 상한 (S)</td><td rowspan='3'>페인트 모드의  수치 입력 칸 활성화 상태</td><td>내장 한계값보다 낮은 데이터 값을 넣었을 때
+자동으로 최소 값으로 보정 되는지 확인</td><td>내장 한계값보다 낮은 데이터 값을 넣었을 때
+자동으로 최소 값으로 보정 됨</td><td>하한성 필터링 검증</td></tr><tr><td>84</td><td>High</td><td>포맷 제한 (S)</td><td>상한값을 초과하는 데이터 값을 넣었을 때
+자동으로 최대 값으로 보정되는지 확인</td><td>상한값을 초과하는 데이터 값을 넣었을 때
+자동으로 최대 값으로 보정 됨</td><td>상한선 필터링 검증</td></tr><tr><td>85</td><td>High</td><td>수치 기입 (V)</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않는지 확인</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않음</td><td></td></tr><tr><td>86</td><td>High</td><td>경계값 하한 (V)</td><td>페인트 모드의 V 명도 수치 입력 칸 활성화 상태</td><td>텍스트 기입 창에 정상 범위 안의 값을 기입 시 적용
+되는지 확인</td><td>텍스트 기입 창에 정상 범위 안의 값을 기입 시 적용 됨</td><td></td></tr><tr><td>87</td><td>High</td><td>경계값 상한 (V)</td><td rowspan='3'>페인트 모드의  수치 입력 칸 활성화 상태</td><td>내장 한계값보다 낮은 데이터 값을 넣었을 때
+자동으로 최소 값으로 보정 되는지 확인</td><td>내장 한계값보다 낮은 데이터 값을 넣었을 때
+자동으로 최소 값으로 보정 됨</td><td>하한성 필터링 검증</td></tr><tr><td>88</td><td>High</td><td>포맷 제한 (V)</td><td>상한값을 초과하는 데이터 값을 넣었을 때
+자동으로 최대 값으로 보정되는지 확인</td><td>상한값을 초과하는 데이터 값을 넣었을 때
+자동으로 최대 값으로 보정 됨</td><td>상한선 필터링 검증</td></tr><tr><td>89</td><td>High</td><td>수치 기입 (메탈릭)</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않는지 확인</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않음</td><td></td></tr><tr><td>90</td><td>High</td><td>경계값 하한 (메탈릭)</td><td>재질 속성 패널 내 메탈릭 수치 직접 입력 창 활성화 상태</td><td>정상 범위의 데이터를 키보드로 입력 시 적용 되는지
+확인</td><td>입력한 수치가 텍스트 창에 박히며 메탈릭 슬라이더 바 위치가 해당 지점으로 부드럽게 
+ 이동함</td><td></td></tr><tr><td>91</td><td>Medium</td><td>경계값 상한 (메탈릭)</td><td rowspan='3'>메탈릭 수치 입력 창 활성화 상태</td><td>최소 유효 임계치 미만인 데이터를 기입 시 자동으로
+최소 값으로 보정되는지 확인</td><td>비정상 연산 버그를 막기 위해 최소 하한값인 0.0 수치로 강제 자동 보정 됨</td><td>하한성 필터링 검증</td></tr><tr><td>92</td><td>Medium</td><td>포맷 제한 (메탈릭)</td><td>최대 임계치를 넘어서는 데이터 수치 을 직접 입력 시
+최대 값으로 보정되는지 확인</td><td>상한 경계선 예외 처리에 필터링되어 최대 상한값인 1.0 수치로 안전하게 자동 보정 됨</td><td>상한선 필터링 검증</td></tr><tr><td>93</td><td>Medium</td><td>수치 기입 (러프니스)</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않는지 확인</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않음</td><td></td></tr><tr><td>94</td><td>Medium</td><td>경계값 하한
+(러프니스)</td><td>재질 속성 패널 내 러프니스 수치 직접 입력 창 활성화 상태</td><td>정상 범위의 데이터를 키보드로 입력 시 적용 되는지
+확인</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않음</td><td></td></tr><tr><td>95</td><td>Medium</td><td>경계값 상한 
+(러프니스)</td><td rowspan='3'>러프니스 수치 입력 창 활성화 상태</td><td>최소 유효 임계치 미만인 데이터를 기입 시 자동으로
+최소 값으로 보정되는지 확인</td><td>셰이더 그래픽 깨짐 예외 방지를 위해 시스템 최소 한계치인 0.0 데이터로 실시간 클램프 보정 됨</td><td>하한성 필터링 검증</td></tr><tr><td>96</td><td>High</td><td>경계값 상한
+ (러프니스)</td><td>최대 임계치를 넘어서는 데이터 수치 을 직접 입력 시
+최대 값으로 보정되는지 확인</td><td>상한 경계값 필터링에 의해 최대 한계 규격인 1.0 데이터 값 수치로 실시간 자동 보정 됨</td><td>상한선 필터링 검증</td></tr><tr><td>97</td><td>High</td><td>메탈릭 셰이더</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않는지 확인</td><td>기입 창에 비숫자인 텍스트 문자열을 입력 시 
+필터로 인해 작성되지 않음</td><td></td></tr><tr><td>98</td><td>High</td><td>러프니스 셰이더</td><td>속성 컨트롤 탭 내부의 메탈릭 조정 슬라이더 조작 가능 상태</td><td>메탈릭 조정 슬라이더를 마우스 드래그를 통해 0.0에서 1.0(Max) 데이터까지 가변 이동 조작 가능한지 확인</td><td>슬라이더 우측 수치 데이터가 소수점 자리까지 실시간 동기화 출력되며, 수치가 1.0에 도달하면  질감 메테리얼로 실시간 렌더링됨</td><td></td></tr><tr><td>99</td><td>High</td><td rowspan='2'>그림자 제어 UI</td><td>속성 컨트롤 탭 내부의 러프니스 조정 슬라이더 조작 가능 상태</td><td>러프니스 조정 슬라이더를 마우스 드래그를 통해 0.0(Min)에서 1.0까지 가변 이동 조작 가능한지 확인</td><td>슬라이더 우측 수치가 실시간 동기화 처리되며, 0.0에 근접할 시 고광택 코팅 표면이 연출되고, 1.0에 근접할 거칠고 매트한 드럼통 
+재질로 표현됨</td><td></td></tr><tr><td>100</td><td>High</td><td>캐릭터의 실시간 3D 그림자가 지면에 투사되는 상태</td><td>키보드 V 키를 눌러 그림자 토글 제거되는지 확인</td><td>그림자가 제거되고 [V 그림자] 레이아웃 박스 내부 전구 모양 컴포넌트 불빛 색상이 실시간 비활성화 상태로 동기화 갱신됨</td><td></td></tr><tr><td>101</td><td>High</td><td rowspan='2'>경기 규칙 판정</td><td>파묻힘 경고 UI</td><td>캐릭터의 3D 그림자가 비활성화 상태</td><td>키보드 V 키를 눌러 그림자 토글이 활성화 되는지
+확인</td><td>그림자가 활성화되고 [V 그림자] 레이아웃 박스 내부 전구 모양 컴포넌트 불빛 색상이 실시간 활성화 상태로 동기화 갱신됨</td><td></td></tr><tr><td>102</td><td>High</td><td>위치 강제 노출</td><td>카멜레온 역할 일 때 벽면에 밀착하여 포즈를 취하는 과정에서, 캐릭터 메쉬의 일정 범위 이상이 벽 콜라이더 내부로 파묻힌 상태</td><td>캐릭터의 파묻힘  시스템 허용 치를 
+초과했을 때 화면 중앙 하단에 경고 텍스트 
+노출 되는지 확인</td><td>화면 하단에 노란색 글씨로 &quot;몸이 너무 많이 파묻혔습니다!&quot; 경고 문구 패널이 출력됨</td><td></td></tr><tr><td>103</td><td>High</td><td rowspan='4'>플레이어 제어</td><td rowspan='2'>도발 휘파람 사운드</td><td>화면 하단에 &quot;몸이 너무 많이 파묻혔습니다!&quot; 경고 문구가 출력된 상태가 유지되는 상태</td><td>경고 문구 하단의 &quot;이 상태가 계속되면 위치가 공개됩니다!&quot; 일정 시간(예: 5초) 이상 자리를 이탈하지 않고 버텼을 때 위치가 강제 노출되는지 확인</td><td>위치가 강제 노출 됨</td><td>비정상 행위 예외 패널티 룰</td></tr><tr><td>104</td><td>High</td><td>카멜레온 역할 일 때 엄폐 포즈 상태로 자리에 고정 은신한 상태</td><td>키보드 숫자 1번 키를 탭 했을 때 휘파람 사운드가 
+재생 되는 지확인</td><td>자신의 캐릭터에서 휘파람 사운드가
+재생이 됨</td><td></td></tr><tr><td>105</td><td>High</td><td rowspan='2'>샷건</td><td rowspan='2'>역할이 헌터인 상태</td><td>마우스 좌클릭 버튼을 입력하여 격발 되는지 확인</td><td>총알이 격발 됨</td><td></td></tr><tr><td>106</td><td>High</td><td>카멜레온에게 총알을 맞췄을 경우 피격 판정이
+되는지 확인</td><td>피격 판정이 인정 되어 사망 처리 됨</td><td></td></tr><tr><td>107</td><td>High</td><td rowspan='4'>관전 시스템</td><td>자유 카메라 시점</td><td rowspan='2'>탈락 된 상태</td><td>유령 모드가 되어 자유 시점으로 이동 되는지 확인</td><td>유령 모드가 되어 자유 시점으로 이동 할 수 있음</td><td></td></tr><tr><td>108</td><td>High</td><td>관전 대상 타겟 스왑</td><td>자유 카메라 모드가 비활성화된 상태에서 마우스 좌클릭 또는 우클릭 버튼을 통해 관전자 이동 가능한지
+확인</td><td>시점이 고정 된 채로 다음 유저의 시점으로
+이동 됨</td><td></td></tr><tr><td>109</td><td>High</td><td>관전 대상 타겟 스왑</td><td>생존 한 상태</td><td>숫자 5번 키를 탭하여 관전 대상 스왑하여
+관전 가능한지 확인</td><td>숫자 5번 키를 탭하여 관전 대상 스왑하여
+다른 유저들 관전 가능 함</td><td></td></tr><tr><td>110</td><td>High</td><td>칭찬 피드백</td><td>타겟 스왑 관전 중 상태</td><td>키보드 G 키를 단축 입력하여 칭찬 기능이 되는지
+확인</td><td>노란색 따봉 아이콘과 함께 실시간 칭찬 누적 수치 카운트 데이터가 +1 씩 증가 함</td><td></td></tr><tr><td>111</td><td>Low</td><td rowspan='4'>HUD 연동</td><td rowspan='2'>생존자 카운터</td><td rowspan='2'>인게임 라운드가 한창 진행 중인 상태</td><td>현재 생존해 있는 생존자 수에 따라 흰색 아바타 
+수가 표시되는지 확인</td><td>현재 생존해 있는 생존자 수에 따라 
+아바타 수가 표시 됨</td><td></td></tr><tr><td>112</td><td>Low</td><td>생존자가 사망하여 수가 줄어들었을 때 흰색 아바타
+수 표시가 실시간으로 -1 되는지 확인</td><td>생존자가 사망하여 수가 줄어들었을 때 흰색 아바타 수 표시가 실시간으로 -1 됨</td><td></td></tr><tr><td>113</td><td>Low</td><td rowspan='2'>술래 카운터</td><td>인게임 라운드가 한창 진행 중인 상태</td><td>현재 존재하는 헌터 수 에 따라 빨간색 아바타
+수가 표시 되는지 확인</td><td>존재하는 헌터 수에 따라 
+아바타 수가 표시 됨</td><td></td></tr><tr><td>114</td><td>Low</td><td>카멜레온이 죽어 헌터가 된 상태</td><td>헌터의 수가 증가 함에 따라 빨간색 아바타 수
+표시가 +1 되는지 확인</td><td>헌터 수가 증가함에 따라 빨간색 아바타 수
+표시가 실시간으로 +1 됨</td><td></td></tr><tr><td>115</td><td>Low</td><td>HUD 연동</td><td>실시간 랭킹 보드</td><td>플레이어들이  리스크 점수를 획득하여 개인 스코어가 실시간 
+변동하는 상태</td><td>화면 좌측 하단 붉은색 '놓친 것 랭킹' 
+레이아웃 테이블의 점수가 높은 순으로 데이터 정렬
+되는지 확인</td><td>화면 좌측 하단 붉은색 '놓친 것 랭킹' 
+레이아웃 테이블의 점수가 높은 순으로 데이터 정렬 됨</td><td></td></tr><tr><td>116</td><td>Medium</td><td>경기 규칙 판정</td><td>시야 리스크 점수</td><td>도망자 유저가 특정 거리에 은신하여 고정 포즈를 취한 채 생존 중인 상태</td><td>실시간 사냥 중인 술래(헌터)가 카멜레온 화면의
+시야각 범위(FOV) 안으로 직접 걸어 들어왔을 때 
+점수 트리거가 발동하여 점수가 상승하는지 확인</td><td>점수가 상승 됨</td><td>시야각 노출 리스크 보상 스코어 공식</td></tr></tbody></table></div></div>
+</div>
+<script>
+var tabs = document.querySelectorAll('.tab');
+var sheets = document.querySelectorAll('.sheet');
+function show(id) {
+  sheets.forEach(function(s){ s.classList.toggle('active', s.id === id); });
+  tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.sheet === id); });
+}
+tabs.forEach(function(t){ t.addEventListener('click', function(){ show(t.dataset.sheet); }); });
+if (sheets.length) { sheets[0].classList.add('active'); }
+if (tabs.length) { tabs[0].classList.add('active'); }
+</script>
+</body>
+</html>

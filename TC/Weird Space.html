@@ -1,0 +1,1549 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weird Space — TC</title>
+<style>
+:root { --bg:#0f172a; --card:#1e293b; --border:#2d3f55; --blue-lt:#60a5fa; --green-lt:#4ade80; --text:#f1f5f9; --text-2:#94a3b8; --text-3:#64748b; }
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif; font-size:14px; }
+.top { position:sticky; top:0; background:rgba(15,23,42,0.97); border-bottom:1px solid var(--border); padding:0.9rem 1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; z-index:10; }
+.top h1 { font-size:1rem; font-weight:700; margin-right:auto; }
+.top a { color:var(--blue-lt); text-decoration:none; font-size:0.82rem; font-weight:600; }
+.top a:hover { color:var(--green-lt); }
+.wrap { padding:1.25rem 1.5rem 3rem; }
+.tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+.tab { background:var(--card); color:var(--text-2); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.9rem; font-size:0.82rem; cursor:pointer; font-family:inherit; }
+.tab.active { color:var(--text); border-color:var(--green-lt); }
+.meta { background:var(--card); border:1px solid var(--border); border-left:3px solid var(--green-lt); border-radius:0 8px 8px 0; padding:0.8rem 1.1rem; margin-bottom:1rem; }
+.meta p { font-size:0.8rem; color:var(--text-2); line-height:1.7; }
+.meta p:first-child { color:var(--text); font-weight:700; }
+.doc { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.3rem 1.5rem; max-width:900px; }
+.doc p { font-size:0.85rem; color:var(--text-2); line-height:1.8; margin-bottom:0.55rem; }
+.doc p:first-child { color:var(--text); font-weight:700; font-size:0.95rem; }
+table.two-head thead th { position:static; }
+.sheet { display:none; }
+.sheet.active { display:block; }
+.tbl-scroll { overflow-x:auto; border:1px solid var(--border); border-radius:8px; }
+table { border-collapse:collapse; width:100%; min-width:700px; }
+th, td { border:1px solid var(--border); padding:0.45rem 0.7rem; text-align:center; vertical-align:middle; font-size:0.8rem; line-height:1.55; color:var(--text-2); white-space:pre-wrap; }
+thead th { background:#162032; color:var(--text); font-weight:600; position:sticky; top:0; }
+tbody tr:nth-child(even) { background:#131f33; }
+tbody tr:hover { background:#1a2a44; }
+td.al { text-align:left; }
+.st-pass { color:var(--green-lt); font-weight:700; }
+.st-fail { color:#f87171; font-weight:700; }
+.st-hold { color:#facc15; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>Weird Space</h1>
+  <a href="../TC모음.html">← TC 모음으로</a>
+  <a href="../index.html#tc">포트폴리오 홈</a>
+  <a href="Weird Space.xlsx" download>⬇ 원본 엑셀 다운로드</a>
+</div>
+<div class="wrap">
+<div class='tabs'><button class='tab' data-sheet='sheet0'>WeirdSpace  TC</button><button class='tab' data-sheet='sheet1'>타이틀 화면</button><button class='tab' data-sheet='sheet2'>인게임 화면</button><button class='tab' data-sheet='sheet3'>로비 화면</button><button class='tab' data-sheet='sheet4'>상점 화면</button><button class='tab' data-sheet='sheet5'>일일 업무일지</button></div>
+<div class='sheet' id='sheet0'><div class='doc'><p>Weird Space</p><p>우선 순위 설명</p><p>High = 제품의 핵심 기능이며, 오류가 발생하면 사용자에게 치명적인 영향을 미칠정도의 오류임.</p><p>Medium = 기능들에 결함이 있어도 제품의 핵심 기능이 마비되지는 않은정도의 오류임.</p><p>Low = 기능들에 문제가 발생하더라도 제품의 사용성에는 큰 영향을 주지 않는 오류임.</p><p>TC (Test Case)</p><p>결과 설명</p><p>PASS = 테스트 대상 기능이 요구사항에 맞게 정상적으로 작동한다는 것을 확인한 경우</p><p>작성자 : 이경민 : Fail =  테스트 케이스가 실패했음을 의미합니다. 예상 결과와 실제 결과가 일치하지 않을 경우</p><p>N/A = 테스트 대상 기능이 제거 또는 변경되어 테스트 케이스 자체가 더 이상 유효하지 않을 경우</p><p>N/T = 테스트 계획에는 포함되어 있지만, 시간 부족, 인력 부족 등의 이유로 실행하지 못한 경우</p></div></div>
+<div class='sheet' id='sheet1'><div class='meta'><p>Weird Space [최초 타이틀 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th></th><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='4'>진입 방법</th><th rowspan='2'>사전 조건</th><th rowspan='2'>절차</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선 순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고란</th></tr><tr><th></th><th>진입1</th><th>진입2</th><th>진입3</th><th>진입4</th></tr></thead><tbody><tr><td></td><td>01</td><td>타이틀 화면_01</td><td>외부 웹 브라우저에서 
+직접 링크 입력</td><td>https://play.google.com/store/
+/details?id
+=com.DefaultCompany.WeirdSpace</td><td></td><td></td><td>인터넷 연결 상태</td><td>1. 외부 웹 브라우저에서 
+직접 링크 입력
+
+2. https://play.google.com/store/
+/details?id=com.DefaultCompany.WeirdSpace 링크 접속</td><td>기능</td><td class='al'>Weird Space가 플레이스토어의 노출이 된다.
+
+[Werid Space]
+
+Nasac
+광고 포함
+
+50+           | [UI]
+다운로드    | 전체이용가 [i]
+
+[다른 기기에 설치]     [공유]
+
+내 모든 기기에서 앱을 사용할 수 있습니다.
+
+
+
+[사진]  [사진] [사진]  [사진]  [사진]  [&gt;]
+
+게임 소개 -&gt;
+
+각 방마다 있는 여러개의 이상현상... 8번 연속으로 이상현상이 있는지 없는지
+맞추세요.</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>02</td><td>타이틀 화면_02</td><td>외부 웹 브라우저에서 
+직접 링크 입력</td><td>https://play.google.com/store/
+/details?id
+=com.DefaultCompany.WeirdSpace</td><td></td><td></td><td>인터넷 연결 상태 /  계정 보유</td><td>1. 외부 웹 브라우저에서 
+직접 링크 입력
+
+2.  https://play.google.com/store/
+/details?id=com.DefaultCompany.WeirdSpace 링크 접속
+
+3.  링크 접속 후 [다운로드] 클릭</td><td>기능</td><td class='al'>게임 다운로드가 가능하다.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>03</td><td>타이틀 화면_03</td><td>외부 웹 브라우저에서 
+직접 링크 입력</td><td>https://play.google.com/store/
+/details?id
+=com.DefaultCompany.WeirdSpace</td><td>[다운로드] 선택</td><td></td><td>게임 다운로드 이후</td><td>1. 외부 웹 브라우저에서 
+직접 링크 입력
+
+2.  https://play.google.com/store/
+/details?id=com.DefaultCompany.WeirdSpace 링크 접속
+
+3.  링크 접속 후 [다운로드] 클릭
+
+4. 메인 화면에 WeirdSpace 아이콘 노출 확인</td><td>기능</td><td class='al'>배경화면에 Weird Space 아이콘이 노출이 된다.</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>04</td><td>타이틀 화면_04</td><td>외부 웹 브라우저에서 
+직접 링크 입력</td><td>https://play.google.com/store/
+/details?id
+=com.DefaultCompany.WeirdSpace</td><td>[다운로드] 선택</td><td>메인 화면에서 게임 실행</td><td>게임 다운로드 이후</td><td>1. 외부 웹 브라우저에서 
+직접 링크 입력
+
+2.  https://play.google.com/store/
+/details?id=com.DefaultCompany.WeirdSpace 링크 접속
+
+3.  링크 접속 후 [다운로드] 클릭
+
+4. 메인 화면에서 WeirdSpace 아이콘 클릭 후 게임 실행 여부 확인</td><td>기능</td><td class='al'>게임이 정상 작동이 된다.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>06</td><td>타이틀 화면_06</td><td>메인 화면에서 게임 실행</td><td></td><td></td><td></td><td>게임 다운로드 이후</td><td>1. 메인 화면에서 WeirdSpace 아이콘 클릭 후 게임 실행 
+
+2. 배경 조명 깜박임  확인 및 클릭 기능 확인</td><td>기능</td><td class='al'>배경 조명 깜박이고 배경 클릭시 넘어간다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>07</td><td>타이틀 화면_07</td><td>메인 화면에서 게임 실행</td><td>게임 진입</td><td>게임 제목 텍스트 
+노출 확인</td><td></td><td>게임 다운로드 이후</td><td>1. 메인 화면에서 게임 실행
+
+2. 게임 진입
+
+3. 메인 화면에서  [Weird Space] 문구 노출 확인
+    Touch to start</td><td>기능</td><td class='al'>메인 화면에서 WeirdSpace 문구가 노출된다.
+Touch to start</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>08</td><td>타이틀 화면_08</td><td>메인 화면에서 게임 실행</td><td>게임 진입</td><td>게임 제목 텍스트 
+노출 확인</td><td>화면 클릭시 전면광고 출력</td><td>게임 다운로드 이후</td><td>1. 메인 화면에서 게임 실행
+
+2. 게임 진입
+
+3. 메인 화면에서  [Weird Space] 문구 노출 확인
+    Touch to start
+
+4. 화면 클릭시 전면광고 출력</td><td>기능</td><td class='al'>전면 광고 출력</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>09</td><td>타이틀 화면_09</td><td>메인 화면에서 게임 실행</td><td>게임 진입</td><td>게임 제목 텍스트 
+노출 확인</td><td>로비화면 출력</td><td>게임 다운로드 이후</td><td>1. 메인 화면에서 게임 실행
+
+2. 게임 진입
+
+3. 메인 화면에서  [Weird Space] 문구 노출 확인
+    Touch to start
+
+4. 화면 클릭시 전면광고 출력 
+5. 로비 화면 출력</td><td>기능</td><td class='al'>로비 화면 출력                                  
+   ------------------------
+   | 🪙 |          0   ➕|                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |    ➡️
+               |                                      |     |                                      |
+               |            Living room       |     |              Kitchen            |
+               ---------------------------------      ---------------------------------</td><td></td><td></td><td></td></tr><tr><td></td><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet2'><div class='meta'><p>Weird Space [인게임 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th></th><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='5'>진입 방법</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고</th></tr><tr><th></th><th>대분류</th><th>중분류</th><th>소분류</th><th>사전 조건</th><th>절차</th></tr></thead><tbody><tr><td></td><td>1</td><td>인게임 화면_1</td><td rowspan='34'>UI</td><td rowspan='3'>이동 버튼</td><td></td><td>스테이지 인게임 화면 상태</td><td>이동 버튼(화살표 버튼) 출력 확인
+- 좌측 및 우측 하단</td><td>UI</td><td class='al'>이동 버튼 출력 됨
+- ⬅️➡️</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>2</td><td>인게임 화면_2</td><td>좌측 이동</td><td>스테이지 인게임 화면 상태</td><td>좌측 이동 버튼 클릭 및 유지</td><td>기능</td><td class='al'>캐릭터가 좌측으로 이동 시작. 버튼에서 손을 떼면 이동 멈춤.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>3</td><td>인게임 화면_3</td><td>우측 이동</td><td>스테이지 인게임 화면 상태</td><td>우측 이동 버튼 클릭 및 유지</td><td>기능</td><td class='al'>캐릭터가 우측으로 이동 시작. 버튼에서 손을 떼면 이동 멈춤.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>4</td><td>인게임 화면_4</td><td rowspan='10'>메뉴</td><td></td><td>스테이지 인게임 화면 상태</td><td>메뉴 버튼 출력 확인
+- 우측 상단</td><td>UI</td><td class='al'>메뉴 버튼 출력 됨
+-⏸️</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>5</td><td>인게임 화면_5</td><td rowspan='9'>메뉴 패널 활성화</td><td>스테이지 인게임 화면 상태</td><td>⏸️메뉴 버튼 클릭</td><td>기능</td><td class='al'>메뉴 패널 출력</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>6</td><td>인게임 화면_6</td><td>스테이지 인게임 화면 상태</td><td>메뉴 패널 출력 확인</td><td>UI</td><td class='al'>메뉴 패널 출력</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>7</td><td>인게임 화면_7</td><td>1. 스테이지 인게임 화면 상태
+2. 메뉴 패널 출력 상태</td><td>계속하기 버튼 출력 확인
+- 중앙 상단</td><td>UI</td><td class='al'>계속하기 버튼 출력 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>8</td><td>인게임 화면_8</td><td>1. 스테이지 인게임 화면 상태
+2. 메뉴 패널 출력 상태</td><td>그만하기 버튼 출력 확인
+- 중앙 중단</td><td>UI</td><td class='al'>그만하기 버튼 출력 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>9</td><td>인게임 화면_9</td><td>1. 스테이지 인게임 화면 상태
+2. 메뉴 패널 출력 상태</td><td>발소리 조절 바 출력 확인
+-중앙 하단</td><td>UI</td><td class='al'>발소리 조절 바 출력 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>10</td><td>인게임 화면_10</td><td>1. 스테이지 인게임 화면 상태
+2. 메뉴 패널 출력 상태</td><td>계속하기 버튼 클릭</td><td>기능</td><td class='al'>메뉴 패널이 비활성화 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>11</td><td>인게임 화면_11</td><td>1. 스테이지 인게임 화면 상태
+2. 메뉴 패널 출력 상태</td><td>그만하기 버튼 클릭</td><td>기능</td><td class='al'>로비 화면으로 전환 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>12</td><td>인게임 화면_12</td><td>1. 스테이지 인게임 화면 상태
+2. 메뉴 패널 출력 상태</td><td>발소리 조절 바 스크롤 확인</td><td>기능</td><td class='al'>발소리 조절 바 스크롤 함에 따라 사운드 조절 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>13</td><td>인게임 화면_13</td><td>1. 스테이지 인게임 화면 상태
+2. 메뉴 패널 출력 상태</td><td>발소리 조절 바 0일 때</td><td>기능</td><td class='al'>소리가 음소거 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>14</td><td>인게임 화면_14</td><td rowspan='9'>목표 카운트</td><td>초기 UI 및 값 출력</td><td>스테이지 인게임 화면 상태</td><td>목표 카운트 출력 확인
+- 우측 상단</td><td>UI</td><td class='al'>목표 카운트 출력 됨
+- 0 / 8</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>15</td><td>인게임 화면_15</td><td rowspan='2'>정답 시 카운트 증가</td><td>스테이지 인게임 화면 상태</td><td>이상현상이 발생하지 않은 상태에서 왼쪽 문을 선택 했을 때</td><td>UI</td><td class='al'>목표 카운트 출력 됨
+- N / 8  -&gt; N+1 / 8</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>16</td><td>인게임 화면_16</td><td>스테이지 인게임 화면 상태</td><td>이상현상이 발생한 상태에서 오른쪽 문을 선택 했을 때</td><td>UI</td><td class='al'>목표 카운트 출력 됨
+- N / 8  -&gt; N+1 / 8</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>17</td><td>인게임 화면_17</td><td rowspan='2'>목표 달성 및 클리어 
+스테이지 진입</td><td>스테이지 인게임 화면 상태</td><td>1. 7회 연속 정확하게 선택하여 카운트를 7 / 8 상태로 만든다.
+2. 이상 현상이 발생하지 않은 상태에서 왼쪽 문을 선택 했을 때</td><td>기능</td><td class='al'>목표 카운트 8 / 8로 증가 및 클리어 스테이지로 전환 됨
+- N / 8  -&gt; 8 / 8</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>18</td><td>인게임 화면_18</td><td>스테이지 인게임 화면 상태</td><td>1. 7회 연속 정확하게 선택하여 카운트를 7 / 8 상태로 만든다.
+2. 이상현상이 발생한 상태에서 오른쪽 문을 선택 했을 때</td><td>기능</td><td class='al'>목표 카운트 8 / 8로 증가 및 클리어 스테이지로 전환 됨
+- N / 8  -&gt; 8 / 8</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>19</td><td>인게임 화면_19</td><td rowspan='2'>최종 클리어 Scene 전환</td><td>8 / 8 카운트 달성 후 클리어 스테이지 진입 상태</td><td>플레이어가 왼쪽 문에 도달하도록 했을 때</td><td>기능</td><td class='al'>STAGE CLEAR 텍스트와 별 모양 아이콘이 있는 최종 클리어 Scene으로 화면이 전환 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>20</td><td>인게임 화면_20</td><td>8 / 8 카운트 달성 후 클리어 스테이지 진입 상태</td><td>오른쪽 방향 버튼을 계속 누르며 오른쪽 벽 경계로 이동 시도</td><td>기능</td><td class='al'>플레이어 캐릭터가 오른쪽 벽을 넘어서 이동되지 않음 (충돌 처리가 정상 작동한다.)</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>21</td><td>인게임 화면_21</td><td rowspan='2'>오답 시 카운트 초기화</td><td>스테이지 인게임 화면 상태</td><td>이상현상이 발생하지 않은 상태에서 오른쪽 문을 선택 했을 때</td><td>기능</td><td class='al'>목표 카운트 0 / 8로 초기화 됨
+- N / 8  -&gt; 0 / 8</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>22</td><td>인게임 화면_22</td><td>스테이지 인게임 화면 상태</td><td>이상현상이 발생한 상태에서 왼쪽 문을 선택 했을 때</td><td>기능</td><td class='al'>목표 카운트 0 / 8로 초기화 됨
+- N / 8  -&gt; 0 / 8</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>23</td><td>인게임 화면_23</td><td rowspan='12'>힌트</td><td></td><td>스테이지 인게임 화면 상태</td><td>힌트 버튼 출력 확인
+- 우측 상단</td><td>UI</td><td class='al'>힌트 버튼 출력 됨
+-❓</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>24</td><td>인게임 화면_24</td><td rowspan='6'>힌트 패널 출력</td><td>스테이지 인게임 화면 상태</td><td>❓힌트 버튼 클릭</td><td>기능</td><td class='al'>힌트 패널 출력 됨</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>25</td><td>인게임 화면_25</td><td>스테이지 인게임 화면 상태</td><td>광고를 시청하시겠습니까? 문구 출력 확인</td><td>UI</td><td class='al'>광고를 시청하시겠습니까? 문구 출력 됨</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>26</td><td>인게임 화면_26</td><td>스테이지 인게임 화면 상태</td><td>네 버튼 출력 확인</td><td>UI</td><td class='al'>네 버튼 출력 됨</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>27</td><td>인게임 화면_27</td><td>스테이지 인게임 화면 상태</td><td>아니오 버튼 출력 확인</td><td>UI</td><td class='al'>아니오 버튼 출력 됨</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>28</td><td>인게임 화면_28</td><td>힌트 패널 활성화 상태</td><td>네 버튼 클릭</td><td>기능</td><td class='al'>보상형 광고가 재생 됨</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>29</td><td>인게임 화면_29</td><td>힌트 패널 활성화 상태</td><td>아니오 버튼 클릭</td><td>기능</td><td class='al'>힌트 패널 비활성화 됨</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>30</td><td>인게임 화면_30</td><td rowspan='3'>힌트 제공 확인</td><td>보상형 광고 재생 완료 상태</td><td>광고 종료 후 화면 상태 확인</td><td>UI</td><td class='al'>1. 힌트 패널이 비활성화 됨
+2. 힌트 내용이 화면에 표시 됨</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>31</td><td>인게임 화면_31</td><td>보상형 광고 재생 완료 상태</td><td>❌ 버튼 출력 확인</td><td>UI</td><td class='al'>1. 힌트 내용이 화면에 표시 됨
+2. X버튼 출력 확인</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>32</td><td>인게임 화면_32</td><td>보상형 광고 재생 완료 상태</td><td>❌ 버튼 클릭</td><td>기능</td><td class='al'>힌트 패널 비활성화 됨</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>33</td><td>인게임 화면_33</td><td rowspan='2'>광고 재생 실패</td><td>힌트 패널 활성화 상태</td><td>예 버튼 클릭 후 광고가 로드되지 않거나 재생에 실패한다.</td><td>기능</td><td class='al'>1. 광고 재생 실패 관련 오류 메시지가 출력 됨
+2. 힌트는 제공되지 않음</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>34</td><td>인게임 화면_34</td><td>힌트 패널 활성화 상태</td><td>광고 재생 도중 창을 껐을 때</td><td>기능</td><td class='al'>힌트는 제공되지 않음</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>35</td><td>인게임 화면_35</td><td rowspan='7'>씬 전환</td><td rowspan='6'>클리어 Scene</td><td></td><td>클리어 Scene 진입 상태</td><td>STAGE CLEAR 문구 확인
+- 중앙 상단</td><td>UI</td><td class='al'>STAGE CLEAR 문구가 출력 됨</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>36</td><td>인게임 화면_36</td><td></td><td>클리어 Scene 진입 상태</td><td>클리어한 스테이지 이미지 출력
+-중앙 중단</td><td>UI</td><td class='al'>플레이어가 클리어한 스테이지의 이미지가 출력 됨</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>37</td><td>인게임 화면_37</td><td></td><td>클리어 Scene 진입 상태</td><td>클리어 표시인 별 문양 출력
+-중앙 하단</td><td>UI</td><td class='al'>클리어 표시인 별 문양이 출력 됨</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>38</td><td>인게임 화면_38</td><td></td><td>클리어 Scene 진입 상태</td><td>화면 클릭</td><td>기능</td><td class='al'>전면 광고가 출력 됨</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>39</td><td>인게임 화면_39</td><td>광고 재생</td><td>전면 광고 재생 완료 상태</td><td>광고 종료 후 화면 상태 확인</td><td>기능</td><td class='al'>로비 화면으로 전환 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>40</td><td>인게임 화면_40</td><td>광고 재생 실패</td><td>클리어 Scene 진입 상태</td><td>1. 화면 클릭
+2. 광고가 로드가 되지 않거나 재생에 실패</td><td>기능</td><td class='al'>로비 화면으로 전환 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>41</td><td>인게임 화면_41</td><td>로비 화면</td><td>클리어 문양 출력</td><td>스테이지 클리어</td><td>클리어한 스테이지 밑에 별 문양 추가</td><td>UI</td><td class='al'>로비 화면의 스테이지 창 하단에 별 문양이 추가 됨</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>42</td><td>인게임 화면_42</td><td></td><td></td><td></td><td></td><td></td><td></td><td class='al'></td><td>High</td><td></td><td></td></tr><tr><td></td><td colspan='12'>전체 공란</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet3'><div class='meta'><p>Weird Space [로비 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th></th><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='4'>진입 방법</th><th rowspan='2'>사전 조건</th><th rowspan='2'>절차</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선 순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고란</th></tr><tr><th></th><th>진입1</th><th>진입2</th><th>진입3</th><th>진입4</th></tr></thead><tbody><tr><td></td><td>01</td><td>인게임 화면_01</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>로비 화면 진입</td><td>LivingRoom 스테이지 진입</td><td>메인 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력</td><td>기능</td><td class='al'>전면 광고 출력</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>02</td><td>인게임 화면_02</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>최초 실행 시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 설명서 패널 출력</td><td>UI</td><td class='al'>설명서1 패널 출력
+                         
+                   ❌-----------------------------------------------------
+                     |          ---------------------------------------        |
+                     |          |                                             |        |
+                     |          |                    🔳                    |      ➡️  
+                     |          |                                             |        |
+                     |          ---------------------------------------        |
+                     |                                                                 |
+                     |      처음 보여지는 방은 이상현상이 없는     |
+                     |      정상적인 방입니다.                              |
+                     -------------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>03</td><td>인게임 화면_03</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>최초 실행 시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 설명서 패널 출력
+
+5. ➡️ 버튼 클릭시 설명서2 패널 출력</td><td>UI</td><td class='al'>설명서2 패널 출력
+                                       
+                   ❌-----------------------------------------------------
+                     |          ---------------------------------------        |
+                     |          |                                             |        |
+                   ⬅️        |                    🔳                    |      ➡️  
+                     |          |                                             |        |
+                     |          ---------------------------------------        |
+                     |                                                                 | 
+                     |     만약 이상 현상을 발견했다면 오른쪽 문  |
+                     |     으로,이상 현상이 없다고 판단되면 왼     |
+                     |     쪽문으로 이동하십시오.                        |
+                     -------------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>04</td><td>인게임 화면_04</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>최초 실행 시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 설명서 패널 출력
+
+5. ➡️ 버튼 클릭시 설명서3 패널 출력</td><td>UI</td><td class='al'>설명서3 패널 출력
+                                       
+                   ❌-----------------------------------------------------
+                     |          ---------------------------------------        |
+                     |          |                                             |        |
+                   ⬅️        |                    🔳                    |      ➡️  
+                     |          |                                             |        |
+                     |          ---------------------------------------        |
+                     |                                                                 | 
+                     |     선택을 한 번이라도 틀리면 처음 방으로  |
+                     |     돌아오게 됩니다.                                   |
+                     -------------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>05</td><td>인게임 화면_05</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>최초 실행 시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 설명서 패널 출력
+
+5. ➡️ 버튼 클릭시 설명서4 패널 출력</td><td>UI</td><td class='al'>설명서4 패널 출력
+                                       
+                   ❌-----------------------------------------------------
+                     |          ---------------------------------------        |
+                     |          |                                             |        |
+                   ⬅️        |                    🔳                    |      ➡️  
+                     |          |                                             |        |
+                     |          ---------------------------------------        |
+                     |                                                                 | 
+                     |     연속으로 8번 정확히 선택해야 맵을 클   |
+                     |     리어 할 수 있습니다.                             |
+                     -------------------------------------------------------</td><td></td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>06</td><td>인게임 화면_06</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>최초 실행 시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 설명서 패널 출력
+
+5. ⬅️ 버튼 클릭시 설명서3 패널 출력</td><td>UI</td><td class='al'>설명서3 패널 출력
+                                       
+                   ❌-----------------------------------------------------
+                     |          ---------------------------------------        |
+                     |          |                                             |        |
+                   ⬅️        |                    🔳                    |      ➡️  
+                     |          |                                             |        |
+                     |          ---------------------------------------        |
+                     |                                                                 | 
+                     |     선택을 한 번이라도 틀리면 처음 방으로  |
+                     |     돌아오게 됩니다.                                   |
+                     -------------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>07</td><td>인게임 화면_07</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>최초 실행 시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 설명서 패널 출력
+
+5. ⬅️ 버튼 클릭시 설명서2 패널 출력</td><td>UI</td><td class='al'>설명서2 패널 출력
+                                       
+                   ❌-----------------------------------------------------
+                     |          ---------------------------------------        |
+                     |          |                                             |        |
+                   ⬅️        |                    🔳                    |      ➡️  
+                     |          |                                             |        |
+                     |          ---------------------------------------        |
+                     |                                                                 | 
+                     |     만약 이상 현상을 발견했다면 오른쪽 문  |
+                     |     으로,이상 현상이 없다고 판단되면 왼     |
+                     |     쪽문으로 이동하십시오.                        |
+                     -------------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>08</td><td>인게임 화면_08</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>최초 실행 시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 설명서 패널 출력
+
+5. ⬅️ 버튼 클릭시 설명서1 패널 출력</td><td>UI</td><td class='al'>설명서1 패널 출력
+                         
+                   ❌-----------------------------------------------------
+                     |          ---------------------------------------        |
+                     |          |                                             |        |
+                     |          |                    🔳                    |      ➡️  
+                     |          |                                             |        |
+                     |          ---------------------------------------        |
+                     |                                                                 |
+                     |      처음 보여지는 방은 이상현상이 없는     |
+                     |      정상적인 방입니다.                              |
+                     -------------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>09</td><td>인게임 화면_09</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>최초 실행 시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 설명서 패널 출력
+
+5. ❌  버튼 클릭시 설명서 패널 비활성화</td><td>UI</td><td class='al'>설명서 패널 비활성화                                 
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |    ➡️
+               |                                      |     |                                      |
+               |            Living room       |     |              Kitchen            |
+               ---------------------------------      ---------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>10</td><td>인게임 화면_10</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td></td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력</td><td>UI</td><td class='al'>로비 화면 출력                                 
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |            Living room       |     |              Kitchen            |
+               ---------------------------------      ---------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>11</td><td>인게임 화면_11</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>일시정지 버튼 클릭</td><td>로비 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5. ⏸️ 버튼 클릭</td><td>UI</td><td class='al'>⏸️ 패널 활성화
+
+--------------
+| 계속하기 |
+--------------
+--------------
+|   설명서   |
+--------------
+--------------
+|     종료     |
+--------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>12</td><td>인게임 화면_12</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>일시정지 버튼 클릭</td><td>로비 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5. ⏸️ 버튼 클릭
+
+6. 계속하기 버튼 노출확인</td><td>UI</td><td class='al'>계속하기 버튼 노출확인
+
+--------------
+| 계속하기 |
+--------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>13</td><td>인게임 화면_13</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>일시정지 버튼 클릭</td><td>로비 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5. ⏸️ 버튼 클릭
+
+6. 설명서 버튼 노출확인</td><td>UI</td><td class='al'>설명서 버튼 노출확인
+
+
+--------------
+|   설명서   |
+--------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>14</td><td>인게임 화면_14</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>일시정지 버튼 클릭</td><td>로비 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5. ⏸️ 버튼 클릭
+
+6. 종료 버튼 노출 확인</td><td>UI</td><td class='al'>종료 버튼 노출 확인
+
+
+--------------
+|     종료     |
+--------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>15</td><td>인게임 화면_15</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>일시정지 버튼 클릭</td><td>로비 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5. ⏸️ 버튼 클릭 
+
+6. 계속하기 버튼 클릭</td><td>UI</td><td class='al'>로비 화면 출력                                
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |    ➡️
+               |                                      |     |                                      |
+               |            Living room       |     |              Kitchen            |
+               ---------------------------------      ---------------------------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>16</td><td>인게임 화면_16</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>일시정지 버튼 클릭</td><td>로비 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5. ⏸️ 버튼 클릭 
+
+6. 설명서 버튼 클릭</td><td>기능</td><td class='al'>설명서1 패널 출력
+                         
+                   ❌-----------------------------------------------------
+                     |          ---------------------------------------        |
+                     |          |                                             |        |
+                     |          |                    🔳                    |      ➡️  
+                     |          |                                             |        |
+                     |          ---------------------------------------        |
+                     |                                                                 |
+                     |      처음 보여지는 방은 이상현상이 없는     |
+                     |      정상적인 방입니다.                              |
+                     -------------------------------------------------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>17</td><td>인게임 화면_17</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>일시정지 버튼 클릭</td><td>로비 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5. ⏸️ 버튼 클릭 
+
+6. 종료 버튼 클릭</td><td>기능</td><td class='al'>종료 패널 활성화
+
+--------------------------------------------
+|      게임을 종료하시겠습니까?      |
+|                     [네]                         |
+|                                                   |
+|                  [아니오]                     |
+|                                                   |
+--------------------------------------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>18</td><td>인게임 화면_18</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>일시정지 버튼 클릭</td><td>로비 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5. ⏸️ 버튼 클릭 
+
+6. 종료 버튼 클릭
+
+7. 게임을 종료하시겠습니까? 문구 노출 확인</td><td>기능</td><td class='al'>게임을 종료하시겠습니까? 문구 노출
+
+--------------------------------------------
+|       게임을 종료하시겠습니까?     |
+|                                                   |
+|                                                   |
+|                                                   |
+|                                                   |
+|                                                   |
+--------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>19</td><td>인게임 화면_19</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>일시정지 버튼 클릭</td><td>로비 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5. ⏸️ 버튼 클릭 
+
+6. 종료 버튼 클릭
+
+7. [네] 버튼 노출 확인</td><td>기능</td><td class='al'>[네] 버튼 활성화
+
+--------------------------------------------
+|      게임을 종료하시겠습니까?      |
+|                       [네]                       |
+|                                                   |
+|                                                   |
+|                                                   |
+--------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>20</td><td>인게임 화면_20</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>일시정지 버튼 클릭</td><td>로비 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5. ⏸️ 버튼 클릭 
+
+6. 종료 버튼 클릭
+
+7. [아니오] 버튼 노출 확인</td><td>기능</td><td class='al'>[아니오] 버튼 활성화
+
+--------------------------------------------
+|      게임을 종료하시겠습니까?      |
+|                                                   |
+|                                                   |
+|                    [아니오]                   |
+|                                                   |
+--------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>21</td><td>인게임 화면_21</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>일시정지 버튼 클릭</td><td>로비 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5. ⏸️ 버튼 클릭 
+
+6. 종료 버튼 클릭
+
+7. [네]버튼 클릭</td><td>기능</td><td class='al'>게임이 종료되어 바탕화면으로 돌아간다.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>22</td><td>인게임 화면_22</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>일시정지 버튼 클릭</td><td>로비 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5. ⏸️ 버튼 클릭 
+
+6. 종료 버튼 클릭
+
+7. [아니오] 버튼 클릭</td><td>기능</td><td class='al'>로비 화면 출력                                 
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |            Living room       |     |              Kitchen            |
+               ---------------------------------      ---------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>23</td><td>인게임 화면_23</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. Living room 이미지(화면) 클릭시</td><td>UI</td><td class='al'>Living room 스테이지로 씬 전환 및 출력</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>24</td><td>인게임 화면_24</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. Kitchen 이미지(화면) 클릭시</td><td>UI</td><td class='al'>Kitchen 스테이지으로 씬  및 전환</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>25</td><td>인게임 화면_25</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️버튼 출력 확인</td><td>UI</td><td class='al'>➡️버튼 출력 확인                                 
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |            Living room       |     |              Kitchen            |
+               ---------------------------------      ---------------------------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>26</td><td>인게임 화면_26</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ⬅️ 버튼 출력 확인</td><td>UI</td><td class='al'>⬅️ 버튼 출력 확인                                 
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |            Living room       |     |              Kitchen            |
+               ---------------------------------      ---------------------------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>27</td><td>인게임 화면_27</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>로비 화면의 첫 페이지일 때</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ⬅️ 버튼 클릭 시</td><td>UI</td><td class='al'>화면 변화 없음                                 
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |            Living room       |     |              Kitchen            |
+               ---------------------------------      ---------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>28</td><td>인게임 화면_28</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 시</td><td>UI</td><td class='al'>오른쪽 화살표 버튼 클릭 시, 맵 슬롯의 내용이 왼쪽으로 
+                                  슬라이드하며, 다음에 올 새로운 맵 
+                               Bath room | Garage정보가 출력된다
+                                                                     
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                 🔒                |     |                 🔒                |   ➡️
+               |                                      |     |                                      |
+               |            BathRoom         |     |              Garage            |
+               ---------------------------------      ---------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>29</td><td>인게임 화면_29</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 시</td><td>UI</td><td class='al'>Kid room | Coming soon텍스트 및 하얀 이미지로 전환
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                 🔒                |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |             KidRoom          |     |         Coming soon..      |
+               ---------------------------------      ---------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>30</td><td>인게임 화면_30</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>로비 화면의 마지막 
+페이지 일 때</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 시</td><td>UI</td><td class='al'>변화 없음
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                 🔒                |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |             KidRoom          |     |         Coming soon..      |
+               ---------------------------------      ---------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>31</td><td>인게임 화면_31</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 4. 로비화면 출력
+
+5. ⬅️ 버튼 클릭시</td><td>UI</td><td class='al'>Bathroom | Garage 이미지로 전환
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                 🔒                |     |                 🔒                |   ➡️
+               |                                      |     |                                      |
+               |            BathRoom         |     |              Garage            |
+               ---------------------------------      ---------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>32</td><td>인게임 화면_32</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 4. 로비화면 출력
+
+5. ⬅️ 버튼 클릭시</td><td>UI</td><td class='al'>Living room | Kitchen 텍스트 및 이미지 전환
+                                                                             
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |            Living room       |     |              Kitchen            |
+               ---------------------------------      ---------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>33</td><td>인게임 화면_33</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 
+
+6. Bathroom 클릭시</td><td>UI</td><td class='al'>맵 잠금 해제 패널 출력
+                                                                  
+
+                           --------------------------------------------------
+                           |                                                          |
+                           |                  40 코인을 소모해              |
+                           |                 구매하시겠습니까?            |
+                           |                                                          |
+                           |                                                          |
+                           |                    [네]    [아니요]                |
+                           |                                                         |
+                           |                                                         |
+                           --------------------------------------------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>34</td><td>인게임 화면_34</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 
+
+6. Bathroom 클릭시
+
+7. [네]버튼 클릭</td><td>UI</td><td class='al'>BathRoom 잠금 해제  및 🔒이미지 비활성화
+                             BathRoom 인게임으로 입장 가능
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                 🔒                |   ➡️
+               |                                      |     |                                      |
+               |            BathRoom         |     |              Garage            |
+               ---------------------------------      ---------------------------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>35</td><td>인게임 화면_35</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 
+
+6. Bathroom 클릭시
+
+7. [아니요]버튼 클릭</td><td>UI</td><td class='al'>패널 비활성화
+                                   다시 원래 로비화면으로 돌아옴
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                 🔒                |     |                 🔒                |   ➡️
+               |                                      |     |                                      |
+               |            BathRoom         |     |              Garage            |
+               ---------------------------------      ---------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>36</td><td>인게임 화면_36</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 
+
+6. Bathroom 화면 클릭시
+
+7. [네]버튼 클릭
+
+8.코인이 부족할 때</td><td>UI</td><td class='al'>코인이 없을 시 [네]버튼을 눌러도 아무 변화x
+                                                                  
+
+                          --------------------------------------------------
+                          |                                                          |
+                          |                  40 코인을 소모해              |
+                          |                 구매하시겠습니까?            |
+                          |                                                          |
+                          |                                                          |
+                          |                    [네]    [아니요]                 |
+                          |                                                          |
+                          |                                                          |
+                          --------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>37</td><td>인게임 화면_37</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 
+
+6. Bathroom 클릭시
+
+7. [네]버튼 클릭</td><td>UI</td><td class='al'>맵 잠금해제로 40코인 차감 
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                 🔒                |   ➡️
+               |                                      |     |                                      |
+               |            BathRoom         |     |              Garage            |
+               ---------------------------------      ---------------------------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>38</td><td>인게임 화면_38</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 시 
+
+6. Garage 화면 클릭시</td><td>UI</td><td class='al'>Garage 스테이지 구매 패널 출력
+                                                                  
+
+
+                          --------------------------------------------------
+                          |                                                          |
+                          |                  40 코인을 소모해              |
+                          |                 구매하시겠습니까?            |
+                          |                                                          |
+                          |                                                          |
+                          |                    [네]    [아니요]                 |
+                          |                                                          |
+                          |                                                          |
+                          --------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>39</td><td>인게임 화면_39</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 시 
+
+6. Garage 화면 클릭시
+
+7. [네] 버튼 클릭</td><td>UI</td><td class='al'>Garage룸 잠금 해제  및 🔒이미지 삭제
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |            BathRoom         |     |              Garage            |
+               ---------------------------------      ---------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>40</td><td>인게임 화면_40</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 시 
+
+6. Garage 화면 클릭시
+
+7.[아니오]버튼 클릭</td><td>UI</td><td class='al'>스테이지 구매 패널 비활성화
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                 🔒                |   ➡️
+               |                                      |     |                                      |
+               |            BathRoom         |     |              Garage            |
+               ---------------------------------      ---------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>41</td><td>인게임 화면_41</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 시 
+
+6. Garage 화면 클릭시
+
+7. [네]버튼 클릭
+
+8. 코인이 부족할 때</td><td>UI</td><td class='al'>코인이 없을 시 [네]버튼을 눌러도 아무 변화x
+                                                                  
+
+                          --------------------------------------------------
+                          |                                                          |
+                          |                  40 코인을 소모해              |
+                          |                 구매하시겠습니까?            |
+                          |                                                          |
+                          |                                                          |
+                          |                    [네]    [아니요]                 |
+                          |                                                          |
+                          |                                                          |
+                          --------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>42</td><td>인게임 화면_42</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 시 
+
+6. KidRoom 화면 클릭시</td><td>UI</td><td class='al'>맵 잠금 해제 패널 출력
+                                                                  
+
+                          --------------------------------------------------
+                          |                                                          |
+                          |                  40 코인을 소모해              |
+                          |                 구매하시겠습니까?            |
+                          |                                                          |
+                          |                                                          |
+                          |                    [네]    [아니요]                 |
+                          |                                                          |
+                          |                                                          |
+                          --------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>43</td><td>인게임 화면_43</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 시 
+
+6. KidRoom 화면 클릭시
+
+7. [네] 버튼 클릭</td><td>UI</td><td class='al'>kidroom룸 잠금 해제  및 🔒이미지 삭제
+                                                   
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |             KidRoom          |     |         Coming soon..      |
+               ---------------------------------      ---------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>44</td><td>인게임 화면_44</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 시 
+
+6. KidRoom 화면 클릭시
+
+7. [네] 버튼 클릭
+
+8. 코인이 부족할 때</td><td>UI</td><td class='al'>코인이 없을 시 [네]버튼을 눌러도 아무 변화x
+                                                                  
+                          --------------------------------------------------
+                          |                                                          |
+                          |                  40 코인을 소모해              |
+                          |                 구매하시겠습니까?            |
+                          |                                                          |
+                          |                                                          |
+                          |                    [네]    [아니요]                 |
+                          |                                                          |
+                          |                                                          |
+                          --------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>45</td><td>인게임 화면_45</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 시 
+
+6. KidRoom 화면 클릭시
+
+7. [아니오] 버튼 클릭</td><td>UI</td><td class='al'>스테이지 구매 패널 비활성화
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                 🔒                |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |             KidRoom          |     |         Coming soon..      |
+               ---------------------------------      ---------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>46</td><td>인게임 화면_46</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. Bathroom 화면 클릭시</td><td>UI</td><td class='al'>Bathroom 인게임 스테이지로 씬 전환된다.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>47</td><td>인게임 화면_47</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 시 
+
+6. Garage화면 클릭시</td><td>UI</td><td class='al'>Garage 인게임 스테이지로 씬 전환된다.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>48</td><td>인게임 화면_48</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. ➡️ 버튼 클릭 시 
+
+6. KidRoom 화면 클릭시</td><td>UI</td><td class='al'>Kidroom 인게임 스테이지로 씬 전환된다.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>49</td><td>인게임 화면_49</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. Livingroom 화면 클릭
+
+6. 스테이지 씬 전환
+
+7. 스테이지 클리어 시</td><td>UI</td><td class='al'>Living Room   스테이지 클리어⭐ 마크 추가 
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |          Living Room        |     |              Kitchen            |
+               ---------------------------------      ---------------------------------
+                                 ⭐</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>50</td><td>인게임 화면_50</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. kitchen 화면 클릭
+
+6. 스테이지 씬 전환
+
+7. 스테이지 클리어 시</td><td>UI</td><td class='al'>Kitchen 스테이지 클리어⭐ 마크 추가 
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |          Living Room        |     |              Kitchen            |
+               ---------------------------------      ---------------------------------
+                                 ⭐                                         ⭐</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>51</td><td>인게임 화면_51</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. Bathroom 화면 클릭
+
+6. 스테이지 씬 전환
+
+7. 스테이지 클리어 시</td><td>UI</td><td class='al'>BathRoom 스테이지 클리어⭐ 마크 추가 
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |            BathRoom         |     |              Garage            |
+               ---------------------------------      ---------------------------------
+                                 ⭐</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>52</td><td>인게임 화면_52</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. Garage 화면 클릭
+
+6. 스테이지 씬 전환
+
+7. 스테이지 클리어 시</td><td>UI</td><td class='al'>Garage 스테이지 클리어⭐ 마크 추가 
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |            BathRoom         |     |              Garage            |
+               ---------------------------------      ---------------------------------
+                                 ⭐                                         ⭐</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>53</td><td>인게임 화면_53</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면</td><td>게임 실행시</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비화면 출력
+
+5. Garage 화면 클릭
+
+6. 스테이지 씬 전환
+
+7. 스테이지 클리어 시</td><td>UI</td><td class='al'>KidRoom 스테이지 클리어⭐ 마크 추가 
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |             KidRoom          |     |         Coming soon..      |
+               ---------------------------------      ---------------------------------
+                                  ⭐</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet4'><div class='meta'><p>Weird Space [상점 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th></th><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='5'>진입 방법</th><th rowspan='2'>사전 조건</th><th rowspan='2'>절차</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선 순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고란</th></tr><tr><th></th><th>진입1</th><th>진입2</th><th>진입3</th><th>진입4</th><th>진입5</th></tr></thead><tbody><tr><td></td><td>1</td><td>상점 화면_1</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>👤버튼 클릭</td><td></td><td>로비 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭</td><td>UI</td><td class='al'>상점 화면 출력
+
+                                                 ------------------------
+                   🛖                          | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️         🧍‍♂️      ➡️</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>2</td><td>상점 화면_2</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td></td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6. 🧍‍♂️캐릭터 노출 확인</td><td>UI</td><td class='al'>🧍‍♂️캐릭터 노출 확인
+
+                                                 ------------------------
+     🛖                                    | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️             🧍‍♂️      ➡️</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>3</td><td>상점 화면_3</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td>⬅️ 버튼 클릭</td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6. ⬅️ 버튼 클릭</td><td>UI</td><td class='al'>⬅️ 버튼 클릭시 다음 캐릭터 표시 확인
+
+                                                 ------------------------
+     🛖                                    | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️             🧍‍♀️      ➡️
+
+[🪙100]</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>4</td><td>상점 화면_4</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td>➡️ 버튼 클릭</td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6. ➡️ 버튼 클릭</td><td>UI</td><td class='al'>➡️ 버튼 클릭시 다음 캐릭터 표시 확인
+
+                                                 ------------------------
+     🛖                                    | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️             🧍      ➡️
+
+[🪙100]</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>5</td><td>상점 화면_5</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td>⬅️ 버튼 클릭</td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6. ⬅️ 버튼 클릭
+
+7. [🪙100] 클릭하여 캐릭터 구매</td><td>UI</td><td class='al'>[선택] 버튼을 통해 스킨 변경 가능
+
+                                                 ------------------------
+     🛖                                    | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️             🧍      ➡️
+
+[선택]</td><td></td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>6</td><td>상점 화면_6</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td></td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6. ⬅️ 버튼 활성화 확인</td><td>UI</td><td class='al'>상점 화면 출력  
+
+                                                 ------------------------
+     🛖                                    | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️             🧍‍♂️      ➡️</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>7</td><td>상점 화면_7</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td></td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6. ➡️ 버튼 활성화 확인</td><td>UI</td><td class='al'>상점 화면 출력  
+
+                                                 ------------------------
+     🛖                                    | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️             🧍‍♂️      ➡️</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>8</td><td>상점 화면_8</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td></td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6. [🪙100] 버튼 활성화 확인</td><td>UI</td><td class='al'>[선택] 버튼을 통해 스킨 변경 가능
+
+                                                 ------------------------
+     🛖                                    | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️                     🧍                  ➡️
+
+  [🪙100]</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>9</td><td>상점 화면_9</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td>6. [🪙100] 버튼 클릭</td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6. [🪙100] 버튼 클릭</td><td>UI</td><td class='al'>캐릭터 구매 패널 출력
+
+                                                 ------------------------
+     🛖                                    | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️                     🧍                  ➡️
+
+  [🪙100]</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>10</td><td>상점 화면_10</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td>[🪙100] 클릭</td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6. [🪙100] 클릭하여 스킨 구매
+
+7. [선택] 텍스트 활성화 확인</td><td>UI</td><td class='al'>[선택] 버튼을 통해 스킨 변경 가능
+
+                                                 ------------------------
+     🛖                                    | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️                     🧍                  ➡️
+
+    [선택]</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>11</td><td>상점 화면_11</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td></td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6. 🛖 버튼 활성화 확인</td><td>UI</td><td class='al'>🛖버튼 활성화 확인
+
+                                                 ------------------------
+     🛖                                    | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️                     🧍                  ➡️</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>12</td><td>상점 화면_12</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td></td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6.  ------------------------
+                          | 🪙 |          0   ➕|  활성화 확인
+      ------------------------</td><td>UI</td><td class='al'>------------------------
+                     | 🪙 |          0   ➕|  활성화 확인
+  ------------------------
+
+                                                 ------------------------
+     🛖                                    | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️                     🧍                  ➡️</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>13</td><td>상점 화면_13</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td>🛖 버튼 클릭</td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6.  🛖 버튼 클릭 했을 때</td><td>UI</td><td class='al'>로비 화면 출력                                 
+   ------------------------
+   | 🪙 |          0   ➕|                                                                        👤⏸️
+   ------------------------
+
+
+
+
+               ---------------------------------     ---------------------------------
+               |                                      |     |                                      |
+               |                                      |     |                                      |
+        ⬅️  |                                      |     |                                      |   ➡️
+               |                                      |     |                                      |
+               |            Living room       |     |              Kitchen            |
+               ---------------------------------      ---------------------------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>14</td><td>상점 화면_14</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td></td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6. [🪙100] 클릭하여 스킨 구매
+
+7. [선택] 클릭하여 스킨 변경</td><td>UI</td><td class='al'>스킨이 변경됨
+
+                                                 ------------------------
+     🛖                                    | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️                     🧍                  ➡️</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>15</td><td>상점 화면_15</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>화면 버튼 클릭</td><td>로비 화면 진입</td><td></td><td>상점 화면 진입</td><td>1. 게임 실행
+
+2. 메인 타이틀 화면 클릭
+
+3. 전면 광고 출력
+
+4. 로비 화면 출력
+
+5.👤버튼 클릭
+
+6. [🪙100] 클릭하여 스킨 구매
+
+7. [선택] 클릭하여 스킨 변경</td><td>UI</td><td class='al'>스킨이 변경됨
+
+                                                 ------------------------
+     🛖                                    | 🪙 |          0   ➕|
+                                                 ------------------------
+⬅️                     🧍                  ➡️</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td colspan='14'>전체 공란</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet5'><div class='meta'><p>캡스톤 디자인 ((2&gt;3) , 상식 뒤집기) : Dragonfang Knights 일일 업무 일지</p></div><div class='tbl-scroll'><table><thead><tr><th>날짜</th><th>이름</th><th>작업 시작 시간</th><th>작업 종료 시간</th><th>총 작업 시간</th><th>작업 내용</th><th>진행 상태 (완료/진행중/지연)</th></tr></thead><tbody><tr><td>2025-09-03</td><td>이경민</td><td>21:00</td><td>01:30</td><td>04:30</td><td>WeirdSpace TC작업</td><td class='st-pass'>완료</td></tr><tr><td>2025-09-04</td><td>이경민</td><td>21:00</td><td>00:30</td><td>03:30</td><td>WeirdSpace TC작업</td><td class='st-pass'>완료</td></tr><tr><td>2025-09-05</td><td>이경민</td><td>21:00</td><td>23:45</td><td>02:45</td><td>WeirdSpace TC작업</td><td class='st-pass'>완료</td></tr><tr><td>2025-09-10</td><td>이경민</td><td>21:00</td><td>1</td><td>03:00</td><td>WeirdSpace TC작업</td><td class='st-pass'>완료</td></tr><tr><td>2025-09-16</td><td>이경민</td><td>15:00</td><td>15:30</td><td>00:30</td><td>WeirdSpace TC작업</td><td class='st-pass'>완료</td></tr><tr><td>2025-09-17</td><td>이경민</td><td>21:00</td><td>1</td><td>03:00</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-09-18</td><td>이경민</td><td>14:30</td><td>18:00</td><td>03:30</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-09-18</td><td>이경민</td><td>20:30</td><td>02:40</td><td>06:10</td><td>WeirdSpace TC작업</td><td class='st-pass'>완료</td></tr><tr><td>2025-09-21</td><td>이경민</td><td>16:00</td><td>20:30</td><td>04:30</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-09-27</td><td>이경민</td><td>14:00</td><td>17:30</td><td>03:30</td><td>WeirdSpace TC작업</td><td class='st-pass'>완료</td></tr><tr><td>2025-09-29</td><td>이경민</td><td>17:00</td><td>18:10</td><td>01:10</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-09-29</td><td>이경민</td><td>17:00</td><td>18:10</td><td>01:10</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-10-01</td><td>이경민</td><td>21:00</td><td>0</td><td>-2146826259</td><td>WeirdSpace TC작업</td><td class='st-pass'>완료</td></tr><tr><td>2025-10-02</td><td>이경민</td><td>15:00</td><td>18:30</td><td>03:30</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-10-11</td><td>이경민</td><td>16:00</td><td>19:00</td><td>-2146826259</td><td>WeirdSpace TC작업</td><td class='st-pass'>완료</td></tr><tr><td>2025-10-11</td><td>이경민</td><td>16:00</td><td>19:00</td><td>-2146826259</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-10-13</td><td>이경민</td><td>15:00</td><td>19:00</td><td>-2146826259</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-10-14</td><td>이경민</td><td>15:00</td><td>19:00</td><td>-2146826259</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-10-16</td><td>이경민</td><td>15:00</td><td>18:00</td><td>-2146826259</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-10-17</td><td>이경민</td><td>15:00</td><td>20:00</td><td>-2146826259</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-10-18</td><td>이경민</td><td>14:00</td><td>20:30</td><td>-2146826259</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-10-19</td><td>이경민</td><td>14:00</td><td>20:30</td><td>-2146826259</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-10-20</td><td>이경민</td><td>14:00</td><td>17:30</td><td>-2146826259</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-10-22</td><td>이경민</td><td>16:00</td><td>18:10</td><td>-2146826259</td><td>WeirdSpace TC작업</td><td>진행중</td></tr><tr><td>2025-10-11</td><td>이경민</td><td>16:00</td><td>19:00</td><td>-2146826259</td><td>설명서 적용</td><td class='st-pass'>완료</td></tr></tbody></table></div></div>
+</div>
+<script>
+var tabs = document.querySelectorAll('.tab');
+var sheets = document.querySelectorAll('.sheet');
+function show(id) {
+  sheets.forEach(function(s){ s.classList.toggle('active', s.id === id); });
+  tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.sheet === id); });
+}
+tabs.forEach(function(t){ t.addEventListener('click', function(){ show(t.dataset.sheet); }); });
+if (sheets.length) { sheets[0].classList.add('active'); }
+if (tabs.length) { tabs[0].classList.add('active'); }
+</script>
+</body>
+</html>

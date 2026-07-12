@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Race_TC — TC</title>
+<style>
+:root { --bg:#0f172a; --card:#1e293b; --border:#2d3f55; --blue-lt:#60a5fa; --green-lt:#4ade80; --text:#f1f5f9; --text-2:#94a3b8; --text-3:#64748b; }
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif; font-size:14px; }
+.top { position:sticky; top:0; background:rgba(15,23,42,0.97); border-bottom:1px solid var(--border); padding:0.9rem 1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; z-index:10; }
+.top h1 { font-size:1rem; font-weight:700; margin-right:auto; }
+.top a { color:var(--blue-lt); text-decoration:none; font-size:0.82rem; font-weight:600; }
+.top a:hover { color:var(--green-lt); }
+.wrap { padding:1.25rem 1.5rem 3rem; }
+.tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+.tab { background:var(--card); color:var(--text-2); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.9rem; font-size:0.82rem; cursor:pointer; font-family:inherit; }
+.tab.active { color:var(--text); border-color:var(--green-lt); }
+.meta { background:var(--card); border:1px solid var(--border); border-left:3px solid var(--green-lt); border-radius:0 8px 8px 0; padding:0.8rem 1.1rem; margin-bottom:1rem; }
+.meta p { font-size:0.8rem; color:var(--text-2); line-height:1.7; }
+.meta p:first-child { color:var(--text); font-weight:700; }
+.doc { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.3rem 1.5rem; max-width:900px; }
+.doc p { font-size:0.85rem; color:var(--text-2); line-height:1.8; margin-bottom:0.55rem; }
+.doc p:first-child { color:var(--text); font-weight:700; font-size:0.95rem; }
+table.two-head thead th { position:static; }
+.sheet { display:none; }
+.sheet.active { display:block; }
+.tbl-scroll { overflow-x:auto; border:1px solid var(--border); border-radius:8px; }
+table { border-collapse:collapse; width:100%; min-width:700px; }
+th, td { border:1px solid var(--border); padding:0.45rem 0.7rem; text-align:center; vertical-align:middle; font-size:0.8rem; line-height:1.55; color:var(--text-2); white-space:pre-wrap; }
+thead th { background:#162032; color:var(--text); font-weight:600; position:sticky; top:0; }
+tbody tr:nth-child(even) { background:#131f33; }
+tbody tr:hover { background:#1a2a44; }
+td.al { text-align:left; }
+.st-pass { color:var(--green-lt); font-weight:700; }
+.st-fail { color:#f87171; font-weight:700; }
+.st-hold { color:#facc15; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>Race_TC</h1>
+  <a href="../TC모음.html">← TC 모음으로</a>
+  <a href="../index.html#tc">포트폴리오 홈</a>
+  <a href="Race_TC.xlsx" download>⬇ 원본 엑셀 다운로드</a>
+</div>
+<div class="wrap">
+<div class='tabs'><button class='tab' data-sheet='sheet0'>타이틀 화면</button><button class='tab' data-sheet='sheet1'>인게임 화면</button></div>
+<div class='sheet' id='sheet0'><div class='meta'><p>RACE [타이틀 &amp; 선택 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th></th><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='5'>진입 방법</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고</th></tr><tr><th></th><th>대분류</th><th>중분류</th><th>소분류</th><th>사전 조건</th><th>절차</th></tr></thead><tbody><tr><td></td><td>1</td><td>타이틀 화면_1</td><td>게임 실행</td><td></td><td></td><td>바탕 화면 상태</td><td>게임 아이콘을 클릭한다.</td><td>기능</td><td>게임이 실행 됨.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>2</td><td>타이틀 화면_2</td><td rowspan='3'>타이틀 화면</td><td rowspan='6'>UI</td><td rowspan='2'>출력</td><td>타이틀 화면 상태</td><td>RACE GAME 문구 출력 확인
+-중앙 중단</td><td>UI</td><td>RACE GAME 문구가 출력 됨.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>3</td><td>타이틀 화면_3</td><td>타이틀 화면 상태</td><td>START 버튼 출력 확인
+-중앙 하단</td><td>UI</td><td>START 버튼 출력 됨.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>4</td><td>타이틀 화면_4</td><td>버튼 클릭</td><td>타이틀 화면 상태</td><td>START 버튼 클릭한다.</td><td>UI</td><td>차량 선택 씬으로 전환 됨.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>5</td><td>선택 화면_1</td><td rowspan='10'>선택 화면</td><td rowspan='3'>출력</td><td>선택 화면 상태</td><td>차량 이미지 출력 확인</td><td>UI</td><td>차량 모델 출력 됨.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>6</td><td>선택 화면_2</td><td>선택 화면 상태</td><td>&lt; &gt; 버튼 출력 확인
+-중단 양쪽 사이드</td><td>UI</td><td>&lt; &gt; 버튼 출력 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>7</td><td>선택 화면_3</td><td>선택 화면 상태</td><td>SELECT 버튼 출력 확인
+- 중앙 하단</td><td>UI</td><td>SELECT 버튼 출력 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>8</td><td>선택 화면_4</td><td rowspan='7'>차량 선택</td><td>차량 변경</td><td>선택 화면 상태</td><td>왼쪽 화살표(&lt;) 버튼 클릭</td><td>UI</td><td>이전 차량 모델로 변경 출력 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>9</td><td>선택 화면_5</td><td>차량 변경</td><td>선택 화면 상태</td><td>오른쪽 화살표(&gt;) 버튼 클릭</td><td>UI</td><td>다음 차량 모델로 변경 출력 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>10</td><td>선택 화면_6</td><td>차량 변경</td><td>선택 화면 상태</td><td>차량이 순서에 맞게 출력 되는지 확인</td><td>UI</td><td>차량이 순서에 맞게 출력 됨</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>11</td><td>선택 화면_7</td><td>차량 변경</td><td>선택 화면 상태</td><td>1. 마지막 차량 모델로 세팅
+2. 오른쪽 화살표(&gt;) 버튼 클릭</td><td>기능</td><td>처음 차량 모델로 변경 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>12</td><td>선택 화면_8</td><td>차량 변경</td><td>선택 화면 상태</td><td>1. 첫 번째 차량 모델로 세팅
+2. 왼쪽 화살표(&lt;) 버튼 클릭</td><td>기능</td><td>마지막 순번 차량 모델로 변경 됨</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>13</td><td>선택 화면_9</td><td>차량 변경</td><td>선택 화면 상태</td><td>차량이 시계방향으로 회전하는지 확인</td><td>기능</td><td>차량이 시계방향으로 회전 함.</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>14</td><td>선택 화면_10</td><td>버튼 클릭</td><td>선택 화면 상태</td><td>SELECT 버튼 클릭</td><td>기능</td><td>선택한 모델이 플레이어로 지정 되고 인게임 씬으로 전환 됨.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>15</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>16</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>17</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>18</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td colspan='12'>전체 공란</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet1'><div class='meta'><p>RACE [인게임 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th></th><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='5'>진입 방법</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고</th></tr><tr><th></th><th>대분류</th><th>중분류</th><th>소분류</th><th>사전 조건</th><th>절차</th></tr></thead><tbody><tr><td></td><td>1</td><td>인게임 화면_1</td><td rowspan='20'>인게임 화면</td><td>UI</td><td>출력</td><td>레이스 시작 대기 상태</td><td>플레이어가 선택한 차량 주변을 관찰한다.</td><td>UI</td><td>플레이어가 선택한 차량 위에 초록색 캡슐 표시가 정상적으로 출력 됨</td><td>High</td><td></td><td></td></tr><tr><td></td><td>2</td><td>인게임 화면_2</td><td rowspan='4'>레이스 시작 로직</td><td rowspan='4'>타이머</td><td>레이스 시작 대기 상태</td><td>화면 중앙에 'RACE starts in : 3' 문구가 출력되는지 
+확인</td><td>UI</td><td>RACE starts in : 3 문구가 정상적으로 출력 됨</td><td>Medium</td><td></td><td></td></tr><tr><td></td><td>3</td><td>인게임 화면_3</td><td>타이머 : 3 문구 출력 직후</td><td>화면 중앙에 'RACE starts in : 2' 문구가 출력되는지 
+확인</td><td>UI</td><td>RACE starts in : 2 문구가 정상적으로 출력 됨</td><td>Medium</td><td></td><td></td></tr><tr><td></td><td>4</td><td>인게임 화면_4</td><td>타이머 : 2 문구 출력 직후</td><td>화면 중앙에 'RACE starts in : 1' 문구가 출력되는지 
+확인</td><td>UI</td><td>RACE starts in : 1 문구가 정상적으로 출력 됨</td><td>Medium</td><td></td><td></td></tr><tr><td></td><td>5</td><td>인게임 화면_5</td><td>타이머 카운트다운 완료 직후</td><td>카운트다운 문구의 출력 상태를 확인한다.</td><td>기능</td><td>타이머 문구가 카운트다운 완료 직후 화면에서 비활성화 됨</td><td>High</td><td></td><td></td></tr><tr><td></td><td>6</td><td>인게임 화면_6</td><td rowspan='6'>주행 시스템</td><td rowspan='3'>속도 로직</td><td>레이스 시작 시점</td><td>모든 차량의 초기 속도를 확인한다.</td><td>기능</td><td>모든 참여 차량이 랜덤한 속도를 가지고 출발하는 것을 확인</td><td>High</td><td></td><td></td></tr><tr><td></td><td>7</td><td>인게임 화면_7</td><td>레이스 시작 시점</td><td>모든 차량이 트랙을 따라 앞으로 이동하는지 관찰한다.</td><td>기능</td><td>모든 참여 차량이 트랙을 따라 정상적으로 이동 함</td><td>High</td><td></td><td></td></tr><tr><td></td><td>8</td><td>인게임 화면_8</td><td>레이스 진행 중</td><td>모든 차량이 랜덤하게 재분배 받는지 확인한다.</td><td>기능</td><td>모든 참여 차량의 속도가 랜덤하게 재분배 받음</td><td>High</td><td></td><td></td></tr><tr><td></td><td>9</td><td>인게임 화면_9</td><td rowspan='3'>카메라 추적</td><td>레이스 시작 대기 상태</td><td>모든 차량이 카메라 시점에 보이는지 확인한다.</td><td>기능</td><td>모든 차량이 카메라 시점에 노출 됨</td><td>High</td><td></td><td></td></tr><tr><td></td><td>10</td><td>인게임 화면_10</td><td>레이스 진행 중</td><td>카메라 시야 내에 선두 차량이 항상 포착되는지 관찰한다.</td><td>UI</td><td>카메라 시야 내에 선두에 있는 차량이 항상 확보되어 출력 됨</td><td>High</td><td></td><td></td></tr><tr><td></td><td>11</td><td>인게임 화면_11</td><td>레이스 진행 중</td><td>뒤처진 차량이 카메라 시야에서 벗어나는지 관찰한다</td><td>UI</td><td>속도 차이로 인해 뒤처진 차량은 카메라 시야에서 벗어날 수 있음을 확인</td><td>High</td><td></td><td></td></tr><tr><td></td><td>12</td><td>인게임 화면_12</td><td rowspan='8'>레이스 종료</td><td rowspan='4'>순위 판정</td><td>모든 차량이 골인한 직후</td><td>화면에 출력되는 순위 결과를 확인한다.</td><td>기능</td><td>골인 순서대로 차량 정보를 정확하게 받아와 순위가 올바르게 판정 됨.</td><td>High</td><td></td><td></td></tr><tr><td></td><td>13</td><td>인게임 화면_13</td><td>순위 판정 완료 후</td><td>화면에 출력되는 1st : [차량명] 문구를 확인한다.</td><td>UI</td><td>1st : [차량명] 순위 결과 문구가 출력 됨.</td><td>Medium</td><td></td><td></td></tr><tr><td></td><td>14</td><td>인게임 화면_14</td><td>순위 판정 완료 후</td><td>화면에 출력되는 2st : [차량명] 문구를 확인한다.</td><td>UI</td><td>2st : [차량명] 순위 결과 문구가 출력 됨.</td><td>Medium</td><td></td><td></td></tr><tr><td></td><td>15</td><td>인게임 화면_15</td><td>순위 판정 완료 후</td><td>화면에 출력되는 3st : [차량명] 문구를 확인한다.</td><td>UI</td><td>3st : [차량명] 순위 결과 문구가 출력 됨.</td><td>Medium</td><td></td><td></td></tr><tr><td></td><td>16</td><td>인게임 화면_16</td><td rowspan='2'>버튼 출력</td><td>순위 판정 완료 후</td><td>화면에 MAIN 버튼 출력 확인</td><td>UI</td><td>MAIN 버튼이 출력 됨</td><td>High</td><td></td><td></td></tr><tr><td></td><td>17</td><td>인게임 화면_17</td><td>순위 판정 완료 후</td><td>화면에 RESTART 버튼 출력 확인</td><td>UI</td><td>RESTART 버튼 출력 확인</td><td>High</td><td></td><td></td></tr><tr><td></td><td>18</td><td>인게임 화면_18</td><td rowspan='2'>버튼 기능</td><td>순위 판정 완료 후</td><td>MAIN 버튼 클릭</td><td>기능</td><td>MAIN으로 씬이 전환 됨</td><td>High</td><td></td><td></td></tr><tr><td></td><td>19</td><td>인게임 화면_19</td><td>순위 판정 완료 후</td><td>RESTART 버튼 클릭</td><td>기능</td><td>레이스가 재시작 됨</td><td>High</td><td></td><td></td></tr><tr><td></td><td>20</td><td>인게임 화면_20</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td colspan='12'>전체 공란</td></tr></tbody></table></div></div>
+</div>
+<script>
+var tabs = document.querySelectorAll('.tab');
+var sheets = document.querySelectorAll('.sheet');
+function show(id) {
+  sheets.forEach(function(s){ s.classList.toggle('active', s.id === id); });
+  tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.sheet === id); });
+}
+tabs.forEach(function(t){ t.addEventListener('click', function(){ show(t.dataset.sheet); }); });
+if (sheets.length) { sheets[0].classList.add('active'); }
+if (tabs.length) { tabs[0].classList.add('active'); }
+</script>
+</body>
+</html>

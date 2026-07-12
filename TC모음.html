@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이경민 · TC 모음</title>
+  <style>
+    :root {
+      --bg:        #0f172a;
+      --bg-alt:    #111827;
+      --card:      #1e293b;
+      --border:    #2d3f55;
+      --blue:      #3b82f6;
+      --blue-lt:   #60a5fa;
+      --green:     #16a34a;
+      --green-lt:  #4ade80;
+      --text:      #f1f5f9;
+      --text-2:    #94a3b8;
+      --text-3:    #64748b;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ── NAV ─────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(15, 23, 42, 0.96);
+      border-bottom: 1px solid var(--border);
+      z-index: 999;
+      backdrop-filter: blur(6px);
+    }
+    nav ul {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      gap: 1.75rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.9rem 2rem;
+    }
+    nav .logo { margin-right: auto; font-weight: 700; font-size: 0.95rem; }
+    nav a { color: var(--text-2); text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
+    nav a:hover { color: var(--green-lt); }
+
+    /* ── HEADER ──────────────────────────────────────── */
+    header {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 8rem 2rem 3rem;
+    }
+    .eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--green-lt);
+      margin-bottom: 0.8rem;
+    }
+    header h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 0.8rem;
+    }
+    header p {
+      color: var(--text-2);
+      font-size: 0.95rem;
+      max-width: 640px;
+    }
+
+    /* ── GRID ────────────────────────────────────────── */
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem 2rem 5rem;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-title:first-child { margin-top: 0; }
+    .section-title .tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--green-lt);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    .tc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* ── TC CARD ─────────────────────────────────────── */
+    .tc-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.4rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s;
+    }
+    .tc-card:hover { border-color: var(--green-lt); }
+    .tc-sub {
+      font-size: 0.7rem;
+      color: var(--green-lt);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+    .tc-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.45; }
+    .tc-card p  { color: var(--text-2); font-size: 0.84rem; line-height: 1.65; margin-bottom: 1.1rem; flex: 1; }
+    .tc-links { display: flex; gap: 1.1rem; flex-wrap: wrap; }
+    .tc-links a { font-size: 0.84rem; font-weight: 600; color: var(--blue-lt); text-decoration: none; }
+    .tc-links a:hover { color: var(--green-lt); }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    footer {
+      background: #080d18;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 2.5rem 2rem;
+      color: var(--text-3);
+      font-size: 0.8rem;
+    }
+    footer a { color: var(--green-lt); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      header { padding: 6.5rem 1.25rem 2rem; }
+      .wrap  { padding: 0.5rem 1.25rem 3.5rem; }
+      nav ul { gap: 1rem; padding: 0.8rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <ul>
+    <li class="logo"><a href="TC모음.html" style="color:var(--text); font-weight:700;">TC 모음</a></li>
+    <li><a href="index.html">포트폴리오 홈</a></li>
+    <li><a href="games.html">게임 갤러리</a></li>
+  </ul>
+</nav>
+
+<!-- HEADER -->
+<header>
+  <p class="eyebrow">Test Cases</p>
+  <h1>직접 설계한 테스트 케이스 모음</h1>
+  <p>
+    직접 개발한 게임부터 라이브 서비스 게임 분석까지, Excel로 설계한 TC 문서 10건입니다.
+    "TC 보기"를 클릭하면 브라우저에서 바로 내용을 볼 수 있고, 원본 엑셀 파일도 다운로드할 수 있습니다.
+  </p>
+</header>
+
+<!-- TC GRID -->
+<div class="wrap">
+
+  <h2 class="section-title"><span class="tag">My Games</span>직접 개발한 게임 TC</h2>
+  <div class="tc-grid">
+
+    <div class="tc-card">
+      <p class="tc-sub">출시 게임 · 시트 6개</p>
+      <h3>Weird Space TC</h3>
+      <p>타이틀·인게임·로비·상점 화면별 TC와 일일 업무일지까지 포함한 출시 게임 TC 세트</p>
+      <div class="tc-links">
+        <a href="TC/Weird Space.html">TC 보기 →</a>
+        <a href="TC/Weird Space.xlsx" download>⬇ 원본</a>
+      </div>
+    </div>
+
+    <div class="tc-card">
+      <p class="tc-sub">캡스톤 프로젝트 · 시트 9개</p>
+      <h3>Return of the Dark Lord TC</h3>
+      <p>타이틀·로딩·튜토리얼·멀티·세이브 슬롯 등 화면 단위로 나눠 설계한 TC</p>
+      <div class="tc-links">
+        <a href="TC/캡스톤디자인 Return of the Dark Lord_TC (이경민).html">TC 보기 →</a>
+        <a href="TC/캡스톤디자인 Return of the Dark Lord_TC (이경민).xlsx" download>⬇ 원본</a>
+      </div>
+    </div>
+
+    <div class="tc-card">
+      <p class="tc-sub">이벤트 명세 · 시트 33개</p>
+      <h3>Return of the Dark Lord 이벤트 기획</h3>
+      <p>몬스터·모험가·왕국 건물 등 이벤트 단위로 정리한 명세 시트 33종 — TC 설계의 기반 문서</p>
+      <div class="tc-links">
+        <a href="TC/Return of the Dark Lord_이벤트_Zip.html">문서 보기 →</a>
+        <a href="TC/Return of the Dark Lord_이벤트_Zip.xlsx" download>⬇ 원본</a>
+      </div>
+    </div>
+
+    <div class="tc-card">
+      <p class="tc-sub">바이브 코딩 게임 · 시트 2개</p>
+      <h3>슬라임 게임 TC</h3>
+      <p>공통 UI TC와 게임 기능 TC를 분리해 설계 — 직접 만든 게임을 직접 검증</p>
+      <div class="tc-links">
+        <a href="TC/슬라임게임_TC.html">TC 보기 →</a>
+        <a href="TC/슬라임게임_TC.xlsx" download>⬇ 원본</a>
+      </div>
+    </div>
+
+    <div class="tc-card">
+      <p class="tc-sub">바이브 코딩 게임 · 시트 2개</p>
+      <h3>아이작 모티브 프로토타입 TC</h3>
+      <p>개요 시트와 147행 규모의 기능 TC로 구성한 로그라이크 프로토타입 검증 문서</p>
+      <div class="tc-links">
+        <a href="TC/아이작모티브프로토타입_TC.html">TC 보기 →</a>
+        <a href="TC/아이작모티브프로토타입_TC.xlsx" download>⬇ 원본</a>
+      </div>
+    </div>
+
+    <div class="tc-card">
+      <p class="tc-sub">바이브 코딩 게임 · 시트 1개</p>
+      <h3>Lucky Friends TC</h3>
+      <p>P2P 카지노 협동전 프로토타입의 기능 TC — 120행 규모</p>
+      <div class="tc-links">
+        <a href="TC/LuckyFriends_TC_작성자_이경민.html">TC 보기 →</a>
+        <a href="TC/LuckyFriends_TC_작성자_이경민.xlsx" download>⬇ 원본</a>
+      </div>
+    </div>
+
+    <div class="tc-card">
+      <p class="tc-sub">화면 TC · 시트 2개</p>
+      <h3>Apartment TC</h3>
+      <p>타이틀 화면과 인게임 화면을 분리해 설계한 화면 단위 TC</p>
+      <div class="tc-links">
+        <a href="TC/Apartment.html">TC 보기 →</a>
+        <a href="TC/Apartment.xlsx" download>⬇ 원본</a>
+      </div>
+    </div>
+
+    <div class="tc-card">
+      <p class="tc-sub">화면 TC · 시트 2개</p>
+      <h3>Race TC</h3>
+      <p>타이틀 화면과 인게임 화면을 분리해 설계한 화면 단위 TC</p>
+      <div class="tc-links">
+        <a href="TC/Race_TC.html">TC 보기 →</a>
+        <a href="TC/Race_TC.xlsx" download>⬇ 원본</a>
+      </div>
+    </div>
+
+  </div>
+
+  <h2 class="section-title"><span class="tag">Live Games</span>라이브 게임 분석 TC</h2>
+  <div class="tc-grid">
+
+    <div class="tc-card">
+      <p class="tc-sub">라이브 게임 분석 · 시트 3개</p>
+      <h3>운빨존많겜 TC</h3>
+      <p>게임 선정 이유 정리와 함께 필수 항목·지정 항목 TC를 설계한 라이브 게임 분석 과제</p>
+      <div class="tc-links">
+        <a href="TC/운빨존많겜TC작성자_이경민.html">TC 보기 →</a>
+        <a href="TC/운빨존많겜TC작성자_이경민.xlsx" download>⬇ 원본</a>
+      </div>
+    </div>
+
+    <div class="tc-card">
+      <p class="tc-sub">라이브 게임 분석 · 시트 2개</p>
+      <h3>Meccha Cameleon TC</h3>
+      <p>로그인·구매·설치 흐름 TC와 인게임 이벤트 TC로 구성한 라이브 게임 분석 과제</p>
+      <div class="tc-links">
+        <a href="TC/Meccha CameleonTC작성자_이경민.html">TC 보기 →</a>
+        <a href="TC/Meccha CameleonTC작성자_이경민.xlsx" download>⬇ 원본</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>이경민 · <a href="index.html">Game QA Portfolio</a> · leegm0430@gmail.com</p>
+</footer>
+
+</body>
+</html>

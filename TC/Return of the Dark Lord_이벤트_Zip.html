@@ -1,0 +1,786 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Return of the Dark Lord_이벤트_Zip — TC</title>
+<style>
+:root { --bg:#0f172a; --card:#1e293b; --border:#2d3f55; --blue-lt:#60a5fa; --green-lt:#4ade80; --text:#f1f5f9; --text-2:#94a3b8; --text-3:#64748b; }
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif; font-size:14px; }
+.top { position:sticky; top:0; background:rgba(15,23,42,0.97); border-bottom:1px solid var(--border); padding:0.9rem 1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; z-index:10; }
+.top h1 { font-size:1rem; font-weight:700; margin-right:auto; }
+.top a { color:var(--blue-lt); text-decoration:none; font-size:0.82rem; font-weight:600; }
+.top a:hover { color:var(--green-lt); }
+.wrap { padding:1.25rem 1.5rem 3rem; }
+.tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+.tab { background:var(--card); color:var(--text-2); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.9rem; font-size:0.82rem; cursor:pointer; font-family:inherit; }
+.tab.active { color:var(--text); border-color:var(--green-lt); }
+.meta { background:var(--card); border:1px solid var(--border); border-left:3px solid var(--green-lt); border-radius:0 8px 8px 0; padding:0.8rem 1.1rem; margin-bottom:1rem; }
+.meta p { font-size:0.8rem; color:var(--text-2); line-height:1.7; }
+.meta p:first-child { color:var(--text); font-weight:700; }
+.doc { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.3rem 1.5rem; max-width:900px; }
+.doc p { font-size:0.85rem; color:var(--text-2); line-height:1.8; margin-bottom:0.55rem; }
+.doc p:first-child { color:var(--text); font-weight:700; font-size:0.95rem; }
+table.two-head thead th { position:static; }
+.sheet { display:none; }
+.sheet.active { display:block; }
+.tbl-scroll { overflow-x:auto; border:1px solid var(--border); border-radius:8px; }
+table { border-collapse:collapse; width:100%; min-width:700px; }
+th, td { border:1px solid var(--border); padding:0.45rem 0.7rem; text-align:center; vertical-align:middle; font-size:0.8rem; line-height:1.55; color:var(--text-2); white-space:pre-wrap; }
+thead th { background:#162032; color:var(--text); font-weight:600; position:sticky; top:0; }
+tbody tr:nth-child(even) { background:#131f33; }
+tbody tr:hover { background:#1a2a44; }
+td.al { text-align:left; }
+.st-pass { color:var(--green-lt); font-weight:700; }
+.st-fail { color:#f87171; font-weight:700; }
+.st-hold { color:#facc15; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>Return of the Dark Lord_이벤트_Zip</h1>
+  <a href="../TC모음.html">← TC 모음으로</a>
+  <a href="../index.html#tc">포트폴리오 홈</a>
+  <a href="Return of the Dark Lord_이벤트_Zip.xlsx" download>⬇ 원본 엑셀 다운로드</a>
+</div>
+<div class="wrap">
+<div class='tabs'><button class='tab' data-sheet='sheet0'>총 이벤트 요약</button><button class='tab' data-sheet='sheet1'>플레이어 이벤트 기획</button><button class='tab' data-sheet='sheet2'>무직  스켈레톤 이벤트 기획</button><button class='tab' data-sheet='sheet3'>마법사 이벤트 기획</button><button class='tab' data-sheet='sheet4'>궁수 이벤트 기획</button><button class='tab' data-sheet='sheet5'>전사 이벤트 기획</button><button class='tab' data-sheet='sheet6'>고스트(설명) 이벤트 기획</button><button class='tab' data-sheet='sheet7'>시체 생성 고스트 이벤트 기획</button><button class='tab' data-sheet='sheet8'>전사모험가 이벤트 기획</button><button class='tab' data-sheet='sheet9'>창 모험가 이벤트 기획</button><button class='tab' data-sheet='sheet10'>궁수 모험가 이벤트 기획</button><button class='tab' data-sheet='sheet11'>법사 모험가 이벤트 기획</button><button class='tab' data-sheet='sheet12'>대장 모험가 이벤트 기획</button><button class='tab' data-sheet='sheet13'>영웅 모험가 이벤트 기획</button><button class='tab' data-sheet='sheet14'>전사 제단 이벤트 기획</button><button class='tab' data-sheet='sheet15'>마법사 제단 이벤트 기획</button><button class='tab' data-sheet='sheet16'>궁수 제단 이벤트 기획</button><button class='tab' data-sheet='sheet17'>왕국 이벤트 기획</button><button class='tab' data-sheet='sheet18'>왕국 나무 방벽 이벤트 기획</button><button class='tab' data-sheet='sheet19'>왕국 돌 방벽 이벤트 기획</button><button class='tab' data-sheet='sheet20'>영혼병 이벤트 기획</button><button class='tab' data-sheet='sheet21'>묘지 이벤트 기획</button><button class='tab' data-sheet='sheet22'>영혼 상자 이벤트 기획</button><button class='tab' data-sheet='sheet23'>나도닭의덩굴 이벤트 기획</button><button class='tab' data-sheet='sheet24'>모험가 길드 이벤트 기획</button><button class='tab' data-sheet='sheet25'>영혼 이벤트 기획</button><button class='tab' data-sheet='sheet26'>시계 이벤트 기획</button><button class='tab' data-sheet='sheet27'>닭 이벤트 기획</button><button class='tab' data-sheet='sheet28'>곰 이벤트 기획</button><button class='tab' data-sheet='sheet29'>두번째 섬 기획</button><button class='tab' data-sheet='sheet30'>뒷 배경 애니메이션 기획</button><button class='tab' data-sheet='sheet31'>필요 사운드 목록</button></div>
+<div class='sheet' id='sheet0'><div class='meta'><p>ww</p><p>이벤트 총 요약</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>아군</th><th>플레이어</th><th>무직(스켈레톤)</th><th>전사</th><th>마법사</th><th>궁수</th><th>고스트 (설명 NPC)</th><th colspan='2'>시체생성 고스트(시체 생성 NPC)</th><th></th><th></th><th></th></tr></thead><tbody><tr><td></td><td>적</td><td>전사모험가</td><td>창 모험가</td><td>궁수 모험가</td><td>법사 모험가</td><td>대장 모험가</td><td>영웅 모험가</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>건물</td><td>전사 제단</td><td>마법사 제단</td><td>궁수 제단</td><td>왕국</td><td>왕국 나무 방벽</td><td>왕국 돌 방벽</td><td>묘지</td><td>영혼상자</td><td colspan='2'>나도닭의덩굴 (닭 생성식물)</td><td>모험가 길드</td></tr><tr><td></td><td>UI요소</td><td>영혼</td><td>영혼병</td><td>시계</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>동식물</td><td>닭</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet1'><div class='meta'><p>플레이어</p><p>역할 : 사용자가 직접 키보드로 조작하는 스켈레톤 캐릭터입니다.</p><p>에셋 SKELETON SWORD - RED</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>P-01</td><td>왼쪽 이동</td><td>1. 평지 위에 서 있는 상태</td><td>← 키 입력</td><td>걷기 발소리</td><td>Walk_1 ~ 6</td><td class='al'>← 키를 누르고있는동안 왼쪽으로 이동하며, 
+걷는 동안 걷기 애니메이션과 걷는 발소리 재생
+
+(현재 Z플립 상태)</td><td></td></tr><tr><td></td><td>P-02</td><td>오른쪽 이동</td><td>1. 평지 위에 서 있는 상태</td><td>→키 입력</td><td>걷기 발소리</td><td>Walk_1 ~ 6</td><td class='al'>→ 키를 누르고있는동안 왼쪽으로 이동하며, 
+걷는 동안 걷기 애니메이션과 걷는 발소리 재생</td><td></td></tr><tr><td></td><td>P-03</td><td>왼쪽 달리기</td><td>1. 평지 위에 서 있는 상태 
+2. 왼쪽으로 걷고 있는 상태
+3. 스태미나가 0보다 큰 상태</td><td>← 키 입력 상태에서 Z키 입력</td><td>달리기 발소리</td><td>Run_1 ~ 6</td><td class='al'>←키와 Z키를 누르고있는동안 왼쪽으로 달리며 이동, 
+달리는 동안 달리기 애니메이션과 달리기 발소리 재생</td><td>달리기 스태미나는 연속으로 사용시 최대 5초
+Z를 누른 시간만큼 스태미나 소모
+회복은 자동이며, 실제 시간과 동일 하게 자동 회복(ex 1초동안 스태미나 1초 회복
+스태미나를 전부소모하여 0이된 경우 1초 동안 회복 되기전에 달리기 불가능
+스태미나는 시각적으로는 보이지않음</td></tr><tr><td></td><td>P-04</td><td>오른쪽 달리기</td><td>1. 평지 위에 서 있는 상태 
+2. 오른쪽으로 걷고 있는 상태
+3. 스태미나가 0보다 큰 상태</td><td>→ 키 입력 상태에서 Z키 입력</td><td>달리기 발소리</td><td>Run_1 ~ 6</td><td class='al'>→키와 Z키를 누르고있는동안 오른쪽으로 달리며 이동, 
+달리는 동안 달리기 애니메이션과 달리기 발소리 재생</td><td>달리기 스태미나는 연속으로 사용시 최대 5초
+Z를 누른 시간만큼 스태미나 소모
+회복은 자동이며, 실제 시간과 동일 하게 자동 회복(ex 1초동안 스태미나 1초 회복
+스태미나를 전부소모하여 0이된 경우 1초 동안 회복 되기전에 달리기 불가능
+스태미나는 시각적으로는 보이지않음</td></tr><tr><td></td><td>P-05</td><td>왼쪽 찌르기 공격</td><td>1. 평지 위에 서 있는 상태 
+2. 왼쪽을 바라보고 있는 상태</td><td>← 키를 입력하여 왼쪽을 바라본상태로 
+X키 입력</td><td>찌르기 소리</td><td>Attack1_1 ~ 6</td><td class='al'>X키를 입력하여 왼쪽을 공격, 
+찌르기 소리와 ATTACK 1 애니메이션 재생
+
+(현재 Z플립 상태)</td><td>찌르기에 맞은 모험가는 약간의 넉백과 데미지를 받음</td></tr><tr><td></td><td>P-06</td><td>오른쪽 찌르기 공격</td><td>1. 평지 위에 서 있는 상태 
+2. 오른쪽을 바라보고 있는 상태</td><td>→ 키를 입력하여 으른쪽을 바라본상태로 
+X키 입력</td><td>찌르기 소리</td><td>Attack1_1 ~ 6</td><td class='al'>X키를 입력하여 오른쪽을 공격, 
+찌르기 소리와 ATTACK 1 애니메이션 재생</td><td>찌르기에 맞은 모험가는 약간의 넉백과 데미지를 받음</td></tr><tr><td></td><td>P-07</td><td>대기</td><td>1. 평지 위에 서 있는 상태 
+2. 아무 키 입력도 없는 상태</td><td>아무 키도 입력하지 않음</td><td>X</td><td>Ready_1 ~ 3</td><td class='al'>아무 키입력 없이 가만히 서있는 상태에서 
+READY 애니메이션이 재생됨</td><td></td></tr><tr><td></td><td>P-08</td><td>영혼 소모</td><td>1. 평지 위에 서 있는 상태
+2. 영혼을 소모하는 오브젝트와 겹쳐있는 상태</td><td>영혼 소모 오브젝트와 겹쳐있는 상태로
+↓ 키를 입력하여 영혼 소모</td><td>영혼 소모 소리</td><td>X</td><td class='al'>영혼을 필요로하는 오브젝트를 활성화 시킴</td><td></td></tr><tr><td></td><td>P-09</td><td>피격</td><td>1. 평지 위에 서 있는 상태
+2. 플레이어가 영혼을 1개이상 보유하고있는 상태
+3. 모험가에게 공격을 받은 상태</td><td>보유 영혼이 1개 이상인 상태에서 
+모험가에게 공격을 받음</td><td>뼈 우드둑 소리1</td><td>Hit_1 ~ 3</td><td class='al'>모험가에게 공격을 받았을 때 플레이어의 몸 속에서 영혼이 1개 
+빠져나오고, 뼈 맞는 소리와 HIT 애니메이션 재생</td><td>https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13253711&amp;menuNo=200020
+뼈소리 라이선스 CCBY
+피격으로 빠져나온 영혼은 하늘로 올라가 소멸함</td></tr><tr><td></td><td>P-10</td><td>사망</td><td>1. 플레이어가 영혼을 보유하지 않은 상태
+2. 모험가에게 공격을 받은 상태</td><td>보유 영혼이 없는 상태에서 
+모험가에게 공격을 받음</td><td>뼈 우드둑 소리4</td><td>Dead_near_1 ~ 6</td><td class='al'>모험가에게 공격을 받았을 때 플레이어가 사망하여 
+게임 오버 상태가 됨</td><td>https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13253714&amp;menuNo=200020
+뼈소리 라이선스 CCBY</td></tr><tr><td></td><td>P-11</td><td>부활</td><td>1. 플레이어가 게임 오버 상태</td><td>플레이어가 게임 오버상태</td><td>뼈 우드둑 소리4</td><td>Reborn_1 ~ 3</td><td class='al'>게임 오버 상태가 된 후 잠시 로딩화면이 뜬 후 
+왕국의 중앙에서 플레이어 부활</td><td>https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13253714&amp;menuNo=200020
+뼈소리 라이선스 CCBY</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet2'><div class='meta'><p>무직 스켈레톤</p><p>역할 : 사용자가 영혼을 시체에 넣어 부활시킨 기본 스켈레톤으로 아무 능력이 없지만 제단을 통해 직업을 받을 수 있습니다.</p><p>에셋 SKELETON SWORD - ORIGIN</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>SK-01</td><td>부활</td><td>1. 시체 상태</td><td>플레이어가 다가와 ↓키를 입력하여 
+부활 시킴</td><td>뼈 우드둑 소리4</td><td>reborn_1 ~ 3</td><td class='al'>DEAD FAR상태에서 플레이어의 키 입력을 통해 
+REBORN 애니메이션과 뼈 우드둑 소리가 재생되며 부활</td><td>https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13253714&amp;menuNo=200020
+뼈소리4 라이선스 CCBY</td></tr><tr><td></td><td>SK-02</td><td>이동</td><td>1. 부활 상태
+2. 평지 위에 서 있는 상태</td><td>부활한 상태에서 왕국 쪽으로 자동 이동</td><td>걷는 발 소리</td><td>Walk_1 ~ 6</td><td class='al'>왕국의 중앙 쪽으로 자동으로 걸어 이동함</td><td></td></tr><tr><td></td><td>SK-03</td><td>달리기</td><td>1. 부활 상태
+2. 평지 위에 서 있는 상태
+3. 제단에 직업 부여 도구가 있는 상태</td><td>플레이어가 제단에서 
+직업 부여 도구를 제작</td><td>달리기 발소리</td><td>Run_1 ~ 9</td><td class='al'>무직 스켈레톤의 위치 기준 가장 가까운 곳에 있는 제단의 
+직업 부여 도구 쪽으로 달려감</td><td></td></tr><tr><td></td><td>SK-04</td><td>대기</td><td>1. 부활 상태
+2. 평지 위에 서 있는 상태
+3. 왕국 안쪽으로 들어온 상태
+4. 제단에 직업 부여 도구가 없는 상태</td><td>왕국 안쪽에 들어왔지만 제단에 직업 
+부여 도구가 없는 상태</td><td>X</td><td>Ready_1 ~ 3</td><td class='al'>왕국의 중앙에서 이동이 멈추고, READY 애니메이션이 재생됨</td><td></td></tr><tr><td></td><td>SK-05</td><td>피격</td><td>1. 부활 상태
+2. 평지 위에 서 있는 상태
+3. 모험가에게 공격을 당한 상태</td><td>왕국으로 이동 중이거나 왕국 중앙에 
+있는 도중 모험가에게 공격을 받음</td><td>뼈 우드둑 소리1</td><td>Hit_1 ~ 3</td><td class='al'>모험가에게 공격을 받았을 때 뼈 우드둑 소리1과
+ HIT 애니메이션 재생됨</td><td>https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=13253711&amp;menuNo=200020
+뼈소리1 라이선스 CCBY</td></tr><tr><td></td><td>SK-06</td><td>사망</td><td>1. 모험가에게 공격을 당한 상태</td><td>모험가에게 공격을 받음</td><td>뼈 우드둑 소리4</td><td>Dead_Near_1 ~ 6</td><td class='al'>모험가에게 공격을 받아 뼈 우드둑 소리4와 
+DEAD NEAR 애니메이션이 재생됨</td><td>무직 스켈레톤의 체력은 1로 한대만 맞아도 사망</td></tr><tr><td></td><td>SK-07</td><td>시체</td><td>1. 사망 상태</td><td>DEAD NEAR 애니메이션이 재생되며,
+사망 상태가 됨</td><td>X</td><td>Corpse_2 이미지</td><td class='al'>DEAD NEAR 애니메이션이 재생된 후 
+CORPSE_2 이미지로 변경</td><td>사망한 자리에 시체상태로 남으며, 플레이어가 영혼을 1개 소모하여 다시 무직 스켈레톤으로
+부활 시킬 수 있음</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet3'><div class='meta'><p>마법사 스켈레톤</p><p>에셋 SKELETON MAGE - ORIGIN</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>MA-01</td><td>마법사 직업 부여</td><td>1. 무직 스켈레톤 상태
+2. 평지 위에 서 있는 상태
+3. 마법사 제단에 마법사 직업 부여 도구가 생산된 상태</td><td>무직 스켈레톤 상태에서 플레이어가 마법사 
+제단에서 마법사 직업부여 도구 생산</td><td>마법 소리</td><td>Ready_1 ~ 3</td><td class='al'>무직 스켈레톤이 0.1초 동안 하얗게 변했다가 
+마법사 스켈레톤으로 변경 후 마법 소리와 READY 애니메이션
+ 재생되고, 랜덤하게 이동하기 시작함</td><td></td></tr><tr><td></td><td>MA-02</td><td>랜덤 이동</td><td>1. 마법사 스켈레톤 상태
+2. 평지 위에 서 있는 상태
+3. 플레이어가 건축에 영혼을 소모하지 않은 상태</td><td>플레이어가 건축에 영혼을 소모하지 
+않은 상태</td><td>걷는 발소리</td><td>Walk_1 ~ 6</td><td class='al'>마법사 스켈레톤이 좌, 우를 랜덤하게 자동으로
+이동하며, 걷는 발소리와 WALK 애니메이션 재생.</td><td>5초에 1번씩 대기 상태에 들어감</td></tr><tr><td></td><td>MA-03</td><td>달리기</td><td>1. 마법사 스켈레톤 상태
+2. 평지 위에 서 있는 상태
+3. 플레이어가 건축에 영혼을 소모한 상태</td><td>플레이어가 건축에 영혼을 소모한 상태</td><td>달리는 발소리</td><td>Run_1 ~ 6</td><td class='al'>마법사 스켈레톤이 플레이어가 건축에 영혼을 소모한 곳으로
+달려가며, 달리는 발소리와 RUN 애니메이션 재생.
+자신의 위치에서 가장 가까운 건축 위치로 이동</td><td></td></tr><tr><td></td><td>MA-04</td><td>건축</td><td>1. 마법사 스켈레톤 상태
+2. 평지 위에 서 있는 상태
+3. 플레이어가 건축에 영혼을 소모한 상태
+4. 건축물과 겹쳐있는 상태</td><td>마법사 스켈레톤이 플레이어가 건축에
+영혼을 소모한 건축물과 겹쳐있는 상태</td><td>마법 소리</td><td>Attack1_1 ~ 4</td><td class='al'>마법사 스켈레톤이 플레이어가 건축에 영혼을 소모한 건축물과
+겹쳐있는 상태에서 마법 소리와 ATTACK1 애니메이션이 재생
+되며, 건축을 시작함</td><td>건축에 소요되는 시간은 건축물에 기재
+한 건축물에 한명의 마법사 스켈레톤이 붙어있을 수 있음</td></tr><tr><td></td><td>MA-05</td><td>대기</td><td>1. 전사 스켈레톤으로 직업을 부여 받은 상태
+2. 좌, 우 둘 중 한 곳에 도착한 상태
+3. 근처에 닭이 없는 상태</td><td>밤에 전사 스켈레톤 상태에서 근처에 닭이
+없고, 이동하지 않는 상태</td><td>X</td><td>Ready_1 ~ 3</td><td class='al'>마법사 스켈레톤이 건축 일이 없고, 이동하지 않는 상태에 
+READY 애니메이션이 1초 재생되며 멈춰있다가 다시 
+랜덤 이동 시작</td><td></td></tr><tr><td></td><td>MA-06</td><td>피격</td><td>1. 마법사 스켈레톤으로 직업을 부여 받은 상태
+2. 모험가에게 공격을 받은 상태
+3. 보유 영혼이 1개 이상인 상태</td><td>보유 영혼이 1개 이상인 상태에서 
+모험가에게 공격을 받아 피격받은 상태</td><td>뼈 우드둑 소리1</td><td>Hit_1 ~ 3</td><td class='al'>마법사 스켈레톤이 모험가에게 공격을 받아 보유 영혼을 1개 잃고,
+0.2초 동안 뼈 우드둑 소리1과 HIT 애니메이션이 재생됨</td><td>마법사 스켈레톤의 보유 영혼은 최대 5개
+공격을 1번 맞으면 1개를 잃는다. (킹덤과 다르게 아예 소멸)</td></tr><tr><td></td><td>MA-07</td><td>실직</td><td>1. 마법사 스켈레톤으로 직업을 부여 받은 상태
+2. 모험가에게 공격을 받은 상태
+3. 보유 영혼이 없는 상태</td><td>보유 영혼이 없는 상태에서 모험가에게
+공격을 받은 상태</td><td>뼈 우드둑 소리1</td><td>무직 스켈레톤 Hit_1~3</td><td class='al'>마법사 스켈레톤이 모험가에게 공격을 받아 무직 스켈레톤으로 변함</td><td></td></tr><tr><td></td><td>MA-08</td><td>영혼 헌납</td><td>1. 마법사 스켈레톤으로 직업을 부여 받은 상태
+2. 보유 영혼이 1개 이상인 상태
+3. 플레이어와 겹쳐 있는 상태</td><td>보유 영혼이 1개 이상인 상태에서
+플레이어와 겹쳐있는 상태</td><td>영혼 소리</td><td>Ready_1 ~ 3</td><td class='al'>마법사 스켈레톤이 보유한 영혼을 플레이어에게 모두 헌납함</td><td>마법사 스켈레톤의 보유 영혼은 최대 5개</td></tr><tr><td></td><td>MA-09</td><td>돌 방벽 수리</td><td>1. 마법사 스켈레톤으로 직업을 부여 받은 상태
+2. 밤인 상태
+3. 왕국의 방벽 체력이 1이상, 30이하인 상태</td><td>밤 시간에 왕국의 돌 방벽이 체력이 1이상
+, 30이하인 상태</td><td>마법 소리</td><td>attack1_1~4</td><td class='al'>마법사 스켈레톤이 돌 방벽을 수리</td><td>돌 방벽의 체력은 5초에 3씩 회복</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet4'><div class='meta'><p>궁수 스켈레톤</p><p>에셋 SKELETON ARCHER - ORIGIN</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>AR-01</td><td>궁수 직업 부여</td><td>1. 무직 스켈레톤 상태
+2. 평지 위에 서 있는 상태
+3. 궁수 제단에 궁수 직업 부여 도구가 생산된 상태</td><td>무직 스켈레톤 상태에서 플레이어가 궁수 
+제단에서 궁수 직업부여 도구 생산</td><td>활 소리</td><td>Ready_1 ~ 3</td><td class='al'>무직 스켈레톤이 0.1초 동안 하얗게 변했다가 
+궁수 스켈레톤으로 변경 후 활 소리와 READY 애니메이션 재생
+좌,우 병력을 비교하여 궁수 스켈레톤이 적은 쪽으로 이동하여
+좌, 우 둘중 한쪽에만 위치함.
+동일 할 경우 랜덤으로 위치.</td><td></td></tr><tr><td></td><td>AR-02</td><td>밤 이동</td><td>1. 궁수 스켈레톤으로 직업을 부여 받은 상태
+2. 밤인 상태</td><td>궁수 스켈레톤 상태에서 밤 시간인 상태</td><td>걷는 발소리</td><td>Walk_1 ~ 6</td><td class='al'>궁수 스켈레톤이 자신이 위치한 곳(좌, 우)에서 랜덤하게 자동으로
+이동하며, 걷는 발소리와 WALK 애니메이션 재생.</td><td>5초에 1번씩 대기상태에 들어감</td></tr><tr><td></td><td>AR-03</td><td>달리기</td><td>1. 궁수 스켈레톤으로 직업을 부여 받은 상태
+2. 낮인 상태</td><td>궁수 스켈레톤 상태에서 밤에서 낮으로 
+가는 시간인 상태</td><td>달리는 발소리</td><td>Run_1 ~ 6</td><td class='al'>궁수 스켈레톤이 자신의 위치(좌, 우)에 있는 맨끝 방벽으로 달려
+가며, 달리는 발소리와 RUN 애니메이션이 재생됨</td><td>궁수는 전사의 뒤에 위치함</td></tr><tr><td></td><td>AR-04</td><td>낚시</td><td>1. 궁수 스켈레톤으로 직업을 부여 받은 상태
+2. 밤인 상태
+3. 물 웅덩이 근처에 있는 상태</td><td>밤에 궁수 스켈레톤이 물 웅덩이
+근처에 있는 상태</td><td>활 소리</td><td>Attack3_1 ~  6</td><td class='al'>궁수 스켈레톤이 물 웅덩이에 화살을 발사하여 활 소리와 ATTACK3
+ 애니메이션이 재생되고, 물 웅덩이에 화살이 날라가는 효과가 나온 후
+ 영혼 1개가 땅 위로 올라옴</td><td>낚시의 쿨타임은 30초</td></tr><tr><td></td><td>AR-05</td><td>공격</td><td>1. 궁수 스켈레톤으로 직업을 부여 받은 상태
+2. 낮인 상태
+3. 근처에 모험가가 있는 상태</td><td>낮에 맨끝 방벽 앞에서 대기 중인 상태에
+모험가가 앞에 나타난 상태</td><td>활 소리</td><td>Attack1_1 ~ 6</td><td class='al'>궁수 스켈레톤이 앞에 있는 모험가를 공격해 활 소리와 ATTACK1
+애니메이션이 재생되고, 화살이 나가며 모험가에게 맞을 경우 
+1의 데미지를 줌</td><td></td></tr><tr><td></td><td>AR-06</td><td>대기</td><td>1. 궁수 스켈레톤으로 직업을 부여 받은 상태
+2. 좌, 우 둘 중 한 곳에 도착한 상태</td><td>궁수 스켈레톤이 이동하지 않는 상태</td><td>X</td><td>Ready_1~3</td><td class='al'>궁수 스켈레톤이 이동하지 않는 상태에 READY 애니메이션이 1초 
+재생되며 멈춰있다가 다시 이동 시작</td><td></td></tr><tr><td></td><td>AR-07</td><td>피격</td><td>1. 궁수 스켈레톤으로 직업을 부여 받은 상태
+2. 모험가에게 공격을 받은 상태
+3. 보유 영혼이 1개 이상인 상태</td><td>보유 영혼이 1개 이상인 상태에서 
+모험가에게 공격을 받아 피격받은 상태</td><td>뼈 우드둑 소리1</td><td>Hit_1 ~ 3</td><td class='al'>궁수 스켈레톤이 모험가에게 공격을 받아 보유 영혼을 1개 잃고,
+0.2초 동안 뼈 우드둑 소리1과 HIT 애니메이션이 재생됨</td><td>궁수 스켈레톤의 보유 영혼은 최대 5개
+공격을 1번 맞으면 1개를 잃는다. (킹덤과 다르게 아예 소멸)</td></tr><tr><td></td><td>AR-08</td><td>실직</td><td>1. 궁수 스켈레톤으로 직업을 부여 받은 상태
+2. 모험가에게 공격을 받은 상태
+3. 보유 영혼이 없는 상태</td><td>보유 영혼이 없는 상태에서 모험가에게
+공격을 받은 상태</td><td>뼈 우드둑 소리1</td><td>무직 스켈레톤 Hit_1~3</td><td class='al'>궁수 스켈레톤이 모험가에게 공격을 받아 무직 스켈레톤으로 변함</td><td></td></tr><tr><td></td><td>AR-09</td><td>영혼 헌납</td><td>1. 궁수 스켈레톤으로 직업을 부여 받은 상태
+2. 보유 영혼이 1개 이상인 상태
+3. 플레이어와 겹쳐 있는 상태</td><td>보유 영혼이 1개 이상인 상태에서
+플레이어와 겹쳐있는 상태</td><td>영혼 소리</td><td>Ready_1 ~ 3</td><td class='al'>궁수 스켈레톤이 보유한 영혼을 플레이어에게 모두 헌납함</td><td>궁수 스켈레톤의 보유 영혼은 최대 5개</td></tr><tr><td></td><td>AR-10</td><td>친위대 상태</td><td>1. 궁수 스켈레톤으로 직업을 부여 받은 상태
+2. 플레이어와 겹쳐 있는 상태</td><td>플레이어가 영혼 1개를 소모</td><td>영혼 소리</td><td>X</td><td class='al'>플레이어를 쫓아 다니게 되며, 근처에 모험가 길드가 있을시 모험가 
+길드를 공격</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet5'><div class='meta'><p>전사 스켈레톤</p><p>역할 : 무직 스켈레톤에게 전사 직업젠단을 통해 전사로 전직한 스켈레톤 부하입니다.
+낮에는 모험가의 공격으로부터 방어를, 밤에는 닭을 사냥하여 영혼을 획득합니다.</p><p>에셋 SKELETON SHIELD - ORIGIN</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>WA-01</td><td>전사 직업 부여</td><td>1. 무직 스켈레톤 상태
+2. 평지 위에 서 있는 상태
+3. 전사 제단에 전사 직업 부여 도구가 생산된 상태</td><td>무직 스켈레톤 상태에서 플레이어가 전사 
+제단에서 전사 직업부여 도구 생산</td><td>칼 소리</td><td>Ready_1 ~ 3</td><td class='al'>무직 스켈레톤이 0.1초 동안 하얗게 변했다가 
+전사 스켈레톤으로 변경 후 칼 소리와 READY 애니메이션 재생
+좌,우 병력을 비교하여 전사 스켈레톤이 적은 쪽으로 이동하여
+좌, 우 둘중 한쪽에만 위치함.
+동일 할 경우 랜덤으로 위치.</td><td></td></tr><tr><td></td><td>WA-02</td><td>밤 이동</td><td>1. 전사 스켈레톤으로 직업을 부여 받은 상태
+2. 밤인 상태</td><td>전사 스켈레톤 상태에서 밤 시간인 상태</td><td>걷는 발소리</td><td>Walk_1 ~ 6</td><td class='al'>전사 스켈레톤이 자신이 위치한 곳(좌, 우)에서 랜덤하게 자동으로
+이동하며, 걷는 발소리와 WALK 애니메이션 재생.
+닭이 근처에 있을 경우 닭 쪽으로 이동</td><td>5초에 1번씩 대기상태에 들어감</td></tr><tr><td></td><td>WA-03</td><td>달리기</td><td>1. 전사 스켈레톤으로 직업을 부여 받은 상태
+2. 낮인 상태</td><td>전사 스켈레톤 상태에서 밤에서 낮으로 
+가는 시간인 상태</td><td>달리는 발소리</td><td>Run_1 ~ 6</td><td class='al'>전사 스켈레톤이 자신의 위치(좌, 우)에 있는 맨끝 방벽으로 달려감</td><td></td></tr><tr><td></td><td>WA-04</td><td>사냥</td><td>1. 전사 스켈레톤으로 직업을 부여 받은 상태
+2. 밤인 상태
+3. 닭과 겹쳐 있는 상태</td><td>밤에 전사 스켈레톤 상태에서 닭과
+겹쳐 있는 상태</td><td>칼 소리</td><td>Attack2_1 ~ 6</td><td class='al'>전사 스켈레톤이 밤에 근처에있는 닭을 사냥하여 영혼을 1개 획득</td><td></td></tr><tr><td></td><td>WA-05</td><td>대기</td><td>1. 전사 스켈레톤으로 직업을 부여 받은 상태
+2. 좌, 우 둘 중 한 곳에 도착한 상태
+3. 근처에 닭이 없는 상태</td><td>밤에 전사 스켈레톤 상태에서 근처에 닭이
+없고, 이동하지 않는 상태</td><td>X</td><td>Ready_1 ~ 3</td><td class='al'>전사 스켈레톤이 밤에 근처에 닭이 없고, 이동하지 않는 상태에 
+READY 애니메이션이 1초 재생되며 멈춰있다가 다시 
+랜덤 이동 시작</td><td></td></tr><tr><td></td><td>WA-06</td><td>공격</td><td>1. 전사 스켈레톤으로 직업을 부여 받은 상태
+2. 낮인 상태
+3. 근처에 모험가가 있는 상태</td><td>낮에 맨끝 방벽 앞에서 대기 중인 상태에
+모험가가 앞에 나타난 상태</td><td>칼 소리</td><td>Attack2_1 ~ 6</td><td class='al'>전사 스켈레톤이 앞에 있는 모험가를 공격해 칼 소리와 ATTACK1
+애니메이션이 재생되고, 모험가에게 1의 데미지를 줌</td><td></td></tr><tr><td></td><td>WA-07</td><td>피격</td><td>1. 전사 스켈레톤으로 직업을 부여 받은 상태
+2. 모험가에게 공격을 받은 상태
+3. 보유 영혼이 1개 이상인 상태</td><td>보유 영혼이 1개 이상인 상태에서 
+모험가에게 공격을 받아 피격받은 상태</td><td>뼈 우드둑 소리1</td><td>Hit_1 ~ 3</td><td class='al'>전사 스켈레톤이 모험가에게 공격을 받아 보유 영혼을 1개 잃고,
+0.2초 동안 뼈 우드둑 소리1과 HIT 애니메이션이 재생됨</td><td>전사 스켈레톤의 보유 영혼은 최대 5개
+공격을 1번 맞으면 1개를 잃는다. (킹덤과 다르게 아예 소멸)</td></tr><tr><td></td><td>WA-08</td><td>실직</td><td>1. 전사 스켈레톤으로 직업을 부여 받은 상태
+2. 모험가에게 공격을 받은 상태
+3. 보유 영혼이 없는 상태</td><td>보유 영혼이 없는 상태에서 모험가에게
+공격을 받은 상태</td><td>뼈 우드둑 소리1</td><td>무직 스켈레톤 Hit_1 ~ 3</td><td class='al'>전사 스켈레톤이 모험가에게 공격을 받아 무직 스켈레톤으로 변함</td><td></td></tr><tr><td></td><td>WA-09</td><td>영혼 헌납</td><td>1. 전사 스켈레톤으로 직업을 부여 받은 상태
+2. 보유 영혼이 1개 이상인 상태
+3. 플레이어와 겹쳐 있는 상태</td><td>보유 영혼이 1개 이상인 상태에서
+플레이어와 겹쳐있는 상태</td><td>영혼 소리</td><td>Ready_1 ~ 3</td><td class='al'>전사 스켈레톤이 보유한 영혼을 플레이어에게 모두 헌납함</td><td>전사 스켈레톤의 보유 영혼은 최대 5개</td></tr><tr><td></td><td>WA-10</td><td>친위대 상태</td><td>1. 전사 스켈레톤으로 직업을 부여 받은 상태
+2. 플레이어와 겹쳐 있는 상태</td><td>플레이어가 영혼 1개를 소모</td><td>영혼 소리</td><td>X</td><td class='al'>플레이어를 쫓아 다니게 되며, 근처에 모험가 길드가 있을시 
+모험가 길드를 공격할 수 있게됨</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet6'><div class='meta'><p>고스트 NPC</p><p>에셋 GHOST- ORIGIN</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>GH-01</td><td>새로운 내용 설명</td><td>1. 게임에 새로운 설명할 내용이 나온 상태</td><td>게임에 새로운 설명할 내용이 생길 
+경우 자동 설명</td><td>X</td><td>Ready_1 ~ 3</td><td class='al'>게임에서 새로운 설명할 내용이 나온 상태에서 자동으로 설명 UI가
+ 뜨고, 플레이어에게 설명</td><td>튜툐리얼이 끝난 후 고스트의 위치는 왕국의 오른쪽에 고정
+왕국의 레벨이 올라도 위치 고정.
+모험가의 공격을 받지 않음.</td></tr><tr><td></td><td>GH-02</td><td>다시 설명</td><td>1. 이미 들은 설명이 있는 상태
+2. 플레이어와 겹친상태에서 플레이어가 ↓ 키 입력</td><td>플레이어의 ↓ 키 입력을 통해 듣고싶은
+설명을 선택</td><td>X</td><td>Ready_1 ~ 3</td><td class='al'>설명 UI가 뜨고, 듣고싶은 설명을 플레이어가 ↓ 키로 선택하여 선택한
+내용을 설명</td><td>튜툐리얼이 끝난 후 고스트의 위치는 왕국의 오른쪽에 고정
+왕국의 레벨이 올라도 위치 고정.
+모험가의 공격을 받지 않음.</td></tr><tr><td></td><td>GH-03</td><td>대기</td><td>1. 새로운 내용이 없는 상태
+2. 플레이어가 키입력을 하지 않은 상태</td><td>게임에 새로운 내용도 없고, 플레이어가
+다시 설명을 듣지 않는 상태</td><td>X</td><td>Ready_1 ~ 3</td><td class='al'>게임에 새로운 내용도 없고, 플레이어가 다시 설명을 듣지 않는 상태에
+대기 상태로 READY 애니메이션 재생</td><td>튜툐리얼이 끝난 후 고스트의 위치는 왕국의 오른쪽에 고정
+왕국의 레벨이 올라도 위치 고정.
+모험가의 공격을 받지 않음.</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet7'><div class='meta'><p>시체 생성 고스트 NPC</p><p>에셋 GHOST- BLUE</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>GB-01</td><td>이동</td><td>1. 왕국 1레벨 이상 건설 상태</td><td>왕국 1레벨 건설 상태에 자동 생성</td><td>X</td><td>Flying_1 ~ 3</td><td class='al'>왕국 2레벨 건설 후 왕국 중앙에서만 5초에 1번씩
+x값 +5 또는 -5  랜덤 이동</td><td>시체 생성 고스트는 모험가에게 공격당하지 않음.</td></tr><tr><td></td><td>GB-02</td><td>대기</td><td>1. 왕국 1레벨 이상 건설 상태</td><td>플레이어가 시체 생성 고스트에게 
+영혼 5개 소모</td><td>뼈 우두둑 소리1</td><td>Ready_1 ~ 3</td><td class='al'>5초동안 이동을 마친 곳에서 대기</td><td>왕국 2레벨 - 시체 4일에 1개 생성 가능
+왕국 3레벨 - 시체 3일에 1개 생성 가능
+왕국 4레벨 - 시체 2일에 1개 생성 가능
+왕국 5레벨 - 시체 1일에 1개 생성 가능</td></tr><tr><td></td><td>GB-02</td><td>시체 생성</td><td>1. 왕국 1레벨 이상 건설 상태
+2. 플레이어와 겹친 상태</td><td>플레이어가 시체 생성 고스트에게 
+영혼 5개 소모</td><td>뼈 우두둑 소리1</td><td>Attack1_1 ~ 5</td><td class='al'>Attack 애니메이션이 2회 재생된 후 
+시체 생성 고스트 바로 왼쪽에 시체 생성</td><td>왕국 2레벨 - 시체 4일에 1개 생성 가능
+왕국 3레벨 - 시체 3일에 1개 생성 가능
+왕국 4레벨 - 시체 2일에 1개 생성 가능
+왕국 5레벨 - 시체 1일에 1개 생성 가능</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet8'><div class='meta'><p>전사 모험가</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>IDLE1애니메이션</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>IDLE2애니메이션</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>2</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후 
+3. 플레이어 혹은 플레이어의 부하가 모험가의 성
+근처에 없을 때</td><td>플레이어의 성으로 이동</td><td>발소리</td><td>WALK애니메이션</td><td class='al'>모험가가 생성됐을 때 근처에 플레이어가 없다면 플레이어의
+성으로 향해 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK1애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK2애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK3애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK4애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK5애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK6애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>검 휘두르기</td><td>검 공격 사운드</td><td>Attack 1 애니메이션</td><td class='al'>전사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>검 휘두르기</td><td>검 공격 사운드</td><td>Attack 2 애니메이션</td><td class='al'>전사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>검 휘두르기</td><td>검 공격 사운드</td><td>Attack 3 애니메이션</td><td class='al'>전사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>검 휘두르기</td><td>검 공격 사운드</td><td>Attack 4 애니메이션</td><td class='al'>전사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>검 휘두르기</td><td>검 공격 사운드</td><td>Attack 5 애니메이션</td><td class='al'>전사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>검 휘두르기</td><td>검 공격 사운드</td><td>Attack 6 애니메이션</td><td class='al'>전사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit1 애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td>체력 == 피격 횟수 -&gt; 체력 10 이라면 플레이어 및 플레이어 부하에게 
+10번 피격 당 할 시 사망</td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit2 애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td>체력 == 피격 횟수 -&gt; 체력 10 이라면 플레이어 및 플레이어 부하에게 
+10번 피격 당 할 시 사망</td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit3 애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td>체력 == 피격 횟수 -&gt; 체력 10 이라면 플레이어 및 플레이어 부하에게 
+10번 피격 당 할 시 사망</td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD1 애니메이션</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 사망사운드 재생,  50% 확률로 영혼 1개드랍</td><td>사망 시 사망 애니메이션 재생 후 1초 뒤 시체 삭제</td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD2 애니메이션</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 사망사운드 재생,  50% 확률로 영혼 1개드랍</td><td>사망 시 사망 애니메이션 재생 후 1초 뒤 시체 삭제</td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD3 애니메이션</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 사망사운드 재생,  50% 확률로 영혼 1개드랍</td><td>사망 시 사망 애니메이션 재생 후 1초 뒤 시체 삭제</td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD4애니메이션</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 사망사운드 재생,  50% 확률로 영혼 1개드랍</td><td>사망 시 사망 애니메이션 재생 후 1초 뒤 시체 삭제</td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>달리기 애니메이션</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기1 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기2 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기3 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기4 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기5 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기6애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet9'><div class='meta'><p>창 모험가</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>IDLE1애니메이션</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>IDLE2애니메이션</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>2</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후 
+3. 플레이어 혹은 플레이어의 부하가 모험가의 성
+근처에 없을 때</td><td>플레이어의 성으로 이동</td><td>발소리</td><td>WALK애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK1애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK2애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK3애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK4애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK5애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK6애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>창 찌르기</td><td>창 공격 사운드</td><td>Attack 1 애니메이션</td><td class='al'>창 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>창 찌르기</td><td>창 공격 사운드</td><td>Attack 2 애니메이션</td><td class='al'>창 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>창 찌르기</td><td>창 공격 사운드</td><td>Attack 3 애니메이션</td><td class='al'>창 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>창 찌르기</td><td>창 공격 사운드</td><td>Attack 4 애니메이션</td><td class='al'>창 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>창 찌르기</td><td>창 공격 사운드</td><td>Attack 5 애니메이션</td><td class='al'>창 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>창 찌르기</td><td>창 공격 사운드</td><td>Attack 6 애니메이션</td><td class='al'>창 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit1 애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit2 애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit3 애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD1 애니메이션</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생, 50% 확률로 영혼 1개 드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD2 애니메이션</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생, 50% 확률로 영혼 1개 드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD3 애니메이션</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생, 50% 확률로 영혼 1개 드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD4 애니메이션</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생, 50% 확률로 영혼 1개 드랍</td><td></td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>달리기 애니메이션</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기1 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기2 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기3 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기4 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기5 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기6 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet10'><div class='meta'><p>궁수 모험가</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>IDLE1-1애니메이션</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>IDLE1-2애니메이션</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>IDLE2-1애니메이션</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>IDLE2-1애니메이션</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>2</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후 
+3. 플레이어 혹은 플레이어의 부하가 모험가의 성
+근처에 없을 때</td><td>플레이어의 성으로 이동</td><td>발소리</td><td>WALK애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK1애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK2애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK3애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK4애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK5애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK6애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>화살 쏘기</td><td>활 공격 사운드</td><td>Attack 1 애니메이션</td><td class='al'>궁수 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>화살 쏘기</td><td>활 공격 사운드</td><td>Attack 2 애니메이션</td><td class='al'>궁수 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>화살 쏘기</td><td>활 공격 사운드</td><td>Attack 3 애니메이션</td><td class='al'>궁수 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>화살 쏘기</td><td>활 공격 사운드</td><td>Attack 4 애니메이션</td><td class='al'>궁수 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>화살 쏘기</td><td>활 공격 사운드</td><td>Attack 5 애니메이션</td><td class='al'>궁수 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>화살 쏘기</td><td>활 공격 사운드</td><td>Attack 6 애니메이션</td><td class='al'>궁수 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit1 애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit 2애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit3 애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD1 애니메이션</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생, 50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD2 애니메이션</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생, 50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD3 애니메이션</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생, 50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD4 애니메이션</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생, 50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>달리기1 애니메이션</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>달리기2 애니메이션</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>달리기3애니메이션</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>달리기4 애니메이션</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>달리기5 애니메이션</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>달리기6 애니메이션</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet11'><div class='meta'><p>마법사 모험가</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>IDLE1애니메이션</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>IDLE2애니메이션</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>2</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후 
+3. 플레이어 혹은 플레이어의 부하가 모험가의 성
+근처에 없을 때</td><td>플레이어의 성으로 이동</td><td>발소리</td><td>WALK애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK1애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK2애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK3애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK4애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK5애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK6애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>마법 공격</td><td>마법 공격 사운드</td><td>Attack 1 애니메이션</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>마법 공격</td><td>마법 공격 사운드</td><td>Attack 2 애니메이션</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>마법 공격</td><td>마법 공격 사운드</td><td>Attack 3 애니메이션</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit1 애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit2 애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit3 애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD 1</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생,50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD 2</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생,50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD 3</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생,50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD 4</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생,50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>달리기 애니메이션</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기1 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기2 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기3 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기4 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기5 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기6 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet12'><div class='meta'><p>대장 모험가</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>IDLE1애니메이션</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>IDLE2애니메이션</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>2</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후 
+3. 플레이어 혹은 플레이어의 부하가 모험가의 성
+근처에 없을 때</td><td>플레이어의 성으로 이동</td><td>발소리</td><td>WALK애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK1애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK2애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK3애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK4애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK5애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>WALK6애니메이션</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>검 공격</td><td>검 공격 사운드</td><td>Attack 1 애니메이션</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>검 공격</td><td>검 공격 사운드</td><td>Attack 2 애니메이션</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>검 공격</td><td>검 공격 사운드</td><td>Attack 3 애니메이션</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>검 공격</td><td>검 공격 사운드</td><td>Attack 4 애니메이션</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>검 공격</td><td>검 공격 사운드</td><td>Attack 5 애니메이션</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>검 공격</td><td>검 공격 사운드</td><td>Attack 6 애니메이션</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit 1애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit 2애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>Hit 3애니메이션</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD 1</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생,50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD 2</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생,50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD 3</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생,50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>DEAD 4</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생,50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>달리기 애니메이션</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기1 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기2 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기3 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기4 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기5 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>달리기6 애니메이션</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet13'><div class='meta'><p>영웅 모험가(최종보스)</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>idle_1_1</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 아침 (모험가의 침공 시간)
+2. 플레이어가 밤 낮 상관없이 모험가 성 근처에서 
+4초간 머물시 (모험가 성 기준 좌표 10 떨어진 위치)</td><td>모험가 성에서 모험가 생성</td><td></td><td>idle_1_2</td><td class='al'>모험가 생성 후 1초 대기(Idle 애니메이션 재생) 후 이동하기 시작</td><td></td></tr><tr><td></td><td>2</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후 
+3. 플레이어 혹은 플레이어의 부하가 모험가의 성
+근처에 없을 때</td><td>플레이어의 성으로 이동</td><td>발소리</td><td>walk_1</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>2</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후 
+3. 플레이어 혹은 플레이어의 부하가 모험가의 성
+근처에 없을 때</td><td>플레이어의 성으로 이동</td><td>발소리</td><td>walk_2</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>2</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후 
+3. 플레이어 혹은 플레이어의 부하가 모험가의 성
+근처에 없을 때</td><td>플레이어의 성으로 이동</td><td>발소리</td><td>walk_3</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>2</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후 
+3. 플레이어 혹은 플레이어의 부하가 모험가의 성
+근처에 없을 때</td><td>플레이어의 성으로 이동</td><td>발소리</td><td>walk_4</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>2</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후 
+3. 플레이어 혹은 플레이어의 부하가 모험가의 성
+근처에 없을 때</td><td>플레이어의 성으로 이동</td><td>발소리</td><td>walk_5</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>2</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후 
+3. 플레이어 혹은 플레이어의 부하가 모험가의 성
+근처에 없을 때</td><td>플레이어의 성으로 이동</td><td>발소리</td><td>walk_6</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>3</td><td>모험가 이동</td><td>1. 아침인 상태 (모험가의 침공 시간)
+2.모험가 성에서 모험가 생성 된 후
+3. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)</td><td>근처 플레이어에게 이동</td><td>발소리</td><td>walk_1~6</td><td class='al'>근처에 플레이어가 있을 시 플레이어에게 이동</td><td></td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>마법 공격</td><td>마법 공격 사운드</td><td>attack3_1</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>마법 공격</td><td>마법 공격 사운드</td><td>attack3_2</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>마법 공격</td><td>마법 공격 사운드</td><td>attack3_3</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>마법 공격</td><td>마법 공격 사운드</td><td>attack3_4</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>마법 공격</td><td>마법 공격 사운드</td><td>attack3_5</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>4</td><td>공격</td><td>1. 플레이어 및 플레이어의 부하 혹은 성벽이
+앞에 있을 경우</td><td>마법 공격</td><td>마법 공격 사운드</td><td>attack3_6</td><td class='al'>마법사 모험가의 공격 애니메이션 재생, 공격 및 공격 사운드출력</td><td>공격을 맞은 플레이어의 부하는 데미지를 받음
+공격을 맞은 플레이어는 영혼을 1개 소모 , 성벽 공격시 체력 1씩 차감</td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>hit_1</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>hit_2</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>5</td><td>피격</td><td>1.플레이어에게 공격을 받은 상태
+2. 플레이어 부하에게 공격을 받은 상태</td><td>공격을 당함</td><td>피격 사운드</td><td>hit_3</td><td class='al'>공격을 받았을 때 피격 애니메이션 및 사운드 재생 
+체력 감소</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>dead_1</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생,50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>dead_2</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생,50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>dead_3</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생,50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>6</td><td>사망</td><td>1. 체력이 적은 상태로  공격을 받은 상태</td><td>적은 HP 상태에서 적에게 공격을 받음</td><td>사망 사운드</td><td>dead_4</td><td class='al'>적은 HP 상태에서 공격을 받아 사망하여 Dead 애니메이션 
+및 피격사운드 재생,50% 확률로 영혼 1개드랍</td><td></td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>run_1</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>run_2</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>run_3</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>run_4</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>run_5</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>7</td><td>복귀</td><td>1. 저녁(모험가의 침공시간이 끝났을 때)</td><td>모험가의 성으로 복귀</td><td>발소리</td><td>run_6</td><td class='al'>아침시간(침공시간)이 지나 저녁이 다가올 시  모험가들은 
+다시 모험가의 성으로 뛰어서 복귀</td><td>모험가 성에 도착시 도착한 모험가들 삭제</td></tr><tr><td></td><td>8</td><td>달리기</td><td>1. 플레이어, 플레이어 부하 혹은 성벽하고 
+모험가의 거리 차이가 20 이하 일 때</td><td>1.플레이어, 플레이어 부하 혹은 성벽
+으로 달리기</td><td>달리는 소리</td><td>run_1~6</td><td class='al'>일정 범위 안에 플레이어, 플레이어부하 ,성벽이 모험가 기준으로
+거리 차이가 20 이하일 경우 달리기 애니메이션 재생 및 이동속도 
+5 증가</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet14'><div class='meta'><p>전사 제단</p><p>에셋 아직 미구매 : 에셋 링크 : https://assetstore.unity.com/packages/2d/environments/dark-eye-tower-top-down-pixel-art-tower-assets-326621</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>WJ-01</td><td>건설</td><td>1.왕국 1레벨인 상태</td><td>왕국 1레벨 건설시 자동 생성</td><td>X</td><td>X</td><td class='al'>왕국 1레벨을 건설하면 왕국의 오른쪽에 전사 제단이자동 생성됨</td><td></td></tr><tr><td></td><td>WJ-02</td><td>전사 직업 
+부여 도구 생성</td><td>1.왕국 1레벨인 상태
+2. 플레이어와 겹친 상태</td><td>플레이어가 영혼 2개를 소모하여 생성</td><td>칼 소리</td><td>dark_eye_stand_idle</td><td class='al'>전사 직업 부여 도구(칼과 방패 한세트)가 빨간 눈알같은거 옆에 둥둥
+떠다님</td><td>최대 4개까지 생성 가능</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet15'><div class='meta'><p>마법사 제단</p><p>에셋 아직 미구매 : 에셋 링크 : https://assetstore.unity.com/packages/2d/environments/dark-eye-tower-top-down-pixel-art-tower-assets-326621</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>MJ-01</td><td>건설</td><td>1.왕국 1레벨인 상태</td><td>왕국 1레벨 건설시 자동 생성</td><td>X</td><td>X</td><td class='al'>왕국 1레벨을 건설하면 왕국의 왼쪽에 마법사 제단이 자동 생성됨</td><td></td></tr><tr><td></td><td>MJ-02</td><td>마법사 직업 
+부여 도구 생성</td><td>1.왕국 1레벨인 상태
+2. 플레이어와 겹친 상태</td><td>플레이어가 영혼 2개를 소모하여 생성</td><td>마법 소리</td><td></td><td class='al'>마법사 직업 부여 도구(수정구)가 파란 눈알같은거 옆에 둥둥
+떠다님</td><td>최대 4개까지 생성 가능</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet16'><div class='meta'><p>궁수 제단</p><p>에셋 아직 미구매 : 에셋 링크 : https://assetstore.unity.com/packages/2d/environments/dark-eye-tower-top-down-pixel-art-tower-assets-326621</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>MJ-01</td><td>건설</td><td>1.왕국 2레벨인 상태</td><td>왕국 2레벨 건설시 자동 생성</td><td>X</td><td>X</td><td class='al'>왕국 2레벨을 건설하면 전사 제단의 오른쪽에 궁수 제단이 자동 생성됨</td><td></td></tr><tr><td></td><td>AJ-02</td><td>궁수 직업 
+부여 도구 생성</td><td>1.왕국 2레벨인 상태
+2. 플레이어와 겹친 상태</td><td>플레이어가 영혼 4개를 소모하여 생성</td><td>활 소리</td><td></td><td class='al'>궁수 직업 부여 도구(활과 화살 한세트)가 초록 눈알같은거 옆에 둥둥
+떠다님</td><td>최대 4개까지 생성 가능</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet17'><div class='meta'><p>왕국</p><p>에셋 아직 미정</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>KD-01</td><td>1레벨 건설</td><td>1. 왕국이 무너진 잔해인 상태</td><td>왕국의 무너진 잔해에 플레이어가 
+영혼을 3개 소모</td><td>건축 소리</td><td></td><td class='al'>게임을 처음 시작하여 고스트 NPC의 설명에 따라 1레벨로 건설하며,
+건축하는 이미지로 변했다가 1레벨 왕국 이미지로 변경됨.
+왕국 근처의 영토가 생기고, 영토 끝에는 나무 방벽이 생성됨.
+마법사 직업 부여 제단이 왕국 바로 왼쪽에 생성됨.
+전사 직업 부여 제단이 왕국 바로 오른쪽에 생성됨.
+최대 친위대 부하가 4명이 됨.</td><td></td></tr><tr><td></td><td>KD-02</td><td>2레벨 건설</td><td>1. 왕국이 1레벨 상태</td><td>1레벨 왕국에 플레이어가 영혼을 10개 소모</td><td>건축 소리</td><td></td><td class='al'>건축하는 이미지로 변했다가 2레벨 왕국 이미지로 변경됨.
+왕국 근처의 영토가 더 넓어지고, 넓어진 영토 끝에 추가로 나무 방벽이
+생성됨.
+궁수 직업 부여 제단이 전사 직업 부여 제단 오른쪽에 생성됨.
+최대 친위대 부하가 8명이 됨. 시체 생성 고스트 NPC 생성</td><td></td></tr><tr><td></td><td>KD-03</td><td>3레벨 건설</td><td>1. 왕국이 2레벨 상태</td><td>2레벨 왕국에 플레이어가 영혼을 25개 소모</td><td>건축 소리</td><td></td><td class='al'>건축하는 이미지로 변했다가 3레벨 왕국 이미지로 변경됨.
+왕국 근처의 영토가 더 넓어지고, 넓어진 영토 끝에 추가로 나무 방벽이
+생성됨.
+최대 친위대 부하가 12명이 됨.</td><td></td></tr><tr><td></td><td>KD-04</td><td>4레벨 건설</td><td>1. 왕국이 3레벨 상태
+2. 두번째 섬에 가본적 있는 상태</td><td>3레벨 왕국에 플레이어가 영혼을 40개 소모</td><td>건축 소리</td><td>건축 이미지</td><td class='al'>건축하는 이미지로 변했다가 4레벨 왕국 이미지로 변경됨.
+왕국 근처의 영토가 더 넓어지고, 넓어진 영토 끝에 추가로 돌 방벽이
+생성됨.
+최대 친위대 부하가 20명이 됨.</td><td></td></tr><tr><td></td><td>KD-05</td><td>5레벨 건설</td><td>1. 왕국이 3레벨 상태
+2. 세번째 섬에 가본적 있는 상태</td><td>4레벨 왕국에 플레이어가 영혼을 60개 소모</td><td>건축 소리</td><td>건축 이미지</td><td class='al'>건축하는 이미지로 변했다가 5레벨 왕국 이미지로 변경됨.
+왕국 근처의 영토가 더 넓어지고, 넓어진 영토 끝에 추가로 돌 방벽이
+생성됨.
+최대 친위대 부하가 30명이 됨.</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet18'><div class='meta'><p>나무 방벽</p><p>에셋 아직 미정</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>TB-01</td><td>왕국 1레벨 건설</td><td>1. 왕국이 1레벨 이상인 상태</td><td>왕국을 1레벨로 건설</td><td>건축 소리</td><td>건축 이미지</td><td class='al'>왕국이 1레벨로 건설 되었을 때 자동으로 영토 끝에 생성됨</td><td></td></tr><tr><td></td><td>TB-02</td><td>왕국 2레벨 건설</td><td>1. 왕국이 2레벨 이상인 상태</td><td>왕국을 2레벨로 건설</td><td>건축 소리</td><td>건축 이미지</td><td class='al'>왕국이 2레벨로 건설 되었을 때 자동으로 영토 끝에 생성됨</td><td></td></tr><tr><td></td><td>TB-03</td><td>왕국 3레벨 건설</td><td>1. 왕국이 3레벨 이상인 상태</td><td>왕국을 3레벨로 건설</td><td>건축 소리</td><td>건축 이미지</td><td class='al'>왕국이 3레벨로 건설 되었을 때 자동으로 영토 끝에 생성됨</td><td></td></tr><tr><td></td><td>TB-04</td><td>모험가 공격 방어</td><td>1. 나무 방벽의 체력이 1 이상인 상태
+2. 모험가에게 공격 받은 상태</td><td>나무 방벽의 체력이 1이상인 상태에서 
+모험가에게 공격 받음</td><td>장작 베는 소리</td><td>반짝이는 애니메이션</td><td class='al'>모험가에게 공격 당해 장작 베는 소리와 반짝이는 애니메이션이
+0.1초 재생됨</td><td>나무 방벽의 최대 체력은 10</td></tr><tr><td></td><td>TB-05</td><td>파괴</td><td>1. 나무 방벽의 체력이 0인 상태</td><td>모험가에게 공격 받아 체력이 0인 상태</td><td>장작 베는 소리</td><td>파괴되는 애니메이션</td><td class='al'>모험가에게 공격 당해 체력이 0이되어 장작 베는 소리와 파괴되는 
+애니메이션이 재생되며, 나무 더미로 이미지가 변경됨</td><td></td></tr><tr><td></td><td>TB-06</td><td>재건축</td><td>1. 나무 방벽이 파괴된 상태</td><td>플레이어가 영혼 2개를 소모해 마법사 
+스켈레톤이 와서 재건축</td><td>X</td><td>X</td><td class='al'>마법사의 건축으로 나무 방벽이 최대 체력 상태로 다시 건설됨</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet19'><div class='meta'><p>돌 방벽</p><p>에셋 아직 미정</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>RB-01</td><td>왕국 1레벨 건설</td><td>1. 왕국이 1레벨 이상인 상태</td><td>왕국을 1레벨로 건설</td><td>건축 소리</td><td>건축 이미지</td><td class='al'>왕국이 1레벨로 건설 되었을 때 자동으로 영토 끝에 생성됨</td><td></td></tr><tr><td></td><td>RB-02</td><td>왕국 2레벨 건설</td><td>1. 왕국이 2레벨 이상인 상태</td><td>왕국을 2레벨로 건설</td><td>건축 소리</td><td>건축 이미지</td><td class='al'>왕국이 2레벨로 건설 되었을 때 자동으로 영토 끝에 생성됨</td><td></td></tr><tr><td></td><td>RB-03</td><td>모험가 공격 방어</td><td>1. 돌 방벽의 체력이 1 이상인 상태
+2. 모험가에게 공격 받은 상태</td><td>나무 방벽의 체력이 1이상인 상태에서 
+모험가에게 공격 받음</td><td>돌 캐는 소리</td><td>반짝이는 애니메이션</td><td class='al'>모험가에게 공격 당해 돌 캐는 소리와 반짝이는 애니메이션이
+0.1초 재생됨</td><td>돌 방벽의 최대 체력은 30</td></tr><tr><td></td><td>RB-04</td><td>파괴</td><td>1. 돌 방벽의 체력이 0인 상태</td><td>모험가에게 공격 받아 체력이 0인 상태</td><td>돌 캐는 소리</td><td>파괴되는 애니메이션</td><td class='al'>모험가에게 공격 당해 체력이 0이되어 돌 캐는 소리와 파괴되는 
+애니메이션이 재생되며, 돌 더미로 이미지가 변경됨</td><td></td></tr><tr><td></td><td>RB-05</td><td>재건축</td><td>1. 돌 방벽이 파괴된 상태</td><td>플레이어가 영혼 5개를 소모해 마법사 
+스켈레톤이 와서 재건축</td><td>X</td><td>X</td><td class='al'>마법사의 건축으로 돌 방벽이 최대 체력 상태로 다시 건설됨</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet20'><div class='meta'><p>영혼병</p><p>에셋 아직 미정</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>SG-01</td><td>영혼병 1레벨</td><td>1.보유 영혼이 0개 이상, 50개 이하인 상태</td><td>영혼을 획득하여 보유 영혼이 0개 이상
+, 50개 이하인 상태</td><td>영혼 소리</td><td>1LEVEL 이미지</td><td class='al'>영혼소리와 영혼병이 1LEVEL 이미지로 변경됨</td><td></td></tr><tr><td></td><td>SG-02</td><td>영혼병 2레벨</td><td>1.보유 영혼이 51개 이상, 100개 이하인 상태</td><td>영혼을 획득하여 보유 영혼이 51개 이상 
+,100개 이하인 상태</td><td>영혼 소리</td><td>2LEVEL 이미지</td><td class='al'>영혼소리와 영혼병이 2LEVEL 이미지로 변경됨</td><td></td></tr><tr><td></td><td>SG-03</td><td>영혼병 3레벨</td><td>1.보유 영혼이 101개 이상, 150개 이하인 상태</td><td>영혼을 획득하여 보유 영혼이 101개 이상 
+,150개 이하인 상태</td><td>영혼 소리</td><td>3LEVEL 이미지</td><td class='al'>영혼소리와 영혼병이 3LEVEL 이미지로 변경됨</td><td></td></tr><tr><td></td><td>SG-04</td><td>영혼병 4레벨</td><td>1.보유 영혼이 151개 이상, 200개 이하인 상태</td><td>영혼을 획득하여 보유 영혼이 151개 이상 
+,200개 이하인 상태</td><td>영혼 소리</td><td>4LEVEL 이미지</td><td class='al'>영혼소리와 영혼병이 4LEVEL 이미지로 변경됨</td><td></td></tr><tr><td></td><td>SG-05</td><td>영혼병 5레벨</td><td>1.보유 영혼이 201개 이상, 250개 이하인 상태</td><td>영혼을 획득하여 보유 영혼이 201개 이상 
+,250개 이하인 상태</td><td>영혼 소리</td><td>5LEVEL 이미지</td><td class='al'>영혼소리와 영혼병이 5LEVEL 이미지로 변경됨</td><td>영혼 최대 250개 보유 가능</td></tr><tr><td></td><td>SG-06</td><td>영혼 획득</td><td>1. 영혼을 플레이어가 획득한 상태</td><td>플레이어가 영혼을 1개 획득한 상태</td><td>영혼 소리</td><td>깜빡임</td><td class='al'>영혼소리와 영혼병이 깜빡임</td><td></td></tr><tr><td></td><td>SG-07</td><td>보유 영혼 텍스트</td><td>1. 보유 영혼이 1개 이상이 상태</td><td>플레이어가 영혼을 1개 획득한 상태</td><td>X</td><td>텍스트 숫자 변경</td><td class='al'>영혼병 아래에 있는 The Number of Souls : 1  텍스트의 
+숫자가 보유 영혼 만큼 변경됨</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet21'><div class='meta'><p>묘지</p><p>에셋 아직 미정</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>CE-01</td><td>최초 생성</td><td>1. 게임이 시작되어 섬이 최초 로딩된 상태</td><td>플레이어가 새로운 섬에 처음 입장</td><td>X</td><td>X</td><td class='al'>플레이어가 새로운 섬에 처음 입장하여 묘지가 왼쪽 2개, 오른쪽 2개
+생성됨
+묘지 바로 양 옆에는 해골 시체가 2개씩 있음</td><td></td></tr><tr><td></td><td>CE-02</td><td>시체 부활</td><td>1. 묘지 옆 시체가 남아있는 상태
+2. 플레이어와 겹친 상태</td><td>플레이어가 묘지의 시체와 겹친 상태에서
+영혼을 1개 소모</td><td>뼈 우두둑 소리4</td><td>reborn_1~6</td><td class='al'>시체가 무직 스켈레톤으로 부활하며, 시체 1개가 사라짐</td><td></td></tr><tr><td></td><td>CE-03</td><td>묘지 제거</td><td>1. 묘지의 위치까지 왕국의 영토가 넓어진 상태</td><td>왕국의 레벨을 올려 영토가 넓어짐</td><td>X</td><td>X</td><td class='al'>묘지가 사라짐</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet22'><div class='meta'><p>영혼 상자</p><p>에셋 아직 미정</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>SB-01</td><td>생성</td><td>1. 게임이 시작되어 섬이 최초 로딩된 상태</td><td>플레이어가 새로운 섬에 처음 입장</td><td>X</td><td>X</td><td class='al'>플레이어가 새로운 섬에 처음 입장하여 영혼 상자가 왼쪽에 1개, 
+오른쪽에 1개 생성됨</td><td></td></tr><tr><td></td><td>SB-02</td><td>상자 오픈</td><td>1. 영혼 상자가 오픈 되지 않은 상태
+2. 플레이어와 겹친 상태</td><td>플레이어가 영혼 상자와 겹침</td><td>상자 열리는 소리</td><td>상자가 열리는 애니메이션</td><td class='al'>영혼 상자에서 영혼이 5개 드롭</td><td></td></tr><tr><td></td><td>SB-03</td><td>상자 제거</td><td>1. 영혼 상자의 위치까지 왕국의 영토가 넓어진 상태</td><td>왕국의 레벨을 올려 영토가 넓어짐</td><td>X</td><td>X</td><td class='al'>영혼 상자가 사라짐</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet23'><div class='meta'><p>나도닭의덩굴</p><p>에셋 아직 미정</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>ME-01</td><td>덩굴 생성</td><td>1. 평지에 아무것도 없는 상태</td><td>아무것도 없는 평지에 자동 생성</td><td>X</td><td>덩굴이 자라나는 애니메이션</td><td class='al'>아무것도 없는 평지에 랜덤하게 덩굴이 생성됨</td><td>맵에 최대 10개, 덩굴이 자랄 공간이 있다면 하루1개씩 생성</td></tr><tr><td></td><td>ME-02</td><td>닭 생성</td><td>1. 밤인 상태</td><td>밤에 덩굴에서 자동 생성</td><td>닭 소리</td><td>바람에 흔들리는 애니메이션</td><td class='al'>나도닭의덩굴에서 닭이 한마리 생성됨</td><td></td></tr><tr><td></td><td>ME-03</td><td>덩굴 제거</td><td>1. 나도닭의덩굴의 위치까지 왕국의 영토가 넓어진 상태</td><td>왕국의 레벨을 올려 영토가 넓어짐</td><td>X</td><td>X</td><td class='al'>나도닭의덩굴이 사라짐</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet24'><div class='meta'><p>모험가 길드</p><p>에셋 후보 : https://assetstore.unity.com/packages/2d/environments/pixel-art-platformer-village-house-166186#reviews</p><p>에셋 아직 미구매</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>1</td><td>모험가 생성</td><td>1. 근처에 플레이어 혹은 플레이어 부하가 있을 때
+(좌표 10 떨어진 위치)
+2.모험가 길드 체력이 50일 때</td><td>모험가 생성</td><td></td><td></td><td class='al'>모험가 세트 생성(전사 1 궁수 1 법사 1 창 1) 
+모험가 길드 체력이 50 이하 일 시 대장 모험가 생성</td><td>10 초간격으로 생성</td></tr><tr><td></td><td>2</td><td>최종 방어 패턴</td><td>길드 체력 5% 이하</td><td>영웅 모험가 등장</td><td></td><td>영웅 모험가 IDLE</td><td class='al'>모험가 길드의 최종보스 영웅 모험가 생성</td><td></td></tr><tr><td></td><td>3</td><td>건물 붕괴 시작</td><td>1. 모험가 길드 체력 50% 1차 일 때
+2. 모험가 길드 체력 25% 2차 일 
+3. 모험가 길드 체력 5% 일 때</td><td>1. 모험가 길드 체력 50% 1차 붕괴 
+2. 모험가 길드 체력 25% 2차 붕괴
+3. 모험가 길드 체력 5% 3차 붕괴</td><td></td><td>건물 붕괴 애니메이션</td><td class='al'>모험가 길드 체력에 따른 손상된 형태로 변경</td><td></td></tr><tr><td></td><td>4</td><td>건물 붕괴 완료</td><td>모험가 길드 체력 0% 일 때</td><td>모험가 길드 완전 붕괴</td><td>부서지는 사운드</td><td>건물 붕괴 애니메이션</td><td class='al'>모험가 길드 완전 파괴 → 잔해 오브젝트로 교체 모험가 생성 중단</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet25'><div class='meta'><p>영혼</p><p>에셋 아직 미정</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>SO-01</td><td>사냥 드롭</td><td>1. 전사 스켈레톤이 닭을 사냥한 상태</td><td>전사 스켈레톤이 닭을 사냥</td><td>영혼 소리</td><td>영혼이 올라가는 애니메이션</td><td class='al'>닭이 사냥당해 사망 후 영혼이 1개 드롭됨</td><td></td></tr><tr><td></td><td>SO-02</td><td>낚시 드롭</td><td>1. 궁수 스켈레톤이 낚시를 한 상태</td><td>궁수 스켈레톤이 낚시를 진행</td><td>영혼 소리</td><td>영혼이 올라가는 애니메이션</td><td class='al'>물 웅덩이에서 영혼이 1개 드롭됨</td><td></td></tr><tr><td></td><td>SO-03</td><td>모험가 처치 드롭</td><td>1. 모험가가 처치된 상태 (50%확률)</td><td>모험가의 체력이 0이 되어 사망</td><td>영혼 소리</td><td>영혼이 올라가는 애니메이션</td><td class='al'>사망한 모험가의 몸에서 영혼이 1개 드롭됨</td><td></td></tr><tr><td></td><td>SO-04</td><td>영혼 상자 드롭</td><td>1. 영혼 상자를 플레이어가 오픈한 상태</td><td>영혼 상자를 플레이어가 오픈</td><td>영혼 소리</td><td>영혼이 올라가는 애니메이션</td><td class='al'>영혼 상자가 오픈된 위치에서 영혼 5개가 드롭됨</td><td></td></tr><tr><td></td><td>SO-05</td><td>플레이어 피격 드롭</td><td>1. 플레이어가 모험가에게 공격 당한 상태
+2. 플레이어가 보유 영혼이 1개 이상인 상태</td><td>플레이어가 모험가에게 공격 당함</td><td>영혼 소리</td><td>영혼이 올라가는 애니메이션</td><td class='al'>플레이어의 몸에서 영혼이 1개 빠져나와 소멸됨</td><td></td></tr><tr><td></td><td>SO-06</td><td>전사 피격 드롭</td><td>1. 전사 스켈레톤이 모험가에게 공격 당한 상태
+2. 전사 스켈레톤이 보유 영혼이 1개 이상인 상태</td><td>전사 스켈레톤이 모험가에게 공격 당함</td><td>영혼 소리</td><td>영혼이 올라가는 애니메이션</td><td class='al'>전사 스켈레톤의 몸에서 영혼이 1개 빠져나와 소멸됨</td><td></td></tr><tr><td></td><td>SO-07</td><td>마법사 피격 드롭</td><td>1. 마법사 스켈레톤이 모험가에게 공격 당한 상태
+2. 마법사 스켈레톤이 보유 영혼이 1개 이상인 상태</td><td>마법사 스켈레톤이 모험가에게 공격 당함</td><td>영혼 소리</td><td>영혼이 올라가는 애니메이션</td><td class='al'>마법사 스클레톤의 몸에서 영혼이 1개 빠져나와 소멸됨</td><td></td></tr><tr><td></td><td>SO-08</td><td>궁수 피격 드롭</td><td>1. 궁수 스켈레톤이 모험가에게 공격 당한 상태
+2. 궁수 스켈레톤이 보유 영혼이 1개 이상인 상태</td><td>궁수 스켈레톤이 모험가에게 공격 당함</td><td>영혼 소리</td><td>영혼이 올라가는 애니메이션</td><td class='al'>궁수 스켈레톤의 몸에서 영혼이 1개 빠져나와 소멸됨</td><td></td></tr><tr><td></td><td>SO-09</td><td>영혼 소모</td><td>1. 플레이어가 영혼을 오브젝트에 소모한 상태</td><td>플레이어가 ↓키를 입력해 오브젝트에 
+영혼 소모</td><td>영혼 소리</td><td>영혼이 올라가는 애니메이션</td><td class='al'>영혼이 오브젝트에 들어감</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet26'><div class='meta'><p>시계 : 게임시간으로 낮 - 오전 6시~오후6시</p><p>게임시간으로  - 오후6시01분~오전 5시 59분 : ↓</p><p>게임 최초 시작시 오후 6시01분으로 시작 : 자정                          정오                          자정</p><p>에셋 아직 미정</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>TI-01</td><td>화살표 오른쪽밤으로
+ 이동</td><td>1. 시간이 흐르는 상태 (일시정지 상태가 아닌 상태)</td><td>시간이 흐르고 있는 상태</td><td>X</td><td>화살표가 이동</td><td class='al'>중앙 정오(해 이미지)에 있는 화살표가 오른쪽 자정(달 이미지)쪽으로 
+서서히 이동</td><td></td></tr><tr><td></td><td>TI-02</td><td>화살표 왼쪽밤으로
+ 이동</td><td>1. 시간이 흐르는 상태 (일시정지 상태가 아닌 상태)
+2. 정확히 자정 시간 상태</td><td>시간이 흐르고 있는 상태</td><td>X</td><td>화살표가 이동</td><td class='al'>오른쪽 자정(달 이미지)에 있는 화살표가 왼쪽 자정(달 이미지)쪽으로 
+이동</td><td></td></tr><tr><td></td><td>TI-03</td><td>화살표 중앙 낮으로
+ 이동</td><td>1. 시간이 흐르는 상태 (일시정지 상태가 아닌 상태)</td><td>시간이 흐르고 있는 상태</td><td>X</td><td>화살표가 이동</td><td class='al'>자정(달 이미지)에 있는 화살표가 오른쪽 정오(해 이미지)쪽으로 
+서서히 이동</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet27'><div class='meta'><p>닭</p><p>에셋 : https://assetstore.unity.com/packages/2d/characters/chicken-top-down-pixel-art-animal-327924</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>CH-01</td><td>랜덤 이동</td><td>1. 평지에 서 있는 상태
+2. 밤인 상태</td><td>너도닭의덩굴에서 닭이 생성된 상태</td><td>X</td><td>WALK 애니메이션</td><td class='al'>너도닭의덩굴에서 생성된 닭이 랜덤하게 좌,우로 이동함</td><td></td></tr><tr><td></td><td>CH-02</td><td>사냥 당함</td><td>1. 평지에 서 있는 상태
+2. 밤인 상태
+3. 닭의 체력이 0인 상태</td><td>전사 스켈레톤에게 닭이 사냥 당한 상태</td><td>닭 소리</td><td>DEAD 애니메이션</td><td class='al'>닭이 전사 스켈레톤에게 사냥 당해 영혼을 1개 드롭하고 닭 소리와 
+DEAD 애니메이션이 재생됨</td><td>닭의 최대체력은 1</td></tr><tr><td></td><td>CH-03</td><td>시체</td><td>1. 밤인 상태
+2. 닭이 사냥당한 상태</td><td>사냥 당해 죽은 상태</td><td>사망 소리</td><td>DEAD 애니메이션</td><td class='al'>사냥 당해 DEAD 애니메이션이 재생된 닭의 시체가 2초뒤 사라짐</td><td></td></tr><tr><td></td><td>CH-04</td><td>숨기</td><td>1. 낮인 상태
+2. 모험가들이 근처에 있는 상태</td><td>시간이 밤에서 낮으로 변경되거나
+모험가들이 근처에 있는 상태</td><td>X</td><td>READY 애니메이션</td><td class='al'>낮이 되거나 근처에 모험가가 있는 상태에 투명도가 1초동안 
+서서히 줄어들어 0이됨</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet28'><div class='meta'><p>곰</p><p>에셋 : https://assetstore.unity.com/packages/2d/characters/bear-top-down-pixel-art-characters-327877</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th>No</th><th>기능</th><th>사전 조건</th><th>절차</th><th>사운드</th><th>애니메이션</th><th>기대결과</th><th>비고</th></tr></thead><tbody><tr><td></td><td>BE-01</td><td>스폰</td><td>1. 게임이 시작한 상태</td><td>게임 시작</td><td>X</td><td>IDLE 1~6 (Stand) 애니메이션</td><td class='al'>게임이 시작하고 왼쪽의 모험가 길드로부터 x값 +20위치에 곰 생성</td><td>곰의 최대체력은 15
+20초간 공격당하지 않은 상태면 체력을 전부 회복</td></tr><tr><td></td><td>BE-02</td><td>랜덤 이동</td><td>1. 평지에 있는 상태</td><td>게임 시작 후 평지에 있는 상태</td><td>4족 보행 걷는 소리</td><td>WALK 1~6 애니메이션</td><td class='al'>곰이 좌 또는 우로  x값 5~10 씩 5초에 1번 랜덤 움직임</td><td>곰 이동속도 2</td></tr><tr><td></td><td>BE-03</td><td>광폭</td><td>1. 평지에 있는 상태
+2. 플레이어에게 공격 당한 상태</td><td>플레이어가 곰에게 공격을 가함</td><td>햘퀴는 소리</td><td>ATTACK 1~6 애니메이션</td><td class='al'>곰이 공격을 하기 시작
+3초에 1번씩 공격
+공격을 안하는 동안은 플레이어 쪽으로 WALK 애니메이션이 재생되며 이동</td><td></td></tr><tr><td></td><td>BE-04</td><td>사망</td><td>1. 평지에 있는 상태
+2. 체력이 0인 상태</td><td>플레이어와 친위대 에게 
+공격당해 곰의 체력이 0이됨</td><td>곰 울음소리</td><td>DEAD 1~6 애니메이션</td><td class='al'>DEAD 애니메이션이 재생된 후 영혼 5개를 드랍</td><td></td></tr><tr><td></td><td>BE-05</td><td>재스폰</td><td>1. 곰이 사망해서 스테이지에 없는 상태</td><td>곰이 사망한 날 기준 2일 뒤</td><td>x</td><td>IDLE 1~6 (Stand) 애니메이션</td><td class='al'>BE-01 스폰 장소에서 곰의 투명도가 0에서 1초의 시간동안 255로 
+설정된후 BE-02 랜덤 이동 재생</td><td></td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet29'><div class='meta'><p>두번째섬 기존 해금 요소</p></div><div class='tbl-scroll'><table><thead><tr><th>왕국 4레벨 해금</th><th>돌 방벽</th><th>친위대 부하 최대20명</th><th>시체생성고스트 - 시체 2일에 1개 생성</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead><tbody><tr><td>두번째섬 신규 해금 요소 확정</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>등장하는 모험가의 종류 변경</td><td>첫번째 섬</td><td>두번째 섬</td><td>세번째 섬</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>인간 (기존)</td><td>드워프</td><td>엘프</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td>https://assetstore.unity.com/packages/2d/characters/dwarf-top-down-pixel-art-character-assets-327875</td><td>https://assetstore.unity.com/packages/2d/characters/elf-top-down-pixel-art-character-assets-257690</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>자동 공격 타워 설치</td><td>스톤 타워</td><td>https://assetstore.unity.com/packages/2d/environments/stone-tower-top-down-pixel-art-tower-assets-326624#content</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>두번째 섬의 왕국 양 옆에 무너진 타워 잔해가 생성됨</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>잔해에 영혼 소모 후 건설시 적을 자동으로 공격하는 타워 건설</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>타워는 스톤 타워로 20초에 1번씩 돌 공격(광역)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>후보</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>맵 디자인 새로운 에셋 교체</td><td>숲</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>https://assetstore.unity.com/packages/2d/environments/forest-platformer-pixel-art-tileset-257296</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>마을을 지키는</td><td>골렘</td><td>https://assetstore.unity.com/packages/2d/characters/golem-top-down-pixel-art-characters-301778</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>첫번째 섬에 있는 모험가를 소환</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td>생성된 잔해</td><td></td><td></td><td></td><td>건설 완료</td><td></td><td></td><td></td><td></td><td>공격 모션</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet30'><div class='meta'><p>Return of the Dark Lord BG(UI) Animation (Sprite Editor) 화면 _ Tree_1 Green</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th rowspan='2'>Sprite _ Name</th><th colspan='4'>Position</th><th colspan='4'>Border</th><th rowspan='2'>Pivot</th><th rowspan='2'>Pivot Unit Mode</th></tr></thead><tbody><tr><td></td><td>X</td><td>Y</td><td>W</td><td>H</td><td>L</td><td>T</td><td>R</td><td>B</td></tr><tr><td></td><td>Tree1_1(Green _ 위쪽)</td><td>0</td><td>72</td><td>112</td><td>36</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_1(Green _ 중간)</td><td>0</td><td>36</td><td>112</td><td>36</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_1(Green _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>36</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_2(Green _ 위쪽)</td><td>0</td><td>92</td><td>112</td><td>46</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_2(Green _ 중간)</td><td>0</td><td>46</td><td>112</td><td>46</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_2(Green _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>46</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_3(Green _ 위쪽)</td><td>0</td><td>105</td><td>112</td><td>55</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_3(Green _ 중간)</td><td>0</td><td>50</td><td>112</td><td>55</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_3(Green _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>50</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td colspan='11'>Return of the Dark Lord BG(UI) Animation (Sprite Editor) 화면 _  Tree_1 Orange</td></tr><tr><td></td><td rowspan='2'>Sprite _ Name</td><td colspan='4'>Position</td><td colspan='4'>Border</td><td rowspan='2'>Pivot</td><td rowspan='2'>Pivot Unit Mode</td></tr><tr><td></td><td>X</td><td>Y</td><td>W</td><td>H</td><td>L</td><td>T</td><td>R</td><td>B</td></tr><tr><td></td><td>Tree1_1(Orange _ 위쪽)</td><td>0</td><td>72</td><td>112</td><td>36</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_1(Orange _ 중간)</td><td>0</td><td>36</td><td>112</td><td>36</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_1(Orange _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>36</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_2(Orange _ 위쪽)</td><td>0</td><td>92</td><td>112</td><td>46</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_2(Orange _ 중간)</td><td>0</td><td>46</td><td>112</td><td>46</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_2(Orange _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>46</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_3(Orange _ 위쪽)</td><td>0</td><td>105</td><td>112</td><td>55</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_3(Orange _ 중간)</td><td>0</td><td>50</td><td>112</td><td>55</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree1_3(Orange _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>50</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td colspan='11'>Return of the Dark Lord BG(UI) Animation (Sprite Editor) 화면 _ Tree_2 Green</td></tr><tr><td></td><td rowspan='2'>Sprite _ Name</td><td colspan='4'>Position</td><td colspan='4'>Border</td><td rowspan='2'>Pivot</td><td rowspan='2'>Pivot Unit Mode</td></tr><tr><td></td><td>X</td><td>Y</td><td>W</td><td>H</td><td>L</td><td>T</td><td>R</td><td>B</td></tr><tr><td></td><td>Tree2_1(Green _ 위쪽)</td><td>0</td><td>9</td><td>112</td><td>71</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree2_1(Green _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>9</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree2_1(Green _ 위쪽)</td><td>0</td><td>57</td><td>112</td><td>41</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree2_2(Green _ 중간)</td><td>0</td><td>16</td><td>112</td><td>41</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree2_2(Green _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>16</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree3_1(Green _ 위쪽)</td><td>0</td><td>65</td><td>112</td><td>45</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree3_2(Green _ 중간)</td><td>0</td><td>20</td><td>112</td><td>45</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree3_2(Green _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>20</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree4_1(Green _ 위쪽)</td><td>0</td><td>55</td><td>112</td><td>65</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree4_2(Green _ 중간)</td><td>0</td><td>21</td><td>112</td><td>34</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree4_2(Green _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>21</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree5_1(Green _ 위쪽)</td><td>0</td><td>72</td><td>112</td><td>65</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree5_2(Green _ 중간)</td><td>0</td><td>32</td><td>112</td><td>40</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree5_2(Green _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>32</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td colspan='11'>Return of the Dark Lord BG(UI) Animation (Sprite Editor) 화면 _ Tree_2 Green</td></tr><tr><td></td><td rowspan='2'>Sprite _ Name</td><td colspan='4'>Position</td><td colspan='4'>Border</td><td rowspan='2'>Pivot</td><td rowspan='2'>Pivot Unit Mode</td></tr><tr><td></td><td>X</td><td>Y</td><td>W</td><td>H</td><td>L</td><td>T</td><td>R</td><td>B</td></tr><tr><td></td><td>Tree2_1(Orange  _ 위쪽)</td><td>0</td><td>9</td><td>112</td><td>71</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree2_1(Orange  _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>9</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree2_1(Orange  _ 위쪽)</td><td>0</td><td>57</td><td>112</td><td>41</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree2_2(Orange  _ 중간)</td><td>0</td><td>16</td><td>112</td><td>41</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree2_2(Orange  _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>16</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree3_1(Orange  _ 위쪽)</td><td>0</td><td>65</td><td>112</td><td>45</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree3_2(Orange  _ 중간)</td><td>0</td><td>20</td><td>112</td><td>45</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree3_2(Orange  _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>20</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree4_1(Orange  _ 위쪽)</td><td>0</td><td>55</td><td>112</td><td>65</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree4_2(Orange  _ 중간)</td><td>0</td><td>21</td><td>112</td><td>34</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree4_2(Orange  _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>21</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree5_1(Orange  _ 위쪽)</td><td>0</td><td>72</td><td>112</td><td>65</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree5_2(Orange  _ 중간)</td><td>0</td><td>32</td><td>112</td><td>40</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td>Tree5_2(Orange  _ 아래쪽)</td><td>0</td><td>0</td><td>112</td><td>32</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Center</td><td>Normalized</td></tr><tr><td></td><td rowspan='2' colspan='11'>! PNG 아래쪽 애니메이션은 추가하지 않을 예정 !</td></tr><tr><td></td></tr><tr><td></td><td colspan='11'>애니메이션은 2.5초에 걸쳐 Z축이 2도에서 0도로 되돌아가는 움직임 =  12 FPS</td></tr></tbody></table></div></div>
+<div class='sheet' id='sheet31'><div class='meta'><p>이벤트기획 기반 필요한 사운드</p><p>- 플레이어</p><p>걷기</p><p>달리기</p><p>찌르기(검)</p><p>뼈 소리(피격, 사망)</p></div><div class='tbl-scroll'><table><thead><tr><th></th><th colspan='2'>- 스켈레톤 공용 사운드</th><th colspan='2'>- 무직 스켈레톤</th><th colspan='2'>- 전사 스켈레톤</th><th colspan='2'>- 마법사 스켈레톤</th><th colspan='2'>- 궁수 스켈레톤</th><th colspan='2'>- 시체 생성 고스트</th><th></th></tr></thead><tbody><tr><td></td><td colspan='2'>걷기</td><td colspan='2'>부활</td><td colspan='2'>칼 소리(공격, 사냥)</td><td colspan='2'>마법 소리(건축, 수리)</td><td colspan='2'>활 소리(공격)</td><td colspan='2'>뼈 소리(시체 생성)</td><td></td></tr><tr><td></td><td colspan='2'>달리기</td><td></td><td></td><td colspan='2'>직업 부여(전직)</td><td colspan='2'>직업 부여(전직)</td><td colspan='2'>직업 부여(전직)</td><td></td><td></td><td></td></tr><tr><td></td><td colspan='2'>뼈 소리(피격, 사망)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td colspan='2'>- 모험가 공용 사운드</td><td colspan='2'>- 전사 모험가</td><td colspan='2'>- 창 모험가</td><td colspan='2'>- 궁수 모험가</td><td colspan='2'>- 법사 모험가</td><td colspan='2'>- 대장 모험가</td><td>- 영웅 모험가</td></tr><tr><td></td><td colspan='2'>걷기</td><td colspan='2'>검 공격</td><td colspan='2'>창 공격</td><td colspan='2'>활 공격</td><td colspan='2'>마법 공격</td><td colspan='2'>검 공격</td><td>검 공격</td></tr><tr><td></td><td colspan='2'>달리기</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td colspan='2'>피격</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td colspan='2'>사망</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td colspan='2'>- 전사 제단</td><td colspan='2'>- 궁수 제단</td><td colspan='2'>- 마법사 제단</td><td colspan='2'>- 왕국</td><td colspan='2'>- 나무 방벽</td><td colspan='2'>- 돌 방벽</td><td></td></tr><tr><td></td><td colspan='2'>칼 소리(직업 도구 생성)</td><td colspan='2'>활 소리(직업 도구 생성)</td><td colspan='2'>마법 소리(직업 도구 생성)</td><td colspan='2'>건축 소리(마법사 스켈레톤)</td><td colspan='2'>장작 베는 소리</td><td colspan='2'>돌 캐는 소리</td><td></td></tr><tr><td></td><td colspan='2'>- 영혼 상자</td><td colspan='2'>- 영혼 병</td><td colspan='2'>- 영혼</td><td colspan='2'>- 닭</td><td colspan='2'>- 모험가 길드</td><td></td><td></td><td></td></tr><tr><td></td><td colspan='2'>상자 열리는 소리</td><td colspan='2'>영혼 소리</td><td colspan='2'>영혼 생성 소리</td><td colspan='2'>닭 울음소리(스폰)</td><td colspan='2'>모험가 스폰 사운드</td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td colspan='2'>영혼 획득 소리</td><td colspan='2'>사망</td><td colspan='2'>건물 무너지는 사운드</td><td></td><td></td><td></td></tr><tr><td></td><td colspan='2'>BGM</td><td colspan='2'>SFX</td><td colspan='2'>Button Effect</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></div></div>
+</div>
+<script>
+var tabs = document.querySelectorAll('.tab');
+var sheets = document.querySelectorAll('.sheet');
+function show(id) {
+  sheets.forEach(function(s){ s.classList.toggle('active', s.id === id); });
+  tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.sheet === id); });
+}
+tabs.forEach(function(t){ t.addEventListener('click', function(){ show(t.dataset.sheet); }); });
+if (sheets.length) { sheets[0].classList.add('active'); }
+if (tabs.length) { tabs[0].classList.add('active'); }
+</script>
+</body>
+</html>
