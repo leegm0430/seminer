@@ -477,14 +477,14 @@
 <div class="modal-backdrop key-modal" id="keyModal">
   <div class="modal" style="position:relative;">
     <div class="modal-body">
-      <h2>⚙️ TMDB API 키가 설정되지 않았습니다</h2>
-      <p>REELVAULT는 별도 서버 없이 브라우저에서 TMDB API로 바로 요청합니다. <b>사이트 운영자</b>는 아래 절차로 한 번만 설정하면 됩니다.</p>
+      <h2>⚙️ TMDB API 연결이 설정되지 않았습니다</h2>
+      <p>REELVAULT는 Cloudflare Worker 프록시(<code>server/worker.js</code>)를 통해 TMDB를 호출하므로, 방문자는 아무 설정 없이 바로 이용합니다. <b>사이트 운영자</b>만 아래 절차로 한 번 설정하면 됩니다.</p>
       <ol>
-        <li><a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener">TMDB 설정 페이지</a>에서 이 포트폴리오/데모용 API 키를 새로 발급 (메인 계정 키와 분리)</li>
-        <li>프로젝트 폴더의 <code>.env.example</code>을 <code>.env</code>로 복사하고 <code>TMDB_API_KEY=발급받은키</code> 입력</li>
-        <li><code>로컬서버실행.bat</code>(node local-server.js)으로 실행 — 서버가 .env를 읽어 키를 주입하며, .env는 git에 올라가지 않습니다</li>
+        <li><a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener">TMDB 설정 페이지</a>에서 API 키 발급</li>
+        <li><code>server</code> 폴더에서 <code>npx wrangler secret put TMDB_API_KEY</code>로 키 등록 후 <code>npx wrangler deploy</code> — 키는 Cloudflare 시크릿에만 저장됩니다</li>
+        <li>(로컬 개발 시) <code>.env.example</code>을 <code>.env</code>로 복사해 키 입력 후 <code>로컬서버실행.bat</code> 실행 — .env는 git에 올라가지 않습니다</li>
       </ol>
-      <p>데모 전용 키이므로 유출되어도 TMDB에서 재발급 후 교체만 하면 되고, 다른 서비스에는 영향이 없습니다.</p>
+      <p>키는 코드·저장소·브라우저 어디에도 노출되지 않으며, 유출 의심 시 TMDB에서 재발급 후 시크릿만 교체하면 됩니다.</p>
     </div>
   </div>
 </div>
@@ -495,9 +495,11 @@
   "use strict";
 
   /* ============ 설정 / 상태 ============ */
-  // API 키는 코드에 두지 않고 .env 파일에 보관합니다.
-  // local-server.js가 .env를 읽어 /env.js(window.__ENV__)로 주입합니다.
-  const TMDB_API_KEY = (window.__ENV__ && window.__ENV__.TMDB_API_KEY) || "";
+  // API 키는 코드에 두지 않습니다 (기획서 6장 서버리스 프록시 구조).
+  // 기본: Cloudflare Worker(server/worker.js)가 시크릿 키를 붙여 TMDB에 중계 → 배포 링크에서 바로 작동.
+  // 로컬 개발 예외: local-server.js가 .env를 읽어 /env.js(window.__ENV__)로 키를 주입하면 TMDB 직접 호출.
+  const PROXY_BASE_URL = "https://reelvault-proxy.leegm0430.workers.dev";
+  const LOCAL_API_KEY = (window.__ENV__ && window.__ENV__.TMDB_API_KEY) || "";
   const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
   const IMG500 = "https://image.tmdb.org/t/p/w500";
@@ -531,17 +533,23 @@
   const detailModal = $("detailModal");
 
   /* ============ API 유틸 ============ */
-  // TMDB에 직접 요청하며, 데모 전용 키를 쿼리 파라미터로 붙입니다.
+  // 로컬 키가 주입돼 있으면 TMDB 직접 호출, 아니면 프록시를 경유합니다.
   function isApiKeyConfigured(){
-    return TMDB_API_KEY && TMDB_API_KEY !== "YOUR_TMDB_API_KEY";
+    return !!(PROXY_BASE_URL || (LOCAL_API_KEY && LOCAL_API_KEY !== "YOUR_TMDB_API_KEY"));
   }
 
   async function tmdb(path, params){
     params = params || {};
     if(!params.language) params.language = "ko-KR"; // 필요 시 호출부에서 덮어쓸 수 있음
-    params.api_key = TMDB_API_KEY;
+    let base;
+    if(LOCAL_API_KEY && LOCAL_API_KEY !== "YOUR_TMDB_API_KEY"){
+      params.api_key = LOCAL_API_KEY;
+      base = TMDB_BASE_URL + path;
+    }else{
+      base = PROXY_BASE_URL + "/api" + path;
+    }
     const qs = new URLSearchParams(params).toString();
-    const res = await fetch(`${TMDB_BASE_URL}${path}?${qs}`);
+    const res = await fetch(`${base}?${qs}`);
     if(!res.ok){
       throw new Error("TMDB_ERROR_" + res.status);
     }

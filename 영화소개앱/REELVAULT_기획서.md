@@ -419,3 +419,18 @@ TMDB의 `/movie/{id}/videos` 조회 시 모든 요청에 `language=ko-KR`을 일
 | 신규 파일 | `.env`(로컬 전용, git 미포함), `.env.example`(키 없는 템플릿) |
 | 실행 방법 | `.env.example`을 `.env`로 복사해 키 입력 → `로컬서버실행.bat` 실행. `.env`가 없으면 기존 키 설정 안내 모달이 표시됨 |
 | 주의 | 기존 커밋 히스토리에는 이전 키가 남아 있으므로, TMDB에서 **키 재발급 후 `.env`만 교체**하는 것을 권장 |
+
+---
+
+## 15. v3.4 — Cloudflare Workers 프록시 실제 배포 (배포 링크에서 키 없이 작동)
+
+**작업일: 2026-07-12**
+
+| 항목 | 내용 |
+|---|---|
+| 배경 | v3.3에서 키를 `.env`로 분리하자 GitHub Pages 배포 링크에서는 키가 없어 앱이 작동하지 않는 문제 발생 |
+| 해결 | 기획서 6장 설계를 실제 구현: `server/worker.js` + `server/wrangler.toml` 작성 후 Cloudflare Workers에 배포. 키는 `wrangler secret put TMDB_API_KEY`로 시크릿 등록 |
+| 프록시 주소 | `https://reelvault-proxy.leegm0430.workers.dev` (같은 요청 5분 엣지 캐시) |
+| 동작 규칙 | 로컬에서 `.env` 키가 주입되면(`window.__ENV__`) TMDB 직접 호출, 아니면(배포 링크 포함) 프록시 경유 — 방문자는 아무 설정 없이 바로 사용 |
+| 보안 | 키는 Cloudflare 시크릿에만 존재. 코드·저장소·브라우저 어디에도 노출되지 않음. 프록시는 GET + `/api/*` 경로만 허용, 클라이언트가 보낸 `api_key` 파라미터는 무시 |
+| 배포 링크 | https://leegm0430.github.io/seminer/영화소개앱/index.html |

@@ -1,0 +1,7 @@
+name = "reelvault-proxy"
+main = "worker.js"
+compatibility_date = "2026-07-12"
+
+# TMDB_API_KEY는 코드/저장소에 두지 않고 시크릿으로만 등록합니다:
+#   cd server
+#   npx wrangler secret put TMDB_API_KEY
