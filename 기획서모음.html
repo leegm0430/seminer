@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이경민 · 기획서 모음</title>
+  <style>
+    :root {
+      --bg:        #0f172a;
+      --bg-alt:    #111827;
+      --card:      #1e293b;
+      --border:    #2d3f55;
+      --blue:      #3b82f6;
+      --blue-lt:   #60a5fa;
+      --green:     #16a34a;
+      --green-lt:  #4ade80;
+      --text:      #f1f5f9;
+      --text-2:    #94a3b8;
+      --text-3:    #64748b;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ── NAV ─────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(15, 23, 42, 0.96);
+      border-bottom: 1px solid var(--border);
+      z-index: 999;
+      backdrop-filter: blur(6px);
+    }
+    nav ul {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      gap: 1.75rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.9rem 2rem;
+    }
+    nav .logo { margin-right: auto; font-weight: 700; font-size: 0.95rem; }
+    nav a { color: var(--text-2); text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
+    nav a:hover { color: var(--green-lt); }
+
+    /* ── HEADER ──────────────────────────────────────── */
+    header {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 8rem 2rem 3rem;
+    }
+    .eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--green-lt);
+      margin-bottom: 0.8rem;
+    }
+    header h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 0.8rem;
+    }
+    header p {
+      color: var(--text-2);
+      font-size: 0.95rem;
+      max-width: 640px;
+    }
+
+    /* ── GRID ────────────────────────────────────────── */
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem 2rem 5rem;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-title:first-child { margin-top: 0; }
+    .section-title .tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--green-lt);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* ── DOC CARD ────────────────────────────────────── */
+    .doc-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.4rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s;
+    }
+    .doc-card:hover { border-color: var(--green-lt); }
+    .doc-sub {
+      font-size: 0.7rem;
+      color: var(--green-lt);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+    .doc-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.45; }
+    .doc-card p  { color: var(--text-2); font-size: 0.84rem; line-height: 1.65; margin-bottom: 1.1rem; flex: 1; }
+    .doc-links { display: flex; gap: 1.1rem; flex-wrap: wrap; }
+    .doc-links a { font-size: 0.84rem; font-weight: 600; color: var(--blue-lt); text-decoration: none; }
+    .doc-links a:hover { color: var(--green-lt); }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    footer {
+      background: #080d18;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 2.5rem 2rem;
+      color: var(--text-3);
+      font-size: 0.8rem;
+    }
+    footer a { color: var(--green-lt); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      header { padding: 6.5rem 1.25rem 2rem; }
+      .wrap  { padding: 0.5rem 1.25rem 3.5rem; }
+      nav ul { gap: 1rem; padding: 0.8rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <ul>
+    <li class="logo"><a href="기획서모음.html" style="color:var(--text); font-weight:700;">기획서 모음</a></li>
+    <li><a href="index.html">포트폴리오 홈</a></li>
+    <li><a href="games.html">게임 갤러리</a></li>
+    <li><a href="TC모음.html">TC 모음</a></li>
+  </ul>
+</nav>
+
+<!-- HEADER -->
+<header>
+  <p class="eyebrow">Game Design Documents</p>
+  <h1>기획·분석 문서 모음</h1>
+  <p>
+    라이브 게임 역기획·콘텐츠 분석부터 직접 개발한 게임의 최종 기획서까지 총 7건입니다.
+    "보기"를 클릭하면 브라우저에서 바로 내용을 볼 수 있고, 원본 파일도 다운로드할 수 있습니다.
+  </p>
+</header>
+
+<!-- DOC GRID -->
+<div class="wrap">
+
+  <h2 class="section-title"><span class="tag">Reverse Design &amp; Analysis</span>역기획 · 분석 문서</h2>
+  <div class="doc-grid">
+
+    <div class="doc-card">
+      <p class="doc-sub">콘텐츠 분석 보고서 · MD + PPTX</p>
+      <h3>메이플스토리 챌린저스 월드 시즌4 콘텐츠 분석서</h3>
+      <p>챌린저스 월드 시즌4(OVERDRIVE 업데이트)의 콘텐츠 구조를 분석한 보고서 v2.2</p>
+      <div class="doc-links">
+        <a href="기획서/challengers_s4_analysis.html">보기 →</a>
+        <a href="기획서/challengers_s4_analysis.md" download>⬇ MD</a>
+        <a href="기획서/challengers_s4_analysis.pptx" download>⬇ PPTX</a>
+      </div>
+    </div>
+
+    <div class="doc-card">
+      <p class="doc-sub">역기획서 · MD + PPTX</p>
+      <h3>챌린저스 월드 '티어 시스템' 역기획서</h3>
+      <p>메이플스토리 챌린저스 월드의 티어 시스템을 분해해 설계 의도와 구조를 정리한 역기획서 v1.1</p>
+      <div class="doc-links">
+        <a href="기획서/challengers_tier_system_reverse_design.html">보기 →</a>
+        <a href="기획서/challengers_tier_system_reverse_design.md" download>⬇ MD</a>
+        <a href="기획서/challengers_tier_system.pptx" download>⬇ PPTX</a>
+      </div>
+    </div>
+
+    <div class="doc-card">
+      <p class="doc-sub">역기획서 · MD + PPTX</p>
+      <h3>챌린저스 월드 '아이템 버닝 PLUS' 역기획서</h3>
+      <p>장비 성장 지원 시스템 '아이템 버닝 PLUS'의 구조와 설계 의도를 정리한 역기획서 v1.2</p>
+      <div class="doc-links">
+        <a href="기획서/item_burning_plus_reverse_design.html">보기 →</a>
+        <a href="기획서/item_burning_plus_reverse_design.md" download>⬇ MD</a>
+        <a href="기획서/item_burning_plus.pptx" download>⬇ PPTX</a>
+      </div>
+    </div>
+
+    <div class="doc-card">
+      <p class="doc-sub">역기획서 · MD</p>
+      <h3>The Binding of Isaac 역기획서</h3>
+      <p>아이작의 번제(전체 DLC 기준)의 시스템을 "왜 이렇게 설계됐는가" 중심으로 해부한 분석 문서</p>
+      <div class="doc-links">
+        <a href="기획서/아이작-역기획서.html">보기 →</a>
+        <a href="기획서/아이작-역기획서.md" download>⬇ MD</a>
+      </div>
+    </div>
+
+    <div class="doc-card">
+      <p class="doc-sub">플랫폼 분석 · PDF</p>
+      <h3>Steam 플랫폼 분석</h3>
+      <p>스팀 플랫폼의 특성을 QA 관점에서 분석한 문서</p>
+      <div class="doc-links">
+        <a href="기획서/Steam 플랫폼 분석.html">보기 →</a>
+        <a href="기획서/Steam 플랫폼 분석.pdf" download>⬇ PDF</a>
+      </div>
+    </div>
+
+    <div class="doc-card">
+      <p class="doc-sub">재미 분석 · PDF</p>
+      <h3>운빨존많겜 재미 분석</h3>
+      <p>라이브 게임 운빨존많겜의 재미 요소를 분석한 문서</p>
+      <div class="doc-links">
+        <a href="기획서/운빨존많겜 재미분석작성자_이경민.html">보기 →</a>
+        <a href="기획서/운빨존많겜 재미분석작성자_이경민.pdf" download>⬇ PDF</a>
+      </div>
+    </div>
+
+  </div>
+
+  <h2 class="section-title"><span class="tag">Game Design</span>게임 기획서</h2>
+  <div class="doc-grid">
+
+    <div class="doc-card">
+      <p class="doc-sub">최종 기획서 · PDF</p>
+      <h3>캡스톤 디자인 (Return of the Dark Lord) 최종 기획서</h3>
+      <p>직접 개발한 전략 디펜스 게임 Return of the Dark Lord의 최종 기획서</p>
+      <div class="doc-links">
+        <a href="기획서/캡스톤 디자인 (Return of the Dark Lord) 최종 기획서.html">보기 →</a>
+        <a href="기획서/캡스톤 디자인 (Return of the Dark Lord) 최종 기획서.pdf" download>⬇ PDF</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>이경민 · <a href="index.html">Game QA Portfolio</a> · leegm0430@gmail.com</p>
+</footer>
+
+</body>
+</html>

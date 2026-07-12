@@ -196,7 +196,7 @@ foreach ($file in $files) {
             }
         }
 
-        # 기대 결과 열 찾기 (지정 파일만 해당 열을 왼쪽 정렬)
+        # 기대 결과 열 찾기 (지정 파일만 엑셀의 셀별 정렬을 그대로 반영)
         $leftCols = @{}
         if ($wantLeftExpected) {
             foreach ($hr in @($headerRow, $headerRow2)) {
@@ -209,6 +209,23 @@ foreach ($file in $files) {
                     }
                 }
             }
+        }
+
+        # 기대 결과 열의 셀별 가로 정렬을 엑셀에서 읽음 (-4108 가운데 / -4152 오른쪽 / 그 외 왼쪽)
+        $alignMap = @{}
+        if ($leftCols.Count -gt 0) {
+            $alCnt = 0; $acCnt = 0
+            foreach ($c in @($leftCols.Keys)) {
+                for ($r = $headerRow + 1; $r -le $lastR; $r++) {
+                    if ($covered[$r,$c]) { continue }
+                    if ((FormatCell $vals[$r,$c]).Trim() -eq '') { continue }
+                    $ha = ($ws.Cells.Item(($rOff + $r - 1), ($cOff + $c - 1))).HorizontalAlignment
+                    if ($ha -eq -4108) { $alignMap["$r,$c"] = 'ac'; $acCnt++ }
+                    elseif ($ha -eq -4152) { $alignMap["$r,$c"] = 'ar' }
+                    else { $alignMap["$r,$c"] = 'al'; $alCnt++ }
+                }
+            }
+            Write-Host "      기대결과 정렬: 왼쪽 $alCnt / 가운데 $acCnt"
         }
 
         $lastHeadRow = if ($headerRow2 -gt 0) { $headerRow2 } else { $headerRow }
@@ -225,7 +242,11 @@ foreach ($file in $files) {
                 if ($txt -ne '') { $rowEmpty = $false }
                 $tag = if ($isHead) { 'th' } else { 'td' }
                 $cls = if (-not $isHead) { StatusClass $txt } else { '' }
-                if (-not $isHead -and $leftCols[$c]) { $cls = "$cls al".Trim() }
+                if (-not $isHead -and $leftCols[$c]) {
+                    $a = $alignMap["$r,$c"]
+                    if (-not $a) { $a = 'al' }
+                    $cls = "$cls $a".Trim()
+                }
                 $attr = if ($cls) { " class='$cls'" } else { '' }
                 if ($spanR[$r,$c] -gt 1) { $attr += " rowspan='$($spanR[$r,$c])'" }
                 if ($spanC[$r,$c] -gt 1) { $attr += " colspan='$($spanC[$r,$c])'" }
@@ -287,7 +308,9 @@ th, td { border:1px solid var(--border); padding:0.45rem 0.7rem; text-align:cent
 thead th { background:#162032; color:var(--text); font-weight:600; position:sticky; top:0; }
 tbody tr:nth-child(even) { background:#131f33; }
 tbody tr:hover { background:#1a2a44; }
-td.al { text-align:left; }
+td.al { text-align:left; white-space:pre; }
+td.ac { text-align:center; white-space:pre; }
+td.ar { text-align:right; white-space:pre; }
 .st-pass { color:var(--green-lt); font-weight:700; }
 .st-fail { color:#f87171; font-weight:700; }
 .st-hold { color:#facc15; font-weight:600; }

@@ -31,7 +31,9 @@ th, td { border:1px solid var(--border); padding:0.45rem 0.7rem; text-align:cent
 thead th { background:#162032; color:var(--text); font-weight:600; position:sticky; top:0; }
 tbody tr:nth-child(even) { background:#131f33; }
 tbody tr:hover { background:#1a2a44; }
-td.al { text-align:left; }
+td.al { text-align:left; white-space:pre; }
+td.ac { text-align:center; white-space:pre; }
+td.ar { text-align:right; white-space:pre; }
 .st-pass { color:var(--green-lt); font-weight:700; }
 .st-fail { color:#f87171; font-weight:700; }
 .st-hold { color:#facc15; font-weight:600; }
@@ -51,7 +53,7 @@ td.al { text-align:left; }
 
 2. 메인 타이틀 화면 진입
 
-3. [Start] 버튼 클릭</td><td>기능</td><td class='al'>설정 화면으로 진입 가능함.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>02</td><td>설정_02</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td>[ESC] 키 입력</td><td></td><td>게임 실행중 / 인게임 화면 진입</td><td>1. 게임 실행
+3. [Start] 버튼 클릭</td><td>기능</td><td class='ac'>설정 화면으로 진입 가능함.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>02</td><td>설정_02</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td>[ESC] 키 입력</td><td></td><td>게임 실행중 / 인게임 화면 진입</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
@@ -59,7 +61,7 @@ td.al { text-align:left; }
 
 4. [ESC] 키 입력 
 
-5. 설정 진입 후 &quot;Setting&quot; 텍스트 노출 확인</td><td>UI</td><td class='al'>Setting 텍스트 노출 됨
+5. 설정 진입 후 &quot;Setting&quot; 텍스트 노출 확인</td><td>UI</td><td class='ac'>Setting 텍스트 노출 됨
                                                                             X
 Setting                       
 --------------------------------------------------------------------
@@ -81,7 +83,7 @@ Setting
 
 5. 설정 진입 후 &quot;Setting&quot; 텍스트 노출 확인
 
-6. 인터페이스 설정 화면 노출</td><td>기능</td><td class='al'>인터페이스 설정 화면이 노출된다.
+6. 인터페이스 설정 화면 노출</td><td>기능</td><td class='ac'>인터페이스 설정 화면이 노출된다.
                                                                              X
 Setting
 --------------------------------------------------------------------
@@ -103,7 +105,7 @@ Setting
 
 5. 설정 진입 후 &quot;Setting&quot; 텍스트 노출 확인
 
-6, [Sound] 버튼 클릭</td><td>기능</td><td class='al'>사운드 설정 화면이 노출된다.
+6, [Sound] 버튼 클릭</td><td>기능</td><td class='ac'>사운드 설정 화면이 노출된다.
 
 Setting
 --------------------------------------------------------------------
@@ -130,7 +132,7 @@ SFX      🔊            |                  ⬜                |
 
 5. 설정 진입 후 &quot;Setting&quot; 텍스트 노출 확인
 
-6. [Save] 버튼 클릭</td><td>기능</td><td class='al'>Save 설정 화면이 노출된다. 
+6. [Save] 버튼 클릭</td><td>기능</td><td class='ac'>Save 설정 화면이 노출된다. 
 
 Setting
 --------------------------------------------------------------------
@@ -157,7 +159,7 @@ Setting
 
 5. 설정 진입 후 &quot;Setting&quot; 텍스트 노출 확인
 
-6.[Interface] 버튼 클릭</td><td>기능</td><td class='al'>인터페이스 설정 화면이 노출된다.
+6.[Interface] 버튼 클릭</td><td>기능</td><td class='ac'>인터페이스 설정 화면이 노출된다.
 
 Setting
 --------------------------------------------------------------------
@@ -177,7 +179,7 @@ Setting
 
 4. [ESC] 키 입력
 
-5. 설정 진입 후 &quot;Interface&quot; 텍스트 노출 확인</td><td>기능</td><td class='al'>인터페이스 텍스트가 노출된다.
+5. 설정 진입 후 &quot;Interface&quot; 텍스트 노출 확인</td><td>기능</td><td class='ac'>인터페이스 텍스트가 노출된다.
 
 Setting
 --------------------------------------------------------------------
@@ -190,7 +192,7 @@ Setting
 
 4. [ESC] 키 입력
 
-5. 설정 진입 후 &quot;Sound&quot; 텍스트 노출 확인</td><td>기능</td><td class='al'>사운드 텍스트가 노출된다.
+5. 설정 진입 후 &quot;Sound&quot; 텍스트 노출 확인</td><td>기능</td><td class='ac'>사운드 텍스트가 노출된다.
 
 Setting
 --------------------------------------------------------------------
@@ -203,7 +205,7 @@ Setting
 
 4. [ESC] 키 입력
 
-5. 설정 진입 후 &quot;Save&quot; 텍스트 노출 확인</td><td>기능</td><td class='al'>Save 텍스트가 노출된다.
+5. 설정 진입 후 &quot;Save&quot; 텍스트 노출 확인</td><td>기능</td><td class='ac'>Save 텍스트가 노출된다.
 
 Setting
 --------------------------------------------------------------------
@@ -216,7 +218,7 @@ Setting
 
 4. [ESC] 키 입력
 
-5. 설정 진입 후 [Interface]탭에서  UI Scale의  텍스트 노출 확인</td><td>기능</td><td class='al'>UI Scale 텍스트 노출 됨
+5. 설정 진입 후 [Interface]탭에서  UI Scale의  텍스트 노출 확인</td><td>기능</td><td class='ac'>UI Scale 텍스트 노출 됨
 
 Setting
 --------------------------------------------------------------------
@@ -232,7 +234,7 @@ Setting
 
 4. [ESC] 키 입력
 
-5. 설정 진입 후 [Interface]탭에서  Hints의  텍스트 노출 확인</td><td>기능</td><td class='al'>HINTS 텍스트가 노출된다.
+5. 설정 진입 후 [Interface]탭에서  Hints의  텍스트 노출 확인</td><td>기능</td><td class='ac'>HINTS 텍스트가 노출된다.
 
 Setting
 --------------------------------------------------------------------
@@ -250,7 +252,7 @@ Setting
 
 4. [ESC] 키 입력
 
-5. 설정 진입 후 UI Scale의 스크롤바 노출 확인 및 초기 세팅 50% 확인</td><td>기능</td><td class='al'>UI Scale의 스크롤바가 노출 된다. (초기 세팅 50%)
+5. 설정 진입 후 UI Scale의 스크롤바 노출 확인 및 초기 세팅 50% 확인</td><td>기능</td><td class='ac'>UI Scale의 스크롤바가 노출 된다. (초기 세팅 50%)
 
 Setting
 --------------------------------------------------------------------
@@ -266,7 +268,7 @@ Setting
 
 4. [ESC] 키 입력
 
-5. 설정 진입 후 Hints의 스크롤바 노출 확인 및 초기세팅 50% 확인</td><td>기능</td><td class='al'>Hints의 스크롤바가 노출 된다.(초기세팅 50%)
+5. 설정 진입 후 Hints의 스크롤바 노출 확인 및 초기세팅 50% 확인</td><td>기능</td><td class='ac'>Hints의 스크롤바가 노출 된다.(초기세팅 50%)
 
 Setting
 --------------------------------------------------------------------
@@ -284,7 +286,7 @@ Setting
 
 4. [ESC] 키 입력
 
-5. 설정 진입 후 UI Scale의 스크롤바 드래깅 확인</td><td>기능</td><td class='al'>UI Scale의 스크롤바 드래깅 시 스크롤바 작동
+5. 설정 진입 후 UI Scale의 스크롤바 드래깅 확인</td><td>기능</td><td class='ac'>UI Scale의 스크롤바 드래깅 시 스크롤바 작동
 
 Setting
 --------------------------------------------------------------------
@@ -300,7 +302,7 @@ Setting
 
 4. [ESC] 키 입력
 
-5. 설정 진입 후 Hints의 스크롤바 드래깅 확인</td><td>기능</td><td class='al'>Hints의 스크롤바 드래깅 시 스크롤바 작동
+5. 설정 진입 후 Hints의 스크롤바 드래깅 확인</td><td>기능</td><td class='ac'>Hints의 스크롤바 드래깅 시 스크롤바 작동
 
 Setting
 --------------------------------------------------------------------
@@ -318,7 +320,7 @@ Setting
 
 4. [ESC] 키 입력
 
-5. 설정 진입 후 UI Scale의 스크롤바 왼쪽 끝까지 드래깅</td><td>기능</td><td class='al'>UI Scale의 스크롤바 드래깅 시 스크롤바 작동
+5. 설정 진입 후 UI Scale의 스크롤바 왼쪽 끝까지 드래깅</td><td>기능</td><td class='ac'>UI Scale의 스크롤바 드래깅 시 스크롤바 작동
 
 Setting
 --------------------------------------------------------------------
@@ -336,7 +338,7 @@ Setting
 
 5. 설정 진입 후 [Sound] 버튼 클릭
 
-6. 설정 진입후 [Sound]탭에서 ALL 텍스트 노출 확인</td><td>UI</td><td class='al'>All 텍스트가 노출된다.
+6. 설정 진입후 [Sound]탭에서 ALL 텍스트 노출 확인</td><td>UI</td><td class='ac'>All 텍스트가 노출된다.
 
 Setting
 --------------------------------------------------------------------
@@ -357,7 +359,7 @@ All          🔊            |                  ⬜                |
 
 5. 설정 진입 후 [Sound] 버튼 클릭
 
-6. 설정 진입후 [Sound]탭에서 BGM 텍스트 노출 확인</td><td>UI</td><td class='al'>BGM 텍스트가 노출된다.
+6. 설정 진입후 [Sound]탭에서 BGM 텍스트 노출 확인</td><td>UI</td><td class='ac'>BGM 텍스트가 노출된다.
 
 Setting
 --------------------------------------------------------------------
@@ -378,7 +380,7 @@ BGM         🔊         |                  ⬜                |
 
 5. 설정 진입 후 [Sound] 버튼 클릭
 
-6. 설정 진입후 [Sound]탭에서 SFX 텍스트 노출 확인</td><td>UI</td><td class='al'>SFX 텍스트가 노출된다.
+6. 설정 진입후 [Sound]탭에서 SFX 텍스트 노출 확인</td><td>UI</td><td class='ac'>SFX 텍스트가 노출된다.
 
 Setting
 --------------------------------------------------------------------
@@ -399,7 +401,7 @@ SFX         🔊         |                  ⬜                |
 
 5. 설정 진입 후 [Sound] 버튼 클릭
 
-6. 설정 진입후 [Sound]탭에서 All 🔊 노출 확인</td><td>UI</td><td class='al'>All 🔊 이미지 노출된다.
+6. 설정 진입후 [Sound]탭에서 All 🔊 노출 확인</td><td>UI</td><td class='ac'>All 🔊 이미지 노출된다.
 
 Setting
 --------------------------------------------------------------------
@@ -420,7 +422,7 @@ All          🔊            |                  ⬜                |
 
 5. 설정 진입 후 [Sound] 버튼 클릭
 
-6. 설정 진입후 [Sound]탭에서 BGM 🔊  노출 확인</td><td>UI</td><td class='al'>BGM 🔊 이미지 노출된다.
+6. 설정 진입후 [Sound]탭에서 BGM 🔊  노출 확인</td><td>UI</td><td class='ac'>BGM 🔊 이미지 노출된다.
 
 Setting
 --------------------------------------------------------------------
@@ -441,7 +443,7 @@ BGM          🔊         |                  ⬜                |
 
 5. 설정 진입 후 [Sound] 버튼 클릭
 
-6. 설정 진입후 [Sound]탭에서 SFX 🔊  노출 확인</td><td>UI</td><td class='al'>SFX 🔊 이미지 노출된다.
+6. 설정 진입후 [Sound]탭에서 SFX 🔊  노출 확인</td><td>UI</td><td class='ac'>SFX 🔊 이미지 노출된다.
 
 Setting
 --------------------------------------------------------------------
@@ -462,7 +464,7 @@ SFX          🔊         |                  ⬜                |
 
 5. 설정 진입 후 [Sound] 버튼 클릭
 
-6. 설정 진입후 [Sound]탭에서 All 스크롤바 노출 확인</td><td>UI</td><td class='al'>All 🔊 스크롤바 노출된다. (초기세팅 50%)
+6. 설정 진입후 [Sound]탭에서 All 스크롤바 노출 확인</td><td>UI</td><td class='ac'>All 🔊 스크롤바 노출된다. (초기세팅 50%)
 
 Setting
 --------------------------------------------------------------------
@@ -483,7 +485,7 @@ All          🔊            |                  ⬜                |
 
 5. 설정 진입 후 [Sound] 버튼 클릭
 
-6. 설정 진입후 [Sound]탭에서 BGM 스크롤바 노출 확인</td><td>UI</td><td class='al'>BGM🔊 스크롤바 노출된다. (초기세팅 50%)
+6. 설정 진입후 [Sound]탭에서 BGM 스크롤바 노출 확인</td><td>UI</td><td class='ac'>BGM🔊 스크롤바 노출된다. (초기세팅 50%)
 
 Setting
 --------------------------------------------------------------------
@@ -504,7 +506,7 @@ BGM          🔊         |                  ⬜                |
 
 5. 설정 진입 후 [Sound] 버튼 클릭
 
-6. 설정 진입후 [Sound]탭에서 SFX 스크롤바 노출 확인</td><td>UI</td><td class='al'>SFX 🔊 스크롤바 노출된다. (초기세팅 50%)
+6. 설정 진입후 [Sound]탭에서 SFX 스크롤바 노출 확인</td><td>UI</td><td class='ac'>SFX 🔊 스크롤바 노출된다. (초기세팅 50%)
 
 Setting
 --------------------------------------------------------------------
@@ -525,7 +527,7 @@ SFX         🔊           |                  ⬜                |
 
 5. 설정 진입 후 [Sound] 버튼 클릭
 
-6. 설정 진입후 [Sound]탭에서 All스크롤바 드래깅 확인</td><td>기능</td><td class='al'>All  스크롤바 드래깅 확인 
+6. 설정 진입후 [Sound]탭에서 All스크롤바 드래깅 확인</td><td>기능</td><td class='ac'>All  스크롤바 드래깅 확인 
 
 Setting
 --------------------------------------------------------------------
@@ -546,7 +548,7 @@ All          🔊            |        ⬜                          |
 
 5. 설정 진입 후 [Sound] 버튼 클릭
 
-6. 설정 진입후 [Sound]탭에서 BGM 스크롤바 드래깅 확인</td><td>기능</td><td class='al'>BGM 스크롤바 드래깅 확인
+6. 설정 진입후 [Sound]탭에서 BGM 스크롤바 드래깅 확인</td><td>기능</td><td class='ac'>BGM 스크롤바 드래깅 확인
 
 Setting
 --------------------------------------------------------------------
@@ -567,7 +569,7 @@ BGM          🔊         |                           ⬜       |
 
 5. 설정 진입 후 [Sound] 버튼 클릭
 
-6. 설정 진입후 [Sound]탭에서 SFX 스크롤바 드래깅 확인</td><td>기능</td><td class='al'>SFX  스크롤바 드래깅 확인
+6. 설정 진입후 [Sound]탭에서 SFX 스크롤바 드래깅 확인</td><td>기능</td><td class='ac'>SFX  스크롤바 드래깅 확인
 
 Setting
 --------------------------------------------------------------------
@@ -590,7 +592,7 @@ SFX         🔊           |         ⬜                         |
 
 6. 설정 진입후 [Sound]탭에서 All 스크롤바  왼쪽까지 드래깅 
 
-7. 소리가 0 일때 UI 변경 노출 확인</td><td>UI</td><td class='al'>All  소리가 0 일때 UI 변경 노출 확인
+7. 소리가 0 일때 UI 변경 노출 확인</td><td>UI</td><td class='ac'>All  소리가 0 일때 UI 변경 노출 확인
 
 Setting
 --------------------------------------------------------------------
@@ -613,7 +615,7 @@ All         🔇             |⬜                                  |
 
 6. 설정 진입후 [Sound]탭에서 BGM 스크롤바  왼쪽까지 드래깅 
 
-7. 소리가 0 일때 UI 변경 노출 확인</td><td>UI</td><td class='al'>BGM  소리가 0 일때 UI 변경 노출 확인
+7. 소리가 0 일때 UI 변경 노출 확인</td><td>UI</td><td class='ac'>BGM  소리가 0 일때 UI 변경 노출 확인
 
 Setting
 --------------------------------------------------------------------
@@ -636,7 +638,7 @@ BGM         🔇         |⬜                                  |
 
 6. 설정 진입후 [Sound]탭에서 SFX 스크롤바  왼쪽까지 드래깅 
 
-7. 소리가 0 일때 UI 변경 노출 확인</td><td>UI</td><td class='al'>SFX  소리가 0 일때 UI 변경 노출 확인
+7. 소리가 0 일때 UI 변경 노출 확인</td><td>UI</td><td class='ac'>SFX  소리가 0 일때 UI 변경 노출 확인
 
 Setting
 --------------------------------------------------------------------
@@ -655,7 +657,7 @@ SFX         🔇          |⬜                                  |
 
 4. [ESC] 키 입력 
 
-5. 설정 진입후 [X] 버튼 노출 확인</td><td>UI</td><td class='al'>[X] 버튼 노출 확인
+5. 설정 진입후 [X] 버튼 노출 확인</td><td>UI</td><td class='ac'>[X] 버튼 노출 확인
                                                                             X
 Setting                       
 --------------------------------------------------------------------
@@ -675,7 +677,7 @@ Setting
 
 4. [ESC] 키 입력 
 
-5. 설정 진입후 [X] 버튼 클릭</td><td>기능</td><td class='al'>[X] 버튼 클릭 시 인게임 화면으로 이동됨.
+5. 설정 진입후 [X] 버튼 클릭</td><td>기능</td><td class='ac'>[X] 버튼 클릭 시 인게임 화면으로 이동됨.
                                                                             X
 Setting                       
 --------------------------------------------------------------------
@@ -688,13 +690,13 @@ Setting
                                ----------------------------------        
        HINTS              |                   ⬜               |       
                                ----------------------------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td colspan='14'>전체 공란</td></tr></tbody></table></div></div>
-<div class='sheet' id='sheet2'><div class='meta'><p>Return of the Dark Lord [로딩 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='4'>진입 방법</th><th rowspan='2'>사전 조건</th><th rowspan='2'>절차</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선 순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고란</th></tr><tr><th>진입1</th><th>진입2</th><th>진입3</th><th>진입4</th></tr></thead><tbody><tr><td>01</td><td>로딩 화면_01</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td></td><td>기능</td><td class='al'>로딩 화면으로 진입 가능함.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>02</td><td>로딩 화면_02</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
+<div class='sheet' id='sheet2'><div class='meta'><p>Return of the Dark Lord [로딩 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='4'>진입 방법</th><th rowspan='2'>사전 조건</th><th rowspan='2'>절차</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선 순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고란</th></tr><tr><th>진입1</th><th>진입2</th><th>진입3</th><th>진입4</th></tr></thead><tbody><tr><td>01</td><td>로딩 화면_01</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td></td><td>기능</td><td class='ac'>로딩 화면으로 진입 가능함.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>02</td><td>로딩 화면_02</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 로딩 스크롤 바 노출 확인</td><td>UI</td><td class='al'>로딩화면 진입 후 로딩 스크롤 바 노출 
+4. 로딩 화면 진입 후 로딩 스크롤 바 노출 확인</td><td>UI</td><td class='ac'>로딩화면 진입 후 로딩 스크롤 바 노출 
 
  ----------------------------------------------------------------------------
 ㅣ                                                                                       ㅣ
@@ -711,7 +713,7 @@ Setting
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 로딩 스크롤 바 게이지 채워지는 것 확인</td><td>기능</td><td class='al'>로딩 화면에 로딩 스크롤 바가 채워지는 것이 확인 된다.
+4. 로딩 화면 진입 후 로딩 스크롤 바 게이지 채워지는 것 확인</td><td>기능</td><td class='ac'>로딩 화면에 로딩 스크롤 바가 채워지는 것이 확인 된다.
 
  ----------------------------------------------------------------------------
 ㅣ                                                                                       ㅣ
@@ -728,7 +730,7 @@ Setting
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 로딩 스크롤 바 게이지가 모두 채워진 것을  확인</td><td>기능</td><td class='al'>로딩 화면에 로딩 스크롤 바가 채워진 후 인게임 화면으로 이동 된다.
+4. 로딩 화면 진입 후 로딩 스크롤 바 게이지가 모두 채워진 것을  확인</td><td>기능</td><td class='ac'>로딩 화면에 로딩 스크롤 바가 채워진 후 인게임 화면으로 이동 된다.
 
  ----------------------------------------------------------------------------
 ㅣ                                                                                       ㅣ
@@ -745,7 +747,7 @@ Setting
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Darkness returns when humans forget the past.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Darkness returns when humans forget the past.&quot; 
+4. 로딩 화면 진입 후 &quot;Darkness returns when humans forget the past.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Darkness returns when humans forget the past.&quot; 
 텍스트가 노출 된다.
 
  ----------------------------------------------------------------------------
@@ -764,7 +766,7 @@ Setting
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Souls weigh heavier than gold in eternity.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Souls weigh heavier than gold in eternity. 
+4. 로딩 화면 진입 후 &quot;Souls weigh heavier than gold in eternity.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Souls weigh heavier than gold in eternity. 
 텍스트가 노출 된다.
 
  ----------------------------------------------------------------------------
@@ -782,7 +784,7 @@ Setting
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Every ember can awaken an endless darkness.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Every ember can awaken an endless darkness.&quot; 
+4. 로딩 화면 진입 후 &quot;Every ember can awaken an endless darkness.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Every ember can awaken an endless darkness.&quot; 
 텍스트가 노출 된다.
 
  ----------------------------------------------------------------------------
@@ -800,7 +802,7 @@ Setting
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;The darkest bargains always demand their price.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;The darkest bargains always demand their price.&quot; 
+4. 로딩 화면 진입 후 &quot;The darkest bargains always demand their price.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;The darkest bargains always demand their price.&quot; 
 텍스트가 노출 된다.
 
  ----------------------------------------------------------------------------
@@ -818,7 +820,7 @@ Setting
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Shadows endure longer than the brightest light.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Shadows endure longer than the brightest light.&quot; 
+4. 로딩 화면 진입 후 &quot;Shadows endure longer than the brightest light.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Shadows endure longer than the brightest light.&quot; 
 텍스트가 노출 된다.
 
  ----------------------------------------------------------------------------
@@ -836,7 +838,7 @@ Setting
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Defeat only grants time to grow stronger.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Defeat only grants time to grow stronger.&quot; 
+4. 로딩 화면 진입 후 &quot;Defeat only grants time to grow stronger.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Defeat only grants time to grow stronger.&quot; 
 텍스트가 노출 된다.
 
  ----------------------------------------------------------------------------
@@ -854,7 +856,7 @@ Setting
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Even heroes kneel when facing eternal death.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Even heroes kneel when facing eternal death.&quot; 
+4. 로딩 화면 진입 후 &quot;Even heroes kneel when facing eternal death.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Even heroes kneel when facing eternal death.&quot; 
 텍스트가 노출 된다.
 
  ----------------------------------------------------------------------------
@@ -872,7 +874,7 @@ Setting
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Resurrection requires countless souls of fallen.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Resurrection requires countless souls of fallen.&quot; 
+4. 로딩 화면 진입 후 &quot;Resurrection requires countless souls of fallen.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Resurrection requires countless souls of fallen.&quot; 
 텍스트가 노출 된다.
 
  ----------------------------------------------------------------------------
@@ -890,7 +892,7 @@ Setting
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;The loyal dead march without fear forever.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;The loyal dead march without fear forever.&quot; 
+4. 로딩 화면 진입 후 &quot;The loyal dead march without fear forever.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;The loyal dead march without fear forever.&quot; 
 텍스트가 노출 된다.
 
  ----------------------------------------------------------------------------
@@ -908,7 +910,7 @@ Setting
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Your vengeance path is soaked in blood.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Your vengeance path is soaked in blood.&quot; 
+4. 로딩 화면 진입 후 &quot;Your vengeance path is soaked in blood.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Your vengeance path is soaked in blood.&quot; 
 텍스트가 노출 된다.
 
  ----------------------------------------------------------------------------
@@ -926,7 +928,7 @@ Setting
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;A Knight's honor shines brighter than steel.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;A Knight's honor shines brighter than steel.&quot; 
+4. 로딩 화면 진입 후 &quot;A Knight's honor shines brighter than steel.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;A Knight's honor shines brighter than steel.&quot; 
 텍스트가 노출 된다.
 
  ----------------------------------------------------------------------------
@@ -946,7 +948,7 @@ Setting
 
 4. 로딩 화면 진입 후 로딩 스크롤 바 게이지가 모두 채워진 것을  확인
 
-5. 로딩 화면  rgb 값 변화 확인 (1초)</td><td>UI</td><td class='al'>로딩 화면  rgb값 변화
+5. 로딩 화면  rgb 값 변화 확인 (1초)</td><td>UI</td><td class='ac'>로딩 화면  rgb값 변화
 (1초) 투명값 255-(51 x 1) 투명값 : 204
  불투명도가 조금 감소함 (약 80%)</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>17</td><td>로딩 화면_17</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
@@ -956,7 +958,7 @@ Setting
 
 4. 로딩 화면 진입 후 로딩 스크롤 바 게이지가 모두 채워진 것을  확인
 
-5. 로딩 화면  rgb 값 변화 확인 (2초)</td><td>UI</td><td class='al'>로딩 화면 rgb 값 변화
+5. 로딩 화면  rgb 값 변화 확인 (2초)</td><td>UI</td><td class='ac'>로딩 화면 rgb 값 변화
 2초 투명값 255-(51 x 2) 투명값 : 153 
 불투명도가 절반 이상 남음 (약 60%)</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>18</td><td>로딩 화면_18</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
@@ -966,7 +968,7 @@ Setting
 
 4. 로딩 화면 진입 후 로딩 스크롤 바 게이지가 모두 채워진 것을  확인
 
-5. 로딩 화면  rgb 값 변화 확인 (3초)</td><td>UI</td><td class='al'>로딩 화면 rgb 값 변화
+5. 로딩 화면  rgb 값 변화 확인 (3초)</td><td>UI</td><td class='ac'>로딩 화면 rgb 값 변화
 3초 투명값 255-(51 x 3) 투명값 : 102
  불투명도가 절반 이하로 남음 (약 40%)</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>19</td><td>로딩 화면_19</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
@@ -976,7 +978,7 @@ Setting
 
 4. 로딩 화면 진입 후 로딩 스크롤 바 게이지가 모두 채워진 것을  확인
 
-5. 로딩 화면  rgb 값 변화 확인 (4초)</td><td>UI</td><td class='al'>로딩 화면 rgb 값 변화
+5. 로딩 화면  rgb 값 변화 확인 (4초)</td><td>UI</td><td class='ac'>로딩 화면 rgb 값 변화
 4초 투명값 255-(51 x 4) 투명값 : 51 
 거의 투명에 가까워짐 (약 20%)</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>20</td><td>로딩 화면_20</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
@@ -986,7 +988,7 @@ Setting
 
 4. 로딩 화면 진입 후 로딩 스크롤 바 게이지가 모두 채워진 것을  확인
 
-5. 로딩 화면  rgb 값 변화 확인 (5초)</td><td>UI</td><td class='al'>로딩 화면 rgb 값 변화
+5. 로딩 화면  rgb 값 변화 확인 (5초)</td><td>UI</td><td class='ac'>로딩 화면 rgb 값 변화
 5초 투명값 255-(51 x 5) 투명값 : 0 
 완전 투명 상태 (0%)</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>21</td><td>로딩 화면_21</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
@@ -998,7 +1000,7 @@ Setting
 
 5. 로딩 화면  rgb 값 변화 확인 (5초)
 
-6. 인게임 화면 출력</td><td>기능</td><td class='al'>인게임 화면이 출력된다.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>22</td><td>로딩 화면_22</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>스팀 로그인
+6. 인게임 화면 출력</td><td>기능</td><td class='ac'>인게임 화면이 출력된다.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>22</td><td>로딩 화면_22</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>스팀 로그인
 Return of the Dark Lord 설치
 시스템 사운드 0 이상</td><td>1. 배경 화면에서 Return of the Dark Lord 아이콘 클릭 후 게임 실행
 
@@ -1006,18 +1008,18 @@ Return of the Dark Lord 설치
 
 3. [Start] 버튼 클릭
 
-4. 배경 음악 확인</td><td>기능</td><td class='al'>배경 음악이 들린다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>23</td><td>로딩 화면_23</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>스팀 로그인
+4. 배경 음악 확인</td><td>기능</td><td class='ac'>배경 음악이 들린다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>23</td><td>로딩 화면_23</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>스팀 로그인
 Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark Lord 아이콘 클릭 후 게임 실행
 
 2. 게임 진입
 
 3. [Start] 버튼 클릭
 
-4. 배경 구름 확인</td><td>기능</td><td class='al'>구름이 오른쪽으로 횡 스크롤 방식으로 노출된다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
+4. 배경 구름 확인</td><td>기능</td><td class='ac'>구름이 오른쪽으로 횡 스크롤 방식으로 노출된다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
 <div class='sheet' id='sheet3'><div class='meta'><p>41</p><p>Return of the Dark Lord [설명 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='4'>진입 방법</th><th rowspan='2'>사전 조건</th><th rowspan='2'>절차</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선 순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고란</th></tr><tr><th>진입1</th><th>진입2</th><th>진입3</th><th>진입4</th></tr></thead><tbody><tr><td>01</td><td>설명화면_01</td><td>플레이어와 Reaper 
 겹친 상태</td><td>[ ↓ ] 키 입력</td><td></td><td></td><td>튜툐리얼 완료 상태</td><td>1. 플레이어를 Reaper와 겹치게 조작
 
-2. ↓ 키 입력</td><td>UI</td><td class='al'>설명창 화면이 노출됨
+2. ↓ 키 입력</td><td>UI</td><td class='ac'>설명창 화면이 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1037,7 +1039,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 -------------------------------------------------------------------------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>02</td><td>설명화면_02</td><td>플레이어와 Reaper 
 겹친 상태</td><td>[ ↓ ] 키 입력</td><td></td><td></td><td>튜툐리얼 완료 상태</td><td>1. 플레이어를 Reaper와 겹치게 조작
 
-2. ↓ 키 입력</td><td>UI</td><td class='al'>Soul Description 텍스트가 노출됨
+2. ↓ 키 입력</td><td>UI</td><td class='ac'>Soul Description 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1057,7 +1059,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 -------------------------------------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>03</td><td>설명화면_03</td><td>플레이어와 Reaper 
 겹친 상태</td><td>[ ↓ ] 키 입력</td><td></td><td></td><td>튜툐리얼 완료 상태</td><td>1. 플레이어를 Reaper와 겹치게 조작
 
-2. ↓ 키 입력</td><td>UI</td><td class='al'>Soul 텍스트가 노출됨
+2. ↓ 키 입력</td><td>UI</td><td class='ac'>Soul 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1077,7 +1079,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 -------------------------------------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>04</td><td>설명화면_04</td><td>플레이어와 Reaper 
 겹친 상태</td><td>[ ↓ ] 키 입력</td><td></td><td></td><td>튜툐리얼 완료 상태</td><td>1. 플레이어를 Reaper와 겹치게 조작
 
-2. ↓ 키 입력</td><td>UI</td><td class='al'>Kingdom 텍스트가 노출됨
+2. ↓ 키 입력</td><td>UI</td><td class='ac'>Kingdom 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1097,7 +1099,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 -------------------------------------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>05</td><td>설명화면_05</td><td>플레이어와 Reaper 
 겹친 상태</td><td>[ ↓ ] 키 입력</td><td></td><td></td><td>튜툐리얼 완료 상태</td><td>1. 플레이어를 Reaper와 겹치게 조작
 
-2. ↓ 키 입력</td><td>UI</td><td class='al'>An altar 텍스트가 노출됨
+2. ↓ 키 입력</td><td>UI</td><td class='ac'>An altar 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1117,7 +1119,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 -------------------------------------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>06</td><td>설명화면_06</td><td>플레이어와 Reaper 
 겹친 상태</td><td>[ ↓ ] 키 입력</td><td></td><td></td><td>튜툐리얼 완료 상태</td><td>1. 플레이어를 Reaper와 겹치게 조작
 
-2. ↓ 키 입력</td><td>UI</td><td class='al'>Barrier 텍스트가 노출됨
+2. ↓ 키 입력</td><td>UI</td><td class='ac'>Barrier 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1137,7 +1139,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 -------------------------------------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>07</td><td>설명화면_07</td><td>플레이어와 Reaper 
 겹친 상태</td><td>[ ↓ ] 키 입력</td><td></td><td></td><td>튜툐리얼 완료 상태</td><td>1. 플레이어를 Reaper와 겹치게 조작
 
-2. ↓ 키 입력</td><td>UI</td><td class='al'>[ X ] 버튼이 노출됨
+2. ↓ 키 입력</td><td>UI</td><td class='ac'>[ X ] 버튼이 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1159,7 +1161,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3. X 버튼 클릭</td><td>기능</td><td class='al'>[ X ] 버튼 클릭시 설명 창이 종료됨
+3. X 버튼 클릭</td><td>기능</td><td class='ac'>[ X ] 버튼 클릭시 설명 창이 종료됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1179,7 +1181,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 -------------------------------------------------------------------------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>09</td><td>설명화면_09</td><td>플레이어와 Reaper 
 겹친 상태</td><td>[ ↓ ] 키 입력</td><td></td><td></td><td>튜툐리얼 완료 상태</td><td>1. 플레이어를 Reaper와 겹치게 조작
 
-2. ↓ 키 입력</td><td>UI</td><td class='al'>&gt; 버튼이 노출됨
+2. ↓ 키 입력</td><td>UI</td><td class='ac'>&gt; 버튼이 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1199,7 +1201,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 -------------------------------------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>10</td><td>설명화면_10</td><td>플레이어와 Reaper 
 겹친 상태</td><td>[ ↓ ] 키 입력</td><td></td><td></td><td>튜툐리얼 완료 상태</td><td>1. 플레이어를 Reaper와 겹치게 조작
 
-2. ↓ 키 입력</td><td>UI</td><td class='al'>Soul의 이미지가 노출됨
+2. ↓ 키 입력</td><td>UI</td><td class='ac'>Soul의 이미지가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1219,7 +1221,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 -------------------------------------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>11</td><td>설명화면_11</td><td>플레이어와 Reaper 
 겹친 상태</td><td>[ ↓ ] 키 입력</td><td></td><td></td><td>튜툐리얼 완료 상태</td><td>1. 플레이어를 Reaper와 겹치게 조작
 
-2. ↓ 키 입력</td><td>UI</td><td class='al'>Soul의 설명 텍스트가 노출됨
+2. ↓ 키 입력</td><td>UI</td><td class='ac'>Soul의 설명 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1242,7 +1244,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3. Kigdom 텍스트 클릭</td><td>UI</td><td class='al'>Kingdom의 설명창이 노출됨
+3. Kigdom 텍스트 클릭</td><td>UI</td><td class='ac'>Kingdom의 설명창이 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1265,7 +1267,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3. Kigdom 텍스트 클릭</td><td>UI</td><td class='al'>Kingdom Description  텍스트가 노출됨
+3. Kigdom 텍스트 클릭</td><td>UI</td><td class='ac'>Kingdom Description  텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1288,7 +1290,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3. Kigdom 텍스트 클릭</td><td>UI</td><td class='al'>Kingdom의 이미지가 노출됨
+3. Kigdom 텍스트 클릭</td><td>UI</td><td class='ac'>Kingdom의 이미지가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1311,7 +1313,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3. Kigdom 텍스트 클릭</td><td>UI</td><td class='al'>Kingdom의 설명 텍스트가 노출됨
+3. Kigdom 텍스트 클릭</td><td>UI</td><td class='ac'>Kingdom의 설명 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1334,7 +1336,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3. An altar 텍스트 클릭</td><td>UI</td><td class='al'>An altar의 설명창이 노출됨
+3. An altar 텍스트 클릭</td><td>UI</td><td class='ac'>An altar의 설명창이 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1357,7 +1359,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3. An altar 텍스트 클릭</td><td>UI</td><td class='al'>An altar Description  텍스트가 노출됨
+3. An altar 텍스트 클릭</td><td>UI</td><td class='ac'>An altar Description  텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1380,7 +1382,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3. An altar 텍스트 클릭</td><td>UI</td><td class='al'>An altar의 이미지가 노출됨
+3. An altar 텍스트 클릭</td><td>UI</td><td class='ac'>An altar의 이미지가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1403,7 +1405,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3.Barrier 텍스트 클릭</td><td>UI</td><td class='al'>An altar의 설명 텍스트가 노출됨
+3.Barrier 텍스트 클릭</td><td>UI</td><td class='ac'>An altar의 설명 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1426,7 +1428,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3.Barrier 텍스트 클릭</td><td>기능</td><td class='al'>Barrier의 설명 창이 노출됨
+3.Barrier 텍스트 클릭</td><td>기능</td><td class='ac'>Barrier의 설명 창이 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1449,7 +1451,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3.Barrier 텍스트 클릭</td><td>UI</td><td class='al'>Barrier Description 텍스트가 노출됨
+3.Barrier 텍스트 클릭</td><td>UI</td><td class='ac'>Barrier Description 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1472,7 +1474,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3.Barrier 텍스트 클릭</td><td>UI</td><td class='al'>Barrier의 이미지가 노출됨
+3.Barrier 텍스트 클릭</td><td>UI</td><td class='ac'>Barrier의 이미지가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1495,7 +1497,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3.Barrier 텍스트 클릭</td><td>UI</td><td class='al'>Barrier의 설명 텍스트가 노출됨
+3.Barrier 텍스트 클릭</td><td>UI</td><td class='ac'>Barrier의 설명 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1517,7 +1519,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3. [ &gt; ] 버튼 클릭</td><td>기능</td><td class='al'>[ &gt; ] 버튼을 눌러 UI 옆으로 이동
+3. [ &gt; ] 버튼 클릭</td><td>기능</td><td class='ac'>[ &gt; ] 버튼을 눌러 UI 옆으로 이동
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1540,7 +1542,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. ↓ 키 입력
 
-3. [ &gt; ] 버튼 클릭</td><td>UI</td><td class='al'>Unemployed skeleton 텍스트가 노출됨
+3. [ &gt; ] 버튼 클릭</td><td>UI</td><td class='ac'>Unemployed skeleton 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1567,7 +1569,7 @@ skeleton
 
 3. [ &gt; ] 버튼 클릭
 
-4. Unemployed skeleton 텍스트 클릭</td><td>UI</td><td class='al'>Unemployed skeleton의 설명창이 노출됨
+4. Unemployed skeleton 텍스트 클릭</td><td>UI</td><td class='ac'>Unemployed skeleton의 설명창이 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1600,7 +1602,7 @@ skeleton
 
 3. [ &gt; ] 버튼 클릭
 
-4. Unemployed skeleton 텍스트 클릭</td><td>UI</td><td class='al'>Unemployed skeleton Description 텍스트가 노출됨
+4. Unemployed skeleton 텍스트 클릭</td><td>UI</td><td class='ac'>Unemployed skeleton Description 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1633,7 +1635,7 @@ skeleton
 
 3. [ &gt; ] 버튼 클릭
 
-4. Unemployed skeleton 텍스트 클릭</td><td>UI</td><td class='al'>Unemployed skeleton의 이미지가 노출됨
+4. Unemployed skeleton 텍스트 클릭</td><td>UI</td><td class='ac'>Unemployed skeleton의 이미지가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1666,7 +1668,7 @@ skeleton
 
 3. [ &gt; ] 버튼 클릭
 
-4. Unemployed skeleton 텍스트 클릭</td><td>UI</td><td class='al'>Unemployed skeleton의 설명 텍스트가 노출됨
+4. Unemployed skeleton 텍스트 클릭</td><td>UI</td><td class='ac'>Unemployed skeleton의 설명 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1696,7 +1698,7 @@ skeleton
 
 2. ↓ 키 입력
 
-3. [ &gt; ] 버튼 2번 클릭</td><td>기능</td><td class='al'>[ &gt; ] 버튼을 눌러 UI 옆으로 이동이 가능함
+3. [ &gt; ] 버튼 2번 클릭</td><td>기능</td><td class='ac'>[ &gt; ] 버튼을 눌러 UI 옆으로 이동이 가능함
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1720,7 +1722,7 @@ skeleton
 
 2. ↓ 키 입력
 
-3. [ &gt; ] 버튼 2번 클릭</td><td>UI</td><td class='al'>Wirzard Skeleton 텍스트가 노출됨
+3. [ &gt; ] 버튼 2번 클릭</td><td>UI</td><td class='ac'>Wirzard Skeleton 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1746,7 +1748,7 @@ Skeleton
 
 2. ↓ 키 입력
 
-3. Wirzard Skeleton 텍스트 클릭</td><td>UI</td><td class='al'>Wirzard Skeleton 설명창이 노출됨
+3. Wirzard Skeleton 텍스트 클릭</td><td>UI</td><td class='ac'>Wirzard Skeleton 설명창이 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1782,7 +1784,7 @@ Skeleton
 
 2. ↓ 키 입력
 
-3. Wirzard Skeleton 텍스트 클릭</td><td>UI</td><td class='al'>Wirzard Skeleton Description 텍스트가 노출됨
+3. Wirzard Skeleton 텍스트 클릭</td><td>UI</td><td class='ac'>Wirzard Skeleton Description 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1816,7 +1818,7 @@ Skeleton
 
 2. ↓ 키 입력
 
-3. Wirzard Skeleton 텍스트 클릭</td><td>UI</td><td class='al'>Wirzard Skeleton의 이미지가 노출됨
+3. Wirzard Skeleton 텍스트 클릭</td><td>UI</td><td class='ac'>Wirzard Skeleton의 이미지가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1850,7 +1852,7 @@ Skeleton
 
 2. ↓ 키 입력
 
-3. Wirzard Skeleton 텍스트 클릭</td><td>UI</td><td class='al'>Wirzard Skeleton의 설명 텍스트가 노출됨
+3. Wirzard Skeleton 텍스트 클릭</td><td>UI</td><td class='ac'>Wirzard Skeleton의 설명 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1884,7 +1886,7 @@ Skeleton
 
 2. ↓ 키 입력
 
-3. [ &gt; ] 버튼 3번 클릭</td><td>기능</td><td class='al'>[ &gt; ] 버튼을 눌러 UI 옆으로 이동
+3. [ &gt; ] 버튼 3번 클릭</td><td>기능</td><td class='ac'>[ &gt; ] 버튼을 눌러 UI 옆으로 이동
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1908,7 +1910,7 @@ Skeleton
 
 2. ↓ 키 입력
 
-3. [ &gt; ] 버튼 3번 클릭</td><td>UI</td><td class='al'>Warrior Skeleton 텍스트가 노출됨
+3. [ &gt; ] 버튼 3번 클릭</td><td>UI</td><td class='ac'>Warrior Skeleton 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1935,7 +1937,7 @@ Skeleton
 
 3. [ &gt; ] 버튼 3번 클릭
 
-4. Warrior Skeleton 텍스트 클릭</td><td>UI</td><td class='al'>Warrior Skeleton 설명창이 노출됨
+4. Warrior Skeleton 텍스트 클릭</td><td>UI</td><td class='ac'>Warrior Skeleton 설명창이 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -1971,7 +1973,7 @@ Skeleton
 
 3. [ &gt; ] 버튼 3번 클릭
 
-4. Warrior Skeleton 텍스트 클릭</td><td>UI</td><td class='al'>Warrior Skeleton Description 텍스트가 노출됨
+4. Warrior Skeleton 텍스트 클릭</td><td>UI</td><td class='ac'>Warrior Skeleton Description 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -2007,7 +2009,7 @@ Skeleton
 
 3. [ &gt; ] 버튼 3번 클릭
 
-4. Warrior Skeleton 텍스트 클릭</td><td>UI</td><td class='al'>Warrior Skeleton의 이미지가 노출됨
+4. Warrior Skeleton 텍스트 클릭</td><td>UI</td><td class='ac'>Warrior Skeleton의 이미지가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -2043,7 +2045,7 @@ Skeleton
 
 3. [ &gt; ] 버튼 3번 클릭
 
-4. Warrior Skeleton 텍스트 클릭</td><td>UI</td><td class='al'>Warrior Skeleton의 설명 텍스트가 노출됨
+4. Warrior Skeleton 텍스트 클릭</td><td>UI</td><td class='ac'>Warrior Skeleton의 설명 텍스트가 노출됨
 -------------------------------------------------------------------------------
 ㅣ                                                                                          X  ㅣ
 ㅣ       --------------------------------------------------------------------      ㅣ
@@ -2072,11 +2074,11 @@ Skeleton
 ㅣ                                                                                               ㅣ
 -------------------------------------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
 <div class='sheet' id='sheet4'><div class='meta'><p>Return of the Dark Lord [타이틀 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th></th><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='4'>진입 방법</th><th rowspan='2'>사전 조건</th><th rowspan='2'>절차</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선 순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고란</th></tr><tr><th></th><th>진입1</th><th>진입2</th><th>진입3</th><th>진입4</th></tr></thead><tbody><tr><td></td><td>01</td><td>타이틀 화면_01</td><td>배경 화면에서 게임 실행</td><td></td><td></td><td></td><td>스팀 로그인
-Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark Lord 아이콘 클릭 후 게임 실행 여부 확인</td><td>기능</td><td class='al'>게임 타이틀 화면이 노출됨.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>02</td><td>타이틀 화면_02</td><td>배경 화면에서 게임 실행</td><td>게임 진입</td><td>게임 제목 텍스트
+Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark Lord 아이콘 클릭 후 게임 실행 여부 확인</td><td>기능</td><td class='ac'>게임 타이틀 화면이 노출됨.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>02</td><td>타이틀 화면_02</td><td>배경 화면에서 게임 실행</td><td>게임 진입</td><td>게임 제목 텍스트
 노출 확인</td><td></td><td>스팀 로그인
 Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark Lord 아이콘 클릭 후 게임 실행
 
-2. 타이틀 화면에서 게임 제목 [Return of the Dark Lord] 노출 확인</td><td>UI</td><td class='al'>타이틀 화면에서 게임 제목 [Return of the Dark Lord] 이 노출.
+2. 타이틀 화면에서 게임 제목 [Return of the Dark Lord] 노출 확인</td><td>UI</td><td class='ac'>타이틀 화면에서 게임 제목 [Return of the Dark Lord] 이 노출.
 
 ----------------------------------------------------------------------------
 ㅣ                          Return of the Dark Lord                        ㅣ
@@ -2094,7 +2096,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. 게임 진입
 
-3. 메인 화면에서 [Start], [Setting], [Exit] 버튼의 애니메이션 확인</td><td>기능</td><td class='al'>타이틀 화면에서 [Start], [Setting], [Exit] 버튼 내려오는 애니메이션 재생
+3. 메인 화면에서 [Start], [Setting], [Exit] 버튼의 애니메이션 확인</td><td>기능</td><td class='ac'>타이틀 화면에서 [Start], [Setting], [Exit] 버튼 내려오는 애니메이션 재생
 
 ----------------------------------------------------------------------------
 ㅣ                          Return of the Dark Lord                        ㅣ
@@ -2111,7 +2113,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. 게임 진입
 
-3. 메인 화면에서 [Start] 버튼 노출 확인</td><td>UI</td><td class='al'>타이틀 화면에서 Start 텍스트 노출
+3. 메인 화면에서 [Start] 버튼 노출 확인</td><td>UI</td><td class='ac'>타이틀 화면에서 Start 텍스트 노출
 
 ----------------------------------------------------------------------------
 ㅣ                          Return of the Dark Lord                        ㅣ
@@ -2128,7 +2130,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. 게임 진입
 
-3. 메인 화면에서 [Setting] 버튼 노출 확인</td><td>UI</td><td class='al'>타이틀 화면에서 Setting 텍스트 노출
+3. 메인 화면에서 [Setting] 버튼 노출 확인</td><td>UI</td><td class='ac'>타이틀 화면에서 Setting 텍스트 노출
 
 ----------------------------------------------------------------------------
 ㅣ                          Return of the Dark Lord                        ㅣ
@@ -2145,7 +2147,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. 게임 진입
 
-3. 메인 화면에서 [Exit] 버튼 노출 확인</td><td>UI</td><td class='al'>타이틀 화면에서 Exit 텍스트 노출
+3. 메인 화면에서 [Exit] 버튼 노출 확인</td><td>UI</td><td class='ac'>타이틀 화면에서 Exit 텍스트 노출
 
 ----------------------------------------------------------------------------
 ㅣ                          Return of the Dark Lord                        ㅣ
@@ -2161,7 +2163,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. 게임 진입
 
-3. 메인 화면에서 [Start] 버튼 클릭</td><td>기능</td><td class='al'>세이브 슬롯 화면으로 이동
+3. 메인 화면에서 [Start] 버튼 클릭</td><td>기능</td><td class='ac'>세이브 슬롯 화면으로 이동
 
 ----------------------------------------------------------------------------
 ㅣ                          Return of the Dark Lord                        ㅣ
@@ -2177,7 +2179,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. 게임 진입
 
-3. 메인 화면에서 [Setting] 버튼 클릭</td><td>기능</td><td class='al'>[Start], [Setting], [Exit] 버튼 올라가는 애니메이션이 재생됨
+3. 메인 화면에서 [Setting] 버튼 클릭</td><td>기능</td><td class='ac'>[Start], [Setting], [Exit] 버튼 올라가는 애니메이션이 재생됨
 
 ----------------------------------------------------------------------------
 ㅣ                          Return of the Dark Lord                        ㅣ
@@ -2193,7 +2195,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. 게임 진입
 
-3. 메인 화면에서 [Setting] 버튼 클릭</td><td>기능</td><td class='al'>설정 화면으로 진입 가능
+3. 메인 화면에서 [Setting] 버튼 클릭</td><td>기능</td><td class='ac'>설정 화면으로 진입 가능
 
 ----------------------------------------------------------------------------
 ㅣ                          Return of the Dark Lord                        ㅣ
@@ -2209,7 +2211,7 @@ Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark
 
 2. 게임 진입
 
-3. 메인 화면에서 [Exit] 버튼 클릭</td><td>기능</td><td class='al'>게임 종료이 종료됨
+3. 메인 화면에서 [Exit] 버튼 클릭</td><td>기능</td><td class='ac'>게임 종료이 종료됨
 
 ----------------------------------------------------------------------------
 ㅣ                          Return of the Dark Lord                        ㅣ
@@ -2226,23 +2228,23 @@ Return of the Dark Lord 설치
 
 2. 게임 진입
 
-3. 배경 음악 확인</td><td>기능</td><td class='al'>배경 음악이 재생됨.</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>13</td><td>타이틀 화면_13</td><td>배경 화면에서 게임 실행</td><td>게임 진입</td><td></td><td></td><td>스팀 로그인
+3. 배경 음악 확인</td><td>기능</td><td class='ac'>배경 음악이 재생됨.</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>13</td><td>타이틀 화면_13</td><td>배경 화면에서 게임 실행</td><td>게임 진입</td><td></td><td></td><td>스팀 로그인
 Return of the Dark Lord 설치</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
-3. 뒷 배경 스크롤 노출 확인</td><td>UI</td><td class='al'>뒷 배경 자체의 스크롤이 노출됨.</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
+3. 뒷 배경 스크롤 노출 확인</td><td>UI</td><td class='ac'>뒷 배경 자체의 스크롤이 노출됨.</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
 <div class='sheet' id='sheet5'><div class='meta'><p>Return of the Dark Lord [로딩 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='4'>진입 방법</th><th rowspan='2'>사전 조건</th><th rowspan='2'>절차</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선 순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고란</th></tr><tr><th>진입1</th><th>진입2</th><th>진입3</th><th>진입4</th></tr></thead><tbody><tr><td>01</td><td>로딩 화면_01</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
-3. [Start] 버튼 클릭</td><td>기능</td><td class='al'>로딩 화면으로 진입 가능함.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>02</td><td>로딩 화면_02</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
+3. [Start] 버튼 클릭</td><td>기능</td><td class='ac'>로딩 화면으로 진입 가능함.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>02</td><td>로딩 화면_02</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 로딩 스크롤 바 노출 확인</td><td>UI</td><td class='al'>로딩 스크롤 바가 노출됨
+4. 로딩 화면 진입 후 로딩 스크롤 바 노출 확인</td><td>UI</td><td class='ac'>로딩 스크롤 바가 노출됨
 
  ----------------------------------------------------------------------------
 ㅣ                                                                                       ㅣ
@@ -2259,89 +2261,89 @@ Return of the Dark Lord 설치</td><td>1. 게임 실행
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 로딩 스크롤 바 게이지 확인</td><td>기능</td><td class='al'>로딩 화면에 로딩 스크롤 바가 채워짐.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>04</td><td>로딩 화면_04</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
+4. 로딩 화면 진입 후 로딩 스크롤 바 게이지 확인</td><td>기능</td><td class='ac'>로딩 화면에 로딩 스크롤 바가 채워짐.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>04</td><td>로딩 화면_04</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 로딩 스크롤 바 게이지가 모두 채워진 것을  확인</td><td>기능</td><td class='al'>로딩 화면에 로딩 스크롤 바가 채워진 후 인게임 화면으로 이동 된다.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>05</td><td>로딩 화면_05</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
+4. 로딩 화면 진입 후 로딩 스크롤 바 게이지가 모두 채워진 것을  확인</td><td>기능</td><td class='ac'>로딩 화면에 로딩 스크롤 바가 채워진 후 인게임 화면으로 이동 된다.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>05</td><td>로딩 화면_05</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Darkness returns when humans forget the past.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Darkness returns when humans forget the past.&quot; 
+4. 로딩 화면 진입 후 &quot;Darkness returns when humans forget the past.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Darkness returns when humans forget the past.&quot; 
 텍스트가 노출 된다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>06</td><td>로딩 화면_06</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Souls weigh heavier than gold in eternity.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Souls weigh heavier than gold in eternity.&quot; 
+4. 로딩 화면 진입 후 &quot;Souls weigh heavier than gold in eternity.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Souls weigh heavier than gold in eternity.&quot; 
 텍스트가 노출 된다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>07</td><td>로딩 화면_07</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Every ember can awaken an endless darkness.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Every ember can awaken an endless darkness.&quot; 
+4. 로딩 화면 진입 후 &quot;Every ember can awaken an endless darkness.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Every ember can awaken an endless darkness.&quot; 
 텍스트가 노출 된다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>08</td><td>로딩 화면_08</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;The darkest bargains always demand their price.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;The darkest bargains always demand their price.&quot; 
+4. 로딩 화면 진입 후 &quot;The darkest bargains always demand their price.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;The darkest bargains always demand their price.&quot; 
 텍스트가 노출 된다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>09</td><td>로딩 화면_09</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Shadows endure longer than the brightest light.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Shadows endure longer than the brightest light.&quot; 
+4. 로딩 화면 진입 후 &quot;Shadows endure longer than the brightest light.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Shadows endure longer than the brightest light.&quot; 
 텍스트가 노출 된다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>10</td><td>로딩 화면_10</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Defeat only grants time to grow stronger.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Defeat only grants time to grow stronger.&quot; 
+4. 로딩 화면 진입 후 &quot;Defeat only grants time to grow stronger.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Defeat only grants time to grow stronger.&quot; 
 텍스트가 노출 된다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>11</td><td>로딩 화면_11</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Even heroes kneel when facing eternal death.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Even heroes kneel when facing eternal death.&quot; 
+4. 로딩 화면 진입 후 &quot;Even heroes kneel when facing eternal death.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Even heroes kneel when facing eternal death.&quot; 
 텍스트가 노출 된다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>12</td><td>로딩 화면_12</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Resurrection requires countless souls of fallen.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Resurrection requires countless souls of fallen.&quot; 
+4. 로딩 화면 진입 후 &quot;Resurrection requires countless souls of fallen.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Resurrection requires countless souls of fallen.&quot; 
 텍스트가 노출 된다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>13</td><td>로딩 화면_13</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;The loyal dead march without fear forever.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;The loyal dead march without fear forever.&quot; 
+4. 로딩 화면 진입 후 &quot;The loyal dead march without fear forever.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;The loyal dead march without fear forever.&quot; 
 텍스트가 노출 된다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>14</td><td>로딩 화면_14</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;Your vengeance path is soaked in blood.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;Your vengeance path is soaked in blood.&quot; 
+4. 로딩 화면 진입 후 &quot;Your vengeance path is soaked in blood.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;Your vengeance path is soaked in blood.&quot; 
 텍스트가 노출 된다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>15</td><td>로딩 화면_15</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>게임 실행 중</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. 로딩 화면 진입 후 &quot;A Knight's honor shines brighter than steel.&quot; 텍스트 확인</td><td>UI</td><td class='al'>로딩 화면에 &quot;A Knight's honor shines brighter than steel.&quot; 
+4. 로딩 화면 진입 후 &quot;A Knight's honor shines brighter than steel.&quot; 텍스트 확인</td><td>UI</td><td class='ac'>로딩 화면에 &quot;A Knight's honor shines brighter than steel.&quot; 
 텍스트가 노출 된다.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>16</td><td>로딩 화면_16</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>스팀 로그인
 Return of the Dark Lord 설치
 시스템 사운드 0 이상</td><td>1. 배경 화면에서 Return of the Dark Lord 아이콘 클릭 후 게임 실행
@@ -2350,19 +2352,19 @@ Return of the Dark Lord 설치
 
 3. [Start] 버튼 클릭
 
-4. 배경 음악 확인</td><td>기능</td><td class='al'>배경 음악이 노출됨.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>17</td><td>로딩 화면_17</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>스팀 로그인
+4. 배경 음악 확인</td><td>기능</td><td class='ac'>배경 음악이 노출됨.</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>17</td><td>로딩 화면_17</td><td>배경 화면에서 게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>스팀 로그인
 Return of the Dark Lord 설치</td><td>1. 배경 화면에서 Return of the Dark Lord 아이콘 클릭 후 게임 실행
 
 2. 게임 진입
 
 3. [Start] 버튼 클릭
 
-4. 배경 구름 확인</td><td>기능</td><td class='al'>구름이 오른쪽으로 횡스크롤 방식으로 노출됨.</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
+4. 배경 구름 확인</td><td>기능</td><td class='ac'>구름이 오른쪽으로 횡스크롤 방식으로 노출됨.</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
 <div class='sheet' id='sheet6'><div class='meta'><p>Return of the Dark Lord [설정 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='4'>진입 방법</th><th rowspan='2'>사전 조건</th><th rowspan='2'>절차</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선 순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고란</th></tr><tr><th>진입1</th><th>진입2</th><th>진입3</th><th>진입4</th></tr></thead><tbody><tr><td>01</td><td>설정_01</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Setting] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Setting] 버튼 클릭</td><td>기능</td><td class='al'>설정 화면으로 진입 가능</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>02</td><td>설정_02</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Setting] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
+2. 메인 타이틀 화면 [Setting] 버튼 클릭</td><td>기능</td><td class='ac'>설정 화면으로 진입 가능</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>02</td><td>설정_02</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Setting] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Setting] 버튼 클릭</td><td>UI</td><td class='al'>설정 화면이 노출됨                                         
+2. 메인 타이틀 화면 [Setting] 버튼 클릭</td><td>UI</td><td class='ac'>설정 화면이 노출됨                                         
 
                                                                       X
 
@@ -2378,21 +2380,21 @@ BGM      🔊            |                  ⬜                |
 SFX      🔊            |                  ⬜                |
                                ----------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>03</td><td>설정_03</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Setting] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Setting] 버튼 클릭</td><td>UI</td><td class='al'>ALL 텍스트가 노출됨
+2. 메인 타이틀 화면 [Setting] 버튼 클릭</td><td>UI</td><td class='ac'>ALL 텍스트가 노출됨
 
 
                                ----------------------------------
 All          🔊            |                  ⬜                |
                                ----------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>04</td><td>설정_04</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Setting] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Setting] 버튼 클릭</td><td>UI</td><td class='al'>BGM 텍스트가 노출됨
+2. 메인 타이틀 화면 [Setting] 버튼 클릭</td><td>UI</td><td class='ac'>BGM 텍스트가 노출됨
 
 
                                ----------------------------------
 BGM      🔊            |                  ⬜                |
                                ----------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td>05</td><td>설정_05</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Setting] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Setting] 버튼 클릭</td><td>UI</td><td class='al'>SFX 텍스트가 노출됨
+2. 메인 타이틀 화면 [Setting] 버튼 클릭</td><td>UI</td><td class='ac'>SFX 텍스트가 노출됨
 
 
                                ----------------------------------
@@ -2401,7 +2403,7 @@ SFX      🔊            |                  ⬜                |
 
 2. 메인 타이틀 화면 [Setting] 버튼 클릭
 
-3. 초기 Scroll Bar 확인</td><td>UI</td><td class='al'>ALL UI 초기 스크롤 % = 50으로 노출
+3. 초기 Scroll Bar 확인</td><td>UI</td><td class='ac'>ALL UI 초기 스크롤 % = 50으로 노출
 
                                ----------------------------------
 All          🔊            |                  ⬜                |
@@ -2409,7 +2411,7 @@ All          🔊            |                  ⬜                |
 
 2. 메인 타이틀 화면 [Setting] 버튼 클릭
 
-3. 초기  Scroll Bar 확인</td><td>UI</td><td class='al'>BGM UI 초기 스크롤 % = 50으로 노출
+3. 초기  Scroll Bar 확인</td><td>UI</td><td class='ac'>BGM UI 초기 스크롤 % = 50으로 노출
 
                                ----------------------------------
 BGM       🔊           |                  ⬜                |
@@ -2417,7 +2419,7 @@ BGM       🔊           |                  ⬜                |
 
 2. 메인 타이틀 화면 [Setting] 버튼 클릭
 
-3. 초기 Scroll Bar 확인</td><td>UI</td><td class='al'>SFX UI 초기 스크롤 % = 50으로 노출
+3. 초기 Scroll Bar 확인</td><td>UI</td><td class='ac'>SFX UI 초기 스크롤 % = 50으로 노출
 
                                ----------------------------------
 SFX       🔊           |                  ⬜                |
@@ -2425,7 +2427,7 @@ SFX       🔊           |                  ⬜                |
 
 2. 메인 타이틀 화면 [Setting] 버튼 클릭
 
-3. 초기 ALL 🔊 UI 노출 확인</td><td>UI</td><td class='al'>ALL 🔊  UI 노출 
+3. 초기 ALL 🔊 UI 노출 확인</td><td>UI</td><td class='ac'>ALL 🔊  UI 노출 
 
                                ----------------------------------
 ALL       🔊           |                  ⬜                |
@@ -2433,7 +2435,7 @@ ALL       🔊           |                  ⬜                |
 
 2. 메인 타이틀 화면 [Setting] 버튼 클릭
 
-3. 초기 BGM 🔊 UI 노출 확인</td><td>UI</td><td class='al'>BGM 🔊  UI 노출
+3. 초기 BGM 🔊 UI 노출 확인</td><td>UI</td><td class='ac'>BGM 🔊  UI 노출
 
                                ----------------------------------
 BGM       🔊           |                  ⬜                |
@@ -2441,7 +2443,7 @@ BGM       🔊           |                  ⬜                |
 
 2. 메인 타이틀 화면 [Setting] 버튼 클릭
 
-3. 초기 BGM 🔊 UI 노출 확인</td><td>UI</td><td class='al'>SFX 🔊  UI 노출 확인
+3. 초기 BGM 🔊 UI 노출 확인</td><td>UI</td><td class='ac'>SFX 🔊  UI 노출 확인
 
                                ----------------------------------
 SFX       🔊           |                  ⬜                |
@@ -2449,7 +2451,7 @@ SFX       🔊           |                  ⬜                |
 
 2. 메인 타이틀 화면 [Setting] 버튼 클릭
 
-3. ALL Scroll Bar 드래깅 확인</td><td>기능</td><td class='al'>ALL UI 드래깅 시  Scroll Bar 작동
+3. ALL Scroll Bar 드래깅 확인</td><td>기능</td><td class='ac'>ALL UI 드래깅 시  Scroll Bar 작동
 
                                ----------------------------------
 ALL       🔊             |      ⬜                            |
@@ -2457,7 +2459,7 @@ ALL       🔊             |      ⬜                            |
 
 2. 메인 타이틀 화면 [Setting] 버튼 클릭
 
-3. BGM Scroll Bar 드래깅 확인</td><td>기능</td><td class='al'>BGM UI 드래깅 시  Scroll Bar 작동
+3. BGM Scroll Bar 드래깅 확인</td><td>기능</td><td class='ac'>BGM UI 드래깅 시  Scroll Bar 작동
 
                                ----------------------------------
 BGM       🔊             |      ⬜                            |
@@ -2465,7 +2467,7 @@ BGM       🔊             |      ⬜                            |
 
 2. 메인 타이틀 화면 [Setting] 버튼 클릭
 
-3. SFX Scroll Bar 드래깅 확인</td><td>기능</td><td class='al'>SFX UI 드래깅 시  Scroll Bar 작동
+3. SFX Scroll Bar 드래깅 확인</td><td>기능</td><td class='ac'>SFX UI 드래깅 시  Scroll Bar 작동
 
                                ----------------------------------
 SFX       🔊             |      ⬜                            |
@@ -2474,7 +2476,7 @@ UI 변경 노출 확인 (ALL)</td><td>메인 화면 진입</td><td>1. 게임 실
 
 2. 메인 타이틀 화면 [Setting] 버튼 클릭
 
-3. 왼쪽으로 끝까지 드래깅</td><td>기능</td><td class='al'>왼쪽으로 끝까지 드래깅 시 음소거가 됨.(ALL)
+3. 왼쪽으로 끝까지 드래깅</td><td>기능</td><td class='ac'>왼쪽으로 끝까지 드래깅 시 음소거가 됨.(ALL)
 
                                ----------------------------------
 ALL       🔊             |⬜                                  |
@@ -2483,7 +2485,7 @@ UI 변경 노출 확인 (BGM)</td><td>메인 화면 진입</td><td>1. 게임 실
 
 2. 메인 타이틀 화면 [Setting] 버튼 클릭
 
-3. 왼쪽으로 끝까지 드래깅</td><td>기능</td><td class='al'>왼쪽으로 끝까지 드래깅 시 음소거가 됨.(BGM)
+3. 왼쪽으로 끝까지 드래깅</td><td>기능</td><td class='ac'>왼쪽으로 끝까지 드래깅 시 음소거가 됨.(BGM)
 
                                ----------------------------------
 BGM       🔊             |⬜                                  |
@@ -2492,7 +2494,7 @@ UI 변경 노출 확인 (SFX)</td><td>메인 화면 진입</td><td>1. 게임 실
 
 2. 메인 타이틀 화면 [Setting] 버튼 클릭
 
-3. 왼쪽으로 끝까지 드래깅</td><td>기능</td><td class='al'>왼쪽으로 끝까지 드래깅 시 음소거가 됨.(SFX)
+3. 왼쪽으로 끝까지 드래깅</td><td>기능</td><td class='ac'>왼쪽으로 끝까지 드래깅 시 음소거가 됨.(SFX)
 
                                ----------------------------------
 SFX       🔊             |⬜                                  |
@@ -2503,7 +2505,7 @@ UI 변경 노출 확인 (ALL)</td><td>메인 화면 진입</td><td>1. 게임 실
 
 3. 왼쪽으로 끝까지 드래깅 
 
-4. 소리가 0 일때 UI 변경 노출 확인</td><td>UI</td><td class='al'>음소거 UI 노출됨.
+4. 소리가 0 일때 UI 변경 노출 확인</td><td>UI</td><td class='ac'>음소거 UI 노출됨.
 
                                ----------------------------------
 ALL       🔇             |⬜                                  |
@@ -2514,7 +2516,7 @@ UI 변경 노출 확인 (BGM)</td><td>메인 화면 진입</td><td>1. 게임 실
 
 3. 왼쪽으로 끝까지 드래깅 
 
-4. 소리가 0 일때 UI 변경 노출 확인</td><td>UI</td><td class='al'>음소거 UI 노출됨.
+4. 소리가 0 일때 UI 변경 노출 확인</td><td>UI</td><td class='ac'>음소거 UI 노출됨.
 
                                ----------------------------------
 BGM       🔇             |⬜                                  |
@@ -2525,7 +2527,7 @@ UI 변경 노출 확인 (SFX)</td><td>메인 화면 진입</td><td>1. 게임 실
 
 3. 왼쪽으로 끝까지 드래깅 
 
-4. 소리가 0 일때 UI 변경 노출 확인</td><td>UI</td><td class='al'>음소거 UI 노출됨.
+4. 소리가 0 일때 UI 변경 노출 확인</td><td>UI</td><td class='ac'>음소거 UI 노출됨.
 
                                ----------------------------------
 SFX       🔇             |⬜                                  |
@@ -2535,7 +2537,7 @@ SFX       🔇             |⬜                                  |
 
 3. [Setting] 버튼 클릭
 
-4. [X] 버튼 클릭</td><td>기능</td><td class='al'>[X] 버튼 클릭 시 타이틀 화면으로 이동됨.
+4. [X] 버튼 클릭</td><td>기능</td><td class='ac'>[X] 버튼 클릭 시 타이틀 화면으로 이동됨.
 
                                                                       X
 
@@ -2555,12 +2557,12 @@ SFX      🔊            |                  ⬜                |
 
 3. [Setting] 버튼 클릭
 
-4. 뒷 배경 스크롤 노출 확인</td><td>UI</td><td class='al'>뒷 배경 자체의 스크롤이 노출됨.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
+4. 뒷 배경 스크롤 노출 확인</td><td>UI</td><td class='ac'>뒷 배경 자체의 스크롤이 노출됨.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
 <div class='sheet' id='sheet7'><div class='meta'><p>Return of the Dark Lord [타이틀 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th></th><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='4'>진입 방법</th><th rowspan='2'>사전 조건</th><th rowspan='2'>절차</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선 순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고란</th></tr><tr><th></th><th>진입1</th><th>진입2</th><th>진입3</th><th>진입4</th></tr></thead><tbody><tr><td></td><td>01</td><td>멀티 화면</td><td>배경 화면 진입</td><td>배경 화면 내 [Start] 버튼 선택</td><td></td><td></td><td>[Start] 버튼 클릭</td><td>1. 배경화면 진입
 
 2. 배경 화면 내 [Start] 버튼 선택 
 
-3. Select Mode 진입 확인</td><td>기능</td><td class='al'>Select Mode 화면 진입 가능
+3. Select Mode 진입 확인</td><td>기능</td><td class='ac'>Select Mode 화면 진입 가능
 
  ----------------------------------------------------------------------------
 ㅣ                                Select Mode                                   ㅣ
@@ -2578,7 +2580,7 @@ SFX      🔊            |                  ⬜                |
 
 3. Select Mode 진입 
 
-4. 뒷 배경 스크롤 확인</td><td>UI</td><td class='al'>뒷 배경 스크롤이 멈춤
+4. 뒷 배경 스크롤 확인</td><td>UI</td><td class='ac'>뒷 배경 스크롤이 멈춤
 
  ----------------------------------------------------------------------------
 ㅣ                                Select Mode                                   ㅣ
@@ -2596,7 +2598,7 @@ SFX      🔊            |                  ⬜                |
 
 3. Select Mode 진입 
 
-4. Select Mode 타이틀 제목 노출 확인</td><td>UI</td><td class='al'>Select Mode의 타이틀 제목이 노출됨
+4. Select Mode 타이틀 제목 노출 확인</td><td>UI</td><td class='ac'>Select Mode의 타이틀 제목이 노출됨
 
  ----------------------------------------------------------------------------
 ㅣ                                Select Mode                                   ㅣ
@@ -2616,7 +2618,7 @@ SFX      🔊            |                  ⬜                |
 
 4. Select Mode 타이틀 제목 노출 확인
 
-5. Select Mode 타이틀 제목 클릭</td><td>기능</td><td class='al'>Select Mode 선택 시 아무효과도 일어나지 않음
+5. Select Mode 타이틀 제목 클릭</td><td>기능</td><td class='ac'>Select Mode 선택 시 아무효과도 일어나지 않음
 
  ----------------------------------------------------------------------------
 ㅣ                                Select Mode                                   ㅣ
@@ -2634,7 +2636,7 @@ SFX      🔊            |                  ⬜                |
 
 3. Select Mode 진입 
 
-4. [Single Player] 버튼 텍스트 노출 확인</td><td>UI</td><td class='al'>Single Player 버튼 텍스트가 노출
+4. [Single Player] 버튼 텍스트 노출 확인</td><td>UI</td><td class='ac'>Single Player 버튼 텍스트가 노출
 
  ----------------------------------------------------------------------------
 ㅣ                                Select Mode                                   ㅣ
@@ -2652,7 +2654,7 @@ SFX      🔊            |                  ⬜                |
 
 3. Select Mode 진입 
 
-4. [Multi Player] 버튼 텍스트 노출 확인</td><td>UI</td><td class='al'>Multi Player 버튼 텍스트가 노출
+4. [Multi Player] 버튼 텍스트 노출 확인</td><td>UI</td><td class='ac'>Multi Player 버튼 텍스트가 노출
 
  ----------------------------------------------------------------------------
 ㅣ                                Select Mode                                   ㅣ
@@ -2670,7 +2672,7 @@ SFX      🔊            |                  ⬜                |
 
 3. Select Mode 진입 
 
-4. [Multi Player] 버튼 텍스트 노출 확인</td><td>UI</td><td class='al'>Back  버튼 텍스트가 노출
+4. [Multi Player] 버튼 텍스트 노출 확인</td><td>UI</td><td class='ac'>Back  버튼 텍스트가 노출
 
  ----------------------------------------------------------------------------
 ㅣ                                Select Mode                                   ㅣ
@@ -2688,7 +2690,7 @@ SFX      🔊            |                  ⬜                |
 
 3. Select Mode 진입 
 
-4. [Single Player] 버튼 선택</td><td>기능</td><td class='al'>Single Player 선택 시 튜토리얼 화면 진입
+4. [Single Player] 버튼 선택</td><td>기능</td><td class='ac'>Single Player 선택 시 튜토리얼 화면 진입
 
  ----------------------------------------------------------------------------
 ㅣ                                Select Mode                                   ㅣ
@@ -2706,7 +2708,7 @@ SFX      🔊            |                  ⬜                |
 
 3. Select Mode 진입 
 
-4. [Single Player] 버튼 선택</td><td>기능</td><td class='al'>Single Player 선택 시 튜토리얼 화면 진입
+4. [Single Player] 버튼 선택</td><td>기능</td><td class='ac'>Single Player 선택 시 튜토리얼 화면 진입
 
  ----------------------------------------------------------------------------
 ㅣ                                                                                       ㅣ
@@ -2723,7 +2725,7 @@ SFX      🔊            |                  ⬜                |
 
 3. Select Mode 진입 
 
-4. [Mulit Player] 버튼 선택</td><td>기능</td><td class='al'>Select Mode_2 내 진입
+4. [Mulit Player] 버튼 선택</td><td>기능</td><td class='ac'>Select Mode_2 내 진입
 
  ----------------------------------------------------------------------------
 ㅣ                                    Select Mode                               ㅣ
@@ -2741,7 +2743,7 @@ SFX      🔊            |                  ⬜                |
 
 3. Select Mode 진입 
 
-4. [Mulit Player] 버튼 선택</td><td>기능</td><td class='al'>Select Mode_2 화면 노출
+4. [Mulit Player] 버튼 선택</td><td>기능</td><td class='ac'>Select Mode_2 화면 노출
 
  ----------------------------------------------------------------------------
 ㅣ                                    Select Mode                               ㅣ
@@ -2761,7 +2763,7 @@ SFX      🔊            |                  ⬜                |
 
 4. [Mulit Player] 버튼 선택
 
-5. Select Mode_2 화면 노출 확인</td><td>기능</td><td class='al'>Select Mode_2 화면 노출 확인
+5. Select Mode_2 화면 노출 확인</td><td>기능</td><td class='ac'>Select Mode_2 화면 노출 확인
 
  ----------------------------------------------------------------------------
 ㅣ                                    Select Mode                               ㅣ
@@ -2781,7 +2783,7 @@ SFX      🔊            |                  ⬜                |
 
 4. [Mulit Player] 버튼 선택
 
-5. Select Mode_2 내 Select Mode 텍스트 노출 확인</td><td>UI</td><td class='al'>Select Mode_2 화면 내 [Select Mode] 텍스트 노출 확인
+5. Select Mode_2 내 Select Mode 텍스트 노출 확인</td><td>UI</td><td class='ac'>Select Mode_2 화면 내 [Select Mode] 텍스트 노출 확인
 
  ----------------------------------------------------------------------------
 ㅣ                                    Select Mode                               ㅣ
@@ -2801,7 +2803,7 @@ SFX      🔊            |                  ⬜                |
 
 4. [Mulit Player] 버튼 선택
 
-5. Select Mode_2 [Host] 버튼 텍스트 노출 확인</td><td>UI</td><td class='al'>Select Mode_2 [Host] 버튼 텍스트 노출 확인
+5. Select Mode_2 [Host] 버튼 텍스트 노출 확인</td><td>UI</td><td class='ac'>Select Mode_2 [Host] 버튼 텍스트 노출 확인
 
  ----------------------------------------------------------------------------
 ㅣ                                    Select Mode                               ㅣ
@@ -2821,7 +2823,7 @@ SFX      🔊            |                  ⬜                |
 
 4. [Mulit Player] 버튼 선택
 
-5. Select Mode_2 [Join] 버튼 텍스트 노출 확인</td><td>UI</td><td class='al'>Select Mode_2 [Join] 버튼 텍스트 노출 확인
+5. Select Mode_2 [Join] 버튼 텍스트 노출 확인</td><td>UI</td><td class='ac'>Select Mode_2 [Join] 버튼 텍스트 노출 확인
 
  ----------------------------------------------------------------------------
 ㅣ                                    Select Mode                               ㅣ
@@ -2841,7 +2843,7 @@ SFX      🔊            |                  ⬜                |
 
 4. [Mulit Player] 버튼 선택
 
-5. Select Mode_2 [Back] 버튼 텍스트 노출 확인</td><td>UI</td><td class='al'>Select Mode_2 [Back] 버튼 텍스트 노출 확인
+5. Select Mode_2 [Back] 버튼 텍스트 노출 확인</td><td>UI</td><td class='ac'>Select Mode_2 [Back] 버튼 텍스트 노출 확인
 
  ----------------------------------------------------------------------------
 ㅣ                                    Select Mode                               ㅣ
@@ -2861,7 +2863,7 @@ SFX      🔊            |                  ⬜                |
 
 4. [Mulit Player] 버튼 선택
 
-5. Select Mode_2 텍스트 선택</td><td>기능</td><td class='al'>Select Mode_2 텍스트 선택 시 아무런 변화 없음
+5. Select Mode_2 텍스트 선택</td><td>기능</td><td class='ac'>Select Mode_2 텍스트 선택 시 아무런 변화 없음
 
  ----------------------------------------------------------------------------
 ㅣ                                    Select Mode                               ㅣ
@@ -2881,7 +2883,7 @@ SFX      🔊            |                  ⬜                |
 
 4. [Mulit Player] 버튼 선택
 
-5. [Host] 버튼 선택</td><td>기능</td><td class='al'>Host 화면으로 진입
+5. [Host] 버튼 선택</td><td>기능</td><td class='ac'>Host 화면으로 진입
 
  ----------------------------------------------------------------------------
 ㅣ [Back]                                                                              |
@@ -2906,7 +2908,7 @@ SFX      🔊            |                  ⬜                |
 
 4. [Mulit Player] 버튼 선택
 
-5. [Back] 버튼 텍스트 노출 확인</td><td>UI</td><td class='al'>[Back] 버튼 텍스트가 노출
+5. [Back] 버튼 텍스트 노출 확인</td><td>UI</td><td class='ac'>[Back] 버튼 텍스트가 노출
 
  ----------------------------------------------------------------------------
 ㅣ [Back]                                                                              |
@@ -2931,7 +2933,7 @@ SFX      🔊            |                  ⬜                |
 
 4. [Mulit Player] 버튼 선택
 
-5. [Room Code]  텍스트 노출 확인</td><td>UI</td><td class='al'>[Room Code] 버튼 텍스트가 노출
+5. [Room Code]  텍스트 노출 확인</td><td>UI</td><td class='ac'>[Room Code] 버튼 텍스트가 노출
 
  ----------------------------------------------------------------------------
 ㅣ [Back]                                                                              |
@@ -2956,7 +2958,7 @@ SFX      🔊            |                  ⬜                |
 
 4. [Mulit Player] 버튼 선택
 
-5. [Host]  텍스트 노출 확인</td><td>UI</td><td class='al'>[Host] 텍스트가 노출
+5. [Host]  텍스트 노출 확인</td><td>UI</td><td class='ac'>[Host] 텍스트가 노출
 
  ----------------------------------------------------------------------------
 ㅣ [Back]                                                                              |
@@ -2981,7 +2983,7 @@ SFX      🔊            |                  ⬜                |
 
 4. [Mulit Player] 버튼 선택
 
-5. [Client]  텍스트 노출 확인</td><td>UI</td><td class='al'>[Client] 텍스트가 노출
+5. [Client]  텍스트 노출 확인</td><td>UI</td><td class='ac'>[Client] 텍스트가 노출
 
  ----------------------------------------------------------------------------
 ㅣ [Back]                                                                              |
@@ -3006,7 +3008,7 @@ SFX      🔊            |                  ⬜                |
 
 4. [Mulit Player] 버튼 선택
 
-5. [Start]  버튼 텍스트 노출 확인</td><td>UI</td><td class='al'>[Start] 버튼 텍스트가 노출
+5. [Start]  버튼 텍스트 노출 확인</td><td>UI</td><td class='ac'>[Start] 버튼 텍스트가 노출
 
  ----------------------------------------------------------------------------
 ㅣ [Back]                                                                              |
@@ -3031,7 +3033,7 @@ SFX      🔊            |                  ⬜                |
 
 4. [Mulit Player] 버튼 선택
 
-5. [Host] 내 캐릭터 UI 노출 확인</td><td>UI</td><td class='al'>[Host] 내 캐릭터 UI 노출 확인
+5. [Host] 내 캐릭터 UI 노출 확인</td><td>UI</td><td class='ac'>[Host] 내 캐릭터 UI 노출 확인
 
  ----------------------------------------------------------------------------
 ㅣ [Back]                                                                              |
@@ -3051,9 +3053,9 @@ SFX      🔊            |                  ⬜                |
  ----------------------------------------------------------------------------</td><td>Medium</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
 <div class='sheet' id='sheet8'><div class='meta'><p>f</p><p>Return of the Dark Lord [세이브 슬롯 화면]</p></div><div class='tbl-scroll'><table class='two-head'><thead><tr><th></th><th rowspan='2'>TC_No</th><th rowspan='2'>TC_ID [ ]</th><th colspan='4'>진입 방법</th><th rowspan='2'>사전 조건</th><th rowspan='2'>절차</th><th rowspan='2'>기능 / UI</th><th rowspan='2'>기대 결과</th><th rowspan='2'>우선 순위</th><th rowspan='2'>결과</th><th rowspan='2'>비고란</th></tr><tr><th></th><th>진입1</th><th>진입2</th><th>진입3</th><th>진입4</th></tr></thead><tbody><tr><td></td><td>01</td><td>세이브 슬롯_01</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>기능</td><td class='al'>세이브 슬롯 선택 화면으로 진입 가능</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>02</td><td>세이브 슬롯_02</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>기능</td><td class='ac'>세이브 슬롯 선택 화면으로 진입 가능</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>02</td><td>세이브 슬롯_02</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>세이브 슬롯 선택 화면이 노출됨
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>세이브 슬롯 선택 화면이 노출됨
 
 ----------------------------------------------------------------
 ㅣ      ---------------------------------------------------      ㅣ
@@ -3069,91 +3071,91 @@ l                Back                   New                         l
 ㅣ                                                                         ㅣ
 ----------------------------------------------------------------</td><td>High</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>03</td><td>세이브 슬롯_03</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>첫번째 세이브 슬롯 화면에 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>첫번째 세이브 슬롯 화면에 노출
 
 
       ---------------------------------------------------      
     ㅣSteam Nick          PlayerTime       🗑️ㅣ    
       ---------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>04</td><td>세이브 슬롯_04</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>첫번째 슬롯의 Steam Nick 텍스트 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>첫번째 슬롯의 Steam Nick 텍스트 노출
 
 
       ---------------------------------------------------      
     ㅣSteam Nick          PlayerTime       🗑️ㅣ    
       ---------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>05</td><td>세이브 슬롯_05</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>첫번째 슬롯의 PlayerTime 텍스트 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>첫번째 슬롯의 PlayerTime 텍스트 노출
 
 
       ---------------------------------------------------      
     ㅣSteam Nick          PlayerTime       🗑️ㅣ    
       ---------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>06</td><td>세이브 슬롯_06</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>첫번째 슬롯의 🗑️UI 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>첫번째 슬롯의 🗑️UI 노출
 
 
       ---------------------------------------------------      
     ㅣSteam Nick          PlayerTime       🗑️ㅣ    
       ---------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>07</td><td>세이브 슬롯_07</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>두번째 세이브 슬롯 화면에 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>두번째 세이브 슬롯 화면에 노출
 
 
       ---------------------------------------------------      
     ㅣSteam Nick          PlayerTime       🗑️ㅣ    
       ---------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>08</td><td>세이브 슬롯_08</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>두번째 슬롯의 Steam Nick 텍스트 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>두번째 슬롯의 Steam Nick 텍스트 노출
 
 
       ---------------------------------------------------      
     ㅣSteam Nick          PlayerTime       🗑️ㅣ    
       ---------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>09</td><td>세이브 슬롯_09</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>두번째 슬롯의 PlayerTime 텍스트 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>두번째 슬롯의 PlayerTime 텍스트 노출
 
 
       ---------------------------------------------------      
     ㅣSteam Nick          PlayerTime       🗑️ㅣ    
       ---------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>10</td><td>세이브 슬롯_10</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>두번째 슬롯의 🗑️UI 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>두번째 슬롯의 🗑️UI 노출
 
 
       ---------------------------------------------------      
     ㅣSteam Nick          PlayerTime       🗑️ㅣ    
       ---------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>11</td><td>세이브 슬롯_11</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>세번째 세이브 슬롯 화면에 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>세번째 세이브 슬롯 화면에 노출
 
 
       ---------------------------------------------------      
     ㅣSteam Nick          PlayerTime       🗑️ㅣ    
       ---------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>09</td><td>세이브 슬롯_12</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>세번째 슬롯의 Steam Nick 텍스트 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>세번째 슬롯의 Steam Nick 텍스트 노출
 
 
       ---------------------------------------------------      
     ㅣSteam Nick          PlayerTime       🗑️ㅣ    
       ---------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>10</td><td>세이브 슬롯_13</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>세번째 슬롯의 PlayerTime 텍스트 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>세번째 슬롯의 PlayerTime 텍스트 노출
 
 
       ---------------------------------------------------      
     ㅣSteam Nick          PlayerTime       🗑️ㅣ    
       ---------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>11</td><td>세이브 슬롯_14</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>세번째 슬롯의 🗑️UI 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>세번째 슬롯의 🗑️UI 노출
 
 
       ---------------------------------------------------      
     ㅣSteam Nick          PlayerTime       🗑️ㅣ    
       ---------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>12</td><td>세이브 슬롯_15</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>Back 텍스트 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>Back 텍스트 노출
 
 ----------------------------------------------------------------
 ㅣ      ---------------------------------------------------      ㅣ
@@ -3169,7 +3171,7 @@ l                Back                   New                         l
 ㅣ                                                                         ㅣ
 ----------------------------------------------------------------</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>13</td><td>세이브 슬롯_16</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입</td><td>1. 게임 실행
 
-2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='al'>New 텍스트 노출
+2. 메인 타이틀 화면 [Start] 버튼 클릭</td><td>UI</td><td class='ac'>New 텍스트 노출
 
 ----------------------------------------------------------------
 ㅣ      ---------------------------------------------------      ㅣ
@@ -3187,7 +3189,7 @@ l                Back                   New                         l
 
 2. 메인 타이틀 화면 [Start] 버튼 클릭
 
-3. 첫번째 세이브 데이터 슬롯 클릭</td><td>기능</td><td class='al'>첫번째 세이브 데이터로 인게임 화면 이동
+3. 첫번째 세이브 데이터 슬롯 클릭</td><td>기능</td><td class='ac'>첫번째 세이브 데이터로 인게임 화면 이동
 
 
       ---------------------------------------------------      
@@ -3196,7 +3198,7 @@ l                Back                   New                         l
 
 2. 메인 타이틀 화면 [Start] 버튼 클릭
 
-3. 두번째 세이브 데이터 슬롯 클릭</td><td>기능</td><td class='al'>두번째 세이브 데이터로 인게임 화면 이동
+3. 두번째 세이브 데이터 슬롯 클릭</td><td>기능</td><td class='ac'>두번째 세이브 데이터로 인게임 화면 이동
 
 
       ---------------------------------------------------      
@@ -3205,7 +3207,7 @@ l                Back                   New                         l
 
 2. 메인 타이틀 화면 [Start] 버튼 클릭
 
-3. 세번째 세이브 데이터 슬롯 클릭</td><td>기능</td><td class='al'>세번째 세이브 데이터로 인게임 화면 이동
+3. 세번째 세이브 데이터 슬롯 클릭</td><td>기능</td><td class='ac'>세번째 세이브 데이터로 인게임 화면 이동
 
 
       ---------------------------------------------------      
@@ -3214,7 +3216,7 @@ l                Back                   New                         l
 
 2. 메인 타이틀 화면 [Start] 버튼 클릭
 
-3. [Back] 버튼 클릭</td><td>기능</td><td class='al'>[Back] 버튼 클릭시 타이틀 화면 이동
+3. [Back] 버튼 클릭</td><td>기능</td><td class='ac'>[Back] 버튼 클릭시 타이틀 화면 이동
 
 ----------------------------------------------------------------
 ㅣ      ---------------------------------------------------      ㅣ
@@ -3232,7 +3234,7 @@ l                Back                   New                         l
 
 2. 메인 타이틀 화면 [Start] 버튼 클릭
 
-3. [New] 버튼 클릭</td><td>기능</td><td class='al'>[New] 클릭시 비어있는 세이브 슬롯에
+3. [New] 버튼 클릭</td><td>기능</td><td class='ac'>[New] 클릭시 비어있는 세이브 슬롯에
  새로운 세이브 생성 후 로딩 화면 이동
 
 ----------------------------------------------------------------
@@ -3253,21 +3255,21 @@ l                Back                   New                         l
 
 3. [Start] 버튼 클릭
 
-4. 뒷 배경 스크롤 노출 확인</td><td>UI</td><td class='al'>뒷 배경 자체의 스크롤이 노출됨.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>20</td><td>세이브 슬롯_23</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입
+4. 뒷 배경 스크롤 노출 확인</td><td>UI</td><td class='ac'>뒷 배경 자체의 스크롤이 노출됨.</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>20</td><td>세이브 슬롯_23</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입
 ,BGM 1%이상</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. BGM 1% 이상 상태</td><td>기능</td><td class='al'>배경 음악 재생</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>21</td><td>세이브 슬롯_24</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입
+4. BGM 1% 이상 상태</td><td>기능</td><td class='ac'>배경 음악 재생</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td>21</td><td>세이브 슬롯_24</td><td>게임 실행</td><td>메인 타이틀 화면 진입</td><td>[Start] 버튼 클릭</td><td></td><td>메인 화면 진입
 ,BGM 음소거 상태</td><td>1. 게임 실행
 
 2. 메인 타이틀 화면 진입
 
 3. [Start] 버튼 클릭
 
-4. BGM 음소거 상태</td><td>기능</td><td class='al'>배경 음악 재생되지 않음</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
+4. BGM 음소거 상태</td><td>기능</td><td class='ac'>배경 음악 재생되지 않음</td><td>Low</td><td class='st-pass'>PASS</td><td></td></tr><tr><td></td><td colspan='13'>전체 공란</td></tr></tbody></table></div></div>
 </div>
 <script>
 var tabs = document.querySelectorAll('.tab');
