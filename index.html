@@ -862,7 +862,7 @@
   <div class="wrap" id="vibe">
     <div class="section-head">
       <h2>바이브 코딩 프로젝트</h2>
-      <p>Claude AI와의 대화만으로 기획하고 구현한 웹 게임·웹앱·챗봇·기획서 모음</p>
+      <p>Claude AI와의 대화만으로 기획하고 구현한 웹 게임·웹앱·챗봇·QA 학습 도구·기획서 모음</p>
     </div>
 
     <div style="display:grid; gap:1.5rem;">
@@ -1040,6 +1040,38 @@
         </div>
       </div>
 
+      <!-- ISTQB CTFL 문제은행 -->
+      <div class="project-card">
+        <div class="proj-head">
+          <p class="proj-type">바이브 코딩 · QA 학습 도구</p>
+          <p class="proj-name">ISTQB CTFL v4.0 문제은행 — 자격증 대비 퀴즈 앱</p>
+        </div>
+        <div class="proj-meta">
+          <div class="proj-meta-item">개발 방식 <span>Claude AI 바이브 코딩</span></div>
+          <div class="proj-meta-item">플랫폼 <span>웹 브라우저 (단일 HTML)</span></div>
+          <div class="proj-meta-item">문제은행 <span>363문항 (하 186 · 중 90 · 상 87)</span></div>
+        </div>
+        <div class="proj-body">
+          <p class="proj-desc">
+            준비 중인 ISTQB Foundation Level 자격증을 스스로 공부하려고 만든 문제 풀이 앱. 공식 실러버스 v4.0.1과 공식 샘플문제 4세트를 원본 자료로 삼아, 난이도를 하·중·상 3단계로 나눈 363문항 문제은행을 구성했습니다. 기획서를 먼저 쓰고 그 명세대로 구현·검증했습니다.
+          </p>
+          <ul class="list-check">
+            <li>하 난이도는 공식 샘플문제 186문항을 원문 그대로 수록, 중·상 난이도는 실러버스 근거로 신규 출제</li>
+            <li>챕터별 문항 수를 실러버스 시간 배분 비중(4·5장 최다)에 맞춰 배분</li>
+            <li>모의고사 모드 — 40문항 무작위 출제 + 60분 타이머, 실제 합격선인 65%(26문항) 기준 채점</li>
+            <li>오답노트 자동 수집과 챕터별·난이도별 정답률 통계</li>
+            <li>외부 API·서버 없이 단일 HTML 파일로 동작하도록 문제 데이터를 내장</li>
+          </ul>
+          <div class="tags">
+            <span class="tag tag-blue">HTML/JS</span>
+            <span class="tag tag-green">ISTQB CTFL</span>
+            <span class="tag tag-green">기획서 기반 구현</span>
+            <span class="tag tag-blue">Claude AI</span>
+          </div>
+          <a class="vibe-play" href="istqb_quiz.html">풀어보기 →</a>
+        </div>
+      </div>
+
       <!-- 크로우의 만물상 -->
       <div class="project-card">
         <div class="proj-head">
@@ -1151,7 +1183,7 @@
 <!-- ════════════════ TC 모음 ════════════════ -->
 <div class="wrap" id="tc">
   <div class="section-head">
-    <h2>TC 모음 <span style="font-size:1rem; font-weight:400; color:var(--green-lt); margin-left:0.5rem;">총 10건</span></h2>
+    <h2>TC 모음 <span style="font-size:1rem; font-weight:400; color:var(--green-lt); margin-left:0.5rem;">총 14건</span></h2>
     <p>직접 설계한 테스트 케이스 문서 — 브라우저에서 바로 내용을 볼 수 있습니다</p>
   </div>
 
@@ -1161,8 +1193,8 @@
       <p>Weird Space(출시), Return of the Dark Lord(캡스톤 TC + 이벤트 명세), 슬라임 게임, 아이작 프로토타입, Lucky Friends, Apartment, Race</p>
     </div>
     <div class="about-highlight">
-      <div class="label">라이브 게임 분석 TC · 2건</div>
-      <p>운빨존많겜, Meccha Cameleon — 게임 선정 이유부터 필수·지정 항목 검증까지</p>
+      <div class="label">라이브 게임 분석 TC · 6건</div>
+      <p>나이트크로우 일반제작(지정항목 475행), 로스트아크 엘릭서, 메이플스토리 챌린저스 티어 시스템·아이템 버닝 PLUS, 운빨존많겜, Meccha Cameleon</p>
     </div>
   </div>
 

@@ -1,0 +1,1327 @@
+[
+  {
+    "id": "i01",
+    "ic": "🧅",
+    "name": "눈물나는 양파",
+    "hm": "Sad Onion",
+    "type": "passive",
+    "pool": "boss",
+    "q": 3,
+    "d": "연사 +0.7",
+    "fx": {
+      "tears": 0.7
+    }
+  },
+  {
+    "id": "i02",
+    "ic": "🍄",
+    "name": "왕버섯",
+    "hm": "Magic Mushroom",
+    "type": "passive",
+    "pool": "boss",
+    "q": 4,
+    "set": "mushroom",
+    "d": "모든 능력치 상승!",
+    "fx": {
+      "dmg": 1,
+      "tears": 0.3,
+      "speed": 0.2,
+      "range": 40,
+      "hp": 2
+    }
+  },
+  {
+    "id": "i03",
+    "ic": "🌶️",
+    "name": "청양고추",
+    "hm": "공업 계열",
+    "type": "passive",
+    "pool": "boss",
+    "q": 3,
+    "d": "공격력 +1.5",
+    "fx": {
+      "dmg": 1.5
+    }
+  },
+  {
+    "id": "i04",
+    "ic": "🥩",
+    "name": "생고기",
+    "hm": "Meat!",
+    "type": "passive",
+    "pool": "boss",
+    "q": 2,
+    "d": "체력 +1칸, 공격 +0.3",
+    "fx": {
+      "hp": 2,
+      "dmg": 0.3
+    }
+  },
+  {
+    "id": "i05",
+    "ic": "🏃",
+    "name": "낡은 운동화",
+    "hm": "The Belt",
+    "type": "passive",
+    "pool": "boss",
+    "q": 1,
+    "d": "이동속도 +0.3",
+    "fx": {
+      "speed": 0.3
+    }
+  },
+  {
+    "id": "i06",
+    "ic": "🔭",
+    "name": "망원 조준경",
+    "hm": "사거리 계열",
+    "type": "passive",
+    "pool": "boss",
+    "q": 1,
+    "d": "사거리 +80, 탄속 +0.2",
+    "fx": {
+      "range": 80,
+      "shot": 0.2
+    }
+  },
+  {
+    "id": "i07",
+    "ic": "🍬",
+    "name": "신 젤리",
+    "hm": "Lunch",
+    "type": "passive",
+    "pool": "boss",
+    "q": 1,
+    "d": "체력 +1칸",
+    "fx": {
+      "hp": 2
+    }
+  },
+  {
+    "id": "i08",
+    "ic": "🍀",
+    "name": "네잎클로버",
+    "hm": "Lucky Foot",
+    "type": "passive",
+    "pool": "boss",
+    "q": 2,
+    "d": "행운 +1",
+    "fx": {
+      "luck": 1
+    }
+  },
+  {
+    "id": "i09",
+    "ic": "💪",
+    "name": "단백질 셰이크",
+    "hm": "Steroids류",
+    "type": "passive",
+    "pool": "boss",
+    "q": 2,
+    "d": "공격 +0.8, 속도 +0.1",
+    "fx": {
+      "dmg": 0.8,
+      "speed": 0.1
+    }
+  },
+  {
+    "id": "i10",
+    "ic": "☕",
+    "name": "진한 에스프레소",
+    "hm": "연사 계열",
+    "type": "passive",
+    "pool": "boss",
+    "q": 2,
+    "d": "연사 +0.5, 속도 +0.15",
+    "fx": {
+      "tears": 0.5,
+      "speed": 0.15
+    }
+  },
+  {
+    "id": "i11",
+    "ic": "🩸",
+    "name": "수혈 팩",
+    "hm": "Blood Bag",
+    "type": "passive",
+    "pool": "boss",
+    "q": 2,
+    "d": "체력 +2칸+회복, 속도 +0.1",
+    "fx": {
+      "hp": 4,
+      "heal": 99,
+      "speed": 0.1
+    }
+  },
+  {
+    "id": "i12",
+    "ic": "🎯",
+    "name": "매의 눈",
+    "hm": "정밀 계열",
+    "type": "passive",
+    "pool": "boss",
+    "q": 1,
+    "d": "탄속·사거리·행운 소폭↑",
+    "fx": {
+      "shot": 0.25,
+      "range": 60,
+      "luck": 0.5
+    }
+  },
+  {
+    "id": "i13",
+    "ic": "🐌",
+    "name": "달팽이 점액",
+    "hm": "Soy Milk",
+    "type": "passive",
+    "pool": "boss",
+    "q": 2,
+    "d": "연사 대폭↑, 공격 ×0.25",
+    "fx": {
+      "fdMult": 0.25,
+      "dmgMult": 0.25
+    }
+  },
+  {
+    "id": "i14",
+    "ic": "🗿",
+    "name": "화강암 심장",
+    "hm": "체력 계열",
+    "type": "passive",
+    "pool": "boss",
+    "q": 2,
+    "d": "체력 +2칸, 공격 +0.3",
+    "fx": {
+      "hp": 4,
+      "dmg": 0.3
+    }
+  },
+  {
+    "id": "i15",
+    "ic": "🧲",
+    "name": "자석 눈물",
+    "hm": "Spoon Bender",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 3,
+    "d": "유도 눈물",
+    "fx": {
+      "homing": 1
+    }
+  },
+  {
+    "id": "i16",
+    "ic": "🌹",
+    "name": "장미가시 화살",
+    "hm": "Cupid's Arrow",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 2,
+    "d": "관통 눈물",
+    "fx": {
+      "piercing": 1
+    }
+  },
+  {
+    "id": "i17",
+    "ic": "👓",
+    "name": "겹눈 안경",
+    "hm": "20/20",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 3,
+    "d": "2발 발사, 공격 ×0.8",
+    "fx": {
+      "multishot": 1,
+      "dmgMult": 0.8
+    }
+  },
+  {
+    "id": "i18",
+    "ic": "👁️",
+    "name": "제3의 눈",
+    "hm": "The Inner Eye",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 3,
+    "d": "3발 발사, 딜레이 ×1.9",
+    "fx": {
+      "multishot": 2,
+      "fdMult": 1.9
+    }
+  },
+  {
+    "id": "i19",
+    "ic": "🕷️",
+    "name": "거미 독샘",
+    "hm": "Scorpio",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 2,
+    "d": "독 눈물 (도트 피해)",
+    "fx": {
+      "poison": 1
+    }
+  },
+  {
+    "id": "i20",
+    "ic": "❄️",
+    "name": "얼음 조각",
+    "hm": "슬로우 계열",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 2,
+    "d": "명중 시 적 감속",
+    "fx": {
+      "slow": 1
+    }
+  },
+  {
+    "id": "i21",
+    "ic": "💥",
+    "name": "화약 눈물",
+    "hm": "Ipecac",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 3,
+    "d": "폭발 눈물 (자폭 주의!)",
+    "fx": {
+      "explosive": 1,
+      "dmg": 2.5,
+      "fdMult": 2.2
+    }
+  },
+  {
+    "id": "i22",
+    "ic": "🪃",
+    "name": "부메랑 눈물",
+    "hm": "My Reflection",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 1,
+    "d": "눈물이 되돌아옴",
+    "fx": {
+      "returning": 1
+    }
+  },
+  {
+    "id": "i23",
+    "ic": "🎈",
+    "name": "고무 눈물",
+    "hm": "Rubber Cement",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 2,
+    "d": "벽·바위에 3회 반사",
+    "fx": {
+      "bouncing": 1
+    }
+  },
+  {
+    "id": "i24",
+    "ic": "🔱",
+    "name": "외눈박이 대왕눈물",
+    "hm": "Polyphemus",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 4,
+    "d": "공격 ×2+2, 거대 눈물, 딜레이 ×2.4",
+    "fx": {
+      "dmgMult": 2,
+      "dmg": 2,
+      "sizeMult": 2,
+      "fdMult": 2.4
+    }
+  },
+  {
+    "id": "i25",
+    "ic": "✂️",
+    "name": "분열 가위",
+    "hm": "Cricket's Body",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 3,
+    "d": "소멸 시 2갈래 분열",
+    "fx": {
+      "split": 1,
+      "range": -60
+    }
+  },
+  {
+    "id": "i26",
+    "ic": "🌊",
+    "name": "파도 눈물",
+    "hm": "넉백 계열",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 1,
+    "d": "적을 밀쳐냄",
+    "fx": {
+      "knockback": 1
+    }
+  },
+  {
+    "id": "i27",
+    "ic": "👻",
+    "name": "유령 눈물",
+    "hm": "Ouija Board",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 2,
+    "d": "바위 관통 (스펙트럴)",
+    "fx": {
+      "spectral": 1
+    }
+  },
+  {
+    "id": "i28",
+    "ic": "🔫",
+    "name": "물총 개조킷",
+    "hm": "Number One",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 2,
+    "d": "연사↑↑, 사거리 −100",
+    "fx": {
+      "fdMult": 0.55,
+      "range": -100
+    }
+  },
+  {
+    "id": "i29",
+    "ic": "🎆",
+    "name": "유성우",
+    "hm": "Monstro's Lung",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 3,
+    "d": "5발 산탄, 공격 ×0.7, 딜레이 ×2.6",
+    "fx": {
+      "multishot": 4,
+      "dmgMult": 0.7,
+      "fdMult": 2.6,
+      "spread": 1
+    }
+  },
+  {
+    "id": "i30",
+    "ic": "🧪",
+    "name": "산성 침",
+    "hm": "Serpent's Kiss",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 3,
+    "d": "강독 (도트 2배)",
+    "fx": {
+      "poison": 1,
+      "poisonX2": 1
+    }
+  },
+  {
+    "id": "i31",
+    "ic": "🪰",
+    "name": "충직한 파리",
+    "hm": "Distant Admiration",
+    "type": "familiar",
+    "pool": "treasure",
+    "q": 2,
+    "set": "fly",
+    "d": "궤도 공전, 접촉 피해",
+    "fx": {
+      "fam": "orbit"
+    }
+  },
+  {
+    "id": "i32",
+    "ic": "🦴",
+    "name": "뼈다귀 방패",
+    "hm": "Cube of Meat",
+    "type": "familiar",
+    "pool": "shop",
+    "q": 3,
+    "d": "궤도 공전, 적탄 차단",
+    "fx": {
+      "fam": "shield"
+    }
+  },
+  {
+    "id": "i33",
+    "ic": "🐥",
+    "name": "미니미",
+    "hm": "Brother Bobby",
+    "type": "familiar",
+    "pool": "treasure",
+    "q": 2,
+    "d": "함께 사격 (공격 3.5)",
+    "fx": {
+      "fam": "shooter"
+    }
+  },
+  {
+    "id": "i34",
+    "ic": "🕸️",
+    "name": "아기 거미",
+    "hm": "Juicy Sack",
+    "type": "familiar",
+    "pool": "treasure",
+    "q": 2,
+    "d": "감속탄 자동 발사",
+    "fx": {
+      "fam": "slower"
+    }
+  },
+  {
+    "id": "i35",
+    "ic": "👼",
+    "name": "수호 조각상",
+    "hm": "Guardian Angel",
+    "type": "familiar",
+    "pool": "shop",
+    "q": 3,
+    "d": "고속 궤도, 차단+피해",
+    "fx": {
+      "fam": "guardian"
+    }
+  },
+  {
+    "id": "i36",
+    "ic": "🧲",
+    "name": "동전 자석",
+    "hm": "Bum Friend",
+    "type": "familiar",
+    "pool": "shop",
+    "q": 2,
+    "d": "픽업 흡수 + 가끔 동전",
+    "fx": {
+      "fam": "magnet"
+    }
+  },
+  {
+    "id": "i37",
+    "ic": "💀",
+    "name": "해골 친구",
+    "hm": "Dry Baby",
+    "type": "familiar",
+    "pool": "treasure",
+    "q": 2,
+    "d": "피격 시 8방향 보복",
+    "fx": {
+      "fam": "skull"
+    }
+  },
+  {
+    "id": "i38",
+    "ic": "🗺️",
+    "name": "던전 지도",
+    "hm": "Treasure Map+Compass",
+    "type": "passive",
+    "pool": "shop",
+    "q": 2,
+    "d": "층 전체 방 표시",
+    "fx": {
+      "mapReveal": 1
+    }
+  },
+  {
+    "id": "i39",
+    "ic": "🔮",
+    "name": "수정 구슬",
+    "hm": "Crystal Ball",
+    "type": "passive",
+    "pool": "shop",
+    "q": 3,
+    "d": "비밀방 위치 표시",
+    "fx": {
+      "secretReveal": 1
+    }
+  },
+  {
+    "id": "i40",
+    "ic": "💼",
+    "name": "상인 회원권",
+    "hm": "Steam Sale",
+    "type": "passive",
+    "pool": "shop",
+    "q": 3,
+    "d": "상점 반값",
+    "fx": {
+      "shopDiscount": 1
+    }
+  },
+  {
+    "id": "i41",
+    "ic": "🧰",
+    "name": "폭탄 가방",
+    "hm": "Bomb Bag",
+    "type": "passive",
+    "pool": "shop",
+    "q": 2,
+    "d": "폭탄 +5, 층마다 +1",
+    "fx": {
+      "bombs": 5,
+      "floorBombs": 1
+    }
+  },
+  {
+    "id": "i42",
+    "ic": "🗝️",
+    "name": "만능 열쇠고리",
+    "hm": "Skeleton Key",
+    "type": "passive",
+    "pool": "shop",
+    "q": 2,
+    "d": "열쇠 +5, 층마다 +1",
+    "fx": {
+      "keys": 5,
+      "floorKeys": 1
+    }
+  },
+  {
+    "id": "i43",
+    "ic": "🩹",
+    "name": "구급 상자",
+    "hm": "드롭 보정",
+    "type": "passive",
+    "pool": "shop",
+    "q": 2,
+    "d": "2칸 회복 + 하트 드롭↑",
+    "fx": {
+      "heal": 4,
+      "healKit": 1
+    }
+  },
+  {
+    "id": "i44",
+    "ic": "🌵",
+    "name": "선인장 갑옷",
+    "hm": "가시 반사",
+    "type": "passive",
+    "pool": "shop",
+    "q": 2,
+    "d": "접촉한 적에게 반사 피해",
+    "fx": {
+      "thorns": 1
+    }
+  },
+  {
+    "id": "i45",
+    "ic": "🐦",
+    "name": "불사조 깃털",
+    "hm": "1UP!",
+    "type": "passive",
+    "pool": "secret",
+    "q": 4,
+    "d": "사망 시 1회 부활",
+    "fx": {
+      "extraLife": 1
+    }
+  },
+  {
+    "id": "i46",
+    "ic": "📖",
+    "name": "심판의 성서",
+    "hm": "Necronomicon",
+    "type": "active",
+    "pool": "secret",
+    "q": 3,
+    "d": "[4칸] 방 전체 40 피해",
+    "fx": {
+      "active": {
+        "kind": "nuke",
+        "max": 4
+      }
+    }
+  },
+  {
+    "id": "i47",
+    "ic": "🌀",
+    "name": "귀환 워프석",
+    "hm": "Teleport!",
+    "type": "active",
+    "pool": "shop",
+    "q": 1,
+    "d": "[2칸] 시작 방으로 이동",
+    "fx": {
+      "active": {
+        "kind": "teleport",
+        "max": 2
+      }
+    }
+  },
+  {
+    "id": "i48",
+    "ic": "🎲",
+    "name": "운명 주사위",
+    "hm": "The D6",
+    "type": "active",
+    "pool": "secret",
+    "q": 4,
+    "d": "[3칸] 받침대 아이템 리롤",
+    "fx": {
+      "active": {
+        "kind": "reroll",
+        "max": 3
+      }
+    }
+  },
+  {
+    "id": "i49",
+    "ic": "❤️‍🩹",
+    "name": "엄마의 약상자",
+    "hm": "Yum Heart",
+    "type": "active",
+    "pool": "secret",
+    "q": 2,
+    "d": "[4칸] 하트 2칸 회복",
+    "fx": {
+      "active": {
+        "kind": "heal",
+        "max": 4
+      }
+    }
+  },
+  {
+    "id": "i50",
+    "ic": "⚡",
+    "name": "번개 구름",
+    "hm": "Crack the Sky",
+    "type": "active",
+    "pool": "secret",
+    "q": 3,
+    "d": "[3칸] 무작위 낙뢰 5회",
+    "fx": {
+      "active": {
+        "kind": "lightning",
+        "max": 3
+      }
+    }
+  },
+  {
+    "id": "i51",
+    "ic": "🥚",
+    "name": "삶은 달걀",
+    "hm": "소형 복합업",
+    "type": "passive",
+    "pool": "boss",
+    "q": 2,
+    "d": "체력 +1칸, 연사 +0.2",
+    "fx": {
+      "hp": 2,
+      "tears": 0.2
+    }
+  },
+  {
+    "id": "i52",
+    "ic": "🧃",
+    "name": "붉은 주스",
+    "hm": "소형 복합업",
+    "type": "passive",
+    "pool": "boss",
+    "q": 2,
+    "d": "공격 +0.5, 연사 +0.3",
+    "fx": {
+      "dmg": 0.5,
+      "tears": 0.3
+    }
+  },
+  {
+    "id": "i53",
+    "ic": "🦵",
+    "name": "의족",
+    "hm": "이속 계열",
+    "type": "passive",
+    "pool": "boss",
+    "q": 2,
+    "d": "속도 +0.25, 공격 +0.3",
+    "fx": {
+      "speed": 0.25,
+      "dmg": 0.3
+    }
+  },
+  {
+    "id": "i54",
+    "ic": "🍯",
+    "name": "꿀단지",
+    "hm": "체력 계열",
+    "type": "passive",
+    "pool": "boss",
+    "q": 2,
+    "d": "체력 +1칸 + 1칸 회복",
+    "fx": {
+      "hp": 2,
+      "heal": 2
+    }
+  },
+  {
+    "id": "i55",
+    "ic": "🧠",
+    "name": "뇌 젤리",
+    "hm": "연사 계열",
+    "type": "passive",
+    "pool": "boss",
+    "q": 2,
+    "d": "연사 +0.4, 사거리 +40",
+    "fx": {
+      "tears": 0.4,
+      "range": 40
+    }
+  },
+  {
+    "id": "i56",
+    "ic": "🥋",
+    "name": "검은 띠",
+    "hm": "공업 계열",
+    "type": "passive",
+    "pool": "boss",
+    "q": 3,
+    "d": "공격 +1.0, 속도 −0.1",
+    "fx": {
+      "dmg": 1,
+      "speed": -0.1
+    }
+  },
+  {
+    "id": "i57",
+    "ic": "🍇",
+    "name": "포도 한 알",
+    "hm": "소형 올업",
+    "type": "passive",
+    "pool": "boss",
+    "q": 1,
+    "d": "공·연사·속도 소폭↑",
+    "fx": {
+      "dmg": 0.3,
+      "tears": 0.2,
+      "speed": 0.05
+    }
+  },
+  {
+    "id": "i58",
+    "ic": "⚙️",
+    "name": "태엽 심장",
+    "hm": "연사+탄속",
+    "type": "passive",
+    "pool": "boss",
+    "q": 3,
+    "d": "연사 +0.6, 탄속 +0.3",
+    "fx": {
+      "tears": 0.6,
+      "shot": 0.3
+    }
+  },
+  {
+    "id": "i59",
+    "ic": "🔥",
+    "name": "도깨비불",
+    "hm": "Fire Mind류",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 3,
+    "d": "화상 눈물 (단기 강한 도트)",
+    "fx": {
+      "burn": 1
+    }
+  },
+  {
+    "id": "i60",
+    "ic": "😱",
+    "name": "공포의 가면",
+    "hm": "Mom's Perfume",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 2,
+    "d": "명중한 적이 도망감",
+    "fx": {
+      "fear": 1
+    }
+  },
+  {
+    "id": "i61",
+    "ic": "🍰",
+    "name": "과일 케이크",
+    "hm": "Fruit Cake",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 3,
+    "d": "발사마다 무작위 속성 부여",
+    "fx": {
+      "randomFx": 1
+    }
+  },
+  {
+    "id": "i62",
+    "ic": "🪙",
+    "name": "황금 눈물",
+    "hm": "Head of the Keeper",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 2,
+    "d": "명중 시 동전 드롭 확률",
+    "fx": {
+      "coinTear": 1
+    }
+  },
+  {
+    "id": "i63",
+    "ic": "🛡️",
+    "name": "성스러운 망토",
+    "hm": "Holy Mantle",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 4,
+    "d": "방마다 첫 피격 무효",
+    "fx": {
+      "mantle": 1
+    }
+  },
+  {
+    "id": "i64",
+    "ic": "🐭",
+    "name": "궁지 몰린 쥐",
+    "hm": "저체력 강화",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 2,
+    "d": "체력 1칸 이하 시 공격 ×1.8",
+    "fx": {
+      "lowHp": 1
+    }
+  },
+  {
+    "id": "i65",
+    "ic": "🪰",
+    "name": "파리 유충",
+    "hm": "Forever Alone류",
+    "type": "familiar",
+    "pool": "treasure",
+    "q": 1,
+    "set": "fly",
+    "d": "궤도 파리 +1",
+    "fx": {
+      "fam": "orbit"
+    }
+  },
+  {
+    "id": "i66",
+    "ic": "🍄",
+    "name": "독버섯 갓",
+    "hm": "독버섯 계열",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 2,
+    "set": "mushroom",
+    "d": "독 눈물 + 공격 +0.3",
+    "fx": {
+      "poison": 1,
+      "dmg": 0.3
+    }
+  },
+  {
+    "id": "i67",
+    "ic": "🎯",
+    "name": "저격 렌즈",
+    "hm": "원거리 강화",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 2,
+    "d": "멀리 맞출수록 강함 (최대 +80%)",
+    "fx": {
+      "sniper": 1
+    }
+  },
+  {
+    "id": "i68",
+    "ic": "💫",
+    "name": "별똥별 조각",
+    "hm": "탄속 계열",
+    "type": "passive",
+    "pool": "treasure",
+    "q": 2,
+    "d": "탄속 +0.5, 공격 +0.4",
+    "fx": {
+      "shot": 0.5,
+      "dmg": 0.4
+    }
+  },
+  {
+    "id": "i69",
+    "ic": "🐝",
+    "name": "벌침 호위",
+    "hm": "궤도 사격형",
+    "type": "familiar",
+    "pool": "treasure",
+    "q": 3,
+    "set": "fly",
+    "d": "궤도를 돌며 자동 사격",
+    "fx": {
+      "fam": "orbitShooter"
+    }
+  },
+  {
+    "id": "i70",
+    "ic": "🧊",
+    "name": "얼음 정령",
+    "hm": "감속 오라",
+    "type": "familiar",
+    "pool": "shop",
+    "q": 2,
+    "d": "주변 적 상시 감속",
+    "fx": {
+      "fam": "iceAura"
+    }
+  },
+  {
+    "id": "i71",
+    "ic": "🍄",
+    "name": "포자 주머니",
+    "hm": "독 패밀리어",
+    "type": "familiar",
+    "pool": "treasure",
+    "q": 2,
+    "set": "mushroom",
+    "d": "독탄 자동 발사",
+    "fx": {
+      "fam": "spore"
+    }
+  },
+  {
+    "id": "i72",
+    "ic": "🐕",
+    "name": "충견",
+    "hm": "근접 패밀리어",
+    "type": "familiar",
+    "pool": "shop",
+    "q": 2,
+    "d": "따라다니며 물어뜯기",
+    "fx": {
+      "fam": "dog"
+    }
+  },
+  {
+    "id": "i73",
+    "ic": "⏱️",
+    "name": "회중시계",
+    "hm": "Stop Watch",
+    "type": "passive",
+    "pool": "shop",
+    "q": 2,
+    "d": "피격 시 방 전체 감속",
+    "fx": {
+      "onHitSlow": 1
+    }
+  },
+  {
+    "id": "i74",
+    "ic": "🐖",
+    "name": "돼지 저금통",
+    "hm": "Piggy Bank",
+    "type": "passive",
+    "pool": "shop",
+    "q": 2,
+    "d": "+10¢, 피격 시 동전 드롭",
+    "fx": {
+      "coins": 10,
+      "pennyHit": 1
+    }
+  },
+  {
+    "id": "i75",
+    "ic": "🧭",
+    "name": "보물 나침반",
+    "hm": "Compass",
+    "type": "passive",
+    "pool": "shop",
+    "q": 1,
+    "d": "특수방 위치 표시 (매 층)",
+    "fx": {
+      "compassReveal": 1
+    }
+  },
+  {
+    "id": "i76",
+    "ic": "🔋",
+    "name": "대용량 배터리",
+    "hm": "Battery 계열",
+    "type": "passive",
+    "pool": "shop",
+    "q": 3,
+    "d": "액티브 충전 속도 2배",
+    "fx": {
+      "chargeX2": 1
+    }
+  },
+  {
+    "id": "i77",
+    "ic": "⏳",
+    "name": "멈춘 모래시계",
+    "hm": "Stop Watch류",
+    "type": "active",
+    "pool": "secret",
+    "q": 3,
+    "d": "[3칸] 적 전체 5초 감속",
+    "fx": {
+      "active": {
+        "kind": "freeze",
+        "max": 3
+      }
+    }
+  },
+  {
+    "id": "i78",
+    "ic": "🧨",
+    "name": "메가 폭탄",
+    "hm": "Mama Mega!",
+    "type": "active",
+    "pool": "secret",
+    "q": 3,
+    "d": "[4칸] 대폭발 + 비밀방 전부 개방",
+    "fx": {
+      "active": {
+        "kind": "megabomb",
+        "max": 4
+      }
+    }
+  },
+  {
+    "id": "i79",
+    "ic": "👑",
+    "name": "왕관",
+    "hm": "Crown 계열",
+    "type": "passive",
+    "pool": "secret",
+    "q": 4,
+    "d": "전 능력치 대폭 상승",
+    "fx": {
+      "dmg": 0.8,
+      "tears": 0.4,
+      "speed": 0.15,
+      "range": 60,
+      "luck": 1
+    }
+  },
+  {
+    "id": "i80",
+    "ic": "🎁",
+    "name": "판도라 상자",
+    "hm": "Pandora's Box",
+    "type": "active",
+    "pool": "secret",
+    "q": 4,
+    "d": "[6칸] 무작위 아이템 2개 획득",
+    "fx": {
+      "active": {
+        "kind": "pandora",
+        "max": 6
+      }
+    }
+  },
+  {
+    "id": "i81",
+    "ic": "😈",
+    "name": "피의 계약",
+    "hm": "악마 계약 계열",
+    "type": "passive",
+    "pool": "devil",
+    "q": 4,
+    "d": "공격 +2",
+    "fx": {
+      "dmg": 2
+    }
+  },
+  {
+    "id": "i82",
+    "ic": "🗡️",
+    "name": "저주받은 검",
+    "hm": "근접 오라 계열",
+    "type": "passive",
+    "pool": "devil",
+    "q": 3,
+    "d": "근접 오라 피해 + 공격 +0.5",
+    "fx": {
+      "swordAura": 1,
+      "dmg": 0.5
+    }
+  },
+  {
+    "id": "i83",
+    "ic": "🦇",
+    "name": "박쥐 날개",
+    "hm": "비행 계열",
+    "type": "passive",
+    "pool": "devil",
+    "q": 3,
+    "d": "비행(바위 통과) + 속도 +0.3",
+    "fx": {
+      "flight": 1,
+      "speed": 0.3
+    }
+  },
+  {
+    "id": "i84",
+    "ic": "👹",
+    "name": "악마의 눈",
+    "hm": "공업 계열",
+    "type": "passive",
+    "pool": "devil",
+    "q": 3,
+    "d": "공격 +1.8, 딜레이 ×1.15",
+    "fx": {
+      "dmg": 1.8,
+      "fdMult": 1.15
+    }
+  },
+  {
+    "id": "i85",
+    "ic": "🖤",
+    "name": "검은 심장",
+    "hm": "Black Heart",
+    "type": "passive",
+    "pool": "devil",
+    "q": 3,
+    "d": "소울 하트 3개 + 공격 +0.5",
+    "fx": {
+      "soul": 6,
+      "dmg": 0.5
+    }
+  },
+  {
+    "id": "i86",
+    "ic": "🔥",
+    "name": "지옥불",
+    "hm": "화염 계열",
+    "type": "passive",
+    "pool": "devil",
+    "q": 3,
+    "d": "화상 눈물 + 공격 +0.8",
+    "fx": {
+      "burn": 1,
+      "dmg": 0.8
+    }
+  },
+  {
+    "id": "i87",
+    "ic": "🐐",
+    "name": "염소 머리",
+    "hm": "Goat Head",
+    "type": "passive",
+    "pool": "devil",
+    "q": 4,
+    "d": "악마/천사 제단 확정 등장",
+    "fx": {
+      "goatHead": 1
+    }
+  },
+  {
+    "id": "i88",
+    "ic": "💀",
+    "name": "사신의 낫",
+    "hm": "즉사 계열",
+    "type": "passive",
+    "pool": "devil",
+    "q": 4,
+    "d": "명중 시 3%+행운 즉사 (보스 제외)",
+    "fx": {
+      "reaper": 1
+    }
+  },
+  {
+    "id": "i89",
+    "ic": "😇",
+    "name": "후광",
+    "hm": "Halo",
+    "type": "passive",
+    "pool": "angel",
+    "q": 3,
+    "d": "전 능력치 소폭 상승",
+    "fx": {
+      "dmg": 0.5,
+      "tears": 0.3,
+      "speed": 0.1,
+      "hp": 2
+    }
+  },
+  {
+    "id": "i90",
+    "ic": "🕊️",
+    "name": "성스러운 날개",
+    "hm": "Dove 계열",
+    "type": "passive",
+    "pool": "angel",
+    "q": 3,
+    "d": "비행 + 소울 1개",
+    "fx": {
+      "flight": 1,
+      "soul": 2
+    }
+  },
+  {
+    "id": "i91",
+    "ic": "✨",
+    "name": "축복",
+    "hm": "Blessing",
+    "type": "passive",
+    "pool": "angel",
+    "q": 2,
+    "d": "소울 2개 + 행운 +1",
+    "fx": {
+      "soul": 4,
+      "luck": 1
+    }
+  },
+  {
+    "id": "i92",
+    "ic": "📿",
+    "name": "묵주",
+    "hm": "Rosary",
+    "type": "passive",
+    "pool": "angel",
+    "q": 2,
+    "d": "연사 +0.7 + 소울 1개",
+    "fx": {
+      "tears": 0.7,
+      "soul": 2
+    }
+  },
+  {
+    "id": "i93",
+    "ic": "⚔️",
+    "name": "성검",
+    "hm": "성물 계열",
+    "type": "passive",
+    "pool": "angel",
+    "q": 3,
+    "d": "공격 +1.5 + 행운 +1",
+    "fx": {
+      "dmg": 1.5,
+      "luck": 1
+    }
+  },
+  {
+    "id": "i94",
+    "ic": "🌟",
+    "name": "신의 가호",
+    "hm": "부활 성물",
+    "type": "passive",
+    "pool": "angel",
+    "q": 4,
+    "d": "사망 시 부활 + 전체 회복",
+    "fx": {
+      "extraLife": 1,
+      "heal": 99
+    }
+  },
+  {
+    "id": "i95",
+    "ic": "🧵",
+    "name": "탯줄",
+    "hm": "Mother 계열",
+    "type": "familiar",
+    "pool": "secret",
+    "q": 4,
+    "d": "수호 패밀리어 + 공격 +0.8",
+    "fx": {
+      "fam": "guardian",
+      "dmg": 0.8
+    }
+  }
+]
