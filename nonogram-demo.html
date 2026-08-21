@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<!-- 노노그램 P2P 데모. 서버 없이 파일 하나로 동작한다. -->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>노노그램 P2P 데모</title>
+<style>
+:root{
+  --bg:#f4f5f7; --panel:#ffffff; --panel2:#eceef1; --line:#d3d7de; --line2:#b9bfc9;
+  --text:#1c1f24; --muted:#6a7280; --accent:#3b6cf0; --accent2:#2a52c0;
+  --fill:#242830; --mark:#c0392b; --good:#1f9d55; --bad:#d64545; --warn:#c98a12;
+  --grid:#ffffff; --gridalt:#f7f8fa; --peer:#8e44ad;
+  --hl:#d6f2de; --hlline:#1f9d55;
+}
+:root[data-theme="dark"]{
+  --bg:#14161a; --panel:#1c1f25; --panel2:#23262e; --line:#333842; --line2:#4a5160;
+  --text:#e8eaee; --muted:#9aa3b2; --accent:#5b87ff; --accent2:#7ba0ff;
+  --fill:#e8eaee; --mark:#ff7b6b; --good:#4ade80; --bad:#ff6b6b; --warn:#f0b429;
+  --grid:#1c1f25; --gridalt:#21252c; --peer:#c084fc;
+  --hl:#1c3a28; --hlline:#4ade80;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,-apple-system,sans-serif;
+  font-size:15px; line-height:1.5; overflow:hidden;
+  -webkit-user-select:none; user-select:none;
+}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{
+  background:var(--panel2); border:1px solid var(--line); color:var(--text);
+  padding:8px 14px; border-radius:8px; transition:.12s;
+}
+.btn:hover{border-color:var(--line2)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.38;cursor:default;transform:none}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent2);border-color:var(--accent2)}
+.btn.danger{color:var(--bad)}
+.btn.glow{animation:glow 1.1s ease-in-out infinite;border-color:var(--good)}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(31,157,85,.5)}50%{box-shadow:0 0 0 7px rgba(31,157,85,0)}}
+.screen{position:absolute;inset:0;display:none;flex-direction:column}
+.screen.on{display:flex}
+
+/* ---- 홈 ---- */
+#home{overflow:auto;align-items:center;padding:28px 16px 40px}
+.home-wrap{width:100%;max-width:760px}
+h1{font-size:26px;margin:6px 0 2px;letter-spacing:-.5px}
+.sub{color:var(--muted);font-size:13.5px;margin:0 0 22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.card h2{font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600;letter-spacing:.3px}
+.opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.opt{
+  background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+  padding:11px 13px;text-align:left;transition:.12s
+}
+.opt .t{font-weight:600;display:block}
+.opt .d{font-size:12px;color:var(--muted);display:block;margin-top:2px}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 13%,transparent)}
+.sizes{display:grid;gap:7px;grid-template-columns:repeat(auto-fit,minmax(74px,1fr))}
+.size{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:9px 4px;text-align:center;font-variant-numeric:tabular-nums}
+.size[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 13%,transparent);font-weight:600}
+.size .n{font-size:11px;color:var(--muted);display:block}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spread{justify-content:space-between}
+.toggle{display:flex;align-items:center;gap:10px;cursor:pointer;padding:7px 0}
+.toggle input{appearance:none;width:40px;height:23px;border-radius:99px;background:var(--line);position:relative;transition:.15s;cursor:pointer;flex:none;margin:0}
+.toggle input:checked{background:var(--accent)}
+.toggle input::after{content:"";position:absolute;top:2.5px;left:2.5px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.15s}
+.toggle input:checked::after{transform:translateX(17px)}
+.toggle .lab{font-size:14px}
+.toggle .hint{font-size:12px;color:var(--muted);margin-top:1px}
+.note{font-size:12.5px;color:var(--muted);background:var(--panel2);border-radius:9px;padding:10px 12px;border:1px solid var(--line)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px}
+
+/* ---- 게임 ---- */
+#game{background:var(--bg)}
+.topbar{
+  display:flex;align-items:center;gap:14px;padding:9px 14px;
+  background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap
+}
+.stat{display:flex;flex-direction:column;line-height:1.15}
+.stat .k{font-size:10.5px;color:var(--muted);letter-spacing:.4px}
+.stat .v{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.stat .v.warn{color:var(--warn)}
+.stat .v.bad{color:var(--bad)}
+.bar{height:6px;border-radius:99px;background:var(--panel2);overflow:hidden;min-width:110px;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .18s}
+.bar.peer i{background:var(--peer)}
+#stage{flex:1;position:relative;overflow:hidden;touch-action:none}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:crosshair}
+.bottombar{
+  display:flex;gap:8px;padding:9px 14px;background:var(--panel);
+  border-top:1px solid var(--line);flex-wrap:wrap;align-items:center
+}
+.grow{flex:1}
+.toast{
+  position:absolute;left:50%;bottom:22px;transform:translateX(-50%) translateY(10px);
+  background:var(--panel);border:1px solid var(--line2);border-radius:10px;
+  padding:9px 16px;font-size:13.5px;opacity:0;pointer-events:none;transition:.22s;
+  box-shadow:0 6px 24px rgba(0,0,0,.16);z-index:5;white-space:pre-line;text-align:center
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.zoombox{position:absolute;right:20px;bottom:20px;display:flex;flex-direction:column;gap:6px;z-index:4}
+.zoombox button{width:36px;height:36px;padding:0;border-radius:9px;background:var(--panel);border:1px solid var(--line);font-size:16px}
+
+/* ---- 모달 ---- */
+.modal{position:absolute;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:16px}
+.modal.on{display:flex}
+.sheet{background:var(--panel);border:1px solid var(--line);border-radius:14px;width:100%;max-width:520px;max-height:86vh;overflow:auto;padding:20px}
+.sheet h2{margin:0 0 4px;font-size:19px}
+.sheet .sub{margin-bottom:16px}
+.sec{border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+.sec h3{font-size:12px;color:var(--muted);margin:0 0 6px;letter-spacing:.4px;font-weight:600}
+textarea{
+  width:100%;min-height:96px;background:var(--panel2);color:var(--text);
+  border:1px solid var(--line);border-radius:9px;padding:9px;
+  font-family:ui-monospace,monospace;font-size:11px;resize:vertical;
+  -webkit-user-select:text;user-select:text
+}
+.steps{counter-reset:s;padding-left:0;list-style:none;margin:10px 0}
+.steps li{counter-increment:s;position:relative;padding-left:26px;margin-bottom:7px;font-size:13.5px}
+.steps li::before{
+  content:counter(s);position:absolute;left:0;top:1px;width:18px;height:18px;border-radius:50%;
+  background:var(--accent);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center
+}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11.5px;background:var(--panel2);border:1px solid var(--line)}
+.pill.ok{color:var(--good);border-color:var(--good)}
+.pill.no{color:var(--bad);border-color:var(--bad)}
+
+/* ---- 결과 ---- */
+#result .sheet{max-width:560px}
+.big{font-size:32px;font-weight:700;margin:2px 0 2px;letter-spacing:-.5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.kv{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.kv .k{font-size:11px;color:var(--muted)}
+.kv .v{font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+#thumb{display:block;margin:14px auto;border:1px solid var(--line);border-radius:8px;image-rendering:pixelated;background:var(--grid)}
+.stars{font-size:24px;letter-spacing:3px;color:var(--warn)}
+
+/* ---- 리플레이 ---- */
+#replay{background:var(--bg)}
+.rp-bar{display:flex;gap:9px;align-items:center;padding:10px 14px;background:var(--panel);border-top:1px solid var(--line);flex-wrap:wrap}
+input[type=range]{flex:1;min-width:150px;accent-color:var(--accent)}
+select,input[type=number]{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 9px;font:inherit}
+input[type=number]{width:92px;-webkit-user-select:text;user-select:text}
+</style>
+</head>
+<body>
+
+<!-- ================= 홈 ================= -->
+<div class="screen on" id="home">
+<div class="home-wrap">
+  <div class="row spread">
+    <div>
+      <h1>노노그램</h1>
+      <p class="sub">힌트 숫자만 보고 그림을 복원하는 논리 퍼즐. 혼자 또는 P2P로 둘이서.</p>
+    </div>
+    <button class="btn" id="themeBtn" title="밝은/어두운 전환">◐</button>
+  </div>
+
+  <div class="card">
+    <h2>게임 모드</h2>
+    <div class="opts" id="modeOpts">
+      <button class="opt" data-mode="solo" aria-pressed="true"><span class="t">일반 풀이</span><span class="d">푸는 데 걸린 시간을 잰다</span></button>
+      <button class="opt" data-mode="time"><span class="t">타임어택</span><span class="d">제한 시간 안에 완성한다</span></button>
+      <button class="opt" data-mode="race"><span class="t">대전</span><span class="d">먼저 완성하는 쪽이 이긴다</span></button>
+      <button class="opt" data-mode="coop"><span class="t">협동</span><span class="d">보드 하나를 둘이 함께 푼다</span></button>
+    </div>
+    <div class="row" id="timeRow" style="display:none;margin-top:14px">
+      <span>제한 시간</span>
+      <input type="number" id="limitMin" min="1" max="600" step="1" value="3">
+      <span style="color:var(--muted)">분</span>
+      <button class="btn" id="limitDefault">크기별 기본값</button>
+      <span style="color:var(--muted);font-size:12.5px" id="limitHint"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>기간 챌린지</h2>
+    <div class="opts" id="chalOpts">
+      <button class="opt" data-chal="daily"><span class="t">일간 20×20</span><span class="d" id="chalDaily">-</span></button>
+      <button class="opt" data-chal="weekly"><span class="t">주간 30×30</span><span class="d" id="chalWeekly">-</span></button>
+      <button class="opt" data-chal="monthly"><span class="t">월간 50×50</span><span class="d" id="chalMonthly">-</span></button>
+    </div>
+    <div class="note" style="margin-top:11px">
+      같은 기간 안에서는 몇 번을 눌러도 같은 문제가 나온다. 일간은 자정에, 주간은 월요일 자정에, 월간은 매달 1일 자정에 새 문제로 바뀐다.
+      날짜에서 시드를 만들기 때문에 같은 날 같은 문제를 푸는 사람은 모두 같은 퍼즐을 받는다.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>맵 크기</h2>
+    <div class="sizes" id="sizeOpts"></div>
+  </div>
+
+  <div class="card">
+    <h2>규칙 설정</h2>
+    <label class="toggle">
+      <input type="checkbox" id="beginnerChk">
+      <span><span class="lab">초보자 모드</span><span class="hint">확인을 눌러도 되돌리기가 막히지 않는다. 힌트 버튼과 즉시 오류 표시가 켜진다. 대신 기록에 남지 않는다.</span></span>
+    </label>
+    <div class="note" id="beginnerNote">일반 모드에서는 <b>확인</b>을 누르는 순간 그 시점이 확정되어, 되돌리기로 그 이전으로 돌아갈 수 없다.</div>
+  </div>
+
+  <div class="card">
+    <h2>시작</h2>
+    <div class="row">
+      <button class="btn primary" id="startSolo">혼자 시작</button>
+      <button class="btn" id="hostBtn">방 만들기</button>
+      <button class="btn" id="joinBtn">방 참가</button>
+      <button class="btn" id="settingsBtn">설정</button>
+    </div>
+    <div class="note" style="margin-top:12px">
+      대전과 협동은 P2P 연결이 필요하다. 서버는 쓰지 않고 초대 코드를 두 번 주고받아 직접 연결한다.
+      혼자 시험해 보려면 이 파일을 브라우저 탭 두 개로 열고 서로 코드를 붙여 넣으면 된다.
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ================= 게임 ================= -->
+<div class="screen" id="game">
+  <div class="topbar">
+    <div class="stat"><span class="k" id="clockLabel">경과</span><span class="v" id="clock">0:00</span></div>
+    <div class="stat"><span class="k">진행</span><span class="v" id="progTxt">0%</span></div>
+    <div class="bar" style="width:130px"><i id="progBar"></i></div>
+    <div class="stat"><span class="k">칠한 칸</span><span class="v" id="cellCount">0</span></div>
+    <div class="stat"><span class="k">실수</span><span class="v" id="mistakes">0</span></div>
+    <div class="grow"></div>
+    <div id="peerBox" style="display:none" class="row">
+      <div class="stat"><span class="k" id="peerName">상대</span><span class="v" id="peerTxt">0%</span></div>
+      <div class="bar peer" style="width:110px"><i id="peerBar"></i></div>
+    </div>
+    <span class="pill" id="modePill">일반 풀이</span>
+  </div>
+
+  <div id="stage">
+    <canvas id="cv"></canvas>
+    <div class="zoombox">
+      <button id="zoomIn" title="확대">＋</button>
+      <button id="zoomOut" title="축소">－</button>
+      <button id="zoomFit" title="화면 맞춤">⤢</button>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <div class="bottombar">
+    <button class="btn primary" id="checkBtn">확인</button>
+    <button class="btn" id="undoBtn">되돌리기</button>
+    <button class="btn" id="redoBtn">다시하기</button>
+    <button class="btn" id="hintBtn" style="display:none">힌트</button>
+    <div class="grow"></div>
+    <button class="btn" id="gsetBtn">설정</button>
+    <button class="btn danger" id="giveupBtn">포기</button>
+  </div>
+</div>
+
+<!-- ================= 리플레이 ================= -->
+<div class="screen" id="replay">
+  <div class="topbar">
+    <span class="pill" id="rpPill">리플레이</span>
+    <div class="stat"><span class="k">시각</span><span class="v" id="rpTime">0:00</span></div>
+    <div class="stat"><span class="k">입력</span><span class="v" id="rpStep">0 / 0</span></div>
+    <div class="grow"></div>
+    <button class="btn" id="rpClose">닫기</button>
+  </div>
+  <div id="rpStage" style="flex:1;position:relative;overflow:hidden">
+    <canvas id="rpCv" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+  </div>
+  <div class="rp-bar">
+    <button class="btn" id="rpPlay">▶ 재생</button>
+    <input type="range" id="rpRange" min="0" max="0" value="0">
+    <select id="rpSpeed">
+      <option value="0.5">0.5배</option>
+      <option value="1" selected>1배</option>
+      <option value="2">2배</option>
+      <option value="4">4배</option>
+      <option value="8">8배</option>
+      <option value="60">즉시</option>
+    </select>
+    <button class="btn" id="rpExport">JSON 내보내기</button>
+  </div>
+</div>
+
+<!-- ================= 설정 ================= -->
+<div class="modal" id="settings">
+  <div class="sheet">
+    <h2>설정</h2>
+    <p class="sub">표시 방식에 관한 설정이다. P2P 상대와 동기화하지 않는다.</p>
+    <div id="settingList"></div>
+    <div class="sec row">
+      <button class="btn" id="setReset">기본값</button>
+      <div class="grow"></div>
+      <button class="btn primary" id="setClose">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= P2P ================= -->
+<div class="modal" id="p2p">
+  <div class="sheet">
+    <h2 id="p2pTitle">방 만들기</h2>
+    <p class="sub" id="p2pSub">서버 없이 코드 두 번으로 직접 연결한다.</p>
+
+    <div id="hostFlow">
+      <ol class="steps">
+        <li>아래 <b>초대 코드</b>를 복사해 상대에게 보낸다.</li>
+        <li>상대가 보내 준 <b>응답 코드</b>를 붙여 넣고 연결을 누른다.</li>
+      </ol>
+      <div class="sec">
+        <h3>초대 코드 (상대에게 보낸다)</h3>
+        <textarea id="offerOut" readonly placeholder="코드를 만드는 중..."></textarea>
+        <div class="row" style="margin-top:7px"><button class="btn" id="copyOffer">복사</button></div>
+      </div>
+      <div class="sec">
+        <h3>응답 코드 (상대에게 받는다)</h3>
+        <textarea id="answerIn" placeholder="상대가 보내 준 응답 코드를 붙여 넣는다"></textarea>
+        <div class="row" style="margin-top:7px"><button class="btn primary" id="acceptAnswer">연결</button></div>
+      </div>
+    </div>
+
+    <div id="joinFlow" style="display:none">
+      <ol class="steps">
+        <li>방장이 보내 준 <b>초대 코드</b>를 붙여 넣는다.</li>
+        <li>만들어진 <b>응답 코드</b>를 복사해 방장에게 보낸다.</li>
+      </ol>
+      <div class="sec">
+        <h3>초대 코드 (방장에게 받는다)</h3>
+        <textarea id="offerIn" placeholder="방장이 보내 준 초대 코드를 붙여 넣는다"></textarea>
+        <div class="row" style="margin-top:7px"><button class="btn" id="makeAnswer">응답 코드 만들기</button></div>
+      </div>
+      <div class="sec">
+        <h3>응답 코드 (방장에게 보낸다)</h3>
+        <textarea id="answerOut" readonly></textarea>
+        <div class="row" style="margin-top:7px"><button class="btn" id="copyAnswer">복사</button></div>
+      </div>
+    </div>
+
+    <div class="sec row spread">
+      <span class="pill" id="connPill">연결 안 됨</span>
+      <div class="row">
+        <button class="btn" id="p2pClose">닫기</button>
+        <button class="btn primary" id="p2pStart" disabled>게임 시작</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 결과 ================= -->
+<div class="modal" id="result">
+  <div class="sheet">
+    <div class="big" id="resTitle">완성</div>
+    <p class="sub" id="resSub"></p>
+    <div class="stars" id="resStars"></div>
+    <canvas id="thumb"></canvas>
+    <div class="grid2">
+      <div class="kv"><div class="k">소요 시간</div><div class="v" id="resTime">0:00</div></div>
+      <div class="kv"><div class="k">실수</div><div class="v" id="resMiss">0</div></div>
+      <div class="kv"><div class="k">입력 횟수</div><div class="v" id="resMoves">0</div></div>
+      <div class="kv"><div class="k" id="resExtraK">점수</div><div class="v" id="resExtra">0</div></div>
+    </div>
+    <div class="sec row">
+      <button class="btn" id="resReplay">리플레이 보기</button>
+      <div class="grow"></div>
+      <button class="btn" id="resHome">처음으로</button>
+      <button class="btn primary" id="resAgain">다시하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* =======================================================================
+   1. 저장소와 잡다한 도구
+   ======================================================================= */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v===null? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+const $ = s => document.querySelector(s);
+const fmtTime = ms => {
+  if (ms < 0) ms = 0;
+  const t = Math.floor(ms/1000), h = Math.floor(t/3600), m = Math.floor(t%3600/60), s = t%60;
+  return h > 0 ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
+               : `${m}:${String(s).padStart(2,'0')}`;
+};
+let toastTimer = null;
+function toast(msg, ms){
+  const el = $('#toast');
+  el.textContent = msg; el.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('on'), ms || 2200);
+}
+
+/* =======================================================================
+   2. 난수기 — C# Mulberry32 와 비트 단위로 같다
+   ======================================================================= */
+function mulberry32(a){
+  return function(){
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* =======================================================================
+   3. 줄 논리 해법기와 퍼즐 생성기
+   ======================================================================= */
+const UNK = 0, FILL = 1, BLANK = 2;
+
+function cluesOf(line){
+  const out = []; let run = 0;
+  for (let i = 0; i < line.length; i++){
+    if (line[i] === 1) run++;
+    else { if (run) out.push(run); run = 0; }
+  }
+  if (run) out.push(run);
+  return out.length ? out : [0];
+}
+
+// line 을 제자리에서 갱신한다. false 는 모순, 'changed' 는 새로 확정된 칸이 있다는 뜻이다.
+function solveLine(line, clues){
+  const n = line.length;
+  const cl = (clues.length === 1 && clues[0] === 0) ? [] : clues;
+  const k = cl.length, w = k + 1;
+  const memo = new Int8Array((n + 1) * w).fill(-1);
+
+  function ok(i, j){
+    if (i >= n) return j >= k ? 1 : 0;
+    const idx = i * w + j;
+    if (memo[idx] >= 0) return memo[idx];
+    let r = 0;
+    if (line[i] !== FILL && ok(i + 1, j)) r = 1;
+    if (!r && j < k){
+      const L = cl[j];
+      if (i + L <= n){
+        let fits = true;
+        for (let t = i; t < i + L; t++) if (line[t] === BLANK){ fits = false; break; }
+        if (fits){
+          if (i + L === n){ if (j + 1 === k) r = 1; }
+          else if (line[i + L] !== FILL && ok(i + L + 1, j + 1)) r = 1;
+        }
+      }
+    }
+    memo[idx] = r; return r;
+  }
+
+  if (!ok(0, 0)) return false;
+
+  const canF = new Uint8Array(n), canB = new Uint8Array(n);
+  const seen = new Uint8Array((n + 1) * w);
+  const stack = [0];
+  seen[0] = 1;
+  while (stack.length){
+    const st = stack.pop(), i = (st / w) | 0, j = st % w;
+    if (i >= n) continue;
+    if (line[i] !== FILL && ok(i + 1, j)){
+      canB[i] = 1;
+      const id = (i + 1) * w + j;
+      if (!seen[id]){ seen[id] = 1; stack.push(id); }
+    }
+    if (j < k){
+      const L = cl[j];
+      if (i + L <= n){
+        let fits = true;
+        for (let t = i; t < i + L; t++) if (line[t] === BLANK){ fits = false; break; }
+        if (fits){
+          let good = false, next = 0;
+          if (i + L === n){ good = (j + 1 === k); next = n; }
+          else if (line[i + L] !== FILL && ok(i + L + 1, j + 1)){ good = true; next = i + L + 1; }
+          if (good){
+            for (let t = i; t < i + L; t++) canF[t] = 1;
+            if (i + L < n) canB[i + L] = 1;
+            if (next < n){
+              const id = next * w + (j + 1);
+              if (!seen[id]){ seen[id] = 1; stack.push(id); }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  let changed = false;
+  for (let i = 0; i < n; i++){
+    if (line[i] !== UNK) continue;
+    if (canF[i] && !canB[i]){ line[i] = FILL; changed = true; }
+    else if (!canF[i] && canB[i]){ line[i] = BLANK; changed = true; }
+  }
+  return changed ? 'changed' : true;
+}
+
+function lineSolveGrid(rowClues, colClues, W, H){
+  const g = new Uint8Array(W * H);
+  const dirtyR = new Uint8Array(H).fill(1), dirtyC = new Uint8Array(W).fill(1);
+  for (let iter = 0; iter < 256; iter++){
+    let any = false;
+    for (let r = 0; r < H; r++){
+      if (!dirtyR[r]) continue; dirtyR[r] = 0;
+      const buf = g.slice(r * W, r * W + W);
+      const res = solveLine(buf, rowClues[r]);
+      if (res === false) return null;
+      if (res === 'changed'){
+        for (let c = 0; c < W; c++) if (g[r*W+c] !== buf[c]){ g[r*W+c] = buf[c]; dirtyC[c] = 1; any = true; }
+      }
+    }
+    for (let c = 0; c < W; c++){
+      if (!dirtyC[c]) continue; dirtyC[c] = 0;
+      const buf = new Uint8Array(H);
+      for (let r = 0; r < H; r++) buf[r] = g[r*W+c];
+      const res = solveLine(buf, colClues[c]);
+      if (res === false) return null;
+      if (res === 'changed'){
+        for (let r = 0; r < H; r++) if (g[r*W+c] !== buf[r]){ g[r*W+c] = buf[r]; dirtyR[r] = 1; any = true; }
+      }
+    }
+    if (!any) break;
+  }
+  let complete = true;
+  for (let i = 0; i < g.length; i++) if (g[i] === UNK){ complete = false; break; }
+  return { grid: g, complete };
+}
+
+// 시드 하나로 유일해가 보장되는 퍼즐을 만든다. C# PuzzleGenerator 와 같은 절차다.
+function generatePuzzle(W, H, seed){
+  const size = Math.max(W, H);
+  const base = size <= 15 ? 0.52 : (size <= 30 ? 0.58 : 0.62);
+  for (let attempt = 0; attempt < 120; attempt++){
+    const density = Math.min(0.72, base + attempt * 0.008);
+    const rnd = mulberry32((Math.imul(seed, 1000003) + attempt) >>> 0);
+    const pic = new Uint8Array(W * H);
+    let filled = 0;
+    for (let i = 0; i < pic.length; i++) if (rnd() < density){ pic[i] = 1; filled++; }
+    if (!filled) continue;
+
+    const rowClues = [], colClues = [];
+    for (let r = 0; r < H; r++) rowClues.push(cluesOf(pic.subarray(r*W, r*W+W)));
+    for (let c = 0; c < W; c++){
+      const col = new Uint8Array(H);
+      for (let r = 0; r < H; r++) col[r] = pic[r*W+c];
+      colClues.push(cluesOf(col));
+    }
+    const res = lineSolveGrid(rowClues, colClues, W, H);
+    if (!res || !res.complete) continue;
+    return { W, H, seed, rowClues, colClues, solution: pic, totalFilled: filled };
+  }
+  // 안전장치. 실측상 여기까지 오지 않는다.
+  const rnd = mulberry32((seed ^ 0xA5A5A5A5) >>> 0);
+  const pic = new Uint8Array(W * H);
+  let filled = 0;
+  for (let i = 0; i < pic.length; i++) if (rnd() < 0.72){ pic[i] = 1; filled++; }
+  const rowClues = [], colClues = [];
+  for (let r = 0; r < H; r++) rowClues.push(cluesOf(pic.subarray(r*W, r*W+W)));
+  for (let c = 0; c < W; c++){
+    const col = new Uint8Array(H);
+    for (let r = 0; r < H; r++) col[r] = pic[r*W+c];
+    colClues.push(cluesOf(col));
+  }
+  return { W, H, seed, rowClues, colClues, solution: pic, totalFilled: filled };
+}
+
+/* =======================================================================
+   4. 설정
+   ======================================================================= */
+const SETTING_DEFS = [
+  ['darkMode',        '어두운 모드',        true,  '밝은 배색과 어두운 배색을 전환한다'],
+  ['showTimer',       '타이머 표시',        true,  '경과 또는 잔여 시간을 보여준다'],
+  ['leftHanded',      '왼손잡이 배치',      false, '힌트를 오른쪽·아래에 붙인다'],
+  ['bothSides',       '양쪽 힌트 표시',     false, '반대편 가장자리에도 힌트를 표시한다'],
+  ['coords',          '좌표 표시',          false, '행과 열 번호를 가장자리에 표시한다'],
+  ['cellCounter',     '칸 카운터',          true,  '칠한 칸 수를 상단에 보여준다'],
+  ['highlightLine',   '현재 행·열 강조',    true,  '커서가 있는 줄을 밝게 표시한다'],
+  ['autoMark',        '완성 줄 자동 X',     true,  '힌트를 다 채운 줄의 남은 칸을 자동으로 X 처리한다'],
+  ['dimClues',        '완성 힌트 흐리게',   true,  '충족된 힌트 숫자를 흐리게 표시한다'],
+  ['guides',          '5칸 구분선',         true,  '5칸마다 굵은 격자선을 그린다'],
+  ['dragFill',        '드래그 채우기',      true,  '끄면 한 칸씩만 입력한다'],
+  ['instantError',    '즉시 오류 표시',     false, '초보자 모드에서만 동작한다. 틀린 칸의 위치를 즉시 알려주므로 기본으로는 꺼 둔다'],
+  ['lastChange',      '최근 변경 표시',     false, '마지막으로 입력한 칸에 테두리를 그린다']
+];
+let S = Object.assign({}, ...SETTING_DEFS.map(d => ({ [d[0]]: d[2] })), store.get('nono.settings', {}));
+
+function applyTheme(){
+  document.documentElement.dataset.theme = S.darkMode ? 'dark' : 'light';
+}
+function saveSettings(){ store.set('nono.settings', S); }
+
+function buildSettingsUI(){
+  const box = $('#settingList');
+  box.innerHTML = '';
+  for (const [key, label, , hint] of SETTING_DEFS){
+    const l = document.createElement('label');
+    l.className = 'toggle';
+    l.innerHTML = `<input type="checkbox" ${S[key] ? 'checked' : ''}>
+      <span><span class="lab">${label}</span><span class="hint">${hint}</span></span>`;
+    l.querySelector('input').addEventListener('change', e => {
+      S[key] = e.target.checked;
+      saveSettings(); applyTheme();
+      if (G) { G.dirty = true; draw(); updateHud(); }
+    });
+    box.appendChild(l);
+  }
+}
+
+/* =======================================================================
+   5. 한 판의 상태
+   ======================================================================= */
+const SIZES = [5,10,15,20,25,30,35,40,50];
+const TARGET = {5:30e3,10:120e3,15:300e3,20:540e3,25:840e3,30:1200e3,35:1680e3,40:2160e3,50:3300e3};
+const LIMIT  = {5:60e3,10:180e3,15:420e3,20:720e3,25:1080e3,30:1500e3,35:2100e3,40:2700e3,50:4200e3};
+const MODE_NAME = { solo:'일반 풀이', time:'타임어택', race:'대전', coop:'협동' };
+
+let cfg = { mode:'solo', size:10, beginner:false, limitMin:0, challenge:null };
+
+/* ---- 기간 챌린지 ----
+   날짜에서 시드를 만들기 때문에 같은 기간 동안은 언제 눌러도 같은 문제가 나오고,
+   기간이 바뀌는 순간 저절로 새 문제로 넘어간다. C# ChallengeSeed 와 같은 계산이다. */
+const CHALLENGE = {
+  daily:   { size:20, label:'일간' },
+  weekly:  { size:30, label:'주간' },
+  monthly: { size:50, label:'월간' }
+};
+
+function mondayOf(d){
+  const m = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  m.setDate(m.getDate() - ((m.getDay() + 6) % 7));   // 월요일이 기준이다
+  return m;
+}
+function periodKey(kind, now){
+  const d = now || new Date();
+  if (kind === 'daily')  return `D${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+  if (kind === 'weekly'){ const m = mondayOf(d); return `W${m.getFullYear()}-${m.getMonth()+1}-${m.getDate()}`; }
+  return `M${d.getFullYear()}-${d.getMonth()+1}`;
+}
+function periodEnd(kind, now){
+  const d = now || new Date();
+  if (kind === 'daily')  return new Date(d.getFullYear(), d.getMonth(), d.getDate()+1);
+  if (kind === 'weekly'){ const m = mondayOf(d); return new Date(m.getFullYear(), m.getMonth(), m.getDate()+7); }
+  return new Date(d.getFullYear(), d.getMonth()+1, 1);
+}
+function hashSeed(s){
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < s.length; i++){
+    h = (h ^ s.charCodeAt(i)) >>> 0;
+    h = Math.imul(h, 16777619) >>> 0;
+  }
+  h = (h ^ (h >>> 16)) >>> 0; h = Math.imul(h, 2246822507) >>> 0;
+  h = (h ^ (h >>> 13)) >>> 0; h = Math.imul(h, 3266489909) >>> 0;
+  return (h ^ (h >>> 16)) >>> 0;
+}
+function fmtCountdown(ms){
+  const t = Math.max(0, Math.floor(ms/1000));
+  const d = Math.floor(t/86400), h = Math.floor(t%86400/3600), m = Math.floor(t%3600/60), s = t%60;
+  if (d > 0) return `${d}일 ${h}시간 뒤 교체`;
+  if (h > 0) return `${h}시간 ${m}분 뒤 교체`;
+  return `${m}분 ${s}초 뒤 교체`;
+}
+function challengeRecordKey(kind, now){ return `nono.chal.${kind}.${periodKey(kind, now)}`; }
+
+function refreshChallenges(){
+  const now = new Date();
+  for (const kind in CHALLENGE){
+    const el = document.getElementById('chal' + kind[0].toUpperCase() + kind.slice(1));
+    if (!el) continue;
+    const cleared = store.get(challengeRecordKey(kind, now), null);
+    el.textContent = (cleared !== null ? `클리어 ${fmtTime(cleared)} · ` : '') + fmtCountdown(periodEnd(kind, now) - now);
+  }
+}
+let G = null;          // 진행 중인 판
+let net = null;        // P2P 세션
+
+function newGame(seed){
+  const W = cfg.size, H = cfg.size;
+  const puz = generatePuzzle(W, H, seed);
+  G = {
+    puz, W, H, seed,
+    cells: new Uint8Array(W*H),          // 0 빈칸, 1 칠함, 2 X
+    done: [], undone: [], barrier: 0,    // 되돌리기 스택과 확정 장벽
+    events: [],                          // 리플레이 기록
+    startAt: performance.now(),
+    elapsed: 0,
+    limit: cfg.mode === 'time' ? (cfg.limitMin > 0 ? cfg.limitMin * 60000 : LIMIT[cfg.size]) : 0,
+    mistakes: 0, hints: 0,
+    status: 'playing',
+    cursor: { r:-1, c:-1 },
+    peerCursor: { r:-1, c:-1 },
+    peerProgress: 0, peerMistakes: 0, peerFinish: -1,
+    lastCell: -1,
+    rowOk: new Uint8Array(H), colOk: new Uint8Array(W),
+    dirty: true, seq: 0
+  };
+  recomputeLines();
+  fitView();
+  updateHud();
+  draw();
+}
+
+function idx(r, c){ return r * G.W + c; }
+
+function lineClues(arr){ return cluesOf(arr); }
+
+function rowSatisfied(r){
+  const line = new Uint8Array(G.W);
+  for (let c = 0; c < G.W; c++) line[c] = G.cells[idx(r,c)] === 1 ? 1 : 0;
+  return sameClues(cluesOf(line), G.puz.rowClues[r]);
+}
+function colSatisfied(c){
+  const line = new Uint8Array(G.H);
+  for (let r = 0; r < G.H; r++) line[r] = G.cells[idx(r,c)] === 1 ? 1 : 0;
+  return sameClues(cluesOf(line), G.puz.colClues[c]);
+}
+function sameClues(a, b){
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+function recomputeLines(){
+  for (let r = 0; r < G.H; r++) G.rowOk[r] = rowSatisfied(r) ? 1 : 0;
+  for (let c = 0; c < G.W; c++) G.colOk[c] = colSatisfied(c) ? 1 : 0;
+}
+function isSolved(){
+  for (let r = 0; r < G.H; r++) if (!G.rowOk[r]) return false;
+  for (let c = 0; c < G.W; c++) if (!G.colOk[c]) return false;
+  return true;
+}
+function progress(){
+  if (!G.puz.totalFilled) return 1;
+  let ok = 0;
+  for (let i = 0; i < G.cells.length; i++) if (G.cells[i] === 1 && G.puz.solution[i] === 1) ok++;
+  return ok / G.puz.totalFilled;
+}
+function filledCount(){
+  let n = 0;
+  for (let i = 0; i < G.cells.length; i++) if (G.cells[i] === 1) n++;
+  return n;
+}
+function wrongCells(){
+  const out = [];
+  for (let i = 0; i < G.cells.length; i++) if (G.cells[i] === 1 && G.puz.solution[i] !== 1) out.push(i);
+  return out;
+}
+
+/* ---- 입력 적용과 되돌리기 ---- */
+function applyCells(list, state, by, fromNet){
+  if (!G || G.status !== 'playing') return null;
+  const changes = [];
+  for (const i of list){
+    if (i < 0 || i >= G.cells.length) continue;
+    if (G.cells[i] === state) continue;
+    changes.push([i, G.cells[i], state]);
+    G.cells[i] = state;
+  }
+  if (!changes.length) return null;
+
+  const mv = { changes, state, by, t: G.elapsed, seq: ++G.seq };
+  G.done.push(mv); G.undone.length = 0;
+  G.lastCell = changes[changes.length-1][0];
+  recomputeLines();
+  G.events.push({ t: G.elapsed, k: state===1?'paint':state===2?'mark':'erase', c: changes.map(x=>x[0]), s: state, by });
+
+  if (S.autoMark && state === 1) autoMarkLines(by);
+  if (!fromNet && net && cfg.mode === 'coop') net.sendMove(mv);
+  G.dirty = true;
+  return mv;
+}
+
+function autoMarkLines(by){
+  const touched = [];
+  for (let r = 0; r < G.H; r++){
+    if (!G.rowOk[r]) continue;
+    for (let c = 0; c < G.W; c++){ const i = idx(r,c); if (G.cells[i] === 0){ G.cells[i] = 2; touched.push(i); } }
+  }
+  for (let c = 0; c < G.W; c++){
+    if (!G.colOk[c]) continue;
+    for (let r = 0; r < G.H; r++){ const i = idx(r,c); if (G.cells[i] === 0){ G.cells[i] = 2; touched.push(i); } }
+  }
+  if (!touched.length) return;
+  G.done.push({ changes: touched.map(i => [i, 0, 2]), state:2, by, t:G.elapsed, seq: ++G.seq, auto:true });
+  G.events.push({ t:G.elapsed, k:'automark', c:touched, s:2, by });
+}
+
+function canUndo(){ return G && G.status === 'playing' && G.done.length > G.barrier; }
+function canRedo(){ return G && G.status === 'playing' && G.undone.length > 0; }
+
+function undo(by, fromNet){
+  if (!canUndo()) return false;
+  const mv = G.done.pop();
+  G.undone.push(mv);
+  for (let i = mv.changes.length - 1; i >= 0; i--) G.cells[mv.changes[i][0]] = mv.changes[i][1];
+  recomputeLines();
+  G.events.push({ t:G.elapsed, k:'undo', c:[], s:0, by });
+  if (!fromNet && net && cfg.mode === 'coop') net.send('UNDO', { by });
+  G.dirty = true; updateHud();
+  return true;
+}
+function redo(by, fromNet){
+  if (!canRedo()) return false;
+  const mv = G.undone.pop();
+  G.done.push(mv);
+  for (const ch of mv.changes) G.cells[ch[0]] = ch[2];
+  recomputeLines();
+  G.events.push({ t:G.elapsed, k:'redo', c:[], s:0, by });
+  if (!fromNet && net && cfg.mode === 'coop') net.send('REDO', { by });
+  G.dirty = true; updateHud();
+  return true;
+}
+
+/* ---- 확인 버튼 ---- */
+function doCheck(){
+  if (!G || G.status !== 'playing') return;
+  G.events.push({ t:G.elapsed, k:'check', c:[], s:0, by:0 });
+
+  if (isSolved()){
+    commitBarrier();
+    finish('won');
+    return;
+  }
+
+  // 틀린 칸의 위치는 알려주지 않는다. 개수는 초보자 모드에서만 알려준다.
+  const wrong = wrongCells().length;
+  const remaining = remainingCount();
+  let msg;
+
+  if (wrong === 0){
+    // 여기까지 칠한 것이 전부 정답에 맞다.
+    msg = `여기까지는 맞게 풀고 있다.\n앞으로 칠해야 할 칸이 ${remaining}개 남았다.`;
+  } else {
+    G.mistakes++;
+    msg = cfg.beginner
+      ? `잘못 칠한 칸이 ${wrong}개 있다.\n어디인지는 직접 찾아본다.`
+      : '아직 맞지 않다. 어딘가 잘못 칠한 칸이 있다.';
+
+    if (cfg.mode === 'time'){
+      const penalty = Math.min(60000, wrong * 10000);
+      G.limit -= penalty;
+      msg += `\n제한 시간 ${Math.round(penalty/1000)}초 차감.`;
+      if (G.limit - G.elapsed <= 0){ commitBarrier(); finish('lost'); return; }
+    }
+  }
+
+  commitBarrier();
+  if (!cfg.beginner) msg += '\n이 시점이 확정되어 이전으로는 되돌릴 수 없다.';
+  toast(msg, 3600);
+  G.dirty = true; updateHud();
+}
+
+// 아직 칠하지 않은 정답 칸의 개수.
+function remainingCount(){
+  let correct = 0;
+  for (let i = 0; i < G.cells.length; i++){
+    if (G.cells[i] === 1 && G.puz.solution[i] === 1) correct++;
+  }
+  return G.puz.totalFilled - correct;
+}
+
+// 확인 버튼이 세우는 확정 장벽. 초보자 모드에서는 세우지 않는다.
+function commitBarrier(){
+  if (cfg.beginner) return;
+  G.barrier = G.done.length;
+  G.undone.length = 0;
+}
+
+function useHint(){
+  if (!cfg.beginner || !G || G.status !== 'playing') return;
+  for (let i = 0; i < G.cells.length; i++){
+    const should = G.puz.solution[i] === 1;
+    if (should && G.cells[i] !== 1){ applyHint(i, 1); return; }
+    if (!should && G.cells[i] === 1){ applyHint(i, 2); return; }
+  }
+  toast('짚어 줄 칸이 없다. 거의 다 왔다.');
+}
+function applyHint(i, state){
+  const from = G.cells[i];
+  G.cells[i] = state;
+  G.done.push({ changes:[[i, from, state]], state, by:0, t:G.elapsed, seq:++G.seq });
+  G.undone.length = 0;
+  G.events.push({ t:G.elapsed, k:'hint', c:[i], s:state, by:0 });
+  G.hints++;
+  recomputeLines();
+  G.dirty = true; updateHud();
+  toast(`${Math.floor(i/G.W)+1}행 ${i%G.W+1}열을 짚었다.`);
+}
+
+function finish(how){
+  if (!G || G.status !== 'playing') return;
+  G.status = how;
+  if (net) net.sendFinish();
+  showResult();
+}
+
+/* =======================================================================
+   6. 그리기
+   ======================================================================= */
+const cv = $('#cv'), ctx = cv.getContext('2d');
+let view = { ox:0, oy:0, cell:24, px:0, py:0 };
+let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+function resizeCanvas(canvas, context){
+  const r = canvas.getBoundingClientRect();
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width  = Math.max(1, Math.round(r.width  * dpr));
+  canvas.height = Math.max(1, Math.round(r.height * dpr));
+  context.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return r;
+}
+
+function clueSpan(){
+  if (!G) return { left:0, top:0 };
+  let mr = 1, mc = 1;
+  for (const cl of G.puz.rowClues) mr = Math.max(mr, cl.length);
+  for (const cl of G.puz.colClues) mc = Math.max(mc, cl.length);
+  return { left:mr, top:mc };
+}
+
+function fitView(){
+  const r = cv.getBoundingClientRect();
+  if (!r.width) return;
+  const sp = clueSpan();
+  const cw = r.width  / (G.W + sp.left + 0.6);
+  const ch = r.height / (G.H + sp.top  + 0.6);
+  view.cell = Math.max(7, Math.min(maxCell(), Math.floor(Math.min(cw, ch))));
+  view.ox = 0; view.oy = 0;
+  clampView();
+  G.dirty = true;
+}
+
+const SB = 11;   // 스크롤 막대 두께
+
+// 판 전체가 차지하는 크기와 스크롤 여유를 한 번에 계산한다.
+function metrics(){
+  const r = cv.getBoundingClientRect();
+  const sp = clueSpan(), cell = view.cell;
+  const contentW = (sp.left + G.W) * cell;
+  const contentH = (sp.top + G.H) * cell;
+
+  // 막대가 차지하는 자리를 빼고 다시 계산한다. 마지막 줄이 막대에 가려지지 않게 한다.
+  let availW = r.width, availH = r.height;
+  for (let pass = 0; pass < 2; pass++){
+    availW = r.width  - (contentH > availH ? SB : 0);
+    availH = r.height - (contentW > availW ? SB : 0);
+  }
+  return {
+    rect:r, sp, cell, contentW, contentH, availW, availH,
+    overW: Math.max(0, contentW - availW),
+    overH: Math.max(0, contentH - availH)
+  };
+}
+
+// 확대 한도. 힌트 띠가 화면을 다 잡아먹지 않도록 크기를 제한한다.
+function maxCell(){
+  const r = cv.getBoundingClientRect();
+  const sp = clueSpan();
+  const byW = sp.left > 0 ? (r.width  * 0.45) / sp.left : 60;
+  const byH = sp.top  > 0 ? (r.height * 0.45) / sp.top  : 60;
+  return Math.max(10, Math.min(60, byW, byH));
+}
+
+// 화면보다 작으면 가운데로 모으고, 크면 스크롤 범위 안으로 정확히 가둔다.
+function clampView(){
+  const m = metrics();
+  if (m.overW === 0){ view.px = (m.availW - m.contentW) / 2; view.ox = 0; }
+  else { view.px = 0; view.ox = Math.min(0, Math.max(-m.overW, view.ox)); }
+  if (m.overH === 0){ view.py = (m.availH - m.contentH) / 2; view.oy = 0; }
+  else { view.py = 0; view.oy = Math.min(0, Math.max(-m.overH, view.oy)); }
+}
+
+// 스크롤 막대의 트랙과 손잡이 위치. 없으면 null 이다.
+function scrollBars(){
+  const m = metrics();
+  const out = { v:null, h:null };
+  if (m.overH > 0){
+    const trackH = m.availH;
+    const thumbH = Math.max(30, trackH * (m.availH / m.contentH));
+    const f = -view.oy / m.overH;
+    out.v = { x:m.rect.width - SB, y:0, w:SB, h:trackH,
+              ty:f * (trackH - thumbH), th:thumbH, over:m.overH, track:trackH - thumbH };
+  }
+  if (m.overW > 0){
+    const trackW = m.availW;
+    const thumbW = Math.max(30, trackW * (m.availW / m.contentW));
+    const f = -view.ox / m.overW;
+    out.h = { x:0, y:m.rect.height - SB, w:trackW, h:SB,
+              tx:f * (trackW - thumbW), tw:thumbW, over:m.overW, track:trackW - thumbW };
+  }
+  return out;
+}
+
+function scrollTo(dx, dy){
+  view.ox -= dx; view.oy -= dy;
+  clampView();
+  G.dirty = true;
+}
+
+function cssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+function draw(){
+  if (!G) return;
+  const rect = resizeCanvas(cv, ctx);
+  const sp = clueSpan(), cell = view.cell;
+  const flip = S.leftHanded;
+  // 왼손잡이 배치에서는 힌트를 오른쪽·아래로 보낸다.
+  const gx = view.px + (flip ? 0 : sp.left * cell) + view.ox;
+  const gy = view.py + (flip ? 0 : sp.top  * cell) + view.oy;
+
+  const C = {
+    bg: cssVar('--grid'), alt: cssVar('--gridalt'), line: cssVar('--line'),
+    line2: cssVar('--line2'), fill: cssVar('--fill'), mark: cssVar('--mark'),
+    text: cssVar('--text'), muted: cssVar('--muted'), accent: cssVar('--accent'),
+    bad: cssVar('--bad'), good: cssVar('--good'), panel: cssVar('--panel'), peer: cssVar('--peer'),
+    hl: cssVar('--hl'), hlline: cssVar('--hlline')
+  };
+
+  ctx.fillStyle = cssVar('--bg');
+  ctx.fillRect(0, 0, rect.width, rect.height);
+
+  const c0 = Math.max(0, Math.floor(-view.ox / cell) - 1);
+  const c1 = Math.min(G.W, c0 + Math.ceil(rect.width / cell) + 3);
+  const r0 = Math.max(0, Math.floor(-view.oy / cell) - 1);
+  const r1 = Math.min(G.H, r0 + Math.ceil(rect.height / cell) + 3);
+
+  // 판이 그려질 수 있는 영역. 확대해서 넘쳐도 이 밖으로는 한 점도 나가지 않는다.
+  const sideW = sp.left * cell, sideH = sp.top * cell;
+  const clipX = flip ? 0 : view.px + sideW;
+  const clipY = flip ? 0 : view.py + sideH;
+  const clipW = (flip ? gx + G.W*cell : rect.width)  - clipX;
+  const clipH = (flip ? gy + G.H*cell : rect.height) - clipY;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(clipX, clipY, Math.max(0, clipW), Math.max(0, clipH));
+  ctx.clip();
+
+  // 칸 배경
+  for (let r = r0; r < r1; r++){
+    for (let c = c0; c < c1; c++){
+      const x = gx + c*cell, y = gy + r*cell;
+      const v = G.cells[idx(r,c)];
+      let bg = ((Math.floor(c/5) + Math.floor(r/5)) % 2 === 0) ? C.bg : C.alt;
+      // 커서가 놓인 행과 열은 초록으로 강조한다.
+      if (S.highlightLine && (r === G.cursor.r || c === G.cursor.c)) bg = C.hl;
+      ctx.fillStyle = bg;
+      ctx.fillRect(x, y, cell, cell);
+
+      if (v === 1){
+        ctx.fillStyle = C.fill;
+        ctx.fillRect(x + 0.5, y + 0.5, cell - 1, cell - 1);
+      } else if (v === 2){
+        ctx.strokeStyle = C.mark;
+        ctx.lineWidth = Math.max(1.2, cell * 0.09);
+        const p = cell * 0.29;
+        ctx.beginPath();
+        ctx.moveTo(x+p, y+p); ctx.lineTo(x+cell-p, y+cell-p);
+        ctx.moveTo(x+cell-p, y+p); ctx.lineTo(x+p, y+cell-p);
+        ctx.stroke();
+      }
+    }
+  }
+
+  // 초보자 모드의 즉시 오류 표시. 설정에서 켤 때만 그린다.
+  if (cfg.beginner && S.instantError){
+    ctx.strokeStyle = C.bad; ctx.lineWidth = 2;
+    for (let r = r0; r < r1; r++) for (let c = c0; c < c1; c++){
+      const i = idx(r,c);
+      if (G.cells[i] === 1 && G.puz.solution[i] !== 1){
+        ctx.strokeRect(gx + c*cell + 1, gy + r*cell + 1, cell - 2, cell - 2);
+      }
+    }
+  }
+
+  // 최근 변경 칸
+  if (S.lastChange && G.lastCell >= 0){
+    const r = Math.floor(G.lastCell / G.W), c = G.lastCell % G.W;
+    ctx.strokeStyle = C.accent; ctx.lineWidth = 2;
+    ctx.strokeRect(gx + c*cell + 1, gy + r*cell + 1, cell - 2, cell - 2);
+  }
+
+  // 협동 모드 상대 커서
+  if (cfg.mode === 'coop' && G.peerCursor.r >= 0){
+    ctx.strokeStyle = C.peer; ctx.lineWidth = 2.5;
+    ctx.strokeRect(gx + G.peerCursor.c*cell, gy + G.peerCursor.r*cell, cell, cell);
+  }
+
+  // 격자선
+  ctx.lineWidth = 1;
+  for (let c = c0; c <= c1; c++){
+    const x = Math.round(gx + c*cell) + .5;
+    const major = S.guides && c % 5 === 0;
+    ctx.strokeStyle = major ? C.line2 : C.line;
+    ctx.lineWidth = major ? 1.6 : 1;
+    ctx.beginPath(); ctx.moveTo(x, gy + r0*cell); ctx.lineTo(x, gy + r1*cell); ctx.stroke();
+  }
+  for (let r = r0; r <= r1; r++){
+    const y = Math.round(gy + r*cell) + .5;
+    const major = S.guides && r % 5 === 0;
+    ctx.strokeStyle = major ? C.line2 : C.line;
+    ctx.lineWidth = major ? 1.6 : 1;
+    ctx.beginPath(); ctx.moveTo(gx + c0*cell, y); ctx.lineTo(gx + c1*cell, y); ctx.stroke();
+  }
+
+  ctx.restore();
+
+  // 힌트 띠 (스크롤해도 가장자리에 붙어 따라온다)
+  const fs = Math.max(8, Math.min(cell * 0.6, 17));
+  ctx.font = `600 ${fs}px ui-monospace, monospace`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+
+  const leftBandX = flip ? gx + G.W*cell : view.px;
+  const leftBandW = sp.left * cell;
+  const topBandY  = flip ? gy + G.H*cell : view.py;
+  const topBandH  = sp.top * cell;
+
+  // 힌트 띠는 판이 차지하는 만큼만 칠한다. 스크롤 중이면 화면 전체로 늘어난다.
+  const bandH = Math.min(rect.height - view.py, (sp.top + G.H) * cell);
+  const bandW = Math.min(rect.width  - view.px, (sp.left + G.W) * cell);
+  ctx.fillStyle = C.panel;
+  ctx.fillRect(leftBandX, view.py, leftBandW, bandH);
+  ctx.fillRect(view.px, topBandY, bandW, topBandH);
+
+  // 힌트 숫자도 자기 띠 안으로만 그린다. 스크롤로 밀려난 줄의 숫자가 반대편 띠를 덮지 않게 한다.
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(leftBandX, clipY, leftBandW, Math.max(0, clipH));
+  ctx.clip();
+  for (let r = r0; r < r1; r++){
+    const cl = G.puz.rowClues[r];
+    const y = gy + r*cell + cell/2;
+    if (y < -cell || y > rect.height + cell) continue;
+    const ok = G.rowOk[r] && S.dimClues;
+    for (let k = 0; k < cl.length; k++){
+      const slot = sp.left - cl.length + k;
+      const x = leftBandX + slot*cell + cell/2;
+      ctx.fillStyle = ok ? C.muted : (r === G.cursor.r ? C.hlline : C.text);
+      ctx.globalAlpha = ok ? .38 : 1;
+      ctx.fillText(String(cl[k]), x, y);
+      ctx.globalAlpha = 1;
+    }
+  }
+  ctx.restore();
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(clipX, topBandY, Math.max(0, clipW), topBandH);
+  ctx.clip();
+  for (let c = c0; c < c1; c++){
+    const cl = G.puz.colClues[c];
+    const x = gx + c*cell + cell/2;
+    if (x < -cell || x > rect.width + cell) continue;
+    const ok = G.colOk[c] && S.dimClues;
+    for (let k = 0; k < cl.length; k++){
+      const slot = sp.top - cl.length + k;
+      const y = topBandY + slot*cell + cell/2;
+      ctx.fillStyle = ok ? C.muted : (c === G.cursor.c ? C.hlline : C.text);
+      ctx.globalAlpha = ok ? .38 : 1;
+      ctx.fillText(String(cl[k]), x, y);
+      ctx.globalAlpha = 1;
+    }
+  }
+  ctx.restore();
+
+  // 양쪽 힌트 표시
+  if (S.bothSides){
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, rect.width, rect.height);
+    ctx.clip();
+    ctx.globalAlpha = .5;
+    for (let r = r0; r < r1; r++){
+      const cl = G.puz.rowClues[r], y = gy + r*cell + cell/2;
+      ctx.fillStyle = C.muted;
+      for (let k = 0; k < cl.length; k++){
+        const x = (flip ? 0 : gx + G.W*cell) + k*cell + cell/2;
+        ctx.fillText(String(cl[k]), x, y);
+      }
+    }
+    for (let c = c0; c < c1; c++){
+      const cl = G.puz.colClues[c], x = gx + c*cell + cell/2;
+      ctx.fillStyle = C.muted;
+      for (let k = 0; k < cl.length; k++){
+        const y = (flip ? 0 : gy + G.H*cell) + k*cell + cell/2;
+        ctx.fillText(String(cl[k]), x, y);
+      }
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
+  // 좌표
+  if (S.coords){
+    ctx.font = `500 ${Math.max(8, fs*0.7)}px ui-monospace, monospace`;
+    ctx.fillStyle = C.muted;
+    for (let c = c0; c < c1; c++) ctx.fillText(String(c+1), gx + c*cell + cell/2, topBandY + topBandH - 5);
+    for (let r = r0; r < r1; r++) ctx.fillText(String(r+1), leftBandX + leftBandW - cell/2, gy + r*cell + cell/2);
+  }
+
+  // 힌트 띠 경계선
+  const bandEdgeX = (flip ? leftBandX : leftBandX + leftBandW) + .5;
+  const bandEdgeY = (flip ? topBandY  : topBandY  + topBandH) + .5;
+  ctx.strokeStyle = C.line2; ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(bandEdgeX, view.py); ctx.lineTo(bandEdgeX, view.py + bandH);
+  ctx.moveTo(view.px, bandEdgeY); ctx.lineTo(view.px + bandW, bandEdgeY);
+  ctx.stroke();
+
+  drawScrollBars(rect, C);
+  G.dirty = false;
+}
+
+// 판이 화면보다 클 때만 나타나는 스크롤 막대.
+function drawScrollBars(rect, C){
+  const bars = scrollBars();
+  const track = C.panel, thumb = C.line2;
+
+  if (bars.v){
+    ctx.fillStyle = track;
+    ctx.fillRect(bars.v.x, bars.v.y, bars.v.w, bars.v.h);
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(bars.v.x + .5, 0); ctx.lineTo(bars.v.x + .5, bars.v.h); ctx.stroke();
+    ctx.fillStyle = thumb;
+    roundRect(bars.v.x + 2, bars.v.ty, bars.v.w - 4, bars.v.th, (bars.v.w - 4) / 2);
+    ctx.fill();
+  }
+  if (bars.h){
+    ctx.fillStyle = track;
+    ctx.fillRect(bars.h.x, bars.h.y, bars.h.w, bars.h.h);
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, bars.h.y + .5); ctx.lineTo(bars.h.w, bars.h.y + .5); ctx.stroke();
+    ctx.fillStyle = thumb;
+    roundRect(bars.h.tx, bars.h.y + 2, bars.h.tw, bars.h.h - 4, (bars.h.h - 4) / 2);
+    ctx.fill();
+  }
+}
+
+function roundRect(x, y, w, h, r){
+  r = Math.min(r, w/2, h/2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function gridPos(px, py){
+  const sp = clueSpan(), cell = view.cell, flip = S.leftHanded;
+  const gx = view.px + (flip ? 0 : sp.left * cell) + view.ox;
+  const gy = view.py + (flip ? 0 : sp.top  * cell) + view.oy;
+  const c = Math.floor((px - gx) / cell), r = Math.floor((py - gy) / cell);
+  if (r < 0 || c < 0 || r >= G.H || c >= G.W) return null;
+  return { r, c };
+}
+
+/* =======================================================================
+   7. 입력
+   ======================================================================= */
+let stroke = null, panning = null, sbDrag = null;
+
+cv.addEventListener('contextmenu', e => e.preventDefault());
+
+cv.addEventListener('pointerdown', e => {
+  if (!G) return;
+  const r = cv.getBoundingClientRect();
+  const px = e.clientX - r.left, py = e.clientY - r.top;
+
+  // 스크롤 막대를 먼저 살핀다. 판이 끝난 뒤에도 스크롤은 된다.
+  const bars = scrollBars();
+  if (bars.v && px >= bars.v.x && py <= bars.v.h){
+    cv.setPointerCapture(e.pointerId);
+    if (py < bars.v.ty || py > bars.v.ty + bars.v.th){
+      const f = Math.max(0, Math.min(1, (py - bars.v.th/2) / bars.v.track));
+      view.oy = -f * bars.v.over; clampView(); G.dirty = true;
+    }
+    const now = scrollBars().v;
+    sbDrag = { axis:'v', grab: py - now.ty };
+    return;
+  }
+  if (bars.h && py >= bars.h.y && px <= bars.h.w){
+    cv.setPointerCapture(e.pointerId);
+    if (px < bars.h.tx || px > bars.h.tx + bars.h.tw){
+      const f = Math.max(0, Math.min(1, (px - bars.h.tw/2) / bars.h.track));
+      view.ox = -f * bars.h.over; clampView(); G.dirty = true;
+    }
+    const now = scrollBars().h;
+    sbDrag = { axis:'h', grab: px - now.tx };
+    return;
+  }
+
+  if (G.status !== 'playing') return;
+  cv.setPointerCapture(e.pointerId);
+
+  if (e.button === 1 || e.shiftKey){
+    panning = { x:e.clientX, y:e.clientY, ox:view.ox, oy:view.oy };
+    return;
+  }
+  const g = gridPos(px, py);
+  if (!g){
+    panning = { x:e.clientX, y:e.clientY, ox:view.ox, oy:view.oy };
+    return;
+  }
+
+  const cur = G.cells[idx(g.r, g.c)];
+  let target;
+  if (e.button === 2) target = (cur === 2) ? 0 : 2;
+  else                target = (cur === 1) ? 0 : 1;
+
+  stroke = { target, cells:new Set([idx(g.r,g.c)]), r0:g.r, c0:g.c, axis:null };
+  applyStrokePreview();
+  G.cursor = { r:g.r, c:g.c };
+});
+
+cv.addEventListener('pointermove', e => {
+  if (!G) return;
+  const rect = cv.getBoundingClientRect();
+  const px = e.clientX - rect.left, py = e.clientY - rect.top;
+
+  if (sbDrag){
+    const bars = scrollBars();
+    if (sbDrag.axis === 'v' && bars.v){
+      const f = Math.max(0, Math.min(1, (py - sbDrag.grab) / bars.v.track));
+      view.oy = -f * bars.v.over;
+    } else if (sbDrag.axis === 'h' && bars.h){
+      const f = Math.max(0, Math.min(1, (px - sbDrag.grab) / bars.h.track));
+      view.ox = -f * bars.h.over;
+    }
+    clampView(); G.dirty = true;
+    return;
+  }
+
+  if (panning){
+    view.ox = panning.ox + (e.clientX - panning.x);
+    view.oy = panning.oy + (e.clientY - panning.y);
+    clampView(); G.dirty = true;
+    return;
+  }
+
+  const g = gridPos(px, py);
+  if (g && (G.cursor.r !== g.r || G.cursor.c !== g.c)){
+    G.cursor = { r:g.r, c:g.c };
+    G.dirty = true;
+    if (net && cfg.mode === 'coop') net.sendCursor(g.r, g.c);
+  }
+  if (!stroke || !g || !S.dragFill) return;
+
+  // Shift 를 누르면 처음 움직인 방향의 직선으로만 칠한다.
+  let rr = g.r, cc = g.c;
+  if (e.shiftKey || stroke.axis){
+    if (!stroke.axis){
+      if (g.r !== stroke.r0) stroke.axis = 'v';
+      else if (g.c !== stroke.c0) stroke.axis = 'h';
+    }
+    if (stroke.axis === 'v') cc = stroke.c0;
+    if (stroke.axis === 'h') rr = stroke.r0;
+  }
+  // 지나간 칸을 선으로 이어 빠뜨리지 않게 한다.
+  lineCells(stroke.lastR ?? stroke.r0, stroke.lastC ?? stroke.c0, rr, cc).forEach(i => stroke.cells.add(i));
+  stroke.lastR = rr; stroke.lastC = cc;
+  applyStrokePreview();
+});
+
+function lineCells(r0, c0, r1, c1){
+  const out = [];
+  const dr = r1 - r0, dc = c1 - c0;
+  const n = Math.max(Math.abs(dr), Math.abs(dc));
+  for (let i = 0; i <= n; i++){
+    const r = Math.round(r0 + dr * (n ? i/n : 0));
+    const c = Math.round(c0 + dc * (n ? i/n : 0));
+    if (r >= 0 && c >= 0 && r < G.H && c < G.W) out.push(idx(r,c));
+  }
+  return out;
+}
+
+// 드래그 중에는 미리 그려 주고, 손을 떼는 순간 되돌리기 단위 하나로 확정한다.
+function applyStrokePreview(){
+  if (!stroke) return;
+  if (!stroke.backup) stroke.backup = new Map();
+  for (const i of stroke.cells){
+    if (!stroke.backup.has(i)) stroke.backup.set(i, G.cells[i]);
+    G.cells[i] = stroke.target;
+  }
+  G.dirty = true;
+}
+
+function endStroke(){
+  if (!stroke) return;
+  const list = [...stroke.cells];
+  // 미리보기를 되돌린 뒤 정식 입력으로 다시 적용해 기록을 남긴다.
+  for (const [i, v] of stroke.backup) G.cells[i] = v;
+  const mv = applyCells(list, stroke.target, 0);
+  stroke = null;
+  updateHud();
+  if (mv && isSolved()) hintSolved();
+}
+
+function hintSolved(){
+  $('#checkBtn').classList.add('glow');
+  toast('힌트를 모두 맞춘 것 같다. 확인을 눌러 보자.', 3000);
+}
+
+cv.addEventListener('pointerup', () => { endStroke(); panning = null; sbDrag = null; });
+cv.addEventListener('pointercancel', () => { endStroke(); panning = null; sbDrag = null; });
+cv.addEventListener('pointerleave', () => { panning = null; });
+
+// 휠은 스크롤이 기본이다. 확대는 Ctrl(맥은 Command)을 누른 채 돌린다.
+cv.addEventListener('wheel', e => {
+  if (!G) return;
+  e.preventDefault();
+  const rect = cv.getBoundingClientRect();
+  const px = e.clientX - rect.left, py = e.clientY - rect.top;
+
+  if (e.ctrlKey || e.metaKey){
+    zoomAt(px, py, e.deltaY < 0 ? 1.12 : 1/1.12);
+    return;
+  }
+  const k = e.deltaMode === 1 ? 40 : 1;      // 줄 단위로 오는 휠도 있다
+  const dy = e.deltaY * k, dx = e.deltaX * k;
+  if (e.shiftKey) scrollTo(dy, 0);
+  else scrollTo(dx, dy);
+}, { passive:false });
+
+// 커서 아래 지점을 고정한 채 확대·축소한다.
+function zoomAt(px, py, k){
+  const sp = clueSpan(), flip = S.leftHanded;
+  const before = view.cell;
+  view.cell = Math.max(6, Math.min(maxCell(), view.cell * k));
+  const ratio = view.cell / before;
+  const gx = view.px + (flip ? 0 : sp.left * before) + view.ox;
+  const gy = view.py + (flip ? 0 : sp.top  * before) + view.oy;
+  const nx = (flip ? 0 : sp.left * view.cell);
+  const ny = (flip ? 0 : sp.top  * view.cell);
+  view.px = 0; view.py = 0;
+  view.ox = px - nx - (px - gx) * ratio;
+  view.oy = py - ny - (py - gy) * ratio;
+  clampView(); G.dirty = true;
+}
+
+window.addEventListener('keydown', e => {
+  if (!G || !$('#game').classList.contains('on')) return;
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+  const k = e.key.toLowerCase();
+  if ((e.ctrlKey || e.metaKey) && k === 'z'){ e.preventDefault(); e.shiftKey ? redo(0) : undo(0); return; }
+  if ((e.ctrlKey || e.metaKey) && k === 'y'){ e.preventDefault(); redo(0); return; }
+  if (k === ' '){ e.preventDefault(); doCheck(); return; }
+  if (G.status !== 'playing') return;
+
+  let { r, c } = G.cursor;
+  if (r < 0){ r = 0; c = 0; }
+  if (k === 'arrowup')    { r = Math.max(0, r-1); }
+  else if (k === 'arrowdown')  { r = Math.min(G.H-1, r+1); }
+  else if (k === 'arrowleft')  { c = Math.max(0, c-1); }
+  else if (k === 'arrowright') { c = Math.min(G.W-1, c+1); }
+  else if (k === 'enter')      { const i = idx(r,c); applyCells([i], G.cells[i]===1?0:1, 0); updateHud(); }
+  else if (k === 'backspace' || k === 'x'){ const i = idx(r,c); applyCells([i], G.cells[i]===2?0:2, 0); updateHud(); }
+  else return;
+  e.preventDefault();
+  G.cursor = { r, c }; G.dirty = true;
+});
+
+/* =======================================================================
+   8. HUD 와 루프
+   ======================================================================= */
+function updateHud(){
+  if (!G) return;
+  const remain = cfg.mode === 'time' ? Math.max(0, G.limit - G.elapsed) : G.elapsed;
+  $('#clockLabel').textContent = cfg.mode === 'time' ? '남은 시간' : '경과';
+  const clock = $('#clock');
+  clock.textContent = S.showTimer ? fmtTime(remain) : '--:--';
+  clock.className = 'v' + (cfg.mode === 'time' && remain < 30000 ? ' bad' : (cfg.mode === 'time' && remain < 60000 ? ' warn' : ''));
+
+  const p = progress();
+  $('#progTxt').textContent = Math.round(p*100) + '%';
+  $('#progBar').style.width = (p*100) + '%';
+  $('#cellCount').textContent = S.cellCounter ? `${filledCount()} / ${G.puz.totalFilled}` : '-';
+  $('#mistakes').textContent = G.mistakes;
+  $('#undoBtn').disabled = !canUndo();
+  $('#redoBtn').disabled = !canRedo();
+  $('#hintBtn').style.display = cfg.beginner ? '' : 'none';
+  $('#modePill').textContent =
+    (cfg.challenge ? `${CHALLENGE[cfg.challenge].label} 챌린지 ${cfg.size}×${cfg.size}` : MODE_NAME[cfg.mode])
+    + (cfg.beginner ? ' · 초보자' : '');
+
+  const p2 = cfg.mode === 'race' || cfg.mode === 'coop';
+  $('#peerBox').style.display = (p2 && net && net.ready) ? '' : 'none';
+  if (p2 && net && net.ready){
+    $('#peerTxt').textContent = Math.round(G.peerProgress*100) + '%';
+    $('#peerBar').style.width = (G.peerProgress*100) + '%';
+  }
+  if (!isSolved()) $('#checkBtn').classList.remove('glow');
+}
+
+let lastFrame = performance.now(), hudAcc = 0, netAcc = 0;
+function loop(now){
+  const dt = Math.min(120, now - lastFrame);
+  lastFrame = now;
+
+  if (G && G.status === 'playing' && $('#game').classList.contains('on')){
+    G.elapsed += dt;
+    hudAcc += dt; netAcc += dt;
+    if (cfg.mode === 'time' && G.limit - G.elapsed <= 0){
+      G.elapsed = G.limit;
+      finish('lost');
+    }
+    if (hudAcc > 250){ hudAcc = 0; updateHud(); }
+    if (netAcc > 500 && net && net.ready){ netAcc = 0; net.sendProgress(); }
+  }
+  if (G && G.dirty && $('#game').classList.contains('on')) draw();
+  if (rp.playing) rpTick(dt);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+window.addEventListener('resize', () => { if (G){ clampView(); G.dirty = true; } if (rp.on) rpDraw(); });
+
+/* =======================================================================
+   9. P2P — WebRTC 수동 코드 교환
+   ======================================================================= */
+const ICE = { iceServers:[
+  { urls:'stun:stun.l.google.com:19302' },
+  { urls:'stun:stun1.l.google.com:19302' }
+]};
+
+function packCode(desc){
+  return btoa(unescape(encodeURIComponent(JSON.stringify({ t:desc.type[0], s:desc.sdp }))))
+    .replace(/=+$/,'');
+}
+function unpackCode(code){
+  const raw = JSON.parse(decodeURIComponent(escape(atob(code.trim()))));
+  return { type: raw.t === 'o' ? 'offer' : 'answer', sdp: raw.s };
+}
+
+class NetSession {
+  constructor(isHost){
+    this.isHost = isHost;
+    this.id = isHost ? 0 : 1;
+    this.ready = false;
+    this.pc = new RTCPeerConnection(ICE);
+    this.ch = null;
+    this.pc.onconnectionstatechange = () => {
+      if (['disconnected','failed','closed'].includes(this.pc.connectionState)) this.onDown();
+    };
+    if (isHost){
+      this.ch = this.pc.createDataChannel('nono', { ordered:true });
+      this.bindChannel();
+    } else {
+      this.pc.ondatachannel = e => { this.ch = e.channel; this.bindChannel(); };
+    }
+  }
+  bindChannel(){
+    this.ch.onopen = () => {
+      this.ready = true;
+      $('#connPill').textContent = '연결됨';
+      $('#connPill').className = 'pill ok';
+      $('#p2pStart').disabled = !this.isHost;
+      if (!this.isHost) $('#p2pSub').textContent = '연결됐다. 방장이 시작하기를 기다린다.';
+      this.send('HELLO', { v:1, id:this.id, name:this.isHost?'방장':'참가자' });
+    };
+    this.ch.onclose = () => this.onDown();
+    this.ch.onmessage = e => this.recv(e.data);
+  }
+  onDown(){
+    if (!this.ready) return;
+    this.ready = false;
+    $('#connPill').textContent = '연결 끊김';
+    $('#connPill').className = 'pill no';
+    if (G && G.status === 'playing'){
+      toast('상대와 연결이 끊겼다. 혼자 계속 푼다.', 3600);
+      cfg.mode = cfg.mode === 'race' ? 'solo' : cfg.mode;
+      updateHud();
+    }
+  }
+  async makeOffer(){
+    const o = await this.pc.createOffer();
+    await this.pc.setLocalDescription(o);
+    await this.gathered();
+    return packCode(this.pc.localDescription);
+  }
+  async takeOffer(code){
+    await this.pc.setRemoteDescription(unpackCode(code));
+    const a = await this.pc.createAnswer();
+    await this.pc.setLocalDescription(a);
+    await this.gathered();
+    return packCode(this.pc.localDescription);
+  }
+  async takeAnswer(code){
+    await this.pc.setRemoteDescription(unpackCode(code));
+  }
+  gathered(){
+    return new Promise(res => {
+      if (this.pc.iceGatheringState === 'complete') return res();
+      const t = setTimeout(res, 3500);
+      this.pc.onicegatheringstatechange = () => {
+        if (this.pc.iceGatheringState === 'complete'){ clearTimeout(t); res(); }
+      };
+    });
+  }
+  send(type, fields){
+    if (!this.ch || this.ch.readyState !== 'open') return;
+    let s = type;
+    for (const k in fields) s += '|' + k + '=' + fields[k];
+    this.ch.send(s);
+  }
+  sendMove(mv){ this.send('MOVE', { seq:mv.seq, t:Math.round(mv.t), by:this.id, s:mv.state, c:mv.changes.map(x=>x[0]).join(',') }); }
+  sendCursor(r, c){ this.send('CURSOR', { r, c }); }
+  sendProgress(){ if (G) this.send('PROGRESS', { p:progress().toFixed(4), m:G.mistakes }); }
+  sendFinish(){ if (G && G.status === 'won') this.send('FINISH', { t:Math.round(G.elapsed) }); }
+  startRound(seed){
+    this.send('ROOM_CONFIG', { mode:cfg.mode, size:cfg.size, beg:cfg.beginner?1:0 });
+    this.send('ROUND_START', { seed });
+  }
+  recv(raw){
+    const parts = String(raw).split('|');
+    const type = parts[0], f = {};
+    for (let i = 1; i < parts.length; i++){
+      const eq = parts[i].indexOf('=');
+      if (eq > 0) f[parts[i].slice(0, eq)] = parts[i].slice(eq+1);
+    }
+    switch (type){
+      case 'HELLO':
+        $('#peerName').textContent = f.name || '상대';
+        break;
+      case 'ROOM_CONFIG':
+        if (!this.isHost){
+          cfg.mode = f.mode; cfg.size = +f.size; cfg.beginner = f.beg === '1';
+        }
+        break;
+      case 'ROUND_START':
+        if (!this.isHost){
+          closeModals();
+          show('game');
+          newGame((+f.seed) >>> 0);
+          this.send('READY', {});
+        }
+        break;
+      case 'MOVE':
+        if (cfg.mode === 'coop' && G){
+          const cells = f.c ? f.c.split(',').map(Number) : [];
+          applyCells(cells, +f.s, +f.by, true);
+          updateHud();
+        }
+        break;
+      case 'UNDO': if (cfg.mode === 'coop') undo(+f.by, true); break;
+      case 'REDO': if (cfg.mode === 'coop') redo(+f.by, true); break;
+      case 'CURSOR':
+        if (G){ G.peerCursor = { r:+f.r, c:+f.c }; G.dirty = true; }
+        break;
+      case 'PROGRESS':
+        if (G){ G.peerProgress = +f.p; G.peerMistakes = +f.m; updateHud(); }
+        break;
+      case 'FINISH':
+        if (G && G.status === 'playing'){
+          G.peerFinish = +f.t;
+          if (cfg.mode === 'race'){ finish('lost'); }
+          else if (cfg.mode === 'coop'){ finish('won'); }
+        }
+        break;
+      case 'REMATCH':
+        if (this.isHost) startHostRound();
+        break;
+    }
+  }
+}
+
+/* =======================================================================
+   10. 화면 전환과 결과
+   ======================================================================= */
+function show(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
+  if (id === 'game' && G){ fitView(); draw(); updateHud(); }
+}
+function closeModals(){ document.querySelectorAll('.modal').forEach(m => m.classList.remove('on')); }
+
+function showResult(){
+  const won = G.status === 'won';
+  const raceLost = cfg.mode === 'race' && G.status === 'lost' && G.peerFinish >= 0;
+
+  $('#resTitle').textContent =
+    G.status === 'surrendered' ? '포기' :
+    won ? (cfg.mode === 'coop' ? '함께 완성' : cfg.mode === 'race' ? '승리' : '완성') :
+    raceLost ? '패배' : (cfg.mode === 'time' ? '시간 초과' : '실패');
+
+  $('#resSub').textContent =
+    raceLost ? `상대가 ${fmtTime(G.peerFinish)}에 먼저 완성했다.` :
+    (cfg.challenge && won) ? `${CHALLENGE[cfg.challenge].label} 챌린지를 풀었다. ${fmtCountdown(periodEnd(cfg.challenge) - new Date())}.` :
+    cfg.beginner ? '초보자 모드로 푼 판이라 기록에는 남지 않는다.' :
+    won ? `${G.W}×${G.H} 퍼즐을 완성했다.` : `${G.W}×${G.H} 퍼즐을 끝내지 못했다.`;
+
+  const stars = (won && !cfg.beginner) ? starsOf() : 0;
+  $('#resStars').textContent = stars ? '★'.repeat(stars) + '☆'.repeat(3-stars) : '';
+
+  $('#resTime').textContent = fmtTime(G.elapsed);
+  $('#resMiss').textContent = G.mistakes;
+  $('#resMoves').textContent = G.done.length;
+  if (cfg.mode === 'time'){
+    $('#resExtraK').textContent = '점수';
+    $('#resExtra').textContent = won ? Math.round(Math.max(0, G.limit - G.elapsed)/100) : 0;
+  } else if (cfg.challenge){
+    // 이번 기간 안에서의 기록만 남긴다. 기간이 바뀌면 새 문제이므로 기록도 새로 시작한다.
+    const info = CHALLENGE[cfg.challenge];
+    const key = challengeRecordKey(cfg.challenge);
+    const best = store.get(key, null);
+    $('#resExtraK').textContent = `이번 ${info.label} 기록`;
+    if (won && !cfg.beginner && (best === null || G.elapsed < best)){
+      store.set(key, Math.round(G.elapsed));
+      $('#resExtra').textContent = fmtTime(G.elapsed) + ' 신기록';
+    } else {
+      $('#resExtra').textContent = best === null ? '-' : fmtTime(best);
+    }
+    refreshChallenges();
+  } else if (cfg.beginner){
+    $('#resExtraK').textContent = '힌트 사용';
+    $('#resExtra').textContent = G.hints;
+  } else {
+    $('#resExtraK').textContent = '최고 기록';
+    const key = `nono.best.${cfg.mode}.${cfg.size}`;
+    const best = store.get(key, null);
+    if (won && (best === null || G.elapsed < best)){
+      store.set(key, Math.round(G.elapsed));
+      $('#resExtra').textContent = fmtTime(G.elapsed) + ' 신기록';
+    } else {
+      $('#resExtra').textContent = best === null ? '-' : fmtTime(best);
+    }
+  }
+
+  drawThumb();
+  $('#result').classList.add('on');
+}
+
+function starsOf(){
+  const t = TARGET[cfg.size];
+  if (G.elapsed <= t) return 3;
+  if (G.elapsed <= t * 1.5) return 2;
+  return 1;
+}
+
+function drawThumb(){
+  const cvT = $('#thumb'), c = cvT.getContext('2d');
+  const px = Math.max(2, Math.min(6, Math.floor(300 / G.W)));
+  cvT.width = G.W * px; cvT.height = G.H * px;
+  c.fillStyle = cssVar('--grid'); c.fillRect(0,0,cvT.width,cvT.height);
+  c.fillStyle = cssVar('--fill');
+  for (let r = 0; r < G.H; r++) for (let cc = 0; cc < G.W; cc++){
+    if (G.puz.solution[idx(r,cc)] === 1) c.fillRect(cc*px, r*px, px, px);
+  }
+}
+
+/* =======================================================================
+   11. 리플레이
+   ======================================================================= */
+const rpCv = $('#rpCv'), rpCtx = rpCv.getContext('2d');
+let rp = {
+  on:false, data:null, puz:null, cells:null, i:0, t:0, playing:false, speed:1,
+  view:{ ox:0, oy:0, cell:14 }, sp:{ left:1, top:1 },
+  rowOk:null, colOk:null, last:[]
+};
+
+function openReplay(){
+  if (!G) return;
+  rp.data = { seed:G.seed, W:G.W, H:G.H, mode:cfg.mode, challenge:cfg.challenge,
+              beginner:cfg.beginner, duration:G.elapsed, events:G.events.slice() };
+  rp.puz = G.puz;
+  rp.cells = new Uint8Array(G.W*G.H);
+  rp.i = 0; rp.t = 0; rp.playing = false; rp.on = true; rp.last = [];
+  rp.sp = { left:1, top:1 };
+  for (const cl of rp.puz.rowClues) rp.sp.left = Math.max(rp.sp.left, cl.length);
+  for (const cl of rp.puz.colClues) rp.sp.top  = Math.max(rp.sp.top,  cl.length);
+  $('#rpRange').max = rp.data.events.length;
+  $('#rpRange').value = 0;
+  $('#rpPlay').textContent = '▶ 재생';
+  $('#rpPill').textContent = `리플레이 · ${rp.data.W}×${rp.data.H} ` +
+    (cfg.challenge ? `${CHALLENGE[cfg.challenge].label} 챌린지` : MODE_NAME[cfg.mode]);
+  closeModals(); show('replay');
+  rpFit(); rpSeek(0); rpDraw();
+}
+
+// 힌트 띠까지 화면에 들어오도록 크기를 잡는다.
+function rpFit(){
+  const r = rpCv.getBoundingClientRect();
+  const w = rp.data.W + rp.sp.left, h = rp.data.H + rp.sp.top;
+  rp.view.cell = Math.max(4, Math.floor(Math.min(r.width / (w + 1), r.height / (h + 1))));
+  rp.view.ox = (r.width  - rp.view.cell*w) / 2;
+  rp.view.oy = (r.height - rp.view.cell*h) / 2;
+}
+
+function rpSeek(target){
+  target = Math.max(0, Math.min(rp.data.events.length, target));
+  // 뒤로 가는 경우에만 처음부터 다시 계산한다.
+  if (target < rp.i){ rp.cells.fill(0); rp.i = 0; }
+  for (let k = rp.i; k < target; k++) rpApply(rp.data.events[k]);
+  rp.i = target;
+  rp.t = target > 0 ? rp.data.events[target-1].t : 0;
+  const ev = target > 0 ? rp.data.events[target-1] : null;
+  rp.last = (ev && ev.c) ? ev.c : [];
+  rpLines();
+  $('#rpRange').value = target;
+  $('#rpStep').textContent = `${target} / ${rp.data.events.length}`;
+  $('#rpTime').textContent = fmtTime(rp.t);
+}
+
+// 지금 시점에서 충족된 힌트 줄을 다시 계산한다. 재생 중 어느 줄이 끝났는지 보이게 한다.
+function rpLines(){
+  const W = rp.data.W, H = rp.data.H;
+  rp.rowOk = new Uint8Array(H); rp.colOk = new Uint8Array(W);
+  for (let r = 0; r < H; r++){
+    const l = new Uint8Array(W);
+    for (let c = 0; c < W; c++) l[c] = rp.cells[r*W+c] === 1 ? 1 : 0;
+    rp.rowOk[r] = sameClues(cluesOf(l), rp.puz.rowClues[r]) ? 1 : 0;
+  }
+  for (let c = 0; c < W; c++){
+    const l = new Uint8Array(H);
+    for (let r = 0; r < H; r++) l[r] = rp.cells[r*W+c] === 1 ? 1 : 0;
+    rp.colOk[c] = sameClues(cluesOf(l), rp.puz.colClues[c]) ? 1 : 0;
+  }
+}
+
+function rpApply(e){
+  if (e.k === 'undo'){
+    // 되돌리기가 나오면 정확성을 위해 처음부터 다시 쌓는다.
+    const upto = rp.data.events.indexOf(e);
+    rp.cells.fill(0);
+    const st = [];
+    for (let k = 0; k < upto; k++){
+      const ev = rp.data.events[k];
+      if (['paint','mark','erase','automark','hint'].includes(ev.k)) st.push(ev);
+      else if (ev.k === 'undo') st.pop();
+      else if (ev.k === 'redo') { /* 생략 */ }
+    }
+    st.pop();
+    for (const ev of st) for (const i of ev.c) rp.cells[i] = ev.s;
+    return;
+  }
+  if (!e.c || !e.c.length) return;
+  for (const i of e.c) rp.cells[i] = e.s;
+}
+
+function rpTick(dt){
+  if (!rp.on || !rp.playing) return;
+  rp.t += dt * rp.speed;
+  let n = rp.i;
+  while (n < rp.data.events.length && rp.data.events[n].t <= rp.t) n++;
+  if (n !== rp.i) rpSeek(n);
+  else { $('#rpTime').textContent = fmtTime(rp.t); }
+  if (rp.i >= rp.data.events.length){
+    rp.playing = false;
+    $('#rpPlay').textContent = '↻ 처음부터';
+  }
+  rpDraw();
+}
+
+function rpDraw(){
+  if (!rp.on) return;
+  const rect = resizeCanvas(rpCv, rpCtx);
+  const cell = rp.view.cell, sp = rp.sp;
+  const W = rp.data.W, H = rp.data.H;
+  const bx = rp.view.ox, by = rp.view.oy;          // 힌트 띠의 왼쪽 위 모서리
+  const gx = bx + sp.left*cell, gy = by + sp.top*cell;
+
+  const C = {
+    bg:cssVar('--bg'), grid:cssVar('--grid'), alt:cssVar('--gridalt'),
+    fill:cssVar('--fill'), mark:cssVar('--mark'), line:cssVar('--line'),
+    line2:cssVar('--line2'), text:cssVar('--text'), muted:cssVar('--muted'),
+    panel:cssVar('--panel'), accent:cssVar('--accent')
+  };
+
+  rpCtx.fillStyle = C.bg;
+  rpCtx.fillRect(0, 0, rect.width, rect.height);
+
+  for (let r = 0; r < H; r++) for (let c = 0; c < W; c++){
+    rpCtx.fillStyle = ((Math.floor(c/5) + Math.floor(r/5)) % 2 === 0) ? C.grid : C.alt;
+    rpCtx.fillRect(gx + c*cell, gy + r*cell, cell, cell);
+
+    const v = rp.cells[r*W + c];
+    if (v === 1){
+      rpCtx.fillStyle = C.fill;
+      rpCtx.fillRect(gx + c*cell + .5, gy + r*cell + .5, cell - 1, cell - 1);
+    } else if (v === 2 && cell > 6){
+      rpCtx.strokeStyle = C.mark; rpCtx.lineWidth = Math.max(1, cell*0.08);
+      const p = cell*0.3;
+      rpCtx.beginPath();
+      rpCtx.moveTo(gx+c*cell+p, gy+r*cell+p); rpCtx.lineTo(gx+c*cell+cell-p, gy+r*cell+cell-p);
+      rpCtx.moveTo(gx+c*cell+cell-p, gy+r*cell+p); rpCtx.lineTo(gx+c*cell+p, gy+r*cell+cell-p);
+      rpCtx.stroke();
+    }
+  }
+
+  // 방금 들어온 입력을 짚어 준다. 어디를 건드렸는지 눈으로 따라갈 수 있다.
+  if (rp.last && rp.last.length && cell > 4){
+    rpCtx.strokeStyle = C.accent; rpCtx.lineWidth = 2;
+    for (const i of rp.last){
+      const r = Math.floor(i/W), c = i % W;
+      rpCtx.strokeRect(gx + c*cell + 1, gy + r*cell + 1, cell - 2, cell - 2);
+    }
+  }
+
+  if (cell > 5){
+    for (let c = 0; c <= W; c++){
+      const major = c % 5 === 0;
+      rpCtx.strokeStyle = major ? C.line2 : C.line;
+      rpCtx.lineWidth = major ? 1.4 : 1;
+      const x = Math.round(gx + c*cell) + .5;
+      rpCtx.beginPath(); rpCtx.moveTo(x, gy); rpCtx.lineTo(x, gy + H*cell); rpCtx.stroke();
+    }
+    for (let r = 0; r <= H; r++){
+      const major = r % 5 === 0;
+      rpCtx.strokeStyle = major ? C.line2 : C.line;
+      rpCtx.lineWidth = major ? 1.4 : 1;
+      const y = Math.round(gy + r*cell) + .5;
+      rpCtx.beginPath(); rpCtx.moveTo(gx, y); rpCtx.lineTo(gx + W*cell, y); rpCtx.stroke();
+    }
+  }
+
+  // 힌트 숫자. 충족된 줄은 흐리게 처리해 어디까지 풀렸는지 보이게 한다.
+  rpCtx.fillStyle = C.panel;
+  rpCtx.fillRect(bx, by, sp.left*cell, (sp.top + H)*cell);
+  rpCtx.fillRect(bx, by, (sp.left + W)*cell, sp.top*cell);
+
+  const fs = Math.max(7, Math.min(cell*0.62, 16));
+  rpCtx.font = `600 ${fs}px ui-monospace, monospace`;
+  rpCtx.textAlign = 'center'; rpCtx.textBaseline = 'middle';
+
+  for (let r = 0; r < H; r++){
+    const cl = rp.puz.rowClues[r], ok = rp.rowOk && rp.rowOk[r];
+    for (let k = 0; k < cl.length; k++){
+      rpCtx.fillStyle = ok ? C.muted : C.text;
+      rpCtx.globalAlpha = ok ? .35 : 1;
+      rpCtx.fillText(String(cl[k]), bx + (sp.left - cl.length + k)*cell + cell/2, gy + r*cell + cell/2);
+    }
+  }
+  for (let c = 0; c < W; c++){
+    const cl = rp.puz.colClues[c], ok = rp.colOk && rp.colOk[c];
+    for (let k = 0; k < cl.length; k++){
+      rpCtx.fillStyle = ok ? C.muted : C.text;
+      rpCtx.globalAlpha = ok ? .35 : 1;
+      rpCtx.fillText(String(cl[k]), gx + c*cell + cell/2, by + (sp.top - cl.length + k)*cell + cell/2);
+    }
+  }
+  rpCtx.globalAlpha = 1;
+
+  rpCtx.strokeStyle = C.line2; rpCtx.lineWidth = 1.5;
+  rpCtx.beginPath();
+  rpCtx.moveTo(gx + .5, by); rpCtx.lineTo(gx + .5, gy + H*cell);
+  rpCtx.moveTo(bx, gy + .5); rpCtx.lineTo(gx + W*cell, gy + .5);
+  rpCtx.stroke();
+}
+
+/* =======================================================================
+   12. UI 연결
+   ======================================================================= */
+// 크기 버튼
+const sizeBox = $('#sizeOpts');
+SIZES.forEach(s => {
+  const b = document.createElement('button');
+  b.className = 'size';
+  b.dataset.size = s;
+  b.setAttribute('aria-pressed', s === cfg.size);
+  b.innerHTML = `${s}×${s}<span class="n">${s*s}칸</span>`;
+  b.onclick = () => {
+    cfg.size = s;
+    sizeBox.querySelectorAll('.size').forEach(x => x.setAttribute('aria-pressed', +x.dataset.size === s));
+    syncTimeRow();
+  };
+  sizeBox.appendChild(b);
+});
+
+$('#modeOpts').querySelectorAll('.opt').forEach(b => {
+  b.onclick = () => {
+    cfg.mode = b.dataset.mode;
+    $('#modeOpts').querySelectorAll('.opt').forEach(x => x.setAttribute('aria-pressed', x === b));
+    const p2 = cfg.mode === 'race' || cfg.mode === 'coop';
+    $('#startSolo').textContent = p2 ? '혼자 연습' : '혼자 시작';
+    syncTimeRow();
+  };
+});
+
+// 타임어택 제한 시간. 비워 두면 크기별 기본값을 쓴다.
+function syncTimeRow(){
+  $('#timeRow').style.display = cfg.mode === 'time' ? '' : 'none';
+  const def = Math.round(LIMIT[cfg.size] / 60000);
+  $('#limitHint').textContent = `${cfg.size}×${cfg.size} 기본값은 ${def}분이다.`;
+  if (cfg.limitMin <= 0) $('#limitMin').value = def;
+}
+$('#limitMin').oninput = e => {
+  const v = Math.max(1, Math.min(600, Math.round(+e.target.value || 0)));
+  cfg.limitMin = v;
+};
+$('#limitDefault').onclick = () => {
+  cfg.limitMin = 0;
+  syncTimeRow();
+};
+
+// 기간 챌린지. 같은 기간 동안은 시드가 같아 늘 같은 문제가 나온다.
+$('#chalOpts').querySelectorAll('.opt').forEach(b => {
+  b.onclick = () => {
+    const kind = b.dataset.chal;
+    cfg.mode = 'solo';
+    cfg.size = CHALLENGE[kind].size;
+    cfg.challenge = kind;
+    net = null;
+    show('game');
+    newGame(hashSeed(periodKey(kind)));
+    toast(`${CHALLENGE[kind].label} 챌린지다. ${fmtCountdown(periodEnd(kind) - new Date())}.`, 3200);
+  };
+});
+
+$('#beginnerChk').onchange = e => {
+  cfg.beginner = e.target.checked;
+  $('#beginnerNote').innerHTML = cfg.beginner
+    ? '초보자 모드다. <b>확인</b>을 눌러도 되돌리기가 막히지 않고, 힌트 버튼과 즉시 오류 표시를 쓸 수 있다.'
+    : '일반 모드에서는 <b>확인</b>을 누르는 순간 그 시점이 확정되어, 되돌리기로 그 이전으로 돌아갈 수 없다.';
+};
+
+$('#themeBtn').onclick = () => { S.darkMode = !S.darkMode; saveSettings(); applyTheme(); if (G) G.dirty = true; };
+$('#settingsBtn').onclick = () => { buildSettingsUI(); $('#settings').classList.add('on'); };
+$('#gsetBtn').onclick = () => { buildSettingsUI(); $('#settings').classList.add('on'); };
+$('#setClose').onclick = () => $('#settings').classList.remove('on');
+$('#setReset').onclick = () => {
+  S = Object.assign({}, ...SETTING_DEFS.map(d => ({ [d[0]]: d[2] })));
+  saveSettings(); applyTheme(); buildSettingsUI();
+  if (G){ G.dirty = true; updateHud(); }
+};
+
+$('#startSolo').onclick = () => {
+  net = null;
+  cfg.challenge = null;
+  show('game');
+  newGame((Math.random()*0xFFFFFFFF) >>> 0);
+};
+
+$('#checkBtn').onclick = doCheck;
+$('#undoBtn').onclick = () => { undo(0); };
+$('#redoBtn').onclick = () => { redo(0); };
+$('#hintBtn').onclick = useHint;
+$('#giveupBtn').onclick = () => {
+  if (!G || G.status !== 'playing') return;
+  G.status = 'surrendered';
+  showResult();
+};
+$('#zoomIn').onclick  = () => { const r = cv.getBoundingClientRect(); zoomAt(r.width/2, r.height/2, 1.25); };
+$('#zoomOut').onclick = () => { const r = cv.getBoundingClientRect(); zoomAt(r.width/2, r.height/2, 1/1.25); };
+$('#zoomFit').onclick = () => fitView();
+
+$('#resHome').onclick = () => { closeModals(); show('home'); };
+$('#resAgain').onclick = () => {
+  closeModals();
+  if (cfg.challenge){
+    // 챌린지는 기간이 끝나기 전까지 같은 문제를 다시 준다.
+    show('game');
+    newGame(hashSeed(periodKey(cfg.challenge)));
+  }
+  else if (net && net.ready && net.isHost) startHostRound();
+  else if (net && net.ready) net.send('REMATCH', {});
+  else { show('game'); newGame((Math.random()*0xFFFFFFFF) >>> 0); }
+};
+$('#resReplay').onclick = openReplay;
+
+$('#rpClose').onclick = () => { rp.on = false; rp.playing = false; show('game'); $('#result').classList.add('on'); };
+$('#rpPlay').onclick = () => {
+  if (rp.i >= rp.data.events.length){ rpSeek(0); rp.t = 0; }
+  rp.playing = !rp.playing;
+  $('#rpPlay').textContent = rp.playing ? '❚❚ 일시정지' : '▶ 재생';
+};
+$('#rpRange').oninput = e => { rp.playing = false; $('#rpPlay').textContent = '▶ 재생'; rpSeek(+e.target.value); rpDraw(); };
+$('#rpSpeed').onchange = e => { rp.speed = +e.target.value; };
+$('#rpExport').onclick = () => {
+  const blob = new Blob([JSON.stringify(rp.data)], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `nonogram-replay-${rp.data.W}x${rp.data.H}-${rp.data.seed}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+
+/* ---- P2P UI ---- */
+$('#hostBtn').onclick = async () => {
+  if (cfg.mode === 'solo' || cfg.mode === 'time'){
+    toast2('대전이나 협동 모드를 고르면 방을 만들 수 있다.');
+    return;
+  }
+  net = new NetSession(true);
+  $('#p2pTitle').textContent = '방 만들기';
+  $('#hostFlow').style.display = ''; $('#joinFlow').style.display = 'none';
+  $('#p2p').classList.add('on');
+  $('#offerOut').value = '코드를 만드는 중...';
+  try { $('#offerOut').value = await net.makeOffer(); }
+  catch(err){ $('#offerOut').value = '오류: ' + err.message; }
+};
+
+$('#joinBtn').onclick = () => {
+  net = new NetSession(false);
+  $('#p2pTitle').textContent = '방 참가';
+  $('#hostFlow').style.display = 'none'; $('#joinFlow').style.display = '';
+  $('#p2p').classList.add('on');
+};
+
+$('#makeAnswer').onclick = async () => {
+  try {
+    $('#answerOut').value = '코드를 만드는 중...';
+    $('#answerOut').value = await net.takeOffer($('#offerIn').value);
+  } catch(err){ $('#answerOut').value = '오류: ' + err.message; }
+};
+$('#acceptAnswer').onclick = async () => {
+  try { await net.takeAnswer($('#answerIn').value); }
+  catch(err){ alert('응답 코드를 읽지 못했다: ' + err.message); }
+};
+$('#copyOffer').onclick  = () => copy($('#offerOut').value);
+$('#copyAnswer').onclick = () => copy($('#answerOut').value);
+function copy(t){
+  navigator.clipboard?.writeText(t).then(
+    () => toast2('복사했다.'),
+    () => toast2('복사에 실패했다. 직접 선택해 복사한다.')
+  );
+}
+function toast2(m){ const p = $('#connPill'); const old = p.textContent; p.textContent = m; setTimeout(()=>p.textContent = old, 1800); }
+
+$('#p2pClose').onclick = () => $('#p2p').classList.remove('on');
+$('#p2pStart').onclick = () => startHostRound();
+
+function startHostRound(){
+  const seed = (Math.random()*0xFFFFFFFF) >>> 0;
+  cfg.challenge = null;
+  closeModals();
+  show('game');
+  newGame(seed);
+  if (net && net.ready) net.startRound(seed);
+}
+
+/* ---- 시작 ---- */
+applyTheme();
+buildSettingsUI();
+syncTimeRow();
+refreshChallenges();
+setInterval(() => { if ($('#home').classList.contains('on')) refreshChallenges(); }, 1000);
+$('#beginnerChk').checked = cfg.beginner;
+if (!('RTCPeerConnection' in window)){
+  $('#hostBtn').disabled = true; $('#joinBtn').disabled = true;
+}
+</script>
+</body>
+</html>
