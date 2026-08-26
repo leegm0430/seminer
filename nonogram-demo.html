@@ -11,14 +11,14 @@
   --text:#1c1f24; --muted:#6a7280; --accent:#3b6cf0; --accent2:#2a52c0;
   --fill:#242830; --mark:#c0392b; --good:#1f9d55; --bad:#d64545; --warn:#c98a12;
   --grid:#ffffff; --gridalt:#f7f8fa; --peer:#8e44ad;
-  --hl:#d6f2de; --hlline:#1f9d55;
+  --hl:#d6f2de; --hlline:#1f9d55; --cluedone:#e07b12;
 }
 :root[data-theme="dark"]{
   --bg:#14161a; --panel:#1c1f25; --panel2:#23262e; --line:#333842; --line2:#4a5160;
   --text:#e8eaee; --muted:#9aa3b2; --accent:#5b87ff; --accent2:#7ba0ff;
   --fill:#e8eaee; --mark:#ff7b6b; --good:#4ade80; --bad:#ff6b6b; --warn:#f0b429;
   --grid:#1c1f25; --gridalt:#21252c; --peer:#c084fc;
-  --hl:#1c3a28; --hlline:#4ade80;
+  --hl:#1c3a28; --hlline:#4ade80; --cluedone:#f59e0b;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
@@ -689,6 +689,9 @@ function newGame(seed){
     peerCursor: { r:-1, c:-1 },
     peerProgress: 0, peerMistakes: 0, peerFinish: -1,
     lastCell: -1,
+    // 처리한 힌트 숫자에 직접 찍는 표시. 순전히 메모라 판정에는 관여하지 않는다.
+    rowMark: puz.rowClues.map(cl => new Uint8Array(cl.length)),
+    colMark: puz.colClues.map(cl => new Uint8Array(cl.length)),
     rowOk: new Uint8Array(H), colOk: new Uint8Array(W),
     dirty: true, seq: 0
   };
@@ -1010,7 +1013,7 @@ function draw(){
     line2: cssVar('--line2'), fill: cssVar('--fill'), mark: cssVar('--mark'),
     text: cssVar('--text'), muted: cssVar('--muted'), accent: cssVar('--accent'),
     bad: cssVar('--bad'), good: cssVar('--good'), panel: cssVar('--panel'), peer: cssVar('--peer'),
-    hl: cssVar('--hl'), hlline: cssVar('--hlline')
+    hl: cssVar('--hl'), hlline: cssVar('--hlline'), clueDone: cssVar('--cluedone')
   };
 
   ctx.fillStyle = cssVar('--bg');
@@ -1132,8 +1135,9 @@ function draw(){
     for (let k = 0; k < cl.length; k++){
       const slot = sp.left - cl.length + k;
       const x = leftBandX + slot*cell + cell/2;
-      ctx.fillStyle = ok ? C.muted : (r === G.cursor.r ? C.hlline : C.text);
-      ctx.globalAlpha = ok ? .38 : 1;
+      const done = G.rowMark[r][k];          // 직접 눌러 처리 표시를 해 둔 숫자
+      ctx.fillStyle = done ? C.clueDone : (ok ? C.muted : (r === G.cursor.r ? C.hlline : C.text));
+      ctx.globalAlpha = done ? 1 : (ok ? .38 : 1);
       ctx.fillText(String(cl[k]), x, y);
       ctx.globalAlpha = 1;
     }
@@ -1152,8 +1156,9 @@ function draw(){
     for (let k = 0; k < cl.length; k++){
       const slot = sp.top - cl.length + k;
       const y = topBandY + slot*cell + cell/2;
-      ctx.fillStyle = ok ? C.muted : (c === G.cursor.c ? C.hlline : C.text);
-      ctx.globalAlpha = ok ? .38 : 1;
+      const done = G.colMark[c][k];
+      ctx.fillStyle = done ? C.clueDone : (ok ? C.muted : (c === G.cursor.c ? C.hlline : C.text));
+      ctx.globalAlpha = done ? 1 : (ok ? .38 : 1);
       ctx.fillText(String(cl[k]), x, y);
       ctx.globalAlpha = 1;
     }
@@ -1253,6 +1258,40 @@ function gridPos(px, py){
   return { r, c };
 }
 
+// 화면의 한 점이 어떤 힌트 숫자 위인지 찾는다. 숫자가 아니면 null 이다.
+function cluePos(px, py){
+  const sp = clueSpan(), cell = view.cell, flip = S.leftHanded;
+  const gx = view.px + (flip ? 0 : sp.left * cell) + view.ox;
+  const gy = view.py + (flip ? 0 : sp.top  * cell) + view.oy;
+  const leftBandX = flip ? gx + G.W*cell : view.px;
+  const topBandY  = flip ? gy + G.H*cell : view.py;
+
+  if (px >= leftBandX && px < leftBandX + sp.left*cell){
+    const r = Math.floor((py - gy) / cell);
+    if (r < 0 || r >= G.H) return null;
+    const cl = G.puz.rowClues[r];
+    if (cl.length === 1 && cl[0] === 0) return null;
+    const k = Math.floor((px - leftBandX) / cell) - (sp.left - cl.length);
+    return (k >= 0 && k < cl.length) ? { axis:'row', line:r, k } : null;
+  }
+  if (py >= topBandY && py < topBandY + sp.top*cell){
+    const c = Math.floor((px - gx) / cell);
+    if (c < 0 || c >= G.W) return null;
+    const cl = G.puz.colClues[c];
+    if (cl.length === 1 && cl[0] === 0) return null;
+    const k = Math.floor((py - topBandY) / cell) - (sp.top - cl.length);
+    return (k >= 0 && k < cl.length) ? { axis:'col', line:c, k } : null;
+  }
+  return null;
+}
+
+// 힌트 숫자를 눌러 처리 표시를 켜고 끈다.
+function toggleClueMark(cp){
+  const arr = cp.axis === 'row' ? G.rowMark[cp.line] : G.colMark[cp.line];
+  arr[cp.k] = arr[cp.k] ? 0 : 1;
+  G.dirty = true;
+}
+
 /* =======================================================================
    7. 입력
    ======================================================================= */
@@ -1295,6 +1334,10 @@ cv.addEventListener('pointerdown', e => {
     panning = { x:e.clientX, y:e.clientY, ox:view.ox, oy:view.oy };
     return;
   }
+  // 힌트 숫자를 눌렀으면 처리 표시만 바꾸고 끝낸다.
+  const cp = cluePos(px, py);
+  if (cp){ toggleClueMark(cp); return; }
+
   const g = gridPos(px, py);
   if (!g){
     panning = { x:e.clientX, y:e.clientY, ox:view.ox, oy:view.oy };
@@ -1335,6 +1378,9 @@ cv.addEventListener('pointermove', e => {
     clampView(); G.dirty = true;
     return;
   }
+
+  // 힌트 숫자 위에서는 누를 수 있다는 걸 커서로 알린다.
+  if (!stroke && !sbDrag) cv.style.cursor = cluePos(px, py) ? 'pointer' : 'crosshair';
 
   const g = gridPos(px, py);
   if (g && (G.cursor.r !== g.r || G.cursor.c !== g.c)){
