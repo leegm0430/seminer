@@ -281,14 +281,32 @@ foreach ($file in $files) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>$title — TC</title>
+<script>
+(function(){try{var t=localStorage.getItem('portfolio-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
 <style>
-:root { --bg:#0f172a; --card:#1e293b; --border:#2d3f55; --blue-lt:#60a5fa; --green-lt:#4ade80; --text:#f1f5f9; --text-2:#94a3b8; --text-3:#64748b; }
+:root {
+  --bg:#0f172a; --card:#1e293b; --border:#2d3f55;
+  --blue-lt:#60a5fa; --green-lt:#4ade80;
+  --text:#f1f5f9; --text-2:#dbe3ec; --text-3:#94a3b8;
+  --top-bg:#0f172a; --th-bg:#162032; --row-alt:#131f33; --row-hover:#1a2a44;
+  --pass:#4ade80; --fail:#f87171; --hold:#facc15;
+}
+html[data-theme="light"] {
+  --bg:#f6f8fb; --card:#ffffff; --border:#c3cedd;
+  --blue-lt:#1d4ed8; --green-lt:#15803d;
+  --text:#0f172a; --text-2:#1e293b; --text-3:#5b6b7f;
+  --top-bg:#eef2f7; --th-bg:#dde5ef; --row-alt:#f0f4f9; --row-hover:#e2eaf5;
+  --pass:#15803d; --fail:#b91c1c; --hold:#a16207;
+}
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
 body { background:var(--bg); color:var(--text); font-family:'Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif; font-size:14px; }
-.top { position:sticky; top:0; background:rgba(15,23,42,0.97); border-bottom:1px solid var(--border); padding:0.9rem 1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; z-index:10; }
+.top { position:sticky; top:0; background:var(--top-bg); border-bottom:1px solid var(--border); padding:0.9rem 1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; z-index:10; }
 .top h1 { font-size:1rem; font-weight:700; margin-right:auto; }
 .top a { color:var(--blue-lt); text-decoration:none; font-size:0.82rem; font-weight:600; }
 .top a:hover { color:var(--green-lt); }
+.theme-btn { background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:0.35rem 0.85rem; font-size:0.8rem; font-weight:600; cursor:pointer; font-family:inherit; }
+.theme-btn:hover { border-color:var(--green-lt); color:var(--green-lt); }
 .wrap { padding:1.25rem 1.5rem 3rem; }
 .tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
 .tab { background:var(--card); color:var(--text-2); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.9rem; font-size:0.82rem; cursor:pointer; font-family:inherit; }
@@ -305,15 +323,15 @@ table.two-head thead th { position:static; }
 .tbl-scroll { overflow-x:auto; border:1px solid var(--border); border-radius:8px; }
 table { border-collapse:collapse; width:100%; min-width:700px; }
 th, td { border:1px solid var(--border); padding:0.45rem 0.7rem; text-align:center; vertical-align:middle; font-size:0.8rem; line-height:1.55; color:var(--text-2); white-space:pre-wrap; }
-thead th { background:#162032; color:var(--text); font-weight:600; position:sticky; top:0; }
-tbody tr:nth-child(even) { background:#131f33; }
-tbody tr:hover { background:#1a2a44; }
+thead th { background:var(--th-bg); color:var(--text); font-weight:600; position:sticky; top:0; }
+tbody tr:nth-child(even) { background:var(--row-alt); }
+tbody tr:hover { background:var(--row-hover); }
 td.al { text-align:left; white-space:pre; }
 td.ac { text-align:center; white-space:pre; }
 td.ar { text-align:right; white-space:pre; }
-.st-pass { color:var(--green-lt); font-weight:700; }
-.st-fail { color:#f87171; font-weight:700; }
-.st-hold { color:#facc15; font-weight:600; }
+.st-pass { color:var(--pass); font-weight:700; }
+.st-fail { color:var(--fail); font-weight:700; }
+.st-hold { color:var(--hold); font-weight:600; }
 </style>
 </head>
 <body>
@@ -322,6 +340,7 @@ td.ar { text-align:right; white-space:pre; }
   <a href="../TC모음.html">← TC 모음으로</a>
   <a href="../index.html#tc">포트폴리오 홈</a>
   <a href="$xlsxName" download>⬇ 원본 엑셀 다운로드</a>
+  <button id="theme-toggle" class="theme-btn" type="button">밝게</button>
 </div>
 <div class="wrap">
 $tabsBlock
@@ -337,6 +356,20 @@ function show(id) {
 tabs.forEach(function(t){ t.addEventListener('click', function(){ show(t.dataset.sheet); }); });
 if (sheets.length) { sheets[0].classList.add('active'); }
 if (tabs.length) { tabs[0].classList.add('active'); }
+(function () {
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) { return; }
+  var root = document.documentElement;
+  function cur() { return root.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
+  function paint() { btn.textContent = cur() === 'light' ? '어둡게' : '밝게'; }
+  paint();
+  btn.addEventListener('click', function () {
+    var next = cur() === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('portfolio-theme', next); } catch (e) {}
+    paint();
+  });
+})();
 </script>
 </body>
 </html>

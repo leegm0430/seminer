@@ -26,14 +26,32 @@ $mdTemplate = @'
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>%%TITLE%%</title>
+<script>
+(function(){try{var t=localStorage.getItem('portfolio-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
 <style>
-:root { --bg:#0f172a; --card:#1e293b; --border:#2d3f55; --blue-lt:#60a5fa; --green:#16a34a; --green-lt:#4ade80; --text:#f1f5f9; --text-2:#94a3b8; --text-3:#64748b; }
+:root {
+  --bg:#0f172a; --card:#1e293b; --border:#2d3f55;
+  --blue-lt:#60a5fa; --green:#16a34a; --green-lt:#4ade80;
+  --text:#f1f5f9; --text-2:#dbe3ec; --text-3:#94a3b8;
+  --top-bg:#0f172a; --th-bg:#162032; --row-alt:#131f33;
+  --code-bg:#0a121e; --code-text:#93c5fd;
+}
+html[data-theme="light"] {
+  --bg:#f6f8fb; --card:#ffffff; --border:#c3cedd;
+  --blue-lt:#1d4ed8; --green:#15803d; --green-lt:#15803d;
+  --text:#0f172a; --text-2:#1e293b; --text-3:#5b6b7f;
+  --top-bg:#eef2f7; --th-bg:#dde5ef; --row-alt:#f0f4f9;
+  --code-bg:#eef2f7; --code-text:#1d4ed8;
+}
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
 body { background:var(--bg); color:var(--text); font-family:'Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif; font-size:15px; line-height:1.75; }
-.top { position:sticky; top:0; background:rgba(15,23,42,0.97); border-bottom:1px solid var(--border); padding:0.9rem 1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; z-index:10; }
+.top { position:sticky; top:0; background:var(--top-bg); border-bottom:1px solid var(--border); padding:0.9rem 1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; z-index:10; }
 .top h1 { font-size:1rem; font-weight:700; margin-right:auto; }
 .top a { color:var(--blue-lt); text-decoration:none; font-size:0.82rem; font-weight:600; }
 .top a:hover { color:var(--green-lt); }
+.theme-btn { background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:0.35rem 0.85rem; font-size:0.8rem; font-weight:600; cursor:pointer; font-family:inherit; }
+.theme-btn:hover { border-color:var(--green-lt); color:var(--green-lt); }
 .wrap { max-width:920px; margin:0 auto; padding:2rem 1.5rem 4rem; }
 #content h1 { font-size:1.55rem; font-weight:700; line-height:1.35; margin:1.8rem 0 1rem; padding-bottom:0.6rem; border-bottom:1px solid var(--border); }
 #content h1:first-child { margin-top:0; }
@@ -45,14 +63,14 @@ body { background:var(--bg); color:var(--text); font-family:'Apple SD Gothic Neo
 #content ul, #content ol { margin:0.6rem 0 0.6rem 1.5rem; color:var(--text-2); font-size:0.9rem; }
 #content li { margin:0.25rem 0; }
 #content blockquote { background:var(--card); border-left:3px solid var(--green-lt); border-radius:0 6px 6px 0; padding:0.8rem 1.1rem; margin:0.9rem 0; color:var(--text-2); font-size:0.88rem; }
-#content code { background:#0a121e; border:1px solid var(--border); border-radius:4px; padding:0.08rem 0.4rem; font-size:0.82rem; color:#93c5fd; font-family:Consolas,'Courier New',monospace; }
-#content pre { background:#0a121e; border:1px solid var(--border); border-radius:8px; padding:0.9rem 1.1rem; margin:0.9rem 0; overflow-x:auto; font-size:0.8rem; line-height:1.6; color:var(--text-2); font-family:Consolas,'Courier New',monospace; }
+#content code { background:var(--code-bg); border:1px solid var(--border); border-radius:4px; padding:0.08rem 0.4rem; font-size:0.82rem; color:var(--code-text); font-family:Consolas,'Courier New',monospace; }
+#content pre { background:var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:0.9rem 1.1rem; margin:0.9rem 0; overflow-x:auto; font-size:0.8rem; line-height:1.6; color:var(--text-2); font-family:Consolas,'Courier New',monospace; }
 #content pre code { background:none; border:none; padding:0; color:inherit; }
 #content .tbl-scroll { overflow-x:auto; margin:0.9rem 0; border:1px solid var(--border); border-radius:8px; }
 #content table { border-collapse:collapse; width:100%; }
 #content th, #content td { border:1px solid var(--border); padding:0.45rem 0.75rem; font-size:0.83rem; color:var(--text-2); text-align:left; vertical-align:top; }
-#content thead th { background:#162032; color:var(--text); font-weight:600; }
-#content tbody tr:nth-child(even) { background:#131f33; }
+#content thead th { background:var(--th-bg); color:var(--text); font-weight:600; }
+#content tbody tr:nth-child(even) { background:var(--row-alt); }
 #content hr { border:none; height:1px; background:var(--border); margin:1.6rem 0; }
 #content del { color:var(--text-3); }
 </style>
@@ -60,9 +78,10 @@ body { background:var(--bg); color:var(--text); font-family:'Apple SD Gothic Neo
 <body>
 <div class="top">
   <h1>%%TITLE%%</h1>
-  <a href="../기획서모음.html">← 기획서 모음으로</a>
+  <a href="../기획서모음.html">← 기획서 &amp; 게임 분석으로</a>
   <a href="../index.html">포트폴리오 홈</a>
   <a href="%%SRC%%" download>⬇ 원본 다운로드</a>
+  <button id="theme-toggle" class="theme-btn" type="button">밝게</button>
 </div>
 <div class="wrap"><div id="content"></div></div>
 <pre id="md-src" style="display:none">%%MD%%</pre>
@@ -163,6 +182,20 @@ body { background:var(--bg); color:var(--text); font-family:'Apple SD Gothic Neo
   flushPara();
   document.getElementById('content').innerHTML = out.join('\n');
 })();
+(function () {
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) { return; }
+  var root = document.documentElement;
+  function cur() { return root.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
+  function paint() { btn.textContent = cur() === 'light' ? '어둡게' : '밝게'; }
+  paint();
+  btn.addEventListener('click', function () {
+    var next = cur() === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('portfolio-theme', next); } catch (e) {}
+    paint();
+  });
+})();
 </script>
 </body>
 </html>
@@ -176,14 +209,28 @@ $pdfTemplate = @'
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>%%TITLE%%</title>
+<script>
+(function(){try{var t=localStorage.getItem('portfolio-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
 <style>
-:root { --bg:#0f172a; --border:#2d3f55; --blue-lt:#60a5fa; --green-lt:#4ade80; --text:#f1f5f9; --text-2:#94a3b8; }
+:root {
+  --bg:#0f172a; --card:#1e293b; --border:#2d3f55;
+  --blue-lt:#60a5fa; --green-lt:#4ade80;
+  --text:#f1f5f9; --text-2:#dbe3ec; --top-bg:#0f172a;
+}
+html[data-theme="light"] {
+  --bg:#f6f8fb; --card:#ffffff; --border:#c3cedd;
+  --blue-lt:#1d4ed8; --green-lt:#15803d;
+  --text:#0f172a; --text-2:#1e293b; --top-bg:#eef2f7;
+}
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
 body { background:var(--bg); color:var(--text); font-family:'Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif; }
-.top { background:rgba(15,23,42,0.97); border-bottom:1px solid var(--border); padding:0.9rem 1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; }
+.top { background:var(--top-bg); border-bottom:1px solid var(--border); padding:0.9rem 1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; }
 .top h1 { font-size:1rem; font-weight:700; margin-right:auto; }
 .top a { color:var(--blue-lt); text-decoration:none; font-size:0.82rem; font-weight:600; }
 .top a:hover { color:var(--green-lt); }
+.theme-btn { background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:0.35rem 0.85rem; font-size:0.8rem; font-weight:600; cursor:pointer; font-family:inherit; }
+.theme-btn:hover { border-color:var(--green-lt); color:var(--green-lt); }
 embed { width:100%; height:calc(100vh - 57px); display:block; }
 .fallback { padding:3rem 1.5rem; text-align:center; color:var(--text-2); font-size:0.9rem; }
 .fallback a { color:var(--blue-lt); font-weight:600; }
@@ -192,12 +239,29 @@ embed { width:100%; height:calc(100vh - 57px); display:block; }
 <body>
 <div class="top">
   <h1>%%TITLE%%</h1>
-  <a href="../기획서모음.html">← 기획서 모음으로</a>
+  <a href="../기획서모음.html">← 기획서 &amp; 게임 분석으로</a>
   <a href="../index.html">포트폴리오 홈</a>
   <a href="%%SRC%%" download>⬇ PDF 다운로드</a>
+  <button id="theme-toggle" class="theme-btn" type="button">밝게</button>
 </div>
 <embed src="%%SRC%%" type="application/pdf">
 <p class="fallback">PDF가 표시되지 않으면 <a href="%%SRC%%" download>여기서 다운로드</a>하세요.</p>
+<script>
+(function () {
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) { return; }
+  var root = document.documentElement;
+  function cur() { return root.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
+  function paint() { btn.textContent = cur() === 'light' ? '어둡게' : '밝게'; }
+  paint();
+  btn.addEventListener('click', function () {
+    var next = cur() === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('portfolio-theme', next); } catch (e) {}
+    paint();
+  });
+})();
+</script>
 </body>
 </html>
 '@

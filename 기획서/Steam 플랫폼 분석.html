@@ -4,14 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Steam 플랫폼 분석</title>
+<script>
+(function(){try{var t=localStorage.getItem('portfolio-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
 <style>
-:root { --bg:#0f172a; --border:#2d3f55; --blue-lt:#60a5fa; --green-lt:#4ade80; --text:#f1f5f9; --text-2:#94a3b8; }
+:root {
+  --bg:#0f172a; --card:#1e293b; --border:#2d3f55;
+  --blue-lt:#60a5fa; --green-lt:#4ade80;
+  --text:#f1f5f9; --text-2:#dbe3ec; --top-bg:#0f172a;
+}
+html[data-theme="light"] {
+  --bg:#f6f8fb; --card:#ffffff; --border:#c3cedd;
+  --blue-lt:#1d4ed8; --green-lt:#15803d;
+  --text:#0f172a; --text-2:#1e293b; --top-bg:#eef2f7;
+}
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
 body { background:var(--bg); color:var(--text); font-family:'Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif; }
-.top { background:rgba(15,23,42,0.97); border-bottom:1px solid var(--border); padding:0.9rem 1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; }
+.top { background:var(--top-bg); border-bottom:1px solid var(--border); padding:0.9rem 1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; }
 .top h1 { font-size:1rem; font-weight:700; margin-right:auto; }
 .top a { color:var(--blue-lt); text-decoration:none; font-size:0.82rem; font-weight:600; }
 .top a:hover { color:var(--green-lt); }
+.theme-btn { background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:0.35rem 0.85rem; font-size:0.8rem; font-weight:600; cursor:pointer; font-family:inherit; }
+.theme-btn:hover { border-color:var(--green-lt); color:var(--green-lt); }
 embed { width:100%; height:calc(100vh - 57px); display:block; }
 .fallback { padding:3rem 1.5rem; text-align:center; color:var(--text-2); font-size:0.9rem; }
 .fallback a { color:var(--blue-lt); font-weight:600; }
@@ -20,11 +34,28 @@ embed { width:100%; height:calc(100vh - 57px); display:block; }
 <body>
 <div class="top">
   <h1>Steam 플랫폼 분석</h1>
-  <a href="../기획서모음.html">← 기획서 모음으로</a>
+  <a href="../기획서모음.html">← 기획서 &amp; 게임 분석으로</a>
   <a href="../index.html">포트폴리오 홈</a>
   <a href="Steam 플랫폼 분석.pdf" download>⬇ PDF 다운로드</a>
+  <button id="theme-toggle" class="theme-btn" type="button">밝게</button>
 </div>
 <embed src="Steam 플랫폼 분석.pdf" type="application/pdf">
 <p class="fallback">PDF가 표시되지 않으면 <a href="Steam 플랫폼 분석.pdf" download>여기서 다운로드</a>하세요.</p>
+<script>
+(function () {
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) { return; }
+  var root = document.documentElement;
+  function cur() { return root.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
+  function paint() { btn.textContent = cur() === 'light' ? '어둡게' : '밝게'; }
+  paint();
+  btn.addEventListener('click', function () {
+    var next = cur() === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('portfolio-theme', next); } catch (e) {}
+    paint();
+  });
+})();
+</script>
 </body>
 </html>
