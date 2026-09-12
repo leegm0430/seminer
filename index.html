@@ -1182,16 +1182,16 @@
         </div>
       </div>
 
-      <!-- ISTQB CTFL 문제은행 -->
+      <!-- ISTQB · CSTS 문제은행 -->
       <div class="project-card">
         <div class="proj-head">
           <p class="proj-type">바이브 코딩 · QA 학습 도구</p>
-          <p class="proj-name">ISTQB CTFL v4.0 문제은행 — 자격증 대비 퀴즈 앱</p>
+          <p class="proj-name">ISTQB · CSTS 문제은행 — 자격증 대비 퀴즈 앱</p>
         </div>
         <div class="proj-meta">
           <div class="proj-meta-item">개발 방식 <span>Claude AI 바이브 코딩</span></div>
           <div class="proj-meta-item">플랫폼 <span>웹 브라우저 (단일 HTML)</span></div>
-          <div class="proj-meta-item">문제은행 <span>363문항 (하 186 · 중 90 · 상 87)</span></div>
+          <div class="proj-meta-item">문제은행 <span>594문항 (ISTQB 363 · CSTS 231)</span></div>
         </div>
         <div class="proj-body">
           <div class="img-gallery cols-4">
@@ -1201,18 +1201,21 @@
             <img src="images/istqb퀴즈4.png" alt="ISTQB 문제은행 오답노트·통계 화면" onclick="openLightbox(this.src)">
           </div>
           <p class="proj-desc">
-            준비 중인 ISTQB Foundation Level 자격증을 스스로 공부하려고 만든 문제 풀이 앱. 공식 실러버스 v4.0.1과 공식 샘플문제 4세트를 원본 자료로 삼아, 난이도를 하·중·상 3단계로 나눈 363문항 문제은행을 구성했습니다. 기획서를 먼저 쓰고 그 명세대로 구현·검증했습니다.
+            준비 중인 ISTQB Foundation Level과 CSTS 일반등급을 스스로 공부하려고 만든 문제 풀이 앱. 두 자격의 문제은행·채점 기준·모의고사 구성을 각각 실제 시험에 맞춰 나눠 담았습니다. 기획서를 먼저 쓰고 그 명세대로 구현·검증했습니다.
           </p>
           <ul class="list-check">
-            <li>하 난이도는 공식 샘플문제 186문항을 원문 그대로 수록, 중·상 난이도는 실러버스 근거로 신규 출제</li>
-            <li>챕터별 문항 수를 실러버스 시간 배분 비중(4·5장 최다)에 맞춰 배분</li>
-            <li>모의고사 모드 — 40문항 무작위 출제 + 60분 타이머, 실제 합격선인 65%(26문항) 기준 채점</li>
+            <li>ISTQB 363문항 — 하 난이도는 공식 샘플문제 186문항을 원문 그대로 수록, 중(90)·상(87)은 실러버스 v4.0.1 근거로 신규 출제</li>
+            <li>CSTS 231문항 — 장별 연습문제 161문항과 일반등급 예제 70문항을 객관식·O/X·단답형 세 유형으로 구성</li>
+            <li>모의고사를 자격별 실제 기준으로 분리 — ISTQB는 40문항 60분에 정답률 65%(26문항), CSTS는 70문항 90분에 100점 만점 75점</li>
+            <li>CSTS 채점은 배점 가중 방식(4지선다 1.5 · O/X 1.0 · 단답 1.5)으로 구현하고, 출제 비율도 실제 시험과 같게 객관식 50 · O/X 10 · 단답 10으로 추출</li>
+            <li>CSTS 학습 탭에 용어 사전 174개(16개 장)와 수식·계산 29개(커버리지·복잡도·신뢰성 지표 등 6개 그룹)를 넣어 문제를 풀다 바로 찾아볼 수 있게 구성</li>
             <li>오답노트 자동 수집과 챕터별·난이도별 정답률 통계</li>
             <li>외부 API·서버 없이 단일 HTML 파일로 동작하도록 문제 데이터를 내장</li>
           </ul>
           <div class="tags">
             <span class="tag tag-blue">HTML/JS</span>
             <span class="tag tag-green">ISTQB CTFL</span>
+            <span class="tag tag-green">CSTS 일반등급</span>
             <span class="tag tag-green">기획서 기반 구현</span>
             <span class="tag tag-blue">Claude AI</span>
           </div>
