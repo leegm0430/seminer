@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI로 스토리게임 만들기</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --text: #1f2430;
+  --muted: #5b6472;
+  --accent: #3457d5;
+  --border: #e2e5ea;
+  --code-bg: #f4f5f8;
+  --table-head: #eef1f8;
+  --callout-bg: #fff8e6;
+  --callout-border: #e8c766;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #f6f7f9;
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  line-height: 1.75;
+}
+.doc {
+  max-width: 840px;
+  margin: 0 auto;
+  background: var(--bg);
+  padding: 56px 64px 80px;
+  min-height: 100vh;
+}
+@media (max-width: 700px) {
+  .doc { padding: 32px 20px 60px; }
+}
+h1 {
+  font-size: 26px;
+  margin: 0 0 8px;
+  padding-bottom: 16px;
+  border-bottom: 3px solid var(--accent);
+}
+.doc-meta {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 40px;
+}
+h2 {
+  font-size: 20px;
+  margin: 44px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+h3 {
+  font-size: 16px;
+  margin: 32px 0 12px;
+  color: #232838;
+}
+p { margin: 12px 0; }
+ul, ol { padding-left: 22px; }
+li { margin: 6px 0; }
+strong { color: #12162a; }
+hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 13px;
+  background: var(--code-bg);
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  position: relative;
+  margin: 14px 0 22px;
+}
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 13px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 18px 0 26px;
+  font-size: 14px;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 9px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: var(--table-head); }
+tr:nth-child(even) td { background: #fafbfd; }
+
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--muted);
+  cursor: pointer;
+}
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn.copied { color: #1a8a4a; border-color: #1a8a4a; }
+</style>
+</head>
+<body>
+<div class="doc">
+<h1>AI로 스토리게임 만들기</h1>
+<div class="doc-meta">학생용 · 프롬프트 순서 가이드 — 각 코드 상자의 "복사" 버튼으로 바로 붙여넣기 가능</div>
+<p>아래 프롬프트를 <strong>순서대로</strong> 클로드에 붙여넣어 쓰면 된다. 각 단계 결과를 다음 단계 프롬프트 위에 그대로 붙여서 이어 쓰면 됨. <code>[ ]</code> 안은 자기 아이디어로 바꿔쓰는 부분이다.</p>
+<hr />
+<h2>STEP 1. 시나리오 기획 프롬프트</h2>
+<p>아직 게임 파일이 아니라 "이야기 자체"를 짜는 단계다.</p>
+<pre><code>나는 텍스트 기반 분기형 스토리게임을 만들려고 해. 장르는 [예: 포스트 아포칼립스 서울, 사이버펑크 해킹물, 학교 미스터리 등].
+아래 형식으로 시나리오를 짜줘. 아직 JSON이 아니라 사람이 읽는 기획서 형태로 써줘.
+
+1. 세계관 (3~5줄)
+2. 주인공 (누구인지, 목표가 뭔지)
+3. 전체 줄거리 흐름 (시작 → 중간 → 결말까지 큰 흐름)
+4. 장면(씬) 목록 — 번호를 붙이고, 각 장면 상황을 2~3줄로 설명
+5. 분기점 — 어느 장면에서 선택지가 갈리는지, 각 선택지가 어느 장면으로 이어지는지
+   화살표로 표시 (예: 장면3 -[문을 연다]→ 장면4, 장면3 -[도망친다]→ 장면5)
+6. 엔딩 — 최소 2개, 각각 어떤 경로로 도달하는지와 엔딩 제목
+
+장면은 8개 이내, 엔딩은 2~3개로 짜줘. 이미지나 아이템은 아직 신경 쓰지 말고 이야기 흐름에만 집중해줘.
+</code></pre>
+<hr />
+<h2>STEP 2. 아이템 · 스킬 · 직업 설계 프롬프트</h2>
+<p>STEP 1 결과를 위에 붙여넣은 다음 이어서 요청한다.</p>
+<pre><code>위에서 만든 시나리오를 바탕으로 아이템, 스킬, 직업(선택 가능한 캐릭터 타입)을 설계해줘.
+
+- 스탯은 [체력, 정신력] 이 두 가지만 쓸 거야. 다른 스탯은 만들지 마.
+- 아이템 2~4개: 이름 / 어느 장면에서 얻는지 / 체력·정신력에 미치는 영향(숫자로) / 나중에 어느 선택지에서 쓰이는지
+- 스킬 1~2개: 이름 / 특정 직업 전용인지 여부 / 어떤 선택지를 열어주는 역할인지
+- 직업 1~2개: 이름 / 한 줄 설명 / 시작할 때 체력·정신력 보정값
+- 시나리오의 분기점 중 &quot;아이템을 가지고 있어야 선택 가능&quot;하거나 &quot;특정 직업만 가능&quot;한 선택지를
+  2~3곳 추천해줘
+
+아직 JSON은 필요 없어. 표나 목록 형태로 정리해서 보여줘.
+</code></pre>
+<hr />
+<h2>STEP 3. JSON 변환 프롬프트 (제일 중요 — 형식을 그대로 따르게 시키는 단계)</h2>
+<p>STEP 1, 2 결과를 위에 붙여넣은 다음 이어서 요청한다. <strong>여기 있는 형식은 절대 손대지 말고 통째로 복사해서 쓸 것.</strong></p>
+<pre><code>지금까지 나온 시나리오와 아이템/스킬/직업 설계를 아래 JSON 형식에 맞춰서 정확히 변환해줘.
+형식은 반드시 아래 구조를 그대로 따르고, 필드 이름을 하나도 바꾸지 마.
+
+```json
+{
+  &quot;meta&quot;: { &quot;title&quot;: &quot;게임 제목&quot;, &quot;author&quot;: &quot;이름&quot;, &quot;styleTag&quot;: &quot;이미지 생성용 고정 스타일 문구&quot; },
+  &quot;stats&quot;: { &quot;체력&quot;: 100, &quot;정신력&quot;: 100 },
+  &quot;startScene&quot;: &quot;시작씬id&quot;,
+  &quot;classes&quot;: [
+    { &quot;id&quot;: &quot;직업id&quot;, &quot;name&quot;: &quot;직업이름&quot;, &quot;description&quot;: &quot;설명&quot;, &quot;startingStats&quot;: { &quot;체력&quot;: 100 } }
+  ],
+  &quot;items&quot;: [
+    { &quot;id&quot;: &quot;아이템id&quot;, &quot;name&quot;: &quot;아이템이름&quot;, &quot;icon&quot;: &quot;파일명.png&quot;, &quot;effect&quot;: { &quot;체력&quot;: 5 } }
+  ],
+  &quot;skills&quot;: [
+    { &quot;id&quot;: &quot;스킬id&quot;, &quot;name&quot;: &quot;스킬이름&quot;, &quot;icon&quot;: &quot;파일명.png&quot;, &quot;requires&quot;: { &quot;class&quot;: &quot;직업id&quot; } }
+  ],
+  &quot;scenes&quot;: {
+    &quot;씬id&quot;: {
+      &quot;image&quot;: &quot;파일명.png&quot;,
+      &quot;video&quot;: null,
+      &quot;text&quot;: &quot;장면 설명&quot;,
+      &quot;choices&quot;: [
+        { &quot;label&quot;: &quot;선택지 문구&quot;, &quot;next&quot;: &quot;다음씬id&quot;, &quot;requires&quot;: null, &quot;effects&quot;: null, &quot;grantItem&quot;: null, &quot;grantSkill&quot;: null }
+      ]
+    }
+  },
+  &quot;endings&quot;: {
+    &quot;엔딩id&quot;: { &quot;sceneId&quot;: &quot;해당씬id&quot;, &quot;title&quot;: &quot;엔딩 제목&quot;, &quot;image&quot;: null, &quot;video&quot;: null }
+  }
+}
+```
+
+규칙:
+- id는 전부 영문/숫자/밑줄(_)만 쓰고 한글은 쓰지 마 (예: scene01, item_knife)
+- image/video 파일명은 실제 파일 없이 임의로 지어도 돼 (예: scene01.png) — 나중에 gameaify로 만든
+  실제 파일명으로 내가 바꿀 거야
+- requires / effects / grantItem / grantSkill 은 해당 없으면 null로 둬
+- 결과는 다른 설명 없이 JSON 코드블록 하나로만 줘 (앞뒤에 설명 붙이지 마)
+</code></pre>
+<p>이렇게 나온 JSON은 <code>editor.html</code>의 "고급(JSON)" 탭에 통째로 붙여넣고 "적용"을 누르면 바로 씬/아이템/직업이 폼에 채워진다.</p>
+<hr />
+<h2>STEP 4. 이어서 씬 추가하기 (반복해서 쓰는 프롬프트)</h2>
+<p>이미 만든 story-data.js가 있는 상태에서, 내용을 더 추가하고 싶을 때 쓴다. 매번 전체를 다시 만들지 않아서 훨씬 빠르다.</p>
+<pre><code>[지금까지의 story-data.js 내용을 붙여넣기]
+
+여기에 씬을 3개만 새로 추가해줘: [추가하고 싶은 내용 설명].
+기존 씬은 절대 건드리지 말고, 새로 추가하는 씬 3개만 JSON 블록으로 출력해줘.
+새 씬 id는 기존 씬 id들과 겹치지 않게 지어줘.
+</code></pre>
+<hr />
+<h2>(도전 과제) 랜덤 요소 추가하기</h2>
+<p>기본 완성을 끝내고 시간이 남는 사람만 시도. 씬을 더 안 늘려도 게임이 풍성해 보이게 만드는 방법이다.</p>
+<pre><code>이 선택지에서 얻는 아이템을 고정이 아니라 여러 개 중 하나가 무작위로 나오게 하고 싶어.
+아래처럼 grantItem을 랜덤 형식으로 바꿔줘:
+
+&quot;grantItem&quot;: { &quot;random&quot;: [&quot;item1&quot;, &quot;item2&quot;, &quot;item3&quot;] }
+
+[어느 씬의 어느 선택지]를 이 형식으로 바꿔줘. 스킬도 같은 방식(grantSkill)으로 가능해.
+</code></pre>
+<hr />
+<h2>유지보수용 프롬프트 모음 (다듬을 때 사용)</h2>
+<pre><code>전체 scene 텍스트의 말투를 [반말/존댓말]로 통일해줘.
+</code></pre>
+<pre><code>선택지 중에 연결이 끊기거나(next가 존재하지 않는 씬 id) 오타로 보이는 부분 있으면 찾아줘.
+</code></pre>
+<pre><code>이 아이템/스킬 목록에서 효과가 너무 세거나 약한 게 있으면 짚어주고 수정안을 줘.
+</code></pre>
+<hr />
+<h2>부록: 이미지 만들 때 참고할 프롬프트 형식 (gameaify)</h2>
+<p>스타일 프리픽스는 STEP 3에서 정한 <code>styleTag</code>를 그대로 앞에 붙여서 쓰면 그림체가 통일된다.</p>
+<ul>
+<li>배경(16:9): <code>[스타일 프리픽스], [장면 묘사], [시간대/조명], [분위기], 인물 없이 넓은 구도</code></li>
+<li>아이템/스킬 아이콘(1:1): <code>[스타일 프리픽스], [아이템/스킬 이름] 아이콘, 단순한 배경, 정면 구도</code></li>
+</ul>
+<p>이번 프로젝트에서는 16:9(배경)와 1:1(아이콘) 두 비율만 사용한다.</p>
+</div>
+<script>
+function fallbackCopy(text) {
+  try {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    var ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch (e) {
+    return false;
+  }
+}
+document.querySelectorAll('pre').forEach(function (pre) {
+  var btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = '복사';
+  btn.onclick = function () {
+    var text = pre.querySelector('code').textContent;
+    function done(ok) {
+      btn.textContent = ok ? '복사됨' : '복사 실패';
+      if (ok) btn.classList.add('copied');
+      setTimeout(function () { btn.textContent = '복사'; btn.classList.remove('copied'); }, 1500);
+      if (!ok) window.prompt('아래 내용을 직접 복사하세요 (Ctrl+C):', text);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(fallbackCopy(text)); });
+    } else {
+      done(fallbackCopy(text));
+    }
+  };
+  pre.appendChild(btn);
+});
+</script>
+</body>
+</html>

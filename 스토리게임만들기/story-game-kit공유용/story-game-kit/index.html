@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스토리게임</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- story-data.js 는 에디터(editor.html)에서 "내보내기"로 만든 파일을 그대로 이 폴더에 덮어쓰면 됩니다. -->
+  <script src="story-data.js"></script>
+  <script src="engine.js"></script>
+  <script>
+    (function () {
+      var app = document.getElementById('app');
+      if (typeof window.STORY_DATA === 'undefined') {
+        app.innerHTML = '<div class="se-error">story-data.js를 찾을 수 없습니다.\nindex.html과 같은 폴더에 story-data.js 파일이 있는지 확인하세요.</div>';
+        return;
+      }
+      StoryEngine.init(app, window.STORY_DATA);
+    })();
+  </script>
+</body>
+</html>

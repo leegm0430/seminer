@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스토리게임 에디터</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: #12141c;
+    color: #e6e6e6;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 18px;
+    background: #1a1d29;
+    border-bottom: 1px solid #2a2f42;
+  }
+  header h1 { font-size: 17px; margin: 0; margin-right: 16px; }
+  .topbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  button { font-family: inherit; }
+  .btn {
+    padding: 8px 14px;
+    background: #262b3a;
+    border: 1px solid #3a4058;
+    color: #e6e6e6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .btn:hover { border-color: #5a7bd8; }
+  .btn-primary { background: #2d4ea0; border-color: #3d5fc0; }
+  .btn-small { padding: 5px 10px; font-size: 12px; border-radius: 6px; background: #262b3a; border: 1px solid #3a4058; color: #e6e6e6; cursor: pointer; }
+  .btn-danger { border-color: #7a3a3a; color: #ff9d9d; }
+  .btn-link { background: none; border: none; color: #7fa4ff; text-decoration: underline; padding: 4px 0; }
+
+  #tabBar { display: flex; gap: 4px; padding: 10px 18px 0; background: #12141c; flex-wrap: wrap; }
+  .tab-btn { padding: 9px 16px; background: #1a1d29; border: 1px solid #2a2f42; border-bottom: none; color: #aaa; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 13px; }
+  .tab-btn.active { background: #1e2436; color: #fff; border-color: #3a4058; }
+
+  #tabContent { padding: 18px; max-width: 1100px; margin: 0 auto; }
+
+  #mainLayout { display: flex; align-items: flex-start; }
+  #mainLayout #tabContent { flex: 1; min-width: 0; }
+  #previewPanel {
+    width: 380px;
+    flex-shrink: 0;
+    border-left: 1px solid #2a2f42;
+    background: #0d0f16;
+    padding: 14px;
+    position: sticky;
+    top: 0;
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+  .preview-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  #previewContainer { margin-top: 10px; border: 1px solid #2a2f42; border-radius: 8px; padding: 10px; background: #0d0f14; }
+
+  .two-col { display: flex; gap: 18px; align-items: flex-start; }
+  .list-col { width: 220px; flex-shrink: 0; background: #1a1d29; border: 1px solid #2a2f42; border-radius: 10px; padding: 10px; }
+  .form-col { flex: 1; background: #1a1d29; border: 1px solid #2a2f42; border-radius: 10px; padding: 16px; min-width: 0; }
+
+  .list-item { padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 13px; margin-bottom: 4px; word-break: break-all; }
+  .list-item:hover { background: #232838; }
+  .list-item.active { background: #2d4ea0; color: #fff; }
+
+  .form-row { margin-bottom: 14px; }
+  .form-row label { display: block; font-size: 12px; color: #9aa4c0; margin-bottom: 5px; }
+  .form-row input[type=text], .form-row input[type=number], .form-row textarea, .form-row select {
+    width: 100%;
+    padding: 8px 10px;
+    background: #12141c;
+    border: 1px solid #333c55;
+    color: #e6e6e6;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .form-row textarea { resize: vertical; }
+  .hint { font-size: 11px; color: #777; margin: 4px 0 0; }
+
+  .file-drop {
+    margin-top: 6px;
+    padding: 14px;
+    border: 1px dashed #3a4058;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 12px;
+    color: #8b93ab;
+    cursor: pointer;
+    background: #12141c;
+  }
+  .file-drop:hover { border-color: #5a7bd8; color: #cdd6f0; }
+  .file-drop.drag-over { border-color: #7fa4ff; background: #1a2440; color: #e6e6e6; }
+
+  .choice-block { border: 1px solid #2a2f42; border-radius: 8px; padding: 10px; margin-bottom: 10px; background: #171a26; }
+  .choice-block > input[type=text] { width: 100%; margin-bottom: 8px; padding: 7px 9px; background: #12141c; border: 1px solid #333c55; color: #e6e6e6; border-radius: 6px; font-size: 13px; }
+  .choice-block > select { margin-right: 8px; padding: 6px; background: #12141c; border: 1px solid #333c55; color: #e6e6e6; border-radius: 6px; font-size: 12px; }
+  .adv-panel { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #333c55; }
+
+  .kv-table { margin-bottom: 8px; }
+  .kv-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .kv-key { width: 90px; font-size: 12px; color: #cdd6f0; }
+  .kv-row input[type=number] { width: 90px; padding: 6px; background: #12141c; border: 1px solid #333c55; color: #e6e6e6; border-radius: 6px; }
+
+  #modalOverlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    align-items: center; justify-content: center;
+    z-index: 100;
+  }
+  #modalBox { background: #1a1d29; border: 1px solid #333c55; border-radius: 12px; width: min(720px, 92vw); max-height: 86vh; overflow: auto; padding: 18px; }
+  #modalBox h2 { margin-top: 0; font-size: 16px; }
+  #modalBox pre { white-space: pre-wrap; font-size: 13px; line-height: 1.6; }
+
+  code { background: #12141c; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+  .warn-box { background: #2a1f14; border: 1px solid #5a3d1a; color: #f0c98a; padding: 10px 12px; border-radius: 8px; font-size: 12px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>스토리게임 에디터</h1>
+  <div class="topbar-actions">
+    <button class="btn" id="btnNew">새로 만들기</button>
+    <button class="btn" id="btnImport">가져오기</button>
+    <input type="file" id="fileImport" accept=".js,.txt" style="display:none">
+    <button class="btn" id="btnValidate">링크 검사</button>
+    <button class="btn" id="btnPreview">미리보기 열기</button>
+    <button class="btn btn-primary" id="btnExport">내보내기 (story-data.js)</button>
+  </div>
+</header>
+
+<div id="tabBar"></div>
+<div id="mainLayout">
+  <div id="tabContent"></div>
+  <div id="previewPanel" style="display:none;">
+    <div class="preview-panel-header">
+      <strong>실시간 미리보기</strong>
+      <button class="btn-small" id="btnRefreshPreview">새로고침</button>
+    </div>
+    <p class="hint">파일을 내보내지 않아도 지금까지 입력한 내용이 바로 반영됩니다. 편집 후 "새로고침"을 눌러 확인하세요.</p>
+    <div id="previewContainer"></div>
+  </div>
+</div>
+
+<div id="modalOverlay">
+  <div id="modalBox">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2 id="modalTitle"></h2>
+      <button class="btn-small" id="btnModalClose">닫기</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="engine.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- 데이터 모델 ---------- */
+
+  function blankDraft() {
+    return {
+      meta: { title: '', author: '', styleTag: '' },
+      stats: { '체력': 100, '정신력': 100 },
+      classes: [],
+      items: [],
+      skills: [],
+      scenes: { start: { image: '', video: null, text: '', choices: [] } },
+      endings: {},
+      startScene: 'start'
+    };
+  }
+
+  var draft = loadLocalOrBlank();
+  var currentTab = 'scenes';
+  var currentSceneId = null;
+  var currentItemId = null;
+  var currentSkillId = null;
+  var currentClassId = null;
+  var currentEndingId = null;
+
+  function loadLocalOrBlank() {
+    try {
+      var saved = localStorage.getItem('storyEditorDraft');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return blankDraft();
+  }
+
+  function saveLocal() {
+    try { localStorage.setItem('storyEditorDraft', JSON.stringify(draft)); } catch (e) {}
+  }
+
+  function normalizeDraft() {
+    if (!draft.classes) draft.classes = [];
+    if (!draft.items) draft.items = [];
+    if (!draft.skills) draft.skills = [];
+    if (!draft.endings) draft.endings = {};
+    if (!draft.scenes) draft.scenes = { start: { image: '', video: null, text: '', choices: [] } };
+    if (!draft.stats) draft.stats = {};
+    if (!draft.meta) draft.meta = { title: '', author: '', styleTag: '' };
+    if (!draft.startScene || !draft.scenes[draft.startScene]) {
+      draft.startScene = Object.keys(draft.scenes)[0] || 'start';
+    }
+  }
+  normalizeDraft();
+
+  /* ---------- 공용 유틸 ---------- */
+
+  function nextId(list, prefix) {
+    var n = 1;
+    while (list.some(function (x) { return x.id === prefix + n; })) n++;
+    return prefix + n;
+  }
+
+  function buildIdSelect(list, selectedId, allowNone) {
+    var sel = document.createElement('select');
+    if (allowNone) {
+      var noneOpt = document.createElement('option');
+      noneOpt.value = '';
+      noneOpt.textContent = '없음';
+      sel.appendChild(noneOpt);
+    }
+    (list || []).forEach(function (x) {
+      var opt = document.createElement('option');
+      opt.value = x.id;
+      opt.textContent = x.name + ' (' + x.id + ')';
+      if (x.id === selectedId) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    return sel;
+  }
+
+  // 고정 지급 / 랜덤 지급(여러 개 중 하나)을 함께 지원하는 지급 필드
+  function renderGrantField(labelText, pool, currentGrant, onChange) {
+    var row = labelRow(labelText);
+    var modeSel = document.createElement('select');
+    ['없음', '고정 지급', '랜덤 지급 (여러 개 중 하나)'].forEach(function (label, i) {
+      var opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = label;
+      modeSel.appendChild(opt);
+    });
+    function currentMode(g) {
+      if (!g) return 0;
+      if (typeof g === 'object' && g.random) return 2;
+      return 1;
+    }
+    modeSel.value = currentMode(currentGrant);
+
+    var valueWrap = document.createElement('div');
+    valueWrap.style.marginTop = '6px';
+
+    function renderValue() {
+      valueWrap.innerHTML = '';
+      var mode = Number(modeSel.value);
+      if (mode === 1) {
+        var fixedId = (typeof currentGrant === 'string') ? currentGrant : ((pool[0] && pool[0].id) || '');
+        var sel = buildIdSelect(pool, fixedId);
+        sel.onchange = function () { currentGrant = sel.value; onChange(currentGrant); };
+        valueWrap.appendChild(sel);
+        if (typeof currentGrant !== 'string' && fixedId) { currentGrant = fixedId; onChange(currentGrant); }
+      } else if (mode === 2) {
+        var currentPool = (currentGrant && currentGrant.random) ? currentGrant.random : [];
+        if (!pool.length) {
+          var none = document.createElement('p');
+          none.className = 'hint';
+          none.textContent = '먼저 항목을 등록해야 선택할 수 있습니다.';
+          valueWrap.appendChild(none);
+        }
+        pool.forEach(function (it) {
+          var lbl = document.createElement('label');
+          lbl.style.display = 'block';
+          lbl.style.fontSize = '12px';
+          lbl.style.margin = '4px 0';
+          var cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.checked = currentPool.indexOf(it.id) !== -1;
+          cb.onchange = function () {
+            var next = (currentGrant && currentGrant.random) ? currentGrant.random.slice() : [];
+            if (cb.checked) { if (next.indexOf(it.id) === -1) next.push(it.id); }
+            else { next = next.filter(function (x) { return x !== it.id; }); }
+            currentGrant = { random: next };
+            onChange(currentGrant);
+          };
+          lbl.appendChild(cb);
+          lbl.appendChild(document.createTextNode(' ' + it.name + ' (' + it.id + ')'));
+          valueWrap.appendChild(lbl);
+        });
+        if (!currentGrant || !currentGrant.random) { currentGrant = { random: [] }; onChange(currentGrant); }
+      } else {
+        currentGrant = null;
+        onChange(null);
+      }
+    }
+    modeSel.onchange = renderValue;
+    renderValue();
+
+    row.appendChild(modeSel);
+    row.appendChild(valueWrap);
+    var hint = document.createElement('p');
+    hint.className = 'hint';
+    hint.textContent = '랜덤 지급을 고르면, 체크한 항목 중 하나가 실행할 때마다 무작위로 지급됩니다.';
+    row.appendChild(hint);
+    return row;
+  }
+
+  function buildSceneSelect(selectedId, allowNone) {
+    var sel = document.createElement('select');
+    if (allowNone) {
+      var noneOpt = document.createElement('option');
+      noneOpt.value = '';
+      noneOpt.textContent = '-- 선택 --';
+      sel.appendChild(noneOpt);
+    }
+    Object.keys(draft.scenes).forEach(function (sid) {
+      var opt = document.createElement('option');
+      opt.value = sid;
+      opt.textContent = sid;
+      if (sid === selectedId) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    return sel;
+  }
+
+  function promptNewSceneId() {
+    var id = prompt('새 씬의 ID를 입력하세요 (영문, 숫자, 밑줄(_)만 가능. 예: scene04)');
+    if (!id) return null;
+    if (!/^[a-zA-Z0-9_]+$/.test(id)) { alert('영문, 숫자, 밑줄(_)만 사용할 수 있습니다.'); return null; }
+    if (draft.scenes[id]) { alert('이미 존재하는 씬 ID입니다.'); return null; }
+    return id;
+  }
+
+  function renderKeyValueEditor(container, obj, opts) {
+    opts = opts || {};
+    container.innerHTML = '';
+    var table = document.createElement('div');
+    table.className = 'kv-table';
+    Object.keys(obj).forEach(function (key) {
+      var row = document.createElement('div');
+      row.className = 'kv-row';
+      var keySpan = document.createElement('span');
+      keySpan.className = 'kv-key';
+      keySpan.textContent = key;
+      var valInput = document.createElement('input');
+      valInput.type = 'number';
+      valInput.value = obj[key];
+      valInput.oninput = function () { obj[key] = Number(valInput.value) || 0; saveLocal(); };
+      var delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'btn-small btn-danger';
+      delBtn.textContent = '삭제';
+      delBtn.onclick = function () {
+        delete obj[key];
+        saveLocal();
+        renderKeyValueEditor(container, obj, opts);
+      };
+      row.appendChild(keySpan);
+      row.appendChild(valInput);
+      row.appendChild(delBtn);
+      table.appendChild(row);
+    });
+    container.appendChild(table);
+
+    var addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'btn-small';
+    addBtn.textContent = '+ 항목 추가';
+    addBtn.onclick = function () {
+      var key = prompt(opts.promptLabel || '이름을 입력하세요');
+      if (!key) return;
+      if (obj.hasOwnProperty(key)) { alert('이미 있는 항목입니다.'); return; }
+      obj[key] = 0;
+      saveLocal();
+      renderKeyValueEditor(container, obj, opts);
+    };
+    container.appendChild(addBtn);
+  }
+
+  function labelRow(text) {
+    var d = document.createElement('div');
+    d.className = 'form-row';
+    var l = document.createElement('label');
+    l.textContent = text;
+    d.appendChild(l);
+    return d;
+  }
+
+  // 파일명 입력 + 드래그앤드롭/클릭 선택을 함께 지원하는 필드
+  function fileField(labelText, hintText, accept, currentValue, onChange) {
+    var row = labelRow(labelText);
+
+    var textInput = document.createElement('input');
+    textInput.type = 'text';
+    textInput.value = currentValue || '';
+    textInput.placeholder = '파일명 (직접 입력도 가능)';
+    textInput.oninput = function () { onChange(textInput.value); };
+    row.appendChild(textInput);
+
+    var drop = document.createElement('div');
+    drop.className = 'file-drop';
+    drop.textContent = '\uD83D\uDCC2 파일을 여기로 끌어놓거나, 클릭해서 선택';
+
+    var hiddenInput = document.createElement('input');
+    hiddenInput.type = 'file';
+    hiddenInput.accept = accept;
+    hiddenInput.style.display = 'none';
+    drop.appendChild(hiddenInput);
+
+    function pick(name) {
+      textInput.value = name;
+      onChange(name);
+    }
+    drop.onclick = function () { hiddenInput.click(); };
+    hiddenInput.onchange = function () {
+      if (hiddenInput.files[0]) pick(hiddenInput.files[0].name);
+    };
+    drop.ondragover = function (e) { e.preventDefault(); e.stopPropagation(); drop.classList.add('drag-over'); };
+    drop.ondragleave = function () { drop.classList.remove('drag-over'); };
+    drop.ondrop = function (e) {
+      e.preventDefault(); e.stopPropagation();
+      drop.classList.remove('drag-over');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) pick(e.dataTransfer.files[0].name);
+    };
+    row.appendChild(drop);
+
+    if (hintText) {
+      var hint = document.createElement('p');
+      hint.className = 'hint';
+      hint.textContent = hintText;
+      row.appendChild(hint);
+    }
+    return row;
+  }
+
+  /* ---------- 탭: 씬 ---------- */
+
+  function renderScenesTab() {
+    var content = document.getElementById('tabContent');
+    content.innerHTML = '';
+    if (!currentSceneId || !draft.scenes[currentSceneId]) {
+      currentSceneId = Object.keys(draft.scenes)[0] || null;
+    }
+
+    var wrap = document.createElement('div');
+    wrap.className = 'two-col';
+
+    // 좌측 목록
+    var listCol = document.createElement('div');
+    listCol.className = 'list-col';
+    var addBtn = document.createElement('button');
+    addBtn.className = 'btn-small';
+    addBtn.style.width = '100%';
+    addBtn.style.marginBottom = '10px';
+    addBtn.textContent = '+ 씬 추가';
+    addBtn.onclick = function () {
+      var id = promptNewSceneId();
+      if (!id) return;
+      draft.scenes[id] = { image: '', video: null, text: '', choices: [] };
+      currentSceneId = id;
+      saveLocal();
+      renderScenesTab();
+    };
+    listCol.appendChild(addBtn);
+
+    Object.keys(draft.scenes).forEach(function (sid) {
+      var item = document.createElement('div');
+      item.className = 'list-item' + (sid === currentSceneId ? ' active' : '');
+      item.textContent = sid + (draft.startScene === sid ? ' (시작)' : '');
+      item.onclick = function () { currentSceneId = sid; renderScenesTab(); };
+      listCol.appendChild(item);
+    });
+    wrap.appendChild(listCol);
+
+    // 우측 폼
+    var formCol = document.createElement('div');
+    formCol.className = 'form-col';
+    if (!currentSceneId) {
+      formCol.innerHTML = '<p class="hint">왼쪽에서 씬을 추가하세요.</p>';
+    } else {
+      formCol.appendChild(renderSceneForm(draft.scenes[currentSceneId]));
+    }
+    wrap.appendChild(formCol);
+
+    content.appendChild(wrap);
+  }
+
+  function renderSceneForm(scene) {
+    var f = document.createDocumentFragment();
+    var container = document.createElement('div');
+
+    var topRow = document.createElement('div');
+    topRow.style.marginBottom = '14px';
+    topRow.innerHTML = '씬 ID: <code>' + currentSceneId + '</code>';
+    var delSceneBtn = document.createElement('button');
+    delSceneBtn.className = 'btn-small btn-danger';
+    delSceneBtn.style.marginLeft = '12px';
+    delSceneBtn.textContent = '이 씬 삭제';
+    delSceneBtn.onclick = function () {
+      if (!confirm('"' + currentSceneId + '" 씬을 삭제할까요? 이 씬을 가리키던 선택지는 끊긴 링크가 됩니다.')) return;
+      delete draft.scenes[currentSceneId];
+      currentSceneId = null;
+      saveLocal();
+      renderScenesTab();
+    };
+    topRow.appendChild(delSceneBtn);
+    container.appendChild(topRow);
+
+    // 이미지
+    var imgRow = fileField(
+      '이미지 파일명 (images 폴더 기준)',
+      '실제 이미지 파일은 images 폴더에 직접 넣어야 합니다. 여기서는 파일명만 자동으로 채워집니다.',
+      'image/*',
+      scene.image,
+      function (name) { scene.image = name; saveLocal(); }
+    );
+    container.appendChild(imgRow);
+
+    // 영상
+    var vidRow = fileField(
+      '영상 파일명 (선택, videos 폴더 기준)',
+      '없으면 비워두세요. 실제 영상 파일은 videos 폴더에 직접 넣어야 합니다.',
+      'video/*',
+      scene.video,
+      function (name) { scene.video = name || null; saveLocal(); }
+    );
+    container.appendChild(vidRow);
+
+    // 텍스트
+    var textRow = labelRow('장면 설명');
+    var textArea = document.createElement('textarea');
+    textArea.rows = 4;
+    textArea.value = scene.text || '';
+    textArea.oninput = function () { scene.text = textArea.value; saveLocal(); };
+    textRow.appendChild(textArea);
+    container.appendChild(textRow);
+
+    // 선택지
+    var choicesLabel = document.createElement('div');
+    choicesLabel.className = 'form-row';
+    choicesLabel.innerHTML = '<label>선택지</label>';
+    container.appendChild(choicesLabel);
+
+    if (!scene.choices) scene.choices = [];
+    scene.choices.forEach(function (choice, idx) {
+      container.appendChild(renderChoiceBlock(scene, choice, idx));
+    });
+
+    var addChoiceBtn = document.createElement('button');
+    addChoiceBtn.className = 'btn-small';
+    addChoiceBtn.textContent = '+ 선택지 추가';
+    addChoiceBtn.onclick = function () {
+      scene.choices.push({ label: '', next: '', requires: null, effects: {}, grantItem: null, grantSkill: null });
+      saveLocal();
+      renderScenesTab();
+    };
+    container.appendChild(addChoiceBtn);
+
+    f.appendChild(container);
+    return f;
+  }
+
+  function renderChoiceBlock(scene, choice, idx) {
+    var block = document.createElement('div');
+    block.className = 'choice-block';
+
+    var labelInput = document.createElement('input');
+    labelInput.type = 'text';
+    labelInput.placeholder = '선택지 문구';
+    labelInput.value = choice.label || '';
+    labelInput.oninput = function () { choice.label = labelInput.value; saveLocal(); };
+    block.appendChild(labelInput);
+
+    var row = document.createElement('div');
+
+    var nextSelect = buildSceneSelect(choice.next, true);
+    var newOpt = document.createElement('option');
+    newOpt.value = '__new__';
+    newOpt.textContent = '+ 새 씬 만들기...';
+    nextSelect.appendChild(newOpt);
+    nextSelect.onchange = function () {
+      if (nextSelect.value === '__new__') {
+        var newId = promptNewSceneId();
+        if (newId) {
+          draft.scenes[newId] = { image: '', video: null, text: '', choices: [] };
+          choice.next = newId;
+          saveLocal();
+          renderScenesTab();
+        } else {
+          nextSelect.value = choice.next || '';
+        }
+      } else {
+        choice.next = nextSelect.value;
+        saveLocal();
+      }
+    };
+    row.appendChild(nextSelect);
+
+    var delChoiceBtn = document.createElement('button');
+    delChoiceBtn.className = 'btn-small btn-danger';
+    delChoiceBtn.textContent = '이 선택지 삭제';
+    delChoiceBtn.onclick = function () {
+      scene.choices.splice(idx, 1);
+      saveLocal();
+      renderScenesTab();
+    };
+    row.appendChild(delChoiceBtn);
+
+    var advToggle = document.createElement('button');
+    advToggle.className = 'btn-link';
+    advToggle.textContent = '고급 설정 펼치기';
+    row.appendChild(advToggle);
+
+    block.appendChild(row);
+
+    var advPanel = document.createElement('div');
+    advPanel.className = 'adv-panel';
+    advPanel.style.display = 'none';
+    advToggle.onclick = function () {
+      var open = advPanel.style.display !== 'none';
+      advPanel.style.display = open ? 'none' : 'block';
+      advToggle.textContent = open ? '고급 설정 펼치기' : '고급 설정 접기';
+    };
+
+    // 조건
+    var reqRow = labelRow('필요 조건 (이 선택지가 보이려면)');
+    var reqTypeSelect = document.createElement('select');
+    ['없음', '아이템 보유', '스킬 보유', '특정 직업', '스탯 최소값'].forEach(function (label, i) {
+      var opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = label;
+      reqTypeSelect.appendChild(opt);
+    });
+    function currentReqType(r) {
+      if (!r) return 0;
+      if (r.item) return 1;
+      if (r.skill) return 2;
+      if (r.class) return 3;
+      if (r.statAtLeast) return 4;
+      return 0;
+    }
+    reqTypeSelect.value = currentReqType(choice.requires);
+    var reqValueWrap = document.createElement('span');
+    function renderReqValue() {
+      reqValueWrap.innerHTML = '';
+      var type = Number(reqTypeSelect.value);
+      if (type === 1) {
+        var sel = buildIdSelect(draft.items, choice.requires && choice.requires.item);
+        sel.onchange = function () { choice.requires = { item: sel.value }; saveLocal(); };
+        reqValueWrap.appendChild(sel);
+        if (!choice.requires || !choice.requires.item) { choice.requires = { item: sel.value }; saveLocal(); }
+      } else if (type === 2) {
+        var sel2 = buildIdSelect(draft.skills, choice.requires && choice.requires.skill);
+        sel2.onchange = function () { choice.requires = { skill: sel2.value }; saveLocal(); };
+        reqValueWrap.appendChild(sel2);
+        if (!choice.requires || !choice.requires.skill) { choice.requires = { skill: sel2.value }; saveLocal(); }
+      } else if (type === 3) {
+        var sel3 = buildIdSelect(draft.classes, choice.requires && choice.requires.class);
+        sel3.onchange = function () { choice.requires = { class: sel3.value }; saveLocal(); };
+        reqValueWrap.appendChild(sel3);
+        if (!choice.requires || !choice.requires.class) { choice.requires = { class: sel3.value }; saveLocal(); }
+      } else if (type === 4) {
+        var statSel = document.createElement('select');
+        Object.keys(draft.stats).forEach(function (k) {
+          var opt = document.createElement('option');
+          opt.value = k; opt.textContent = k;
+          statSel.appendChild(opt);
+        });
+        var numInput = document.createElement('input');
+        numInput.type = 'number';
+        numInput.style.width = '80px';
+        var existingKey = choice.requires && choice.requires.statAtLeast ? Object.keys(choice.requires.statAtLeast)[0] : null;
+        if (existingKey) { statSel.value = existingKey; numInput.value = choice.requires.statAtLeast[existingKey]; }
+        function updateStatReq() {
+          var obj = {};
+          obj[statSel.value] = Number(numInput.value) || 0;
+          choice.requires = { statAtLeast: obj };
+          saveLocal();
+        }
+        statSel.onchange = updateStatReq;
+        numInput.oninput = updateStatReq;
+        reqValueWrap.appendChild(statSel);
+        reqValueWrap.appendChild(numInput);
+        if (!choice.requires || !choice.requires.statAtLeast) updateStatReq();
+      } else {
+        choice.requires = null;
+      }
+    }
+    reqTypeSelect.onchange = function () {
+      if (Number(reqTypeSelect.value) === 0) { choice.requires = null; saveLocal(); }
+      renderReqValue();
+    };
+    renderReqValue();
+    reqRow.appendChild(reqTypeSelect);
+    reqRow.appendChild(reqValueWrap);
+    advPanel.appendChild(reqRow);
+
+    // 효과
+    var fxRow = labelRow('효과 (선택 시 스탯 증감)');
+    var fxContainer = document.createElement('div');
+    if (!choice.effects) choice.effects = {};
+    renderKeyValueEditor(fxContainer, choice.effects, { promptLabel: '스탯 이름을 입력하세요 (예: 체력)' });
+    fxRow.appendChild(fxContainer);
+    advPanel.appendChild(fxRow);
+
+    // 아이템 지급
+    var itemGrantRow = renderGrantField('아이템 지급', draft.items, choice.grantItem, function (v) { choice.grantItem = v; saveLocal(); });
+    advPanel.appendChild(itemGrantRow);
+
+    // 스킬 지급
+    var skillGrantRow = renderGrantField('스킬 지급', draft.skills, choice.grantSkill, function (v) { choice.grantSkill = v; saveLocal(); });
+    advPanel.appendChild(skillGrantRow);
+
+    block.appendChild(advPanel);
+    return block;
+  }
+
+  /* ---------- 탭: 아이템 ---------- */
+
+  function renderItemsTab() {
+    var content = document.getElementById('tabContent');
+    content.innerHTML = '';
+    if (!currentItemId || !draft.items.some(function (i) { return i.id === currentItemId; })) {
+      currentItemId = draft.items.length ? draft.items[0].id : null;
+    }
+    var wrap = document.createElement('div');
+    wrap.className = 'two-col';
+
+    var listCol = document.createElement('div');
+    listCol.className = 'list-col';
+    var addBtn = document.createElement('button');
+    addBtn.className = 'btn-small';
+    addBtn.style.width = '100%';
+    addBtn.style.marginBottom = '10px';
+    addBtn.textContent = '+ 아이템 추가';
+    addBtn.onclick = function () {
+      var id = nextId(draft.items, 'item');
+      draft.items.push({ id: id, name: '새 아이템', icon: '', effect: {} });
+      currentItemId = id;
+      saveLocal();
+      renderItemsTab();
+    };
+    listCol.appendChild(addBtn);
+    draft.items.forEach(function (item) {
+      var d = document.createElement('div');
+      d.className = 'list-item' + (item.id === currentItemId ? ' active' : '');
+      d.textContent = item.name + ' (' + item.id + ')';
+      d.onclick = function () { currentItemId = item.id; renderItemsTab(); };
+      listCol.appendChild(d);
+    });
+    wrap.appendChild(listCol);
+
+    var formCol = document.createElement('div');
+    formCol.className = 'form-col';
+    var item = draft.items.filter(function (i) { return i.id === currentItemId; })[0];
+    if (!item) {
+      formCol.innerHTML = '<p class="hint">왼쪽에서 아이템을 추가하세요.</p>';
+    } else {
+      var nameRow = labelRow('이름');
+      var nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.value = item.name;
+      nameInput.oninput = function () { item.name = nameInput.value; saveLocal(); };
+      nameRow.appendChild(nameInput);
+      formCol.appendChild(nameRow);
+
+      var iconRow = fileField(
+        '아이콘 파일명 (images 폴더 기준)',
+        '실제 파일은 images 폴더에 직접 넣어야 합니다.',
+        'image/*',
+        item.icon,
+        function (name) { item.icon = name; saveLocal(); }
+      );
+      formCol.appendChild(iconRow);
+
+      var fxRow = labelRow('효과 (보유 시 스탯 증감)');
+      var fxContainer = document.createElement('div');
+      if (!item.effect) item.effect = {};
+      renderKeyValueEditor(fxContainer, item.effect, { promptLabel: '스탯 이름을 입력하세요 (예: 체력)' });
+      fxRow.appendChild(fxContainer);
+      formCol.appendChild(fxRow);
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'btn-small btn-danger';
+      delBtn.textContent = '이 아이템 삭제';
+      delBtn.onclick = function () {
+        if (!confirm('"' + item.name + '"을(를) 삭제할까요? 이 아이템을 참조하던 선택지가 있으면 링크 검사에서 확인하세요.')) return;
+        draft.items = draft.items.filter(function (i) { return i.id !== item.id; });
+        currentItemId = null;
+        saveLocal();
+        renderItemsTab();
+      };
+      formCol.appendChild(delBtn);
+    }
+    wrap.appendChild(formCol);
+    content.appendChild(wrap);
+  }
+
+  /* ---------- 탭: 스킬 ---------- */
+
+  function renderSkillsTab() {
+    var content = document.getElementById('tabContent');
+    content.innerHTML = '';
+    if (!currentSkillId || !draft.skills.some(function (s) { return s.id === currentSkillId; })) {
+      currentSkillId = draft.skills.length ? draft.skills[0].id : null;
+    }
+    var wrap = document.createElement('div');
+    wrap.className = 'two-col';
+
+    var listCol = document.createElement('div');
+    listCol.className = 'list-col';
+    var addBtn = document.createElement('button');
+    addBtn.className = 'btn-small';
+    addBtn.style.width = '100%';
+    addBtn.style.marginBottom = '10px';
+    addBtn.textContent = '+ 스킬 추가';
+    addBtn.onclick = function () {
+      var id = nextId(draft.skills, 'skill');
+      draft.skills.push({ id: id, name: '새 스킬', icon: '', requires: null });
+      currentSkillId = id;
+      saveLocal();
+      renderSkillsTab();
+    };
+    listCol.appendChild(addBtn);
+    draft.skills.forEach(function (s) {
+      var d = document.createElement('div');
+      d.className = 'list-item' + (s.id === currentSkillId ? ' active' : '');
+      d.textContent = s.name + ' (' + s.id + ')';
+      d.onclick = function () { currentSkillId = s.id; renderSkillsTab(); };
+      listCol.appendChild(d);
+    });
+    wrap.appendChild(listCol);
+
+    var formCol = document.createElement('div');
+    formCol.className = 'form-col';
+    var skill = draft.skills.filter(function (s) { return s.id === currentSkillId; })[0];
+    if (!skill) {
+      formCol.innerHTML = '<p class="hint">왼쪽에서 스킬을 추가하세요.</p>';
+    } else {
+      var nameRow = labelRow('이름');
+      var nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.value = skill.name;
+      nameInput.oninput = function () { skill.name = nameInput.value; saveLocal(); };
+      nameRow.appendChild(nameInput);
+      formCol.appendChild(nameRow);
+
+      var iconRow = fileField(
+        '아이콘 파일명 (images 폴더 기준)',
+        '실제 파일은 images 폴더에 직접 넣어야 합니다.',
+        'image/*',
+        skill.icon,
+        function (name) { skill.icon = name; saveLocal(); }
+      );
+      formCol.appendChild(iconRow);
+
+      var reqRow = labelRow('특정 직업 전용 (선택)');
+      var classSel = buildIdSelect(draft.classes, skill.requires ? skill.requires.class : null, true);
+      classSel.onchange = function () { skill.requires = classSel.value ? { class: classSel.value } : null; saveLocal(); };
+      reqRow.appendChild(classSel);
+      formCol.appendChild(reqRow);
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'btn-small btn-danger';
+      delBtn.textContent = '이 스킬 삭제';
+      delBtn.onclick = function () {
+        if (!confirm('"' + skill.name + '"을(를) 삭제할까요?')) return;
+        draft.skills = draft.skills.filter(function (s) { return s.id !== skill.id; });
+        currentSkillId = null;
+        saveLocal();
+        renderSkillsTab();
+      };
+      formCol.appendChild(delBtn);
+    }
+    wrap.appendChild(formCol);
+    content.appendChild(wrap);
+  }
+
+  /* ---------- 탭: 직업 ---------- */
+
+  function renderClassesTab() {
+    var content = document.getElementById('tabContent');
+    content.innerHTML = '';
+    if (!currentClassId || !draft.classes.some(function (c) { return c.id === currentClassId; })) {
+      currentClassId = draft.classes.length ? draft.classes[0].id : null;
+    }
+    var wrap = document.createElement('div');
+    wrap.className = 'two-col';
+
+    var listCol = document.createElement('div');
+    listCol.className = 'list-col';
+    var addBtn = document.createElement('button');
+    addBtn.className = 'btn-small';
+    addBtn.style.width = '100%';
+    addBtn.style.marginBottom = '10px';
+    addBtn.textContent = '+ 직업 추가';
+    addBtn.onclick = function () {
+      var id = nextId(draft.classes, 'class');
+      draft.classes.push({ id: id, name: '새 직업', description: '', startingStats: {} });
+      currentClassId = id;
+      saveLocal();
+      renderClassesTab();
+    };
+    listCol.appendChild(addBtn);
+    draft.classes.forEach(function (c) {
+      var d = document.createElement('div');
+      d.className = 'list-item' + (c.id === currentClassId ? ' active' : '');
+      d.textContent = c.name + ' (' + c.id + ')';
+      d.onclick = function () { currentClassId = c.id; renderClassesTab(); };
+      listCol.appendChild(d);
+    });
+    wrap.appendChild(listCol);
+
+    var formCol = document.createElement('div');
+    formCol.className = 'form-col';
+    var cls = draft.classes.filter(function (c) { return c.id === currentClassId; })[0];
+    if (!cls) {
+      formCol.innerHTML = '<p class="hint">왼쪽에서 직업을 추가하세요. 직업이 하나도 없으면 플레이어는 직업 선택 화면 없이 바로 시작합니다.</p>';
+    } else {
+      var nameRow = labelRow('이름');
+      var nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.value = cls.name;
+      nameInput.oninput = function () { cls.name = nameInput.value; saveLocal(); };
+      nameRow.appendChild(nameInput);
+      formCol.appendChild(nameRow);
+
+      var descRow = labelRow('설명');
+      var descArea = document.createElement('textarea');
+      descArea.rows = 2;
+      descArea.value = cls.description || '';
+      descArea.oninput = function () { cls.description = descArea.value; saveLocal(); };
+      descRow.appendChild(descArea);
+      formCol.appendChild(descRow);
+
+      var statsRow = labelRow('시작 스탯 (지정한 항목만 초기값을 덮어씀)');
+      var statsContainer = document.createElement('div');
+      if (!cls.startingStats) cls.startingStats = {};
+      renderKeyValueEditor(statsContainer, cls.startingStats, { promptLabel: '스탯 이름을 입력하세요 (예: 체력)' });
+      statsRow.appendChild(statsContainer);
+      formCol.appendChild(statsRow);
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'btn-small btn-danger';
+      delBtn.textContent = '이 직업 삭제';
+      delBtn.onclick = function () {
+        if (!confirm('"' + cls.name + '"을(를) 삭제할까요?')) return;
+        draft.classes = draft.classes.filter(function (c) { return c.id !== cls.id; });
+        currentClassId = null;
+        saveLocal();
+        renderClassesTab();
+      };
+      formCol.appendChild(delBtn);
+    }
+    wrap.appendChild(formCol);
+    content.appendChild(wrap);
+  }
+
+  /* ---------- 탭: 엔딩 ---------- */
+
+  function renderEndingsTab() {
+    var content = document.getElementById('tabContent');
+    content.innerHTML = '';
+    var ids = Object.keys(draft.endings);
+    if (!currentEndingId || ids.indexOf(currentEndingId) === -1) {
+      currentEndingId = ids.length ? ids[0] : null;
+    }
+    var wrap = document.createElement('div');
+    wrap.className = 'two-col';
+
+    var listCol = document.createElement('div');
+    listCol.className = 'list-col';
+    var addBtn = document.createElement('button');
+    addBtn.className = 'btn-small';
+    addBtn.style.width = '100%';
+    addBtn.style.marginBottom = '10px';
+    addBtn.textContent = '+ 엔딩 추가';
+    addBtn.onclick = function () {
+      var n = 1;
+      while (draft.endings['ending' + n]) n++;
+      var id = 'ending' + n;
+      draft.endings[id] = { sceneId: Object.keys(draft.scenes)[0] || '', title: '새 엔딩', image: null, video: null };
+      currentEndingId = id;
+      saveLocal();
+      renderEndingsTab();
+    };
+    listCol.appendChild(addBtn);
+    ids.forEach(function (eid) {
+      var d = document.createElement('div');
+      d.className = 'list-item' + (eid === currentEndingId ? ' active' : '');
+      d.textContent = draft.endings[eid].title + ' (' + eid + ')';
+      d.onclick = function () { currentEndingId = eid; renderEndingsTab(); };
+      listCol.appendChild(d);
+    });
+    wrap.appendChild(listCol);
+
+    var formCol = document.createElement('div');
+    formCol.className = 'form-col';
+    var ending = currentEndingId ? draft.endings[currentEndingId] : null;
+    if (!ending) {
+      formCol.innerHTML = '<p class="hint">왼쪽에서 엔딩을 추가하세요. 등록된 씬에 도달하면 자동으로 엔딩 화면이 표시됩니다.</p>';
+    } else {
+      var titleRow = labelRow('엔딩 제목');
+      var titleInput = document.createElement('input');
+      titleInput.type = 'text';
+      titleInput.value = ending.title || '';
+      titleInput.oninput = function () { ending.title = titleInput.value; saveLocal(); };
+      titleRow.appendChild(titleInput);
+      formCol.appendChild(titleRow);
+
+      var sceneRow = labelRow('연결할 씬');
+      var sceneSel = buildSceneSelect(ending.sceneId, false);
+      sceneSel.onchange = function () { ending.sceneId = sceneSel.value; saveLocal(); };
+      sceneRow.appendChild(sceneSel);
+      formCol.appendChild(sceneRow);
+
+      var imgRow = fileField(
+        '엔딩 이미지 파일명 (선택, images 폴더 기준)',
+        '비워두면 연결된 씬의 이미지를 그대로 엔딩 화면에 사용합니다.',
+        'image/*',
+        ending.image,
+        function (name) { ending.image = name || null; saveLocal(); }
+      );
+      formCol.appendChild(imgRow);
+
+      var vidRow = fileField(
+        '엔딩 영상 파일명 (선택, videos 폴더 기준)',
+        '영상을 넣으면 위 이미지 대신 영상이 재생됩니다. 없으면 비워두세요.',
+        'video/*',
+        ending.video,
+        function (name) { ending.video = name || null; saveLocal(); }
+      );
+      formCol.appendChild(vidRow);
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'btn-small btn-danger';
+      delBtn.textContent = '이 엔딩 삭제';
+      delBtn.onclick = function () {
+        if (!confirm('"' + ending.title + '" 엔딩을 삭제할까요?')) return;
+        delete draft.endings[currentEndingId];
+        currentEndingId = null;
+        saveLocal();
+        renderEndingsTab();
+      };
+      formCol.appendChild(delBtn);
+    }
+    wrap.appendChild(formCol);
+    content.appendChild(wrap);
+  }
+
+  /* ---------- 탭: 설정 ---------- */
+
+  function renderMetaTab() {
+    var content = document.getElementById('tabContent');
+    content.innerHTML = '';
+    var formCol = document.createElement('div');
+    formCol.className = 'form-col';
+    formCol.style.maxWidth = '520px';
+
+    var titleRow = labelRow('게임 제목');
+    var titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.value = draft.meta.title || '';
+    titleInput.oninput = function () { draft.meta.title = titleInput.value; saveLocal(); };
+    titleRow.appendChild(titleInput);
+    formCol.appendChild(titleRow);
+
+    var authorRow = labelRow('제작자');
+    var authorInput = document.createElement('input');
+    authorInput.type = 'text';
+    authorInput.value = draft.meta.author || '';
+    authorInput.oninput = function () { draft.meta.author = authorInput.value; saveLocal(); };
+    authorRow.appendChild(authorInput);
+    formCol.appendChild(authorRow);
+
+    var styleRow = labelRow('고정 스타일 프리픽스 (이미지 생성 시 항상 앞에 붙일 문구)');
+    var styleInput = document.createElement('input');
+    styleInput.type = 'text';
+    styleInput.value = draft.meta.styleTag || '';
+    styleInput.placeholder = '예: 다크 사이버펑크, 채도 낮은 네온톤, 디지털 페인팅 스타일';
+    styleInput.oninput = function () { draft.meta.styleTag = styleInput.value; saveLocal(); };
+    styleRow.appendChild(styleInput);
+    formCol.appendChild(styleRow);
+
+    var startRow = labelRow('시작 씬');
+    var startSel = buildSceneSelect(draft.startScene, false);
+    startSel.onchange = function () { draft.startScene = startSel.value; saveLocal(); };
+    startRow.appendChild(startSel);
+    formCol.appendChild(startRow);
+
+    var statsRow = labelRow('기본 스탯 (게임 시작 시 초기값)');
+    var statsContainer = document.createElement('div');
+    renderKeyValueEditor(statsContainer, draft.stats, { promptLabel: '스탯 이름을 입력하세요 (예: 체력)' });
+    statsRow.appendChild(statsContainer);
+    formCol.appendChild(statsRow);
+
+    content.appendChild(formCol);
+  }
+
+  /* ---------- 탭: 고급(JSON) ---------- */
+
+  function renderAdvancedTab() {
+    var content = document.getElementById('tabContent');
+    content.innerHTML = '';
+    var wrap = document.createElement('div');
+
+    var warn = document.createElement('div');
+    warn.className = 'warn-box';
+    warn.textContent = 'JSON 형식을 아는 경우에만 사용하세요. 이 탭에서 "적용"을 누르면 다른 탭에서 작업 중이던 내용이 여기 입력한 JSON으로 완전히 대체됩니다.';
+    wrap.appendChild(warn);
+
+    var textarea = document.createElement('textarea');
+    textarea.style.width = '100%';
+    textarea.style.height = '420px';
+    textarea.style.fontFamily = 'monospace';
+    textarea.style.fontSize = '12px';
+    textarea.style.background = '#0d0f16';
+    textarea.style.color = '#d0e0ff';
+    textarea.style.border = '1px solid #333c55';
+    textarea.style.borderRadius = '8px';
+    textarea.style.padding = '12px';
+    textarea.value = JSON.stringify(draft, null, 2);
+    wrap.appendChild(textarea);
+
+    var btnRow = document.createElement('div');
+    btnRow.style.marginTop = '10px';
+    var applyBtn = document.createElement('button');
+    applyBtn.className = 'btn btn-primary';
+    applyBtn.textContent = '적용';
+    applyBtn.onclick = function () {
+      try {
+        var parsed = JSON.parse(textarea.value);
+        draft = parsed;
+        normalizeDraft();
+        saveLocal();
+        alert('적용되었습니다.');
+        renderAdvancedTab();
+      } catch (e) {
+        alert('JSON 형식 오류: ' + e.message);
+      }
+    };
+    var refreshBtn = document.createElement('button');
+    refreshBtn.className = 'btn';
+    refreshBtn.style.marginLeft = '8px';
+    refreshBtn.textContent = '현재 데이터로 새로고침';
+    refreshBtn.onclick = function () { renderAdvancedTab(); };
+    btnRow.appendChild(applyBtn);
+    btnRow.appendChild(refreshBtn);
+    wrap.appendChild(btnRow);
+
+    content.appendChild(wrap);
+  }
+
+  /* ---------- 탭 전환 ---------- */
+
+  var TABS = ['scenes', 'items', 'skills', 'classes', 'endings', 'meta', 'advanced'];
+  var TAB_LABELS = { scenes: '씬', items: '아이템', skills: '스킬', classes: '직업', endings: '엔딩', meta: '설정', advanced: '고급(JSON)' };
+  var TAB_RENDERERS = {
+    scenes: renderScenesTab, items: renderItemsTab, skills: renderSkillsTab,
+    classes: renderClassesTab, endings: renderEndingsTab, meta: renderMetaTab, advanced: renderAdvancedTab
+  };
+
+  function renderTabBar() {
+    var bar = document.getElementById('tabBar');
+    bar.innerHTML = '';
+    TABS.forEach(function (t) {
+      var btn = document.createElement('button');
+      btn.className = 'tab-btn' + (t === currentTab ? ' active' : '');
+      btn.textContent = TAB_LABELS[t];
+      btn.onclick = function () { currentTab = t; renderAll(); };
+      bar.appendChild(btn);
+    });
+  }
+
+  function renderAll() {
+    renderTabBar();
+    TAB_RENDERERS[currentTab]();
+  }
+
+  /* ---------- 모달 ---------- */
+
+  function showModal(title, contentEl) {
+    document.getElementById('modalTitle').textContent = title;
+    var body = document.getElementById('modalBody');
+    body.innerHTML = '';
+    body.appendChild(contentEl);
+    document.getElementById('modalOverlay').style.display = 'flex';
+  }
+  function hideModal() {
+    document.getElementById('modalOverlay').style.display = 'none';
+  }
+  document.getElementById('btnModalClose').onclick = hideModal;
+  document.getElementById('modalOverlay').onclick = function (e) {
+    if (e.target.id === 'modalOverlay') hideModal();
+  };
+
+  /* ---------- 링크 검사 ---------- */
+
+  function validateLinks() {
+    var errors = [];
+    var sceneIds = Object.keys(draft.scenes);
+    var itemIds = draft.items.map(function (i) { return i.id; });
+    var skillIds = draft.skills.map(function (s) { return s.id; });
+    var classIds = draft.classes.map(function (c) { return c.id; });
+
+    sceneIds.forEach(function (sid) {
+      var scene = draft.scenes[sid];
+      if (!scene.image && !scene.video) errors.push('[' + sid + '] 이미지/영상이 없습니다.');
+      (scene.choices || []).forEach(function (c) {
+        if (!c.next) errors.push('[' + sid + '] 선택지 "' + (c.label || '(빈 문구)') + '"의 연결 씬이 비어 있습니다.');
+        else if (sceneIds.indexOf(c.next) === -1) errors.push('[' + sid + '] "' + c.next + '" 씬이 존재하지 않습니다.');
+        if (!c.label) errors.push('[' + sid + '] 문구가 비어 있는 선택지가 있습니다.');
+        if (c.grantItem) {
+          var giIds = (c.grantItem && typeof c.grantItem === 'object' && c.grantItem.random) ? c.grantItem.random : [c.grantItem];
+          giIds.forEach(function (gid) { if (itemIds.indexOf(gid) === -1) errors.push('[' + sid + '] 존재하지 않는 아이템 지급: ' + gid); });
+        }
+        if (c.grantSkill) {
+          var gsIds = (c.grantSkill && typeof c.grantSkill === 'object' && c.grantSkill.random) ? c.grantSkill.random : [c.grantSkill];
+          gsIds.forEach(function (gid) { if (skillIds.indexOf(gid) === -1) errors.push('[' + sid + '] 존재하지 않는 스킬 지급: ' + gid); });
+        }
+        if (c.requires) {
+          if (c.requires.item && itemIds.indexOf(c.requires.item) === -1) errors.push('[' + sid + '] 존재하지 않는 아이템 조건: ' + c.requires.item);
+          if (c.requires.skill && skillIds.indexOf(c.requires.skill) === -1) errors.push('[' + sid + '] 존재하지 않는 스킬 조건: ' + c.requires.skill);
+          if (c.requires.class && classIds.indexOf(c.requires.class) === -1) errors.push('[' + sid + '] 존재하지 않는 직업 조건: ' + c.requires.class);
+        }
+      });
+    });
+    Object.keys(draft.endings).forEach(function (eid) {
+      if (sceneIds.indexOf(draft.endings[eid].sceneId) === -1) {
+        errors.push('엔딩 "' + draft.endings[eid].title + '": 존재하지 않는 씬 -> ' + draft.endings[eid].sceneId);
+      }
+    });
+
+    var pre = document.createElement('pre');
+    pre.textContent = errors.length === 0
+      ? '문제 없음: 끊어진 링크나 누락된 참조가 발견되지 않았습니다.'
+      : ('발견된 문제 ' + errors.length + '건\n\n' + errors.join('\n'));
+    showModal('링크 검사 결과', pre);
+  }
+
+  /* ---------- 미리보기 (상시 패널) ---------- */
+
+  var previewOpen = false;
+
+  function refreshPreviewPanel() {
+    var c = document.getElementById('previewContainer');
+    c.innerHTML = '';
+    try {
+      StoryEngine.init(c, JSON.parse(JSON.stringify(draft)));
+    } catch (e) {
+      c.textContent = '미리보기 오류: ' + e.message;
+    }
+  }
+
+  function togglePreviewPanel() {
+    previewOpen = !previewOpen;
+    document.getElementById('previewPanel').style.display = previewOpen ? 'block' : 'none';
+    document.getElementById('btnPreview').textContent = previewOpen ? '미리보기 닫기' : '미리보기 열기';
+    if (previewOpen) refreshPreviewPanel();
+  }
+
+  /* ---------- 가져오기 / 내보내기 ---------- */
+
+  function exportDraft() {
+    var content = 'window.STORY_DATA = ' + JSON.stringify(draft, null, 2) + ';\n';
+    var blob = new Blob([content], { type: 'text/javascript' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'story-data.js';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function importFile(file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var text = String(reader.result);
+      var match = text.match(/window\.STORY_DATA\s*=\s*(\{[\s\S]*\})\s*;?\s*$/);
+      if (!match) { alert('story-data.js 형식을 인식하지 못했습니다.'); return; }
+      try {
+        var parsed = JSON.parse(match[1]);
+        draft = parsed;
+        normalizeDraft();
+        currentSceneId = null; currentItemId = null; currentSkillId = null; currentClassId = null; currentEndingId = null;
+        saveLocal();
+        currentTab = 'scenes';
+        renderAll();
+        alert('불러오기 완료.');
+      } catch (e) {
+        alert('JSON 해석 오류: ' + e.message);
+      }
+    };
+    reader.readAsText(file, 'utf-8');
+  }
+
+  /* ---------- 초기화 ---------- */
+
+  document.getElementById('btnNew').onclick = function () {
+    if (!confirm('현재 작업 내용을 지우고 새로 시작할까요? 내보내지 않은 내용은 사라집니다.')) return;
+    draft = blankDraft();
+    currentSceneId = null; currentItemId = null; currentSkillId = null; currentClassId = null; currentEndingId = null;
+    saveLocal();
+    currentTab = 'scenes';
+    renderAll();
+  };
+  document.getElementById('btnImport').onclick = function () { document.getElementById('fileImport').click(); };
+  document.getElementById('fileImport').onchange = function (e) {
+    if (e.target.files[0]) importFile(e.target.files[0]);
+    e.target.value = '';
+  };
+  document.getElementById('btnExport').onclick = exportDraft;
+  document.getElementById('btnValidate').onclick = validateLinks;
+  document.getElementById('btnPreview').onclick = togglePreviewPanel;
+  document.getElementById('btnRefreshPreview').onclick = refreshPreviewPanel;
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
