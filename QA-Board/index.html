@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA Board</title>
+<style>
+:root {
+  --bg: #f6f7f9; --card: #ffffff; --text: #1b1f24; --muted: #5f6b7a; --line: #e2e6eb;
+  --accent: #2f6fde; --accent-soft: #e8f0fd; --warn: #c2410c; --warn-soft: #fff1e8;
+  --ok: #15803d; --ok-soft: #e9f7ee; --gray-soft: #eef0f3;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12151a; --card: #1b2028; --text: #e6e9ee; --muted: #9aa5b4; --line: #2b323d;
+    --accent: #7aa7ff; --accent-soft: #1f2d47; --warn: #ff9a62; --warn-soft: #3a2418;
+    --ok: #5fd08a; --ok-soft: #173326; --gray-soft: #262c36;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; line-height: 1.5; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 48px; }
+header h1 { margin: 0 0 4px; font-size: 1.6rem; }
+header p { margin: 0; color: var(--muted); font-size: .92rem; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 18px 0; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.stat b { display: block; font-size: 1.35rem; }
+.stat span { color: var(--muted); font-size: .8rem; }
+.controls { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+  display: grid; gap: 10px; position: sticky; top: 0; z-index: 2; }
+.row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.row label.lbl { color: var(--muted); font-size: .8rem; min-width: 56px; }
+input[type=search], select { font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px 10px; }
+input[type=search] { flex: 1; min-width: 0; }
+.chip { font: inherit; font-size: .85rem; border: 1px solid var(--line); background: var(--bg); color: var(--text);
+  border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.chip[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.count { color: var(--muted); font-size: .88rem; margin: 14px 2px 8px; }
+.list { display: grid; gap: 10px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+  display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; }
+.card.closed { opacity: .5; }
+.company { color: var(--muted); font-size: .85rem; }
+.title { font-weight: 600; color: var(--text); text-decoration: none; }
+.title:hover { color: var(--accent); text-decoration: underline; }
+.tags { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.tag { font-size: .78rem; padding: 2px 8px; border-radius: 6px; background: var(--gray-soft); color: var(--muted); }
+.tag.g-entry { background: var(--ok-soft); color: var(--ok); }
+.tag.g-agency { background: var(--accent-soft); color: var(--accent); }
+.badge { align-self: start; font-size: .8rem; font-weight: 700; padding: 3px 10px; border-radius: 999px;
+  white-space: nowrap; background: var(--gray-soft); color: var(--muted); }
+.badge.soon { background: var(--warn-soft); color: var(--warn); }
+.reg { grid-column: 1 / -1; color: var(--muted); font-size: .78rem; }
+.empty { text-align: center; color: var(--muted); padding: 40px 0; }
+footer { margin-top: 28px; color: var(--muted); font-size: .8rem; }
+@media (max-width: 600px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .controls { position: static; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>QA Board</h1>
+    <p>게임잡 › 게임운영·QA › QA·테스터 공고 정리 · 조사일 2026-10-16</p>
+  </header>
+
+  <section class="stats" id="stats"></section>
+
+  <section class="controls">
+    <div class="row"><input type="search" id="q" placeholder="회사명, 게임 이름, 키워드 검색"></div>
+    <div class="row" id="groupRow"><label class="lbl">구분</label></div>
+    <div class="row" id="employRow"><label class="lbl">고용 형태</label></div>
+    <div class="row">
+      <label class="lbl" for="sort">정렬</label>
+      <select id="sort">
+        <option value="deadline">마감 빠른 순</option>
+        <option value="registered">최근 등록 순</option>
+        <option value="company">회사 이름 순</option>
+      </select>
+      <select id="platform" aria-label="플랫폼">
+        <option value="">플랫폼 전체</option>
+        <option>모바일게임</option><option>온라인PC게임</option><option>콘솔게임</option>
+        <option>멀티플랫폼게임</option><option>웹게임</option>
+      </select>
+    </div>
+  </section>
+
+  <p class="count" id="count"></p>
+  <section class="list" id="list"></section>
+
+  <footer>
+    '채용시'는 사람을 뽑으면 마감되고, '상시'는 상시 채용입니다. 공고는 언제든 닫히거나 바뀔 수 있으니 지원 전에 게임잡 상세 공고를 꼭 확인하세요.
+  </footer>
+</div>
+
+<script>
+const DATA = [{"id": "285604", "group": "entry", "company": "㈜위메이드", "title": "게임 QA(계약직)", "career": "경력무관", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "온라인PC게임, 모바일게임", "employ": "계약직", "deadline": "2026-10-20", "deadlineLabel": "10/20", "registered": "2026-10-07"}, {"id": "285646", "group": "entry", "company": "㈜스튜디오비사이드", "title": "[프로젝트 A] QA 담당자", "career": "경력무관", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "모바일게임", "employ": "정규직, 계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-10-08"}, {"id": "285749", "group": "entry", "company": "스마일게이트", "title": "[LOST ARK Mobile] 개발QA 담당 (계약직)", "career": "경력무관", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "온라인PC게임, 모바일게임", "employ": "계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-10-12"}, {"id": "285587", "group": "entry", "company": "주식회사 컴투스", "title": "[컴투스] 런처(PC 클라이언트) QA (계약직)", "career": "경력무관", "edu": "학력무관", "loc": "서울 > 금천구", "platform": "모바일게임", "employ": "계약직", "deadline": null, "deadlineLabel": "상시", "registered": "2026-10-07"}, {"id": "285105", "group": "entry", "company": "민트로켓", "title": "[민트로켓] 게임플레이 QA 채용 [계약직]", "career": "경력무관", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "온라인PC게임, 콘솔게임", "employ": "계약직", "deadline": null, "deadlineLabel": "상시", "registered": "2026-09-18"}, {"id": "285488", "group": "entry", "company": "주식회사 컴투스", "title": "운영툴/확률형 아이템 QA 담당자 (계약직)", "career": "경력무관", "edu": "학력무관", "loc": "서울 > 금천구", "platform": "모바일게임", "employ": "계약직", "deadline": null, "deadlineLabel": "상시", "registered": "2026-10-01"}, {"id": "285146", "group": "entry", "company": "주식회사 컴투스", "title": "[컴투스] [서머너즈워] QA 담당자 (계약직)", "career": "경력무관", "edu": "학력무관", "loc": "서울 > 금천구", "platform": "모바일게임", "employ": "계약직", "deadline": null, "deadlineLabel": "상시", "registered": "2026-09-21"}, {"id": "285143", "group": "entry", "company": "주식회사 컴투스", "title": "[컴투스] [컴투스프로야구 시리즈] QA 담당자 (계약직)", "career": "경력무관", "edu": "학력무관", "loc": "서울 > 금천구", "platform": "모바일게임", "employ": "계약직", "deadline": null, "deadlineLabel": "상시", "registered": "2026-09-21"}, {"id": "285355", "group": "entry", "company": "㈜에피드게임즈", "title": "[트릭컬 리바이브] QA 담당자 추가 모집", "career": "경력무관", "edu": "학력무관", "loc": "서울 > 강남구", "platform": "모바일게임", "employ": "정규직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-09-29"}, {"id": "285237", "group": "entry", "company": "㈜이안게임즈", "title": "[이안게임즈] 개발 QA 담당 모집(계약직)", "career": "경력무관", "edu": "학력무관", "loc": "서울 > 강남구", "platform": "모바일게임", "employ": "계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-09-23"}, {"id": "285807", "group": "entry", "company": "(주)무브인터렉티브", "title": "[무브인터렉티브] QA팀 신입 채용", "career": "신입", "edu": "고등학교졸업↑", "loc": "경기 > 파주시", "platform": "온라인PC게임, 모바일게임", "employ": "정규직", "deadline": null, "deadlineLabel": "상시", "registered": "2026-10-13"}, {"id": "284061", "group": "entry", "company": "㈜스피엘게임즈", "title": "방치형 모바일 RPG QA 모집", "career": "경력무관", "edu": "학력무관", "loc": "경기 > 안양시", "platform": "모바일게임", "employ": "계약직, 인턴직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-08-21"}, {"id": "285265", "group": "entry", "company": "㈜하이퍼센트", "title": "[PC 게임] CS/QA 신입 채용", "career": "경력무관", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "온라인PC게임", "employ": "정규직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-09-28"}, {"id": "285391", "group": "entry", "company": "㈜콩스튜디오코리아", "title": "[QA실] 게임 QA 담당자 (계약직)", "career": "경력무관", "edu": "학력무관", "loc": "서울 > 서초구", "platform": "모바일게임", "employ": "계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-09-29"}, {"id": "285362", "group": "entry", "company": "엔드나인게임즈", "title": "(주)엔드나인게임즈에서 게임QA & 운영지원 담당자를 찾고 있어요", "career": "경력무관", "edu": "학력무관", "loc": "충남 > 천안시", "platform": "모바일게임", "employ": "계약직", "deadline": "2026-10-29", "deadlineLabel": "10/29", "registered": "2026-09-29"}, {"id": "284236", "group": "entry", "company": "㈜퍼니팩", "title": "모바일 방치형 게임 QA 모십니다.", "career": "경력무관", "edu": "학력무관", "loc": "울산 > 중구", "platform": "모바일게임, 멀티플랫폼게임", "employ": "정규직, 계약직, 프리랜서", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-08-26"}, {"id": "285376", "group": "entry", "company": "㈜펄어비스", "title": "[아르바이트] 하우징 콘텐츠 QA 아르바이트 모집", "career": "경력무관", "edu": "학력무관", "loc": "경기 > 과천시", "platform": "온라인PC게임, 콘솔게임", "employ": "아르바이트", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-09-29"}, {"id": "283533", "group": "entry", "company": "㈜엔나인스", "title": "[단기 알바] 모바일 게임 플레이 테스터 모집", "career": "경력무관", "edu": "학력무관", "loc": "서울 > 성동구", "platform": "모바일게임", "employ": "아르바이트", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-08-05"}, {"id": "285935", "group": "agency", "company": "㈜그린맨파워", "title": "[상암] 유명중견 게임사 모바일 MMORPG 게임 QA", "career": "신입", "edu": "학력무관", "loc": "서울 > 마포구", "platform": "모바일게임", "employ": "파견직", "deadline": "2026-10-20", "deadlineLabel": "10/20", "registered": "2026-10-15"}, {"id": "285304", "group": "agency", "company": "잡앤피플코리아", "title": "[구로/3600] 유명게임 대기업 보안 솔루션 QA 및 보안 검수 담당", "career": "경력무관", "edu": "고등학교졸업↑", "loc": "서울 > 구로구, 금천구 외", "platform": "온라인PC게임, 웹게임", "employ": "파견직", "deadline": "2026-10-18", "deadlineLabel": "10/18", "registered": "2026-09-28"}, {"id": "285126", "group": "agency", "company": "코리아인", "title": "[판교 / 인기 게임사] 게임QA 모집 (신입O)", "career": "경력무관", "edu": "학력무관", "loc": "경기, 서울", "platform": "온라인PC게임, 모바일게임", "employ": "정규직, 파견직", "deadline": "2026-10-24", "deadlineLabel": "10/24", "registered": "2026-09-21"}, {"id": "285592", "group": "agency", "company": "코리아인", "title": "[성남/유명기업] 게임QA 채용", "career": "경력무관", "edu": "학력무관", "loc": "경기, 서울", "platform": "온라인PC게임, 모바일게임", "employ": "정규직, 파견직", "deadline": "2026-10-24", "deadlineLabel": "10/24", "registered": "2026-10-07"}, {"id": "284996", "group": "agency", "company": "㈜사람인에이치에스", "title": "[역삼역/신입가능/전환가능] 게임QA 인재 채용", "career": "경력무관", "edu": "고등학교졸업↑", "loc": "서울 > 강남구, 서초구 외", "platform": "온라인PC게임, 멀티플랫폼게임", "employ": "계약직, 파견직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-09-16"}, {"id": "285750", "group": "exp", "company": "스마일게이트", "title": "[LOST ARK Mobile] 개발QA 담당 모집", "career": "경력1년↑", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "온라인PC게임, 모바일게임", "employ": "정규직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-10-12"}, {"id": "285292", "group": "exp", "company": "러쉬에잇㈜", "title": "[QA] 클래식 메이플스토리 QA 담당자 (계약직/경력 1년+)", "career": "경력1년↑", "edu": "학력무관", "loc": "서울 > 강남구", "platform": "온라인PC게임, 모바일게임", "employ": "정규직, 계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-09-28"}, {"id": "285869", "group": "exp", "company": "게임듀오", "title": "[경력] 모바일 게임 QA", "career": "경력1년↑", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "모바일게임", "employ": "정규직", "deadline": null, "deadlineLabel": "상시", "registered": "2026-10-14"}, {"id": "285938", "group": "exp", "company": "㈜쿡앱스(CookApps)", "title": "[쿡앱스] 모바일게임 QA (계약직)", "career": "경력1년↑", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "모바일게임", "employ": "계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-10-16"}, {"id": "285609", "group": "exp", "company": "빅게임스튜디오", "title": "[브레이커스] QA 담당자", "career": "경력1년↑", "edu": "학력무관", "loc": "서울 > 강남구", "platform": "온라인PC게임, 모바일게임", "employ": "정규직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-10-07"}, {"id": "285836", "group": "exp", "company": "㈜이엑스투게임즈", "title": "[Ex2게임즈] QA", "career": "경력1년↑", "edu": "학력무관", "loc": "서울 > 강남구", "platform": "모바일게임", "employ": "계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-10-13"}, {"id": "283663", "group": "exp", "company": "㈜헥토큐앤엠", "title": "[헥토큐앤엠] RPG 게임QA 담당자 채용 (경력/계약직)", "career": "경력1년↑", "edu": "학력무관", "loc": "서울 > 강남구", "platform": "온라인PC게임, 멀티플랫폼게임", "employ": "계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-08-11"}, {"id": "284113", "group": "exp", "company": "데브시스터즈㈜", "title": "[쿠키런 크럼블] QA (1년 계약직)", "career": "경력2년↑", "edu": "학력무관", "loc": "서울 > 강남구", "platform": "모바일게임", "employ": "계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-08-24"}, {"id": "283943", "group": "exp", "company": "㈜이안게임즈", "title": "[이안게임즈] 개발 QA 담당 모집", "career": "경력2년↑", "edu": "학력무관", "loc": "서울 > 강남구", "platform": "모바일게임", "employ": "정규직, 계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-08-18"}, {"id": "285599", "group": "exp", "company": "슈퍼진", "title": "글로벌 캐주얼 게임 QA (계약직)", "career": "경력2년↑", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "웹게임, 모바일게임", "employ": "계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-10-07"}, {"id": "285823", "group": "exp", "company": "기어세컨드", "title": "[기어세컨드] 모바일 게임 QA", "career": "경력3년↑", "edu": "학력무관", "loc": "서울 > 성동구", "platform": "모바일게임", "employ": "계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-10-12"}, {"id": "285751", "group": "exp", "company": "스마일게이트", "title": "[LOST ARK Mobile] FQA 담당", "career": "경력3년↑", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "모바일게임", "employ": "정규직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-10-12"}, {"id": "284814", "group": "exp", "company": "㈜매드엔진", "title": "[매드엔진] FQA 담당자 모집 (경력)", "career": "경력3년↑", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "모바일게임, 콘솔게임", "employ": "정규직", "deadline": "2026-10-30", "deadlineLabel": "10/30", "registered": "2026-09-10"}, {"id": "285206", "group": "exp", "company": "에이에프아이", "title": "[게임서버 뒤끝] QA 엔지니어 채용 (경력)", "career": "경력3년↑", "edu": "학력무관", "loc": "서울 > 강남구", "platform": "모바일게임, 멀티플랫폼게임", "employ": "정규직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-09-22"}, {"id": "283695", "group": "exp", "company": "그렙게임즈", "title": "[일본 IP 게임 라이브운영] QA 담당자 모집", "career": "경력3년↑", "edu": "학력무관", "loc": "서울 > 강남구", "platform": "모바일게임", "employ": "정규직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-08-12"}, {"id": "283829", "group": "exp", "company": "㈜리튬포어스", "title": "콘솔 액션 게임 QA 담당자  채용", "career": "경력3년↑", "edu": "학력무관", "loc": "서울 > 성동구", "platform": "콘솔게임, 멀티플랫폼게임", "employ": "계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-08-14"}, {"id": "279219", "group": "exp", "company": "EA코리아 (Electronic Arts Korea)", "title": "Project Manager (Development Manager) - Quality Verification and Standards", "career": "경력7년↑", "edu": "학력무관", "loc": "서울 > 강남구", "platform": "온라인PC게임, 모바일게임", "employ": "정규직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-04-29"}, {"id": "285636", "group": "other", "company": "NC", "title": "[NC][단기계약직][AION2] 게임 현지화 영어 번역 / 검수 (English Linguist & LQA)", "career": "신입", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "온라인PC게임, 모바일게임", "employ": "계약직", "deadline": "2026-10-31", "deadlineLabel": "10/31", "registered": "2026-10-08"}, {"id": "285634", "group": "other", "company": "NC", "title": "[NC][단기계약직][AION2] 게임 현지화 독일어 번역 / 검수 (Deutsch Linguist und LQA)", "career": "신입", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "온라인PC게임, 모바일게임", "employ": "계약직", "deadline": "2026-10-31", "deadlineLabel": "10/31", "registered": "2026-10-08"}, {"id": "283000", "group": "other", "company": "빅파이어게임즈", "title": "[NC자회사][빅파이어게임즈][단기계약직] 빌드매니저(BM) 모집", "career": "신입", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "온라인PC게임, 콘솔게임", "employ": "계약직", "deadline": "2026-10-20", "deadlineLabel": "10/20", "registered": "2026-07-22"}, {"id": "285730", "group": "other", "company": "인플루전", "title": "개발 PM 채용", "career": "경력무관", "edu": "학력무관", "loc": "경기 > 성남시", "platform": "온라인PC게임, 멀티플랫폼게임", "employ": "정규직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-10-09"}, {"id": "285439", "group": "other", "company": "히든몬스터", "title": "[경력 1년 이상] 모바일 게임 운영 매니저 모집 (언어 가능자)", "career": "경력무관", "edu": "학력무관", "loc": "서울 > 금천구", "platform": "온라인PC게임, 모바일게임", "employ": "정규직", "deadline": "2026-10-29", "deadlineLabel": "10/29", "registered": "2026-09-30"}, {"id": "285812", "group": "other", "company": "휴머니아", "title": "[마포상암/인센티브] 글로벌게임사 게임운영(GM) 채용", "career": "경력무관", "edu": "고등학교졸업↑", "loc": "서울 > 마포구", "platform": "온라인PC게임, 모바일게임", "employ": "파견직", "deadline": "2026-10-19", "deadlineLabel": "10/19", "registered": "2026-10-12"}, {"id": "285303", "group": "other", "company": "잡앤피플코리아", "title": "보안 모니터링 담당자 채용 [코스닥 상장 게임사 / 연 3800만원]", "career": "경력무관", "edu": "학력무관", "loc": "서울 > 구로구", "platform": "온라인PC게임, 모바일게임", "employ": "파견직", "deadline": "2026-10-18", "deadlineLabel": "10/18", "registered": "2026-09-28"}, {"id": "283660", "group": "other", "company": "㈜러너소프트", "title": "모바일 홀덤 게임 기획자 모집(신입)", "career": "신입", "edu": "학력무관", "loc": "서울 > 강남구", "platform": "온라인PC게임, 모바일게임", "employ": "정규직, 계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-08-10"}, {"id": "282999", "group": "other", "company": "트루소프트", "title": "[대구] 모바일 게임 기획자 모십니다.", "career": "경력무관", "edu": "학력무관", "loc": "대구 > 동구", "platform": "모바일게임, 멀티플랫폼게임", "employ": "계약직", "deadline": null, "deadlineLabel": "채용시", "registered": "2026-07-22"}, {"id": "283967", "group": "other", "company": "에스씨에이게임신촌", "title": "아카데미학원 강사구인 [스파인, 유니티, 언리얼, UI, QA, 원화, 그래픽, 기획]", "career": "경력2년↑", "edu": "고등학교졸업↑", "loc": "서울 > 서대문구", "platform": "온라인PC게임, 모바일게임", "employ": "계약직, 프리랜서", "deadline": null, "deadlineLabel": "상시", "registered": "2026-08-19"}];
+const GROUPS = { entry: "신입·경력무관", agency: "파견·아웃소싱", exp: "경력 필요", other: "다른 직무" };
+const EMPLOYS = ["정규직", "계약직", "파견직", "인턴직", "아르바이트"];
+const state = { q: "", group: new Set(["entry", "agency", "exp"]), employ: new Set(), platform: "", sort: "deadline" };
+
+const today = new Date(); today.setHours(0, 0, 0, 0);
+const dday = d => d ? Math.round((new Date(d + "T00:00:00") - today) / 86400000) : null;
+
+function chip(row, label, on, onClick) {
+  const b = document.createElement("button");
+  b.className = "chip"; b.textContent = label; b.setAttribute("aria-pressed", on);
+  b.onclick = () => { onClick(); b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); render(); };
+  row.appendChild(b);
+}
+for (const [k, v] of Object.entries(GROUPS))
+  chip(groupRow, v, state.group.has(k), () => state.group.has(k) ? state.group.delete(k) : state.group.add(k));
+for (const e of EMPLOYS)
+  chip(employRow, e, false, () => state.employ.has(e) ? state.employ.delete(e) : state.employ.add(e));
+
+q.oninput = e => { state.q = e.target.value.trim().toLowerCase(); render(); };
+sort.onchange = e => { state.sort = e.target.value; render(); };
+platform.onchange = e => { state.platform = e.target.value; render(); };
+
+function stats() {
+  const open = DATA.filter(d => dday(d.deadline) === null || dday(d.deadline) >= 0);
+  const items = [
+    [DATA.length, "전체 공고"],
+    [DATA.filter(d => d.group === "entry").length, "신입·경력무관 (직접 채용)"],
+    [open.filter(d => d.deadline && dday(d.deadline) <= 7).length, "7일 안에 마감"],
+    [DATA.filter(d => d.employ.includes("정규직") && (d.group === "entry")).length, "신입 가능 정규직"],
+  ];
+  document.getElementById("stats").innerHTML =
+    items.map(([n, t]) => `<div class="stat"><b>${n}</b><span>${t}</span></div>`).join("");
+}
+
+function esc(s) { return s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+function render() {
+  let rows = DATA.filter(d =>
+    state.group.has(d.group) &&
+    (!state.employ.size || [...state.employ].some(e => d.employ.includes(e))) &&
+    (!state.platform || d.platform.includes(state.platform)) &&
+    (!state.q || (d.company + " " + d.title).toLowerCase().includes(state.q)));
+  const key = {
+    deadline: d => { const n = dday(d.deadline); return n === null ? 9999 : n < 0 ? 10000 : n; },
+    registered: d => -new Date(d.registered).getTime(),
+    company: d => d.company.replace(/^(㈜|\(주\)|주식회사\s*)/, ""),
+  }[state.sort];
+  rows.sort((a, b) => { const x = key(a), y = key(b); return x < y ? -1 : x > y ? 1 : 0; });
+
+  count.textContent = `${rows.length}건 표시 중`;
+  list.innerHTML = rows.length ? rows.map(d => {
+    const n = dday(d.deadline);
+    const closed = n !== null && n < 0;
+    const badge = n === null ? `<span class="badge">${esc(d.deadlineLabel)}</span>`
+      : closed ? `<span class="badge">마감</span>`
+      : `<span class="badge ${n <= 7 ? "soon" : ""}">${n === 0 ? "오늘 마감" : "D-" + n} · ${d.deadline.slice(5).replace("-", "/")}</span>`;
+    return `<article class="card ${closed ? "closed" : ""}">
+      <div><div class="company">${esc(d.company)}</div>
+        <a class="title" href="https://www.gamejob.co.kr/Recruit/GI_Read/View?GI_No=${d.id}" target="_blank" rel="noopener">${esc(d.title)}</a></div>
+      ${badge}
+      <div class="tags">
+        <span class="tag g-${d.group}">${GROUPS[d.group]}</span>
+        <span class="tag">${esc(d.career)}</span><span class="tag">${esc(d.employ)}</span>
+        <span class="tag">${esc(d.loc)}</span><span class="tag">${esc(d.platform)}</span>
+      </div>
+      <div class="reg">등록 ${d.registered.slice(5).replace("-", "/")}</div>
+    </article>`;
+  }).join("") : `<p class="empty">조건에 맞는 공고가 없습니다.</p>`;
+}
+stats(); render();
+</script>
+</body>
+</html>
