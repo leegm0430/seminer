@@ -359,6 +359,15 @@
       .hero-stats { gap: 1.5rem; }
       nav ul { gap: 1rem; padding: 0.8rem 1.25rem; }
     }
+    /* 예약 자동화 학습 기록 */
+    nav ul { overflow-x: auto; }
+    nav li { flex-shrink: 0; white-space: nowrap; }
+    #cron-jobs { scroll-margin-top: 85px; }
+    #cron-jobs .automation-date { color: var(--green-lt); font-size: 0.78rem; margin-bottom: 0.65rem; }
+    #cron-jobs .automation-time { color: var(--blue-lt); font-size: 1.15rem; font-weight: 600; margin-bottom: 0.7rem; }
+    #cron-jobs .automation-result { border-left: 2px solid var(--green); padding-left: 1rem; margin-top: 1.5rem; color: var(--text-2); font-size: 0.85rem; }
+    #cron-jobs .automation-links { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.75rem; margin-top: 1.75rem; }
+    #cron-jobs .automation-links > a:not(.vibe-cta) { color: var(--blue-lt); font-size: 0.85rem; text-underline-offset: 4px; }
   </style>
 </head>
 <body>
@@ -374,6 +383,7 @@
     <li><a href="#docs">기획서 &amp; 분석</a></li>
     <li><a href="#projects">개발 이력</a></li>
     <li><a href="#vibe">바이브 코딩</a></li>
+    <li><a href="#cron-jobs">예약 자동화</a></li>
   </ul>
 </nav>
 
@@ -1436,6 +1446,43 @@
   </div>
 </div>
 
+
+<!-- CRON-JOBS-SUMMARY:START -->
+<section class="alt" id="cron-jobs" aria-labelledby="cron-jobs-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="automation-date">2026-10-23 · 학습 및 실습 기록</p>
+      <h2 id="cron-jobs-title">크론잡과 예약 자동화</h2>
+      <p>반복 작업의 실행 시간을 정하고 결과를 확인하는 실습입니다. AI 지원으로 스크립트를 작성·검증하고, Windows 작업 스케줄러에 세 가지 작업을 등록했습니다.</p>
+    </div>
+    <div class="grid-3">
+      <article class="card">
+        <p class="automation-time">1시간마다</p>
+        <h3>포트폴리오 변경 자동 반영</h3>
+        <p>허용된 파일의 변경을 확인해 commit·push하고 Telegram으로 결과를 알립니다. 기존 미반영 파일과 개인정보·비밀값은 제외하며, 원격 충돌 시 강제 push하지 않습니다.</p>
+        <div class="tags" style="margin-top:1rem"><span class="tag tag-green">예약 등록 확인</span><span class="tag tag-blue">GitHub</span></div>
+      </article>
+      <article class="card">
+        <p class="automation-time">금요일 19:45</p>
+        <h3>학습 요약과 포트폴리오 업데이트</h3>
+        <p>당일 학습 자료로 dailynote를 저장하고 두 포트폴리오의 학습 기록을 갱신합니다. 오늘 즉시 실행해 GitHub 업로드, Pages 배포와 Telegram 알림을 확인했습니다.</p>
+        <div class="tags" style="margin-top:1rem"><span class="tag tag-green">실행·배포 확인</span><span class="tag tag-blue">학습 기록</span></div>
+      </article>
+      <article class="card">
+        <p class="automation-time">매일 08:00</p>
+        <h3>게임 업계 뉴스 브리핑</h3>
+        <p>최근 24시간의 게임·게임회사 뉴스를 검색하고 출처·게시일·요약·QA 관점을 HTML과 Markdown으로 저장합니다. 실제 검색 시험으로 뉴스 3건 저장을 확인했습니다.</p>
+        <div class="tags" style="margin-top:1rem"><span class="tag tag-green">검색·저장 확인</span><span class="tag tag-blue">업계 동향</span></div>
+      </article>
+    </div>
+    <p class="automation-result">한국 시간 기준이며 PC가 켜져 있고 Windows에 로그인된 동안 실행됩니다. 예약 등록, 작업 실행, GitHub push와 사이트 배포를 구분해 확인했습니다. 실행 정책·봇 연결·GitHub 인증 오류의 해결 과정도 상세 기록에 정리했습니다.</p>
+    <div class="automation-links">
+      <a class="vibe-cta" href="cron-jobs/index.html">크론잡 실습 상세 보기 →</a>
+      <a href="https://github.com/leegm0430/seminer/commit/6c9113ce79ab0822aeb167fa2339313f196922e4" target="_blank" rel="noopener noreferrer">학습 요약 업로드 커밋 ↗</a>
+    </div>
+  </div>
+</section>
+<!-- CRON-JOBS-SUMMARY:END -->
 
 <!-- LIGHTBOX -->
 <div id="lightbox" onclick="closeLightbox()">
