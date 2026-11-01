@@ -1,0 +1,7 @@
+# 공개 GitHub에 올리지 않는 것
+node_modules/
+out/
+.env
+.env.*
+!.env.example
+out_run*.txt

@@ -1,0 +1,16 @@
+{
+  "name": "qa-automation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "슬라임 게임 자동 테스트 (Playwright) + 결과 리포트 + Jira 무료 플랜 연동",
+  "scripts": {
+    "test": "playwright test",
+    "report": "python -I tools/make_report.py",
+    "bug-demo": "python -I tools/bug_demo.py",
+    "jira:tcs": "python -I tools/jira_sync.py tcs",
+    "jira:bugs": "python -I tools/jira_sync.py bugs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0"
+  }
+}
