@@ -30,7 +30,7 @@ def main():
     print(f"버그 심은 사본: {BUGGY}\n  {CORRECT}  →  {PLANTED}")
 
     env = dict(os.environ, SLIME_TARGET=BUGGY)
-    code = subprocess.call("npx playwright test", cwd=ROOT, env=env, shell=True)
+    code = subprocess.call("npx playwright test tests/slimegame.spec.js", cwd=ROOT, env=env, shell=True)
     shutil.copyfile(os.path.join(ROOT, "out", "results.json"), os.path.join(ROOT, "out", "results_bugdemo.json"))
     path, ok, bad = make_report.build(os.path.join(ROOT, "out", "results_bugdemo.json"),
                                       os.path.join(ROOT, "report", "slimegame_bugdemo.html"),

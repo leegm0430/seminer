@@ -4,9 +4,19 @@ import os
 import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TC_FILE = os.path.join(ROOT, "tc", "slimegame_tc.json")
 RESULTS_FILE = os.path.join(ROOT, "out", "results.json")
-TC_ID_RE = re.compile(r"\[((?:공통|플레이|탐색)-\d+)\]")
+GAMES = ("slimegame", "bloodfall")   # tc/<게임>_tc.json, tests/<게임>.spec.js
+TC_ID_RE = re.compile(r"\[((?:공통|플레이|탐색|BF)-\d+)\]")
+
+
+def game_arg(argv, default="slimegame"):
+    """명령줄에서 --game <이름> 을 읽는다."""
+    if "--game" in argv:
+        g = argv[argv.index("--game") + 1]
+        if g not in GAMES:
+            raise SystemExit(f"--game 은 {', '.join(GAMES)} 중 하나")
+        return g
+    return default
 ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
 
 
@@ -15,8 +25,8 @@ def load_json(path):
         return json.load(f)
 
 
-def load_tcs():
-    return load_json(TC_FILE)
+def load_tcs(game="slimegame"):
+    return load_json(os.path.join(ROOT, "tc", f"{game}_tc.json"))
 
 
 def iter_specs(suite):
@@ -26,11 +36,13 @@ def iter_specs(suite):
         yield from iter_specs(child)
 
 
-def load_results(path=RESULTS_FILE):
-    """테스트 하나당 {title, tc_ids, status, duration_ms, error, screenshot}"""
+def load_results(path=RESULTS_FILE, game=None):
+    """테스트 하나당 {title, tc_ids, status, duration_ms, error, screenshot}. game을 주면 그 게임의 테스트 파일 결과만."""
     data = load_json(path)
     rows = []
     for suite in data.get("suites", []):
+        if game and os.path.basename(suite.get("file") or suite.get("title", "")) != f"{game}.spec.js":
+            continue
         for spec in iter_specs(suite):
             for t in spec.get("tests", []):
                 r = (t.get("results") or [{}])[-1]

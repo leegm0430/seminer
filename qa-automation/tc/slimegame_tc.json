@@ -1,5 +1,9 @@
 {
-  "game": "슬라임 게임 (slimegame.html)",
+  "key": "slimegame",
+  "game": "슬라임 게임",
+  "target": "slimegame.html",
+  "spec": "tests/slimegame.spec.js",
+  "total_tc": 58,
   "source_tc": "TC/슬라임게임_TC.xlsx (작성자 LKM, 공통 15건 + 게임플레이 43건)",
   "selection_by": "Claude Code (자동화 대상 선정·테스트 코드 초안)",
   "review_rule": "review 칸은 LKM이 '확인함' 또는 '버림'으로 바꾼다. AI가 고른 것은 처음에 모두 '초안'.",

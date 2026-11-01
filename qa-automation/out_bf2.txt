@@ -1,0 +1,73 @@
+﻿
+Running 23 tests using 1 worker
+
+node.exe : (node:14856) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node:14856) Wa... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\bloodfall.spec.js:52:1 › [BF-01] 모드 선택 메뉴에 1인·2인 협동·온라인 버튼 노출 (771ms)
+  ok  2 tests\bloodfall.spec.js:57:1 › [BF-02] 게임 시작 시 주무기 카드 3장 제시, 선택 전 타이머 정지 (2.3s)
+  ok  3 tests\bloodfall.spec.js:68:1 › [BF-03] 주무기 카드 선택 시 그 무기 1개만 장착되고 게임 시작 (824ms)
+  x   4 tests\bloodfall.spec.js:76:1 › [BF-04] 주무기 드래프트 10초 미선택 시 피스톨 자동 배정 (11.5s)
+(node:21880) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  5 tests\bloodfall.spec.js:88:1 › [BF-05] WASD 이동, 맵 경계 밖으로 나가지 않음 (2.5s)
+  ok  6 tests\bloodfall.spec.js:101:1 › [BF-06] 마우스 좌클릭을 누르는 동안만 주무기 발사 (1.9s)
+  ok  7 tests\bloodfall.spec.js:112:1 › [BF-07] 조준 사격으로 몬스터 처치 시 처치 수·HUD 증가, 경험치 오브 드랍 (3.0s)
+  ok  8 tests\bloodfall.spec.js:131:1 › [BF-08] 레벨업 시 다음 필요 경험치 20×1.2^(레벨-1), LEVEL UP 카드 3장 (842ms)
+  ok  9 tests\bloodfall.spec.js:142:1 › [BF-09] 연속 레벨업은 대기열로 이어지고 매번 10초가 새로 적용 (3.0s)
+  ok 10 tests\bloodfall.spec.js:154:1 › [BF-10][BF-11][BF-12][BF-13] 카드 선택 중 무적·이동 불가·보조무기 정지·시간은 흐름 (2.5s)
+  ok 11 tests\bloodfall.spec.js:175:1 › [BF-14] 레벨업 카드 10초 미선택 시 무작위 1장 자동 적용 후 복귀 (11.3s)
+  ok 12 tests\bloodfall.spec.js:189:1 › [BF-15] 레벨업 카드에 장착하지 않은 주무기는 등장하지 않음 (300회 생성) (793ms)
+  ok 13 tests\bloodfall.spec.js:202:1 › [BF-16] 2인 협동 경험치 분배: 주운 사람 100%, 파트너 70% (2.0s)
+  ok 14 tests\bloodfall.spec.js:209:1 › [BF-17] 로컬 협동 동시 레벨업 시 한 명씩, 대기자의 10초는 흐르지 않음 (3.0s)
+  ok 15 tests\bloodfall.spec.js:222:1 › [BF-28] 2인 협동: 다운된 파트너 곁에 2.6초 머무르면 체력 50%로 소생 (3.9s)
+  ok 16 tests\bloodfall.spec.js:234:1 › [BF-18][BF-19][BF-20] 05:00 보스 등장·타이머 정지 → 처치 → 전리품 3장·Act 2 → 선택 후 재개 (5.8s)
+  ok 17 tests\bloodfall.spec.js:286:1 › [BF-21] 아이템 박스 포션: 최대 체력 10% 회복, 최대치 초과 안 함 (966ms)
+  ok 18 tests\bloodfall.spec.js:296:1 › [BF-22] 아이템 박스 폭탄: 가까운 몬스터 10마리 처치, 보스 제외 (981ms)
+  ok 19 tests\bloodfall.spec.js:311:1 › [BF-23] 아이템 박스 자석: 3초간 먼 경험치 오브도 흡수 (3.4s)
+  ok 20 tests\bloodfall.spec.js:323:1 › [BF-24][BF-26] 1인 체력 0 → 전멸 결과 창, [다시 도전]으로 새 게임 (968ms)
+  ok 21 tests\bloodfall.spec.js:337:1 › [BF-25][BF-27] 최종 보스 처치 → 클리어 결과 창, [모드 선택으로] 메뉴 복귀 (1.0s)
+  ok 22 tests\bloodfall.spec.js:352:1 › [BF-29] 온라인 참가: 4자리가 아닌 방 코드 입력 시 안내 문구 (806ms)
+  ok 23 tests\bloodfall.spec.js:360:1 › [BF-30] 몬스터 스폰·사격이 이어지는 20초 플레이 동안 콘솔 오류 없음 (21.0s)
+
+
+  1) tests\bloodfall.spec.js:76:1 › [BF-04] 주무기 드래프트 10초 미선택 시 피스톨 자동 배정 ───────────────────────────
+
+    Error: 기획서 §31.1: 미선택 시 피스톨(표준형) 자동 배정
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "bullet"
+    Received: "laser"
+
+      81 |   await restoreRandom(page);
+      82 |   const p = await P(page);
+    > 83 |   expect(p.main, '기획서 §31.1: 미선택 시 피스톨(표준형) 자동 배정').toBe('bullet');
+         |                                                     ^
+      84 | });
+      85 |
+      86 | // ---------------------------------------------------------------- 조작·전투
+        at E:\leegm0430\01_포토폴리오\qa-automation\tests\bloodfall.spec.js:83:53
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    out\test-results\bloodfall--BF-04-주무기-드래프트-10초-미선택-시-피스톨-자동-배정\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: out\test-results\bloodfall--BF-04-주무기-드래프트-10초-미선택-시-피스톨-자동-배정\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    out\test-results\bloodfall--BF-04-주무기-드래프트-10초-미선택-시-피스톨-자동-배정\trace.zip
+    Usage:
+
+        npx playwright show-trace out\test-results\bloodfall--BF-04-주무기-드래프트-10초-미선택-시-피스톨-자동-배정\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\bloodfall.spec.js:76:1 › [BF-04] 주무기 드래프트 10초 미선택 시 피스톨 자동 배정 ────────────────────────────
+  22 passed (1.5m)

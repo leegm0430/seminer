@@ -5,6 +5,7 @@
   python -I tools/jira_sync.py tcs              # TC 목록을 Jira 작업(Task) 이슈로 등록 (이미 올린 것은 건너뜀)
   python -I tools/jira_sync.py bugs             # out/results.json 의 실패 테스트를 버그로 등록 + 스크린샷 첨부
                                                 #   같은 테스트가 다시 실패하면 새 버그 대신 기존 버그에 댓글
+  --game bloodfall                              # 게임 선택 (기본 slimegame)
   --dry-run                                     # 실제로 보내지 않고 out/jira_dryrun.json 에 보낼 내용만 저장
 
 설정(.env 또는 환경 변수, .env는 git에 올라가지 않는다):
@@ -24,7 +25,7 @@ import urllib.request
 import uuid
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import ROOT, load_dotenv, load_results, load_tcs, local_time  # noqa: E402
+from common import ROOT, game_arg, load_dotenv, load_results, load_tcs, local_time  # noqa: E402
 
 STATE_FILE = os.path.join(ROOT, "out", "jira_state.json")      # 이미 만든 이슈 키 기록 (git 제외)
 DRYRUN_FILE = os.path.join(ROOT, "out", "jira_dryrun.json")
@@ -45,6 +46,7 @@ class Jira:
             print(f"설정 없음({', '.join(missing)}) → 드라이런으로 실행합니다. 실제 등록은 하지 않습니다.")
         self.sent = []
         self._types = None
+        self.bug_fallback = False
 
     # ---------- HTTP ----------
     def _auth(self):
@@ -81,13 +83,21 @@ class Jira:
         for t in self._types:
             if t.get("name") in TYPE_NAMES[kind]:
                 return {"id": t["id"]}
+        if kind == "bug":
+            # 최근 스크럼 템플릿에는 버그 유형이 없을 수 있다 → 작업 유형 + bug 라벨로 대신한다.
+            # 프로젝트 설정에서 '버그' 유형을 추가하면 다음 실행부터 자동으로 버그 유형을 쓴다.
+            self.bug_fallback = True
+            return self.issue_type("tc")
         names = ", ".join(t.get("name", "?") for t in self._types)
         raise SystemExit(f"프로젝트에 {TYPE_NAMES[kind]} 유형이 없습니다. 있는 유형: {names}\n"
                          "Jira 프로젝트 설정 → 이슈 유형에서 추가하거나 소프트웨어(스크럼/칸반) 템플릿으로 만드세요.")
 
     # ---------- 동작 ----------
     def create(self, kind, summary, description, labels):
-        body = {"fields": {"project": {"key": self.project or "DRY"}, "issuetype": self.issue_type(kind),
+        issuetype = self.issue_type(kind)
+        if kind == "bug" and self.bug_fallback:
+            summary, labels = "[버그] " + summary, labels + ["bug"]
+        body = {"fields": {"project": {"key": self.project or "DRY"}, "issuetype": issuetype,
                            "summary": summary[:250], "description": description, "labels": labels}}
         return self.call("POST", "/rest/api/2/issue", body=body)["key"]
 
@@ -142,28 +152,35 @@ def cmd_check(jira):
     me = jira.call("GET", "/rest/api/2/myself")
     proj = jira.call("GET", f"/rest/api/2/project/{jira.project}")
     print(f"접속 OK: {me.get('displayName')} / 프로젝트 {proj.get('key')} · {proj.get('name')}")
-    print("TC 유형:", jira.issue_type("tc"), "/ 버그 유형:", jira.issue_type("bug"))
+    tc_t, bug_t = jira.issue_type("tc"), jira.issue_type("bug")
+    print("TC 유형:", tc_t, "/ 버그 유형:", bug_t,
+          "(버그 유형 없음 → 작업 + bug 라벨로 등록)" if jira.bug_fallback else "")
 
 
-def cmd_tcs(jira, state):
-    tcs = load_tcs()
-    made = 0
+def cmd_tcs(jira, state, game):
+    tcs = load_tcs(game)
+    made = skipped = 0
     for kind, items in (("auto", tcs["automated"]), ("manual", tcs["manual"])):
         for tc in items:
             if tc["id"] in state["tcs"]:
+                skipped += 1
                 continue
-            desc = (f"원본: {tcs['source_tc']}\n자동화: {'예 (Playwright)' if kind == 'auto' else '아니오'}\n"
+            desc = (f"게임: {tcs['game']} ({tcs['target']})\n원본: {tcs['source_tc']}\n"
+                    + (f"근거: 기획서 {tc['basis']}\n" if tc.get("basis") else "")
+                    + f"자동화: {'예 (Playwright)' if kind == 'auto' else '아니오'}\n"
                     + (f"검토: {tc['review']}" if kind == "auto" else f"자동화하지 않은 이유: {tc['reason']}"))
             key = jira.create("tc", f"[TC {tc['id']}] {tc.get('title') or tc.get('reason')}", desc,
-                              ["TC", "slimegame", kind])
+                              ["TC", game, kind])
             state["tcs"][tc["id"]] = key
             made += 1
             print(f"  {key}  TC {tc['id']}")
-    print(f"TC 이슈 {made}건 등록 (이미 있던 것 {len(state['tcs']) - made}건 건너뜀)")
+    print(f"TC 이슈 {made}건 등록 (이 게임에서 이미 올린 것 {skipped}건 건너뜀)")
 
 
-def cmd_bugs(jira, state):
-    stats, rows = load_results()
+def cmd_bugs(jira, state, game):
+    stats, rows = load_results(game=game)
+    tcs = load_tcs(game)
+    basis = {tc["id"]: tc.get("basis") for tc in tcs["automated"]}
     failed = [r for r in rows if r["status"] in ("failed", "timedOut")]
     when = local_time(stats.get("startTime"))
     if not failed:
@@ -176,12 +193,14 @@ def cmd_bugs(jira, state):
             jira.comment(prev, f"자동 테스트 {when} 실행에서 다시 실패했습니다.\n{{noformat}}\n{err}\n{{noformat}}")
             print(f"  {prev}  다시 실패 → 댓글 추가: {r['title']}")
             continue
+        refs = [f"기획서 {basis[t]}" for t in r["tc_ids"] if basis.get(t) and basis[t] != "-"]
         desc = (f"h3. 자동 테스트 실패 (Playwright)\n*테스트:* {r['title']}\n*관련 TC:* {', '.join(r['tc_ids'])}\n"
-                f"*실행:* {when}\n*환경:* Chromium(Playwright), 1280×800, slimegame.html\n\n"
+                + (f"*근거:* {', '.join(refs)}\n" if refs else "")
+                + f"*실행:* {when}\n*환경:* Chromium(Playwright), 1280×800, {tcs['target']}\n\n"
                 f"h3. 오류 내용\n{{noformat}}\n{err}\n{{noformat}}\n\n"
                 "h3. 확인할 것\n# 같은 조건으로 직접 재현되는지 확인\n# 재현되면 심각도·우선순위 지정, 안 되면 테스트 문제로 분류\n\n"
                 "_이 이슈는 자동으로 만든 초안입니다. 사람이 재현을 확인한 뒤 진행합니다._")
-        key = jira.create("bug", f"[자동] {r['title']} 실패", desc, ["auto-qa", "slimegame", "초안"])
+        key = jira.create("bug", f"[자동] {r['title']} 실패", desc, ["auto-qa", game, "초안"])
         if r["screenshot"] and os.path.exists(r["screenshot"]):
             jira.attach(key, r["screenshot"])
         for tc in r["tc_ids"]:
@@ -196,10 +215,11 @@ def main():
     args = sys.argv[1:]
     if not args or args[0] not in ("check", "tcs", "bugs"):
         sys.exit(__doc__)
+    game = game_arg(args)
     jira = Jira(dry_run="--dry-run" in args)
     state = load_state()
-    {"check": lambda: cmd_check(jira), "tcs": lambda: cmd_tcs(jira, state),
-     "bugs": lambda: cmd_bugs(jira, state)}[args[0]]()
+    {"check": lambda: cmd_check(jira), "tcs": lambda: cmd_tcs(jira, state, game),
+     "bugs": lambda: cmd_bugs(jira, state, game)}[args[0]]()
     save_state(state, jira)
     jira.save_dryrun()
 
