@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TC 점검 도구</title>
+<!--
+  TC 점검 도구 — html 파일 하나 (서버·설치 없음, 더블클릭으로 열기)
+  - TC 엑셀(.xlsx)·TC JSON(_tc.json)을 TC 작성 규칙(044)의 기계 점검 규칙으로 점검
+  - 기획서(.pdf·.md·.txt)를 넣으면 화면 문구·[버튼]·수치를 뽑아 TC에 없는 것을 '추가 제안 후보'로 보여 줌
+  - 결과를 HTML 리포트·CSV로 내려받기
+  - 파일은 이 PC 브라우저 안에서만 읽음 (어디에도 올리지 않음). PDF를 읽을 때만 pdf.js(무료)를 인터넷에서 처음 한 번 불러옴
+  - 할 수 없는 것: AI로 TC 쓰기(Claude Code에 요청), Playwright 자동 테스트·Jira 등록(qa-automation 폴더의 도구로)
+  규칙 원본: AX부트캠프study/Resources/2026-11-02 044. TC 작성 규칙.md
+-->
+<style>
+  :root { --bg:#f5f6f8; --card:#fff; --text:#1d2129; --muted:#6b7280; --line:#e3e6ea; --accent:#2f5bd3; --ok:#15803d; --bad:#b91c1c; --warn:#a16207; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111418; --card:#1a1f26; --text:#e6e8eb; --muted:#9aa3ae; --line:#2b313a; --accent:#7aa2ff; --ok:#4ade80; --bad:#f87171; --warn:#facc15; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:"Pretendard","Malgun Gothic",system-ui,sans-serif; line-height:1.55; }
+  header { padding:20px 24px 4px; } h1 { margin:0; font-size:21px; } header p { margin:4px 0 0; color:var(--muted); font-size:14px; }
+  main { max-width:1180px; padding:14px 24px 40px; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; }
+  h2 { font-size:16px; margin:0 0 10px; } h3 { font-size:15px; margin:16px 0 6px; }
+  .muted { color:var(--muted); font-size:13px; }
+  .drop { border:2px dashed var(--line); border-radius:10px; padding:22px; text-align:center; color:var(--muted); }
+  .drop.on { border-color:var(--accent); color:var(--accent); }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:10px; }
+  button, .lbl { font:inherit; font-size:13.5px; padding:7px 13px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  .lbl { color:var(--accent); }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; } th, td { border-bottom:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  th { color:var(--muted); font-weight:600; font-size:12.5px; white-space:nowrap; }
+  .files li { margin:2px 0; } .files { margin:8px 0 0; padding-left:18px; font-size:14px; }
+  .tag { display:inline-block; font-size:12px; padding:0 7px; border-radius:999px; border:1px solid var(--line); color:var(--muted); margin-left:4px; }
+  .num { font-size:24px; font-weight:800; } .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+  .card { border:1px solid var(--line); border-radius:10px; padding:10px 12px; } .card span { color:var(--muted); font-size:12.5px; }
+  .ok { color:var(--ok); } .bad { color:var(--bad); } .warn { color:var(--warn); }
+  code { background:var(--bg); padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  #status { min-height:20px; font-size:14px; margin-top:8px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>TC 점검 도구</h1>
+  <p>TC 엑셀·TC JSON을 <b>TC 작성 규칙(044)</b>으로 점검하고, 기획서를 넣으면 TC에 빠진 문구·수치를 찾아 줘요. 파일은 이 PC 브라우저 안에서만 읽어요.</p>
+</header>
+<main>
+  <section>
+    <h2>1. 파일 넣기</h2>
+    <div class="drop" id="drop">TC 엑셀(.xlsx) · TC JSON(_tc.json) · 기획서(.pdf · .md · .txt) · 화면 이미지를 끌어다 놓으세요<br>
+      <label class="lbl" for="pick" style="display:inline-block;margin-top:8px">파일 고르기</label>
+      <input type="file" id="pick" multiple hidden accept=".xlsx,.xlsm,.json,.pdf,.md,.markdown,.txt,.csv,.png,.jpg,.jpeg,.gif,.webp"></div>
+    <ul class="files" id="files"></ul>
+    <div class="row">
+      <button class="primary" id="run" disabled>점검하기</button>
+      <button id="clear">모두 빼기</button>
+      <span class="muted">TC 파일이 하나 이상 있어야 점검할 수 있어요. 기획서만 넣으면 기획서에서 뽑은 문구·수치 목록만 보여 줘요.</span>
+    </div>
+    <div id="status"></div>
+  </section>
+
+  <section id="result" hidden>
+    <h2>2. 결과</h2>
+    <div class="cards" id="cards"></div>
+    <div class="row">
+      <button id="dlHtml">HTML 리포트 내려받기</button>
+      <button id="dlCsv">CSV(엑셀용) 내려받기</button>
+    </div>
+    <div id="body"></div>
+  </section>
+
+  <section>
+    <h2>이 도구로 안 되는 것</h2>
+    <ul class="muted" style="margin:0;padding-left:18px">
+      <li><b>AI로 TC 쓰기</b> — 브라우저만으로는 무료로 불가. Claude Code(볼트 폴더에서 연 것)에 이렇게 요청하세요: <code id="ask">/tc-writing 기획서로 TC 작성해줘 (TC 작성 규칙 044 적용)</code> <button id="copyAsk">복사</button></li>
+      <li><b>게임 자동 테스트(Playwright)·Jira 등록</b> — 내 PC에서 프로그램을 실행해야 해서 qa-automation 폴더의 도구로 해요.</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+"use strict";
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const norm = (s) => String(s ?? "").replace(/\s+/g, "");
+let FILES = [];            // {name, kind, file}
+let LAST = null;           // 마지막 결과 (내려받기용)
+
+// ================================================================ 파일 넣기
+function kindOf(name) {
+  const n = name.toLowerCase();
+  if (/\.json$/.test(n)) return "TC JSON";
+  if (/\.(xlsx|xlsm)$/.test(n)) return "엑셀";
+  if (/\.pdf$/.test(n)) return "기획서 PDF";
+  if (/\.(md|markdown|txt|csv)$/.test(n)) return "기획서 글";
+  if (/\.(png|jpe?g|gif|webp)$/.test(n)) return "이미지";
+  return null;
+}
+function addFiles(list) {
+  for (const f of list) {
+    const k = kindOf(f.name);
+    if (!k) { status(`넣을 수 없는 파일: ${f.name}`, "bad"); continue; }
+    FILES = FILES.filter((x) => x.name !== f.name).concat({ name: f.name, kind: k, file: f });
+  }
+  drawFiles();
+}
+function drawFiles() {
+  $("#files").innerHTML = FILES.map((f, i) => `<li>${esc(f.name)} <span class="tag">${f.kind}</span> <button data-rm="${i}" style="padding:1px 8px;font-size:12px">빼기</button></li>`).join("");
+  $("#run").disabled = !FILES.some((f) => f.kind !== "이미지");
+}
+function status(t, cls) { const s = $("#status"); s.textContent = t || ""; s.className = cls || ""; }
+const drop = $("#drop");
+["dragenter", "dragover"].forEach((e) => drop.addEventListener(e, (ev) => { ev.preventDefault(); drop.classList.add("on"); }));
+["dragleave", "drop"].forEach((e) => drop.addEventListener(e, (ev) => { ev.preventDefault(); drop.classList.remove("on"); }));
+drop.addEventListener("drop", (ev) => addFiles([...ev.dataTransfer.files]));
+$("#pick").onchange = (e) => { addFiles([...e.target.files]); e.target.value = ""; };
+$("#files").onclick = (e) => { const b = e.target.closest("[data-rm]"); if (b) { FILES.splice(+b.dataset.rm, 1); drawFiles(); } };
+$("#clear").onclick = () => { FILES = []; drawFiles(); $("#result").hidden = true; status(""); };
+$("#copyAsk").onclick = async () => { try { await navigator.clipboard.writeText($("#ask").textContent); status("요청 문구를 복사했어요.", "ok"); } catch { status("복사하지 못했어요. 글자를 직접 선택해서 복사하세요.", "bad"); } };
+
+// ================================================================ xlsx 읽기 (브라우저 기본 기능만: zip 풀기 + XML)
+async function unzip(buf) {
+  const dv = new DataView(buf), u8 = new Uint8Array(buf), out = {};
+  let eocd = -1;
+  for (let i = buf.byteLength - 22; i >= Math.max(0, buf.byteLength - 66000); i--) if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  if (eocd < 0) throw new Error("엑셀 파일 구조를 읽지 못했어요.");
+  let p = dv.getUint32(eocd + 16, true);
+  const n = dv.getUint16(eocd + 10, true), dec = new TextDecoder();
+  for (let k = 0; k < n; k++) {
+    const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true);
+    const nl = dv.getUint16(p + 28, true), el = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true), lho = dv.getUint32(p + 42, true);
+    const name = dec.decode(u8.subarray(p + 46, p + 46 + nl));
+    const start = lho + 30 + dv.getUint16(lho + 26, true) + dv.getUint16(lho + 28, true);
+    out[name] = { method, data: u8.subarray(start, start + csize) };
+    p += 46 + nl + el + cl;
+  }
+  return {
+    async text(name) {
+      const e = out[name]; if (!e) return null;
+      if (e.method === 0) return dec.decode(e.data);
+      const s = new Blob([e.data]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+      return await new Response(s).text();
+    }
+  };
+}
+const xml = (t) => new DOMParser().parseFromString(t, "application/xml");
+const colNum = (ref) => { let n = 0; for (const ch of ref.replace(/\d+/g, "")) n = n * 26 + (ch.charCodeAt(0) - 64); return n; };
+async function readXlsx(file) {
+  const z = await unzip(await file.arrayBuffer());
+  const shared = [];
+  const sst = await z.text("xl/sharedStrings.xml");
+  if (sst) for (const si of xml(sst).getElementsByTagName("si")) shared.push([...si.getElementsByTagName("t")].map((t) => t.textContent).join(""));
+  const wb = xml(await z.text("xl/workbook.xml"));
+  const rels = xml(await z.text("xl/_rels/workbook.xml.rels"));
+  const target = {};
+  for (const r of rels.getElementsByTagName("Relationship")) target[r.getAttribute("Id")] = r.getAttribute("Target");
+  const sheets = [];
+  for (const s of wb.getElementsByTagName("sheet")) {
+    const rid = s.getAttribute("r:id") || s.getAttributeNS("http://schemas.openxmlformats.org/officeDocument/2006/relationships", "id");
+    let path = target[rid] || ""; path = path.startsWith("/") ? path.slice(1) : "xl/" + path.replace(/^\.\//, "");
+    const t = await z.text(path); if (!t) continue;
+    const grid = [];
+    for (const row of xml(t).getElementsByTagName("row")) {
+      const cells = [];
+      for (const c of row.getElementsByTagName("c")) {
+        const type = c.getAttribute("t"), v = c.getElementsByTagName("v")[0];
+        let val = type === "inlineStr" ? [...c.getElementsByTagName("t")].map((x) => x.textContent).join("") : v ? v.textContent : "";
+        if (type === "s") val = shared[+val] ?? "";
+        cells[colNum(c.getAttribute("r"))] = val;
+      }
+      grid[+row.getAttribute("r")] = cells;
+    }
+    sheets.push({ name: s.getAttribute("name"), grid });
+  }
+  return sheets;
+}
+const HEAD = { id: ["tc_id", "tc id"], no: ["no.", "번호", "tc_no"], priority: ["우선", "priority"], pre: ["사전"], steps: ["테스트 내용", "test details", "절차"], expected: ["기대", "expected"] };
+const hit = (v, keys) => { const t = String(v || "").toLowerCase().replace(/\n/g, " "); return keys.some((k) => t.includes(k)); };
+function rowsFromSheets(sheets) {
+  const rows = [];
+  for (const { name, grid } of sheets) {
+    let hdr = null;
+    for (let r = 1; r <= 15; r++) if ((grid[r] || []).some((v) => hit(v, HEAD.expected))) { hdr = r; break; }
+    if (!hdr) continue;
+    const cols = {}; let last = hdr;
+    for (const r of [hdr, hdr + 1]) {
+      let any = false;
+      (grid[r] || []).forEach((v, c) => { for (const k in HEAD) if (!(k in cols) && hit(v, HEAD[k])) { cols[k] = c; any = true; } });
+      if (any) last = r;
+    }
+    for (let r = last + 1; r < grid.length; r++) {
+      const g = grid[r] || [], get = (k) => { const v = k in cols ? g[cols[k]] : ""; return v && String(v).trim() ? String(v) : ""; };
+      const num = get("id") || get("no");
+      if (!num && !get("pre") && !get("steps") && !get("expected")) continue;
+      if (num.includes("공란")) continue;
+      rows.push({ sheet: name.trim(), id: num.trim(), priority: get("priority"), pre: get("pre"), steps: get("steps"), expected: get("expected") });
+    }
+  }
+  return rows;
+}
+function rowsFromJson(j, fname) {
+  const all = [...(j.automated || []), ...(j.manual || [])];
+  return all.map((t) => ({ sheet: j.key || fname, id: t.id || "", priority: t.priority || "", pre: t.pre || "", steps: t.steps || t.title || "", expected: t.expected || "" }));
+}
+
+// ================================================================ 규칙 점검 (044 기계 점검 — tools/check_tc.py와 같은 기준)
+const RULES = {
+  S4: "사전 조건·테스트 내용·기대 결과 중 빈 칸",
+  W1: "기대 결과가 여러 개 ('/'나 '1. 2.'로 묶음) → TC를 나눈다",
+  "W4-끝맺음": "기대 결과가 '확인/되는지'로 끝남 → 결과(~ 됨)로 쓴다",
+  "W4-정상": "기대 결과가 '정상/제대로/문제없이'뿐 → 무엇이 보이는지 쓴다",
+  Q1: "기대 결과가 테스트 내용과 똑같음",
+  D6: "확률·무작위 TC에 시행 횟수(N회)가 없음",
+  Q2: "번호가 비었거나 겹침, 또는 번호만 있고 내용이 없음",
+  P1: "High(높음) 비율이 80% 넘음 → 우선순위 정의대로 다시 보기",
+  Q4: "우선순위 표기가 섞임 (High/Medium/Low 와 높음/보통/낮음)",
+  C3: "근거 대응표에서 TC가 0건인 근거",
+};
+const END_CHECK = /(확인|되는지|인지|는지)\s*[.)\]]?\s*$/, VAGUE = /정상|제대로|문제\s*없|이상\s*없/;
+const FILLER = /정상적으로|정상|제대로|문제없이|이상없이|작동|동작|진행|실행|됨|된다|되어야한다|이|가|을|를|\./g;
+const RANDOM = /확률(에\s*따른|대로|로)|랜덤(하게|성)|무작위로|분포/, TRIALS = /\d[\d,]*\s*(회|번)/;
+const MULTI = /\s\/\s|(^|\s)[1-9]\.\s.*\s[2-9]\.\s|①|②/, QUOTED = /"[^"]*"|“[^”]*”/g;
+function check(rows) {
+  const found = {}; const add = (k, w) => (found[k] = found[k] || []).push(w);
+  const bySheet = {};
+  rows.forEach((r) => (bySheet[r.sheet] = bySheet[r.sheet] || []).push(r));
+  for (const [sheet, items] of Object.entries(bySheet)) {
+    const cnt = {}; items.forEach((r) => r.id && (cnt[r.id] = (cnt[r.id] || 0) + 1));
+    let lastPre = "";
+    for (const r of items) {
+      const where = [sheet, r.id || "(번호 없음)"], st = norm(r.steps), ex = norm(r.expected);
+      if (!st && !ex) { add("Q2", where); continue; }
+      if (!r.id || cnt[r.id] > 1) add("Q2", where);
+      const pre = r.pre || lastPre; lastPre = pre;
+      if (!norm(pre) || !st || !ex) add("S4", where);
+      if (ex && END_CHECK.test(String(r.expected).trim())) add("W4-끝맺음", where);
+      if (ex && VAGUE.test(r.expected) && ex.replace(FILLER, "").length < 6) add("W4-정상", where);
+      if (ex && ex === st) add("Q1", where);
+      if (ex && MULTI.test(String(r.expected).replace(QUOTED, ""))) add("W1", where);
+      const txt = `${r.steps} ${r.expected}`;
+      if (RANDOM.test(txt) && !TRIALS.test(txt)) add("D6", where);
+    }
+    const pr = items.map((r) => String(r.priority).trim().toLowerCase()).filter(Boolean);
+    const highs = pr.filter((p) => p === "high" || p === "높음").length;
+    if (pr.length >= 10 && highs / pr.length > 0.8) add("P1", [sheet, `${highs}/${pr.length}건이 High`]);
+    if (pr.some((p) => ["high", "medium", "low"].includes(p)) && pr.some((p) => ["높음", "보통", "낮음"].includes(p))) add("Q4", [sheet, "표기 섞임"]);
+  }
+  return found;
+}
+function coverage(j) {
+  if (!j || !j.coverage) return null;
+  const n = {}; [...(j.automated || []), ...(j.manual || [])].forEach((t) => String(t.covers || "").split(",").map((c) => c.trim()).filter(Boolean).forEach((c) => (n[c] = (n[c] || 0) + 1)));
+  return j.coverage.map((c) => ({ id: c.id, name: c.name, n: n[c.id] || 0 }));
+}
+
+// ================================================================ 기획서 읽기 + 대조
+let pdfjs = null;
+async function readPdf(file) {
+  if (!pdfjs) {
+    status("PDF를 읽는 도구(pdf.js)를 불러오는 중… (처음 한 번 인터넷 필요)");
+    pdfjs = await import("https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs");
+    pdfjs.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs";
+  }
+  const doc = await pdfjs.getDocument({ data: await file.arrayBuffer(), cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/cmaps/", cMapPacked: true }).promise;
+  const pages = [];
+  for (let i = 1; i <= doc.numPages; i++) {
+    const c = await (await doc.getPage(i)).getTextContent();
+    pages.push(c.items.map((x) => x.str + (x.hasEOL ? "\n" : " ")).join(""));
+    if (i % 10 === 0) status(`PDF 읽는 중… ${i}/${doc.numPages}쪽`);
+  }
+  return pages;
+}
+/** 기획서에서 TC에 나와야 할 것: 따옴표 문구, [버튼], 단위가 붙은 수치 */
+function specItems(pages, src) {
+  const items = [], seen = new Set();
+  const push = (type, text, page, ctx) => { const k = type + "|" + norm(text).toLowerCase(); if (seen.has(k)) return; seen.add(k); items.push({ type, text, page, ctx, src }); };
+  pages.forEach((t, i) => {
+    const page = pages.length > 1 ? `p${i + 1}` : "";
+    for (const m of t.matchAll(/["“]([^"”\n]{3,60})["”]/g)) push("화면 문구", m[1].trim(), page, "");
+    for (const m of t.matchAll(/\[([^\]\n]{1,30})\]/g)) if (!/^\s*\d+\s*$/.test(m[1]) && !/^[!x?]$/i.test(m[1].trim())) push("버튼·메뉴", `[${m[1].trim()}]`, page, "");
+    for (const m of t.matchAll(/(\d+(?:\.\d+)?)\s*(초|분|시간|%|개|마리|레벨|단계|팩|장|회|배|칸|턴|코인|골드|px|M)(?![a-zA-Z가-힣])/g)) {
+      const s = Math.max(0, m.index - 18), ctx = t.slice(s, m.index + m[0].length + 10).replace(/\s+/g, " ").trim();
+      push("수치", m[0].replace(/\s+/g, ""), page, ctx);
+    }
+  });
+  return items;
+}
+function missingInTc(items, rows) {
+  const all = norm(rows.map((r) => `${r.pre} ${r.steps} ${r.expected}`).join(" ")).toLowerCase();
+  return items.filter((it) => !all.includes(norm(it.type === "버튼·메뉴" ? it.text.slice(1, -1) : it.text).toLowerCase()));
+}
+
+// ================================================================ 실행
+$("#run").onclick = async () => {
+  $("#run").disabled = true;
+  try {
+    let rows = [], json = null; const specs = [], images = [], perFile = [];
+    for (const f of FILES) {
+      status(`읽는 중: ${f.name}`);
+      if (f.kind === "엑셀") { const r = rowsFromSheets(await readXlsx(f.file)); perFile.push({ name: f.name, rows: r.length }); rows = rows.concat(r); }
+      else if (f.kind === "TC JSON") { const j = JSON.parse(await f.file.text()); json = j; const r = rowsFromJson(j, f.name); perFile.push({ name: f.name, rows: r.length }); rows = rows.concat(r); }
+      else if (f.kind === "기획서 PDF") specs.push(...specItems(await readPdf(f.file), f.name));
+      else if (f.kind === "기획서 글") specs.push(...specItems([await f.file.text()], f.name));
+      else images.push(f.name);
+    }
+    const found = rows.length ? check(rows) : {};
+    const cov = coverage(json);
+    if (cov) { const gaps = cov.filter((c) => !c.n).map((c) => [json.key || "TC JSON", `${c.id} ${c.name}`]); if (gaps.length) found.C3 = gaps; }
+    const missing = rows.length ? missingInTc(specs, rows) : specs;
+    LAST = { rows, found, cov, specs, missing, images, perFile, json, when: new Date().toLocaleString("ko-KR") };
+    draw(LAST);
+    status(rows.length ? "점검을 마쳤어요." : "TC 파일이 없어 기획서에서 뽑은 목록만 보여 줘요.", "ok");
+  } catch (e) { status("오류: " + e.message, "bad"); }
+  $("#run").disabled = false;
+};
+
+function findingRows(found) {
+  return Object.entries(RULES).filter(([k]) => found[k]).map(([k, label]) => ({ k, label, hits: found[k] }));
+}
+function reportHtml(R, forDownload) {
+  const total = Object.values(R.found).reduce((s, v) => s + v.length, 0);
+  const fr = findingRows(R.found);
+  const lim = forDownload ? 9999 : 15;
+  let h = "";
+  if (R.perFile.length) h += `<h3>점검한 TC</h3><table><tr><th>파일</th><th>TC 줄</th></tr>${R.perFile.map((f) => `<tr><td>${esc(f.name)}</td><td>${f.rows}</td></tr>`).join("")}</table>`;
+  if (R.rows.length) {
+    h += `<h3>규칙 점검 (TC 작성 규칙 044 · 기계로 볼 수 있는 규칙)</h3>`;
+    h += fr.length ? `<table><tr><th>규칙</th><th>내용</th><th>건수</th><th>위치 (시트: 번호)</th></tr>${fr.map((f) => `<tr><td>${f.k}</td><td>${esc(f.label)}</td><td>${f.hits.length}</td><td>${esc(f.hits.slice(0, lim).map(([s, i]) => `${s}: ${i}`).join(", "))}${f.hits.length > lim ? ` 외 ${f.hits.length - lim}건` : ""}</td></tr>`).join("")}</table>` : `<p class="ok">걸린 곳 없음. 문장 품질·빠진 케이스는 사람이 044 점검표로 봐요.</p>`;
+  }
+  if (R.cov) h += `<h3>근거 대응표 (C3)</h3><table><tr><th>근거</th><th>내용</th><th>TC 수</th></tr>${R.cov.map((c) => `<tr><td>${esc(c.id)}</td><td>${esc(c.name)}</td><td class="${c.n ? "" : "bad"}">${c.n}</td></tr>`).join("")}</table>`;
+  if (R.json) for (const [key, title, cols] of [["existing_review", "기존 TC 검토 의견", ["where", "issue", "fix"]], ["spec_issues", "기획서 확인 필요", ["where", "issue", "ask"]], ["suggestions", "추가 제안", ["title", "why", "tc"]]]) {
+    const L = R.json[key]; if (L && L.length) h += `<h3>${title} <span class="muted">(TC JSON에 적힌 내용)</span></h3><table>${L.map((x) => `<tr>${cols.map((c) => `<td>${esc(x[c])}</td>`).join("")}</tr>`).join("")}</table>`;
+  }
+  if (R.specs.length) {
+    h += `<h3>${R.rows.length ? `기획서에는 있는데 TC에 없는 것 — 추가 제안 후보 ${R.missing.length}개` : `기획서에서 뽑은 문구·버튼·수치 ${R.specs.length}개`} <span class="muted">(글자 그대로 비교한 자동 후보 — 사람이 확인)</span></h3>`;
+    const L = R.missing;
+    h += L.length ? `<table><tr><th>종류</th><th>내용</th><th>위치</th><th>앞뒤 글</th></tr>${L.slice(0, forDownload ? 9999 : 120).map((m) => `<tr><td>${m.type}</td><td>${esc(m.text)}</td><td>${esc(m.src)} ${m.page}</td><td class="muted">${esc(m.ctx)}</td></tr>`).join("")}</table>${!forDownload && L.length > 120 ? `<p class="muted">… 외 ${L.length - 120}개 (리포트 내려받기에 모두 들어 있어요)</p>` : ""}` : `<p class="ok">기획서의 문구·버튼·수치가 모두 TC에 나와요.</p>`;
+  }
+  if (R.images.length) h += `<h3>이미지</h3><p class="muted">${esc(R.images.join(", "))} — 이 도구는 이미지를 읽지 못해요. TC를 쓸 때 Claude Code에 같이 보여 주세요.</p>`;
+  const cards = [["TC 줄", R.rows.length], ["규칙에 걸린 곳", total, total ? "bad" : "ok"], ["추가 제안 후보", R.rows.length ? R.missing.length : "-"], ["기획서 항목", R.specs.length || "-"]];
+  return { h, cards };
+}
+function draw(R) {
+  const { h, cards } = reportHtml(R, false);
+  $("#cards").innerHTML = cards.map(([k, v, c]) => `<div class="card"><div class="num ${c || ""}">${v}</div><span>${k}</span></div>`).join("");
+  $("#body").innerHTML = h;
+  $("#result").hidden = false;
+}
+function download(name, content, type) {
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([content], { type })); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+const stamp = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+$("#dlHtml").onclick = () => {
+  if (!LAST) return;
+  const { h, cards } = reportHtml(LAST, true);
+  const css = document.querySelector("style").textContent;
+  download(`TC점검리포트_${stamp()}.html`, `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>TC 점검 리포트</title><style>${css}</style></head><body><header><h1>TC 점검 리포트</h1><p>${esc(LAST.when)} · TC 작성 규칙(044) 기준 · 넣은 파일: ${esc(FILES.map((f) => f.name).join(", "))}</p></header><main><section><div class="cards">${cards.map(([k, v, c]) => `<div class="card"><div class="num ${c || ""}">${v}</div><span>${k}</span></div>`).join("")}</div>${h}</section></main></body></html>`, "text/html");
+};
+$("#dlCsv").onclick = () => {
+  if (!LAST) return;
+  const q = (s) => `"${String(s ?? "").replace(/"/g, '""')}"`;
+  const lines = [["구분", "규칙/종류", "내용", "위치", "메모"].map(q).join(",")];
+  for (const f of findingRows(LAST.found)) for (const [s, i] of f.hits) lines.push(["규칙 점검", f.k, f.label, `${s}: ${i}`, ""].map(q).join(","));
+  for (const m of LAST.missing) lines.push(["추가 제안 후보", m.type, m.text, `${m.src} ${m.page}`, m.ctx].map(q).join(","));
+  download(`TC점검_${stamp()}.csv`, "﻿" + lines.join("\r\n"), "text/csv");
+};
+</script>
+</body>
+</html>

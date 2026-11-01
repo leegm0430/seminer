@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA 자동화 실행 화면</title>
+<style>
+  :root { --bg:#f5f6f8; --card:#fff; --text:#1d2129; --muted:#6b7280; --line:#e3e6ea; --accent:#2f5bd3; --ok:#15803d; --bad:#b91c1c; --warn:#a16207; --log:#0f1419; --logtext:#d7dde4; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111418; --card:#1a1f26; --text:#e6e8eb; --muted:#9aa3ae; --line:#2b313a; --accent:#7aa2ff; --ok:#4ade80; --bad:#f87171; --warn:#facc15; --log:#0a0d10; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:"Pretendard","Malgun Gothic",system-ui,sans-serif; line-height:1.5; }
+  header { padding:18px 24px 6px; } header h1 { margin:0; font-size:21px; } header p { margin:4px 0 0; color:var(--muted); font-size:14px; }
+  main { display:grid; grid-template-columns: minmax(0,1fr) minmax(320px,0.9fr); gap:16px; padding:14px 24px 32px; }
+  @media (max-width: 1000px) { main { grid-template-columns: 1fr; } }
+  section { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; }
+  h2 { font-size:16px; margin:0 0 10px; } h3 { font-size:15px; margin:0; }
+  .muted { color:var(--muted); font-size:13px; }
+  .games { display:grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap:10px; }
+  .game { border:1px solid var(--line); border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:6px; }
+  .game .stat b.ok { color:var(--ok); } .game .stat b.bad { color:var(--bad); }
+  .row { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+  button, .link { font:inherit; font-size:13px; padding:6px 11px; border-radius:7px; border:1px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; text-decoration:none; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  .link { color:var(--accent); }
+  input[type=text] { font:inherit; padding:7px 10px; border-radius:7px; border:1px solid var(--line); background:var(--bg); color:var(--text); width:200px; }
+  .drop { margin-top:10px; border:2px dashed var(--line); border-radius:10px; padding:18px; text-align:center; color:var(--muted); font-size:14px; }
+  .drop.on { border-color:var(--accent); color:var(--accent); }
+  .steps { margin:8px 0 0; padding-left:20px; font-size:14px; } .steps li { margin:3px 0; }
+  .tag { display:inline-block; font-size:12px; padding:1px 7px; border-radius:999px; border:1px solid var(--line); color:var(--muted); }
+  .tag.ok { color:var(--ok); border-color:var(--ok); } .tag.warn { color:var(--warn); border-color:var(--warn); }
+  #log { background:var(--log); color:var(--logtext); border-radius:10px; padding:12px; height:520px; overflow:auto; font:12.5px/1.5 Consolas,"D2Coding",monospace; white-space:pre-wrap; margin:0; }
+  #jobTitle { font-weight:700; } .busy { color:var(--warn); } .done-ok { color:var(--ok); } .done-bad { color:var(--bad); }
+  #msg { min-height:20px; font-size:14px; margin-top:8px; } #msg.err { color:var(--bad); } #msg.ok { color:var(--ok); }
+  code { font-size:12.5px; background:var(--bg); padding:1px 5px; border-radius:4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>QA 자동화 실행 화면</h1>
+  <p>게임 자동 테스트 · 자료(기획서 PDF·마크다운·이미지·엑셀)로 TC 만들기 · TC 규칙 점검. 이 화면은 내 PC 안에서만 돌아가요. 뒤에 뜬 검은 창을 닫으면 멈춰요.</p>
+</header>
+<main>
+  <div>
+    <section>
+      <h2>게임 <span class="muted">(tc 폴더에 TC가 있는 게임)</span></h2>
+      <div class="games" id="games">불러오는 중…</div>
+      <div class="row" style="margin-top:12px">
+        <button id="checkAll">TC 규칙 점검 (모든 게임)</button>
+        <span class="muted" id="jiraState"></span>
+      </div>
+    </section>
+
+    <section>
+      <h2>자료로 TC 만들기 <span class="muted">— 게임이 없어도 돼요</span></h2>
+      <div class="row">
+        <label for="gname">게임 이름</label>
+        <input type="text" id="gname" placeholder="영문 소문자, 예: mygame" autocomplete="off">
+        <span class="muted" id="inputList"></span>
+      </div>
+      <div class="drop" id="drop">여기에 기획서 PDF · 마크다운(md) 기획서·메모 · 이미지 · 기존 TC 엑셀 · 게임 html을 끌어다 놓으세요 (또는 <label class="link" for="pick">파일 고르기</label>)
+        <input type="file" id="pick" multiple hidden accept=".pdf,.md,.markdown,.txt,.csv,.xlsx,.xlsm,.png,.jpg,.jpeg,.gif,.webp,.bmp,.html,.htm"></div>
+      <div class="muted" id="uploaded" style="margin-top:6px"></div>
+      <ol class="steps">
+        <li><button id="openFolder">폴더 열기</button> 자료를 올리거나 폴더에 직접 넣어요 (이 자료는 GitHub에 올라가지 않아요)</li>
+        <li><button class="primary" id="prepare">자료 정리</button> PDF 글자 뽑기 · 그림 쪽 이미지 만들기 · 기존 TC 시트 찾기</li>
+        <li>Claude Code에 <code id="askText">input/게임 자료로 TC 작성해줘</code> <button id="copyAsk">문구 복사</button> 라고 요청 (AI API 비용 없음)</li>
+        <li><button class="primary" id="pipeline">TC 마무리</button> 규칙 점검 → (게임 파일이 있으면) 자동 테스트 → TC 엑셀 → 검토 리포트</li>
+      </ol>
+      <div id="msg"></div>
+    </section>
+  </div>
+
+  <div>
+    <section>
+      <h2>진행 기록 <span id="jobTitle" class="muted">— 실행 중인 작업 없음</span></h2>
+      <pre id="log">버튼을 누르면 여기에 진행 상황이 나와요.</pre>
+    </section>
+  </div>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const H = { "X-QA-UI": "1" };
+let since = 0, polling = null, state = null;
+
+function msg(text, kind) { const m = $("#msg"); m.textContent = text || ""; m.className = kind || ""; }
+function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+const gameName = () => $("#gname").value.trim();
+
+async function api(path, body) {
+  const r = await fetch(path, { method: "POST", headers: { ...H, "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+}
+
+async function run(action, game) {
+  if (action === "jira" && !confirm(`[${game}] 실패한 테스트를 Jira에 버그로 올릴까요?\n(같은 실패가 이미 있으면 새 이슈 대신 댓글)`)) return;
+  try {
+    const j = await api("/api/run", { action, game });
+    $("#log").textContent = ""; since = 0; msg(`'${j.title}' 시작했어요.`, "ok");
+    startPolling();
+  } catch (e) { msg(e.message, "err"); }
+}
+
+function startPolling() {
+  if (polling) return;
+  polling = setInterval(async () => {
+    const j = await (await fetch(`/api/job?since=${since}`)).json();
+    if (j.lines.length) {
+      const log = $("#log"), atBottom = log.scrollTop + log.clientHeight >= log.scrollHeight - 30;
+      log.textContent += (log.textContent ? "\n" : "") + j.lines.join("\n");
+      since = j.next;
+      if (atBottom) log.scrollTop = log.scrollHeight;
+    }
+    const t = $("#jobTitle");
+    if (j.busy) { t.textContent = `— ${j.title} 진행 중…`; t.className = "busy"; setButtons(true); }
+    else if (j.done) {
+      t.textContent = `— ${j.title} ${j.code ? "끝 (문제 있음, 기록 확인)" : "끝"}`; t.className = j.code ? "done-bad" : "done-ok";
+      clearInterval(polling); polling = null; setButtons(false); load();
+    }
+  }, 1000);
+}
+
+function setButtons(disabled) { document.querySelectorAll("button[data-act], #checkAll, #prepare, #pipeline").forEach((b) => { b.disabled = disabled; }); }
+
+function card(g) {
+  const r = g.result;
+  const res = r ? `<span class="stat">최근 결과 <b class="ok">통과 ${r.passed}</b> · <b class="${r.failed ? "bad" : "ok"}">실패 ${r.failed}</b> / ${r.total} <span class="muted">(${esc(r.when)})</span></span>`
+                : `<span class="muted">${g.testable ? "아직 실행 기록 없음" : "자동 테스트 없음 (문서 전용)"}</span>`;
+  const files = Object.entries(g.files).map(([k, v]) => `<a class="link" href="/files/${encodeURI(v)}" target="_blank">${esc(k)}</a>`).join("");
+  return `<div class="game">
+    <h3>${esc(g.name)}</h3>
+    <span class="muted">${esc(g.key)} · TC ${g.auto + g.manual}건 (자동 ${g.auto} · 수동 ${g.manual})${g.review_items ? ` · 검토 의견 ${g.review_items}개` : ""}</span>
+    ${res}
+    <div class="row">
+      ${g.testable ? `<button class="primary" data-act="test" data-game="${esc(g.key)}">테스트 실행</button>` : `<button data-act="pipeline" data-game="${esc(g.key)}">TC 마무리</button>`}
+      ${g.testable && state && state.jira ? `<button data-act="jira" data-game="${esc(g.key)}">Jira 등록</button>` : ""}
+    </div>
+    <div class="row">${files || '<span class="muted">결과 파일 없음</span>'}</div>
+  </div>`;
+}
+
+async function load() {
+  state = await (await fetch("/api/status")).json();
+  $("#games").innerHTML = state.games.map(card).join("");
+  $("#jiraState").textContent = state.jira ? "Jira 연결 설정 있음 (.env)" : "Jira 설정 없음 — Jira 등록 버튼 숨김";
+  $("#inputList").innerHTML = state.inputs.length
+    ? "자료 폴더: " + state.inputs.map((i) => `<a class="link" href="#" data-input="${esc(i.key)}">${esc(i.key)}</a> <span class="tag ${i.has_tc ? "ok" : i.prepared ? "warn" : ""}">${i.has_tc ? "TC 있음" : i.prepared ? "정리됨" : "자료만"}</span>`).join(" ")
+    : "";
+  if (state.job.busy) startPolling();
+}
+
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-act]");
+  if (b) return run(b.dataset.act, b.dataset.game);
+  const a = e.target.closest("[data-input]");
+  if (a) { e.preventDefault(); $("#gname").value = a.dataset.input; updateAsk(); showFiles(); }
+});
+$("#checkAll").onclick = () => run("check");
+$("#prepare").onclick = () => run("prepare", gameName());
+$("#pipeline").onclick = () => run("pipeline", gameName());
+$("#openFolder").onclick = async () => { try { await api("/api/open-folder", { game: gameName() }); } catch (e) { msg(e.message, "err"); } };
+function updateAsk() { $("#askText").textContent = `input/${gameName() || "게임"} 자료로 TC 작성해줘`; }
+$("#gname").addEventListener("input", () => { updateAsk(); showFiles(); });
+$("#copyAsk").onclick = async () => { try { await navigator.clipboard.writeText($("#askText").textContent); msg("요청 문구를 복사했어요. Claude Code에 붙여넣으세요.", "ok"); } catch { msg("복사하지 못했어요. 글자를 직접 선택해서 복사하세요.", "err"); } };
+function showFiles() {
+  const i = state && state.inputs.find((x) => x.key === gameName());
+  $("#uploaded").textContent = i ? `input/${i.key}: ${i.files.join(", ") || "(비어 있음)"}` : "";
+}
+
+async function upload(files) {
+  const game = gameName();
+  if (!/^[a-z0-9_-]{1,40}$/.test(game)) return msg("먼저 게임 이름을 영문 소문자·숫자로 쓰세요 (예: mygame).", "err");
+  for (const f of files) {
+    msg(`올리는 중: ${f.name}`);
+    const r = await fetch(`/api/upload?game=${encodeURIComponent(game)}`, { method: "POST", headers: { ...H, "X-Filename": encodeURIComponent(f.name) }, body: f });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) return msg(j.error || "올리지 못했어요.", "err");
+  }
+  msg(`${files.length}개 파일을 input/${game}에 올렸어요. 이제 [자료 정리]를 누르세요.`, "ok");
+  await load(); showFiles();
+}
+const drop = $("#drop");
+["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("on"); }));
+["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("on"); }));
+drop.addEventListener("drop", (e) => upload([...e.dataTransfer.files]));
+$("#pick").onchange = (e) => { upload([...e.target.files]); e.target.value = ""; };
+
+load().catch(() => { $("#games").textContent = "서버에 연결하지 못했어요. QA자동화_화면.bat으로 다시 여세요."; });
+</script>
+</body>
+</html>

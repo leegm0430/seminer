@@ -9,7 +9,7 @@
                   "직접 볼 쪽"으로 표시하고, PyMuPDF(무료)가 있으면 그 쪽을 그림(_pages/p001.png)으로 만들어 Claude Code가 보게 한다
   - 이미지      : png·jpg·gif·webp — 크기만 적고, Claude Code가 직접 본다(화면 캡처·UI 시안·와이어프레임)
   - 엑셀        : xlsx — 시트별 표를 글로 뽑는다. 머리글에 '기대'가 있는 시트는 '기존 TC'로 보고 TC 규칙 점검도 한다
-  - 글          : md·txt·csv
+  - 글          : md(마크다운 기획서·메모)·txt·csv — 마크다운 안의 그림 링크(![](a.png), ![[a.png]])도 찾아서 같이 넣었는지 알려 준다
   - 게임 파일   : html (또는 game.txt 안에 게임 html 경로 한 줄) → 있으면 '자동 테스트' 진행, 없으면 '문서 전용'(자동 테스트 건너뜀)
 
 만드는 것: input/<게임>/_입력정리.md (TC를 쓰는 사람·AI가 읽는 정리본), input/<게임>/_입력정보.json (모드·파일 목록)
@@ -25,7 +25,7 @@ from common import INPUT_DIR, ROOT  # noqa: E402
 
 KINDS = {
     "pdf": (".pdf",), "image": (".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"),
-    "xlsx": (".xlsx", ".xlsm"), "text": (".md", ".txt", ".csv"), "game": (".html", ".htm"),
+    "xlsx": (".xlsx", ".xlsm"), "text": (".md", ".markdown", ".txt", ".csv"), "game": (".html", ".htm"),
 }
 LOW_TEXT = 40           # 머리글을 뺀 한 쪽 글자가 이보다 적으면 그림·스캔 쪽으로 본다
 RENDER_ZOOM = 1.4       # 직접 볼 쪽을 그림으로 만들 때 배율
@@ -109,6 +109,18 @@ def xlsx_dump(path):
     return out
 
 
+def md_images(text):
+    """마크다운 안의 그림 링크: ![설명](a.png), ![[a.png]], <img src="a.png">. 인터넷 주소는 뺀다."""
+    import re
+    refs = re.findall(r"!\[[^\]]*\]\(([^)\s]+)", text) + re.findall(r"!\[\[([^\]|]+)", text) + re.findall(r'<img[^>]+src="([^"]+)"', text)
+    out = []
+    for r in refs:
+        r = r.strip()
+        if r and not r.startswith(("http://", "https://", "data:")) and r not in out:
+            out.append(r)
+    return out
+
+
 def image_size(path):
     try:
         from PIL import Image
@@ -179,11 +191,18 @@ def prepare(game):
         elif k == "text":
             txt = open(p, encoding="utf-8", errors="replace").read()
             memo = f"글자 {len(txt):,}자"
+            if f.lower().endswith((".md", ".markdown")):
+                memo = "마크다운, " + memo
+                refs = md_images(txt)
+                if refs:
+                    have = {x.lower() for x in files}
+                    missing = [r for r in refs if os.path.basename(r).lower() not in have]
+                    memo += f", 그림 링크 {len(refs)}개" + (f" (폴더에 없는 그림 {len(missing)}개: {', '.join(missing[:5])}{' …' if len(missing) > 5 else ''} → 같이 올려 주세요)" if missing else " (모두 폴더에 있음 → 직접 볼 것)")
             body += [f"## 글: {f}", "", "```", txt.strip(), "```", ""]
         elif k == "game":
             memo = "게임 파일 → 자동 테스트 대상"
         else:
-            memo = "읽지 않는 형식 (pdf·png·jpg·xlsx·md·txt·csv·html만)"
+            memo = "읽지 않는 형식 (pdf·png·jpg·xlsx·md(마크다운)·txt·csv·html만)"
         md.append(f"| {f} | {k or '기타'} | {memo} |")
         info["files"].append({"name": f, "kind": k, "memo": memo})
     if os.path.exists(os.path.join(folder, "game.txt")):
