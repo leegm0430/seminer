@@ -13,7 +13,8 @@
     "report:bloodfall": "python -I tools/make_report.py --game bloodfall",
     "jira:tcs:bloodfall": "python -I tools/jira_sync.py tcs --game bloodfall",
     "jira:bugs:bloodfall": "python -I tools/jira_sync.py bugs --game bloodfall",
-    "tc:xlsx": "python -I tools/export_tc_xlsx.py --all"
+    "tc:xlsx": "python -I tools/export_tc_xlsx.py --all",
+    "tc:check": "python -I tools/check_tc.py --all"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.0"

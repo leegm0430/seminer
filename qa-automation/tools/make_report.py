@@ -113,6 +113,7 @@ def build(results_path, out_path, label, game="slimegame"):
 
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
     ap.add_argument("--game", default="slimegame", choices=GAMES)
     ap.add_argument("--results", default=RESULTS_FILE)

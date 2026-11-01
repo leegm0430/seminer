@@ -54,6 +54,17 @@ npm run jira:bugs:bloodfall
 - 엑셀에서 파일을 연 채로 갱신하면 저장이 안 된다 → 닫고 다시 실행
 - openpyxl(무료 오픈소스 파이썬 라이브러리)이 필요: `pip install openpyxl`
 
+## TC 작성 규칙 점검 (tools/check_tc.py)
+
+TC 작성 규칙(`AX부트캠프study/Resources/2026-11-02 044. TC 작성 규칙.md`) 중 기계로 볼 수 있는 것을 점검한다: 빈 칸, 기대 결과가 "확인/되는지"로 끝남, "정상"뿐인 결과, 내용 복사, 확률 TC 횟수, 번호, High 비율, 우선순위 표기 섞임.
+
+```powershell
+npm run tc:check                                              # qa-automation 게임 전부
+python -I tools/check_tc.py --xlsx "../TC/운빨존많겜TC작성자_이경민.xlsx"   # 직접 쓴 엑셀 TC
+```
+
+TC 엑셀을 만들 때(`tc:xlsx`, 리포트)도 점검 결과가 한 줄로 나온다. 문장 품질·빠진 케이스는 사람이 044 점검표로 본다.
+
 ## 더블클릭 실행 (QA자동화_실행.bat)
 
 1. 게임 선택(1 슬라임 / 2 BLOODFALL / 3 둘 다)

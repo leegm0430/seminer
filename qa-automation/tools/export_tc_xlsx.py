@@ -303,11 +303,14 @@ def export(game):
         print(f"  엑셀에서 바뀐 검토 값을 JSON에 반영: {', '.join(changed)}")
     if missing:
         print(f"  경고: 엑셀에서 찾지 못한 TC 번호 {missing}")
+    import check_tc                                  # TC 작성 규칙(044) 점검 한 줄 요약
+    print("  " + check_tc.summary(game))
     return path
 
 
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     games = GAMES if "--all" in sys.argv else [GAMES[0] if "--game" not in sys.argv
                                                 else sys.argv[sys.argv.index("--game") + 1]]
     for g in games:
