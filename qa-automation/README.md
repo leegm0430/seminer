@@ -2,13 +2,14 @@
 
 - 작성일: 2026-11-01
 - 작성자: Claude Code (자동화 대상 선정·코드 초안) / 원본 TC·게임: LKM
-- 비용: 0원 — Playwright(오픈소스), Python 표준 라이브러리, Jira Cloud 무료 플랜 REST API만 사용. 유료 앱(Zephyr)·Rovo(크레딧)·AI API 호출 없음.
+- 비용: 0원 — Playwright(오픈소스), Python 표준 라이브러리 + openpyxl(오픈소스, TC 엑셀용), Jira Cloud 무료 플랜 REST API만 사용. 유료 앱(Zephyr)·Rovo(크레딧)·AI API 호출 없음.
 
 ## 무엇을 하나
 
 ```
-TC/슬라임게임_TC.xlsx (58건, LKM 작성)
+TC/슬라임게임_TC.xlsx (71건, LKM 작성)
    └─ 자동화할 22건 + 탐색 중 추가 1건 선정 → tc/slimegame_tc.json (검토: 초안 → LKM이 확인함/버림)
+        └─ tc/slimegame_TC.xlsx : 원본 엑셀 + 자동화 칸(결과·Jira·검토) — 리포트 만들 때 자동 갱신
         └─ tests/slimegame.spec.js : Playwright가 크롬에서 게임을 직접 조작
              └─ out/results.json → tools/make_report.py → report/slimegame_report.html
              └─ 실패 → tools/jira_sync.py bugs → Jira 버그 이슈 + 스크린샷 (같은 실패는 댓글만)
@@ -18,7 +19,7 @@ TC/슬라임게임_TC.xlsx (58건, LKM 작성)
 
 | 항목 | 값 |
 |---|---|
-| 자동화한 기존 TC | 22 / 58 (나머지 36건은 자동화하지 않은 이유를 리포트에 기록) |
+| 자동화한 기존 TC | 22 / 71 (나머지 49건은 자동화하지 않은 이유를 리포트·엑셀에 기록) |
 | 테스트 | 17개, 한 번 도는 데 약 3~5분 |
 | 발견한 버그 | **탐색-1: 게임 오버 뒤에도 보드 점수가 오른다** — 결과 창·최고 기록은 게임 오버 순간 점수인데, 물리 엔진이 멈추지 않아 진행 중이던 병합 점수가 보드에만 더해짐. 직접 재현 3판 중 2판. 기존 TC에 없던 항목 |
 | 심은 버그 데모 | 점수 공식 ×8 → ×9로 바꾼 사본에서 병합 점수 테스트가 24 대신 27을 잡아냄 (`report/slimegame_bugdemo.html`) |
@@ -39,6 +40,19 @@ npm run report:bloodfall
 npm run jira:tcs:bloodfall     # 한 번만 (다시 돌려도 중복 없음)
 npm run jira:bugs:bloodfall
 ```
+
+## TC 엑셀 (tc/<게임>_TC.xlsx)
+
+| 파일 | 내용 |
+|---|---|
+| `tc/slimegame_TC.xlsx` | LKM 원본 TC 엑셀을 복사하고 오른쪽에 자동화 칸을 붙인 것. 원본 `TC/슬라임게임_TC.xlsx`는 고치지 않음. 탐색-1은 지정항목 시트 맨 아래에 추가 |
+| `tc/bloodfall_TC.xlsx` | AI 초안 TC 38건을 같은 양식(번호·우선순위·분류·사전 조건·테스트 내용·기대 결과·비고)으로 정리 + 근거 조항 |
+
+- 자동화 칸: TC ID · 자동/수동 · 자동화하지 않은 이유 · 최근 결과 · 실행 시각 · Jira TC · Jira 버그 · 검토
+- `npm run report` / `npm run report:bloodfall` 을 돌리면 그 게임 엑셀이 함께 갱신된다. 엑셀만 다시 만들려면 `npm run tc:xlsx`
+- **검토 칸은 엑셀에서 직접 고친다**(초안/확인함/버림 목록). 다음 갱신 때 `tc/*.json`에 옮겨 적힌다. 다른 칸을 엑셀에서 고치면 다음 갱신 때 지워지니, TC 내용은 JSON에서 고친다
+- 엑셀에서 파일을 연 채로 갱신하면 저장이 안 된다 → 닫고 다시 실행
+- openpyxl(무료 오픈소스 파이썬 라이브러리)이 필요: `pip install openpyxl`
 
 ## 실행 (PowerShell, 이 폴더에서)
 
@@ -63,7 +77,7 @@ npx playwright show-report out/playwright-report   # Playwright 기본 리포트
 
 ```powershell
 python -I tools/jira_sync.py check   # 접속·프로젝트·이슈 유형 확인 (아무것도 만들지 않음)
-python -I tools/jira_sync.py tcs     # TC 42건을 작업 이슈로 등록 (한 번만, 다시 돌려도 중복 없음)
+python -I tools/jira_sync.py tcs     # TC를 작업 이슈로 등록 (한 번만, 다시 돌려도 중복 없음)
 npm test
 python -I tools/jira_sync.py bugs    # 실패한 테스트를 버그로 등록 + 스크린샷 첨부 + 관련 TC 연결
 ```
@@ -83,7 +97,8 @@ python -I tools/jira_sync.py bugs    # 실패한 테스트를 버그로 등록 +
 | 경로 | 내용 | git |
 |---|---|---|
 | `tests/slimegame.spec.js` | 테스트 코드 | 올림 |
-| `tc/slimegame_tc.json` | 자동화 TC·검토 상태·수동 TC 이유 | 올림 |
+| `tc/*_tc.json` | 자동화 TC·검토 상태·수동 TC 이유 (스크립트가 읽는 원본) | 올림 |
+| `tc/*_TC.xlsx` | 사람이 보는 TC 엑셀 (자동 생성) | 올림 |
 | `tools/` | 리포트·Jira 연동·버그 데모 (Python 표준 라이브러리) | 올림 |
 | `report/` | 포트폴리오용 결과 리포트 | 올림 |
 | `out/` | 실행 결과·스크린샷·Jira 기록 | 안 올림 |

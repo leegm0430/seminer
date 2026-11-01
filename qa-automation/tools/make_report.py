@@ -3,6 +3,7 @@
 사용:
   python -I tools/make_report.py                       # 슬라임 게임: out/results.json → report/slimegame_report.html
   python -I tools/make_report.py --game bloodfall      # BLOODFALL → report/bloodfall_report.html
+  (기본 실행이면 tc/<게임>_TC.xlsx 의 결과 칸도 함께 갱신한다)
   python -I tools/make_report.py --results out/results_bugdemo.json --out report/slimegame_bugdemo.html --label "버그 심은 사본"
 """
 import argparse
@@ -13,10 +14,7 @@ import shutil
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import GAMES, ROOT, RESULTS_FILE, load_results, load_tcs, local_time  # noqa: E402
-
-RANK = {"failed": 3, "timedOut": 3, "interrupted": 2, "skipped": 1, "passed": 0}
-LABEL = {"passed": "통과", "failed": "실패", "timedOut": "시간 초과", "skipped": "건너뜀", "interrupted": "중단", None: "미실행"}
+from common import GAMES, LABEL, ROOT, RESULTS_FILE, load_results, load_tcs, local_time, results_by_tc  # noqa: E402
 
 
 def esc(s):
@@ -30,13 +28,7 @@ def build(results_path, out_path, label, game="slimegame"):
     asset_dir = os.path.join(out_dir, "assets")
     has_basis = any("basis" in tc for tc in tcs["automated"])
 
-    # TC 하나가 여러 테스트에 걸리면 가장 나쁜 결과를 쓴다
-    by_tc = {}
-    for r in rows:
-        for tc in r["tc_ids"]:
-            cur = by_tc.get(tc)
-            if cur is None or RANK.get(r["status"], 0) > RANK.get(cur["status"], 0):
-                by_tc[tc] = r
+    by_tc = results_by_tc(rows)
 
     passed = sum(r["status"] == "passed" for r in rows)
     failed = [r for r in rows if r["status"] in ("failed", "timedOut")]
@@ -131,6 +123,9 @@ def main():
     path, ok, bad = build(a.results if os.path.isabs(a.results) else os.path.join(ROOT, a.results),
                           out if os.path.isabs(out) else os.path.join(ROOT, out), a.label, a.game)
     print(f"리포트 저장: {path} (통과 {ok}, 실패 {bad})")
+    if a.results == RESULTS_FILE and a.out is None:   # 기본 실행이면 TC 엑셀의 결과 칸도 같이 갱신
+        import export_tc_xlsx
+        export_tc_xlsx.export(a.game)
 
 
 if __name__ == "__main__":

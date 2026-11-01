@@ -60,6 +60,27 @@ def load_results(path=RESULTS_FILE, game=None):
     return data.get("stats", {}), rows
 
 
+RANK = {"failed": 3, "timedOut": 3, "interrupted": 2, "skipped": 1, "passed": 0}
+LABEL = {"passed": "통과", "failed": "실패", "timedOut": "시간 초과", "skipped": "건너뜀", "interrupted": "중단", None: "미실행"}
+
+
+def results_by_tc(rows):
+    """TC 번호 → 테스트 결과. TC 하나가 여러 테스트에 걸리면 가장 나쁜 결과를 쓴다."""
+    by_tc = {}
+    for r in rows:
+        for tc in r["tc_ids"]:
+            cur = by_tc.get(tc)
+            if cur is None or RANK.get(r["status"], 0) > RANK.get(cur["status"], 0):
+                by_tc[tc] = r
+    return by_tc
+
+
+def load_jira_state():
+    """jira_sync.py가 기록한 이슈 키 {tcs: {TC번호: 키}, bugs: {테스트 이름: 키}}. 없으면 빈 값."""
+    path = os.path.join(ROOT, "out", "jira_state.json")
+    return load_json(path) if os.path.exists(path) else {"tcs": {}, "bugs": {}}
+
+
 def local_time(iso):
     """Playwright의 UTC 시각(2026-11-01T01:25:00.000Z)을 이 PC 시간대로 바꿔 'YYYY-MM-DD HH:MM'으로."""
     import datetime as dt
