@@ -2,6 +2,8 @@
   "key": "bloodfall",
   "game": "BLOODFALL (뱀서라이크 협동 프로토타입 v0.9)",
   "target": "뱀서라이크/bloodfall_playable.html",
+  "platform": "웹 브라우저 (데스크톱, 키보드·마우스)",
+  "version": "뱀서라이크/bloodfall_playable.html (기획서 v0.9 기준)",
   "spec": "tests/bloodfall.spec.js",
   "total_tc": 38,
   "source_tc": "기존 TC 없음 — 뱀서라이크/게임기획서_뱀서라이크_멀티.md v0.9를 근거로 Claude Code가 작성한 TC 초안",

@@ -7,7 +7,8 @@
   (make_report.py 기본 실행 때도 자동으로 불린다)
 
 - 슬라임 게임: LKM이 쓴 원본 엑셀(TC/슬라임게임_TC.xlsx)을 그대로 복사하고 오른쪽에 자동화 칸을 붙인다. 원본 파일은 고치지 않는다.
-- BLOODFALL: JSON의 TC 초안으로 같은 양식의 엑셀을 새로 만든다.
+- BLOODFALL·카드팩 스튜디오: JSON의 TC 초안으로 같은 양식의 엑셀을 새로 만든다(첫 시트 = 표지, TC 작성 규칙 044 S1).
+- 결과 칸은 규칙 044의 결과 정의(PASS/Fail/N/T)로 적는다.
 - 결과·실행 시각·Jira 칸은 매번 다시 쓴다. 최근 결과 파일에 그 게임 결과가 없으면 이전 엑셀의 값을 남긴다.
 - '검토' 칸은 엑셀에서 직접 바꿔도 된다(초안/확인함/버림). 다음 실행 때 JSON에 옮겨 적는다.
 - openpyxl(무료 오픈소스) 필요: pip install openpyxl
@@ -40,10 +41,20 @@ BODY_FONT = Font(name="Arial", size=10)
 CENTER = Alignment(horizontal="center", vertical="center", wrap_text=True)
 LEFT = Alignment(horizontal="left", vertical="center", wrap_text=True)
 RESULT_STYLE = {
-    "통과": (Font(name="Arial", size=10, bold=True, color="15803D"), None),
-    "실패": (Font(name="Arial", size=10, bold=True, color="9C0006"), PatternFill("solid", fgColor="FFC7CE")),
-    "시간 초과": (Font(name="Arial", size=10, bold=True, color="9C0006"), PatternFill("solid", fgColor="FFC7CE")),
+    "PASS": (Font(name="Arial", size=10, bold=True, color="15803D"), None),
+    "Fail": (Font(name="Arial", size=10, bold=True, color="9C0006"), PatternFill("solid", fgColor="FFC7CE")),
 }
+# 결과 칸은 TC 작성 규칙(044)의 결과 정의를 쓴다. 자동화하지 않은 TC는 사람이 실행하기 전까지 N/T
+XLSX_RESULT = {"통과": "PASS", "실패": "Fail", "시간 초과": "Fail", "건너뜀": "N/T", "중단": "N/T", "미실행": "N/T", "수동": "N/T"}
+PRIORITY_DEF = [("High", "제품의 핵심 기능이며, 오류가 발생하면 사용자에게 치명적인 영향을 미칠 정도의 오류"),
+                ("Medium", "결함이 있어도 핵심 기능이 마비되지는 않는 정도의 오류"),
+                ("Low", "문제가 생겨도 사용성에 큰 영향을 주지 않는 오류")]
+RESULT_DEF = [("PASS", "요구사항대로 동작함을 확인"), ("Fail", "기대 결과와 실제 결과가 다름"),
+              ("N/A", "기능이 빠지거나 바뀌어 TC가 더는 맞지 않음"), ("N/T", "계획에 있었지만 실행하지 못함 (수동 TC는 사람이 실행하기 전까지 N/T)")]
+
+
+def xr(label):
+    return XLSX_RESULT.get(label, label)
 
 
 def xlsx_path(game):
@@ -131,13 +142,13 @@ def auto_values(tc_id, info, by_tc, run_time, prev, jira):
     tc = info["tc"]
     if info["kind"] == "auto":
         if by_tc is None:                       # 이번 결과 파일에 이 게임이 없음 → 이전 값 유지
-            result, when = p.get("최근 결과") or LABEL[None], p.get("실행 시각") or ""
+            result, when = xr(p.get("최근 결과") or LABEL[None]), p.get("실행 시각") or ""
         else:
             r = by_tc.get(tc_id)
-            result, when = LABEL.get(r and r["status"], r and r["status"]), (run_time if r else "")
+            result, when = xr(LABEL.get(r and r["status"], r and r["status"])), (run_time if r else "")
         reason = ""
     else:
-        result, when, reason = "수동", "", info["reason"]
+        result, when, reason = "N/T", "", info["reason"]
     jira_key = jira["tcs"].get(tc_id) or jira["tcs"].get(tc["id"], "")
     return [tc_id, "자동" if info["kind"] == "auto" else "수동", reason, result, when,
             jira_key, ", ".join(bugs), tc.get("review", "")]
@@ -236,50 +247,85 @@ def build_slimegame(tcs, idx, by_tc, run_time, prev, jira):
     return wb, missing
 
 
-# ---------------------------------------------------------------- BLOODFALL: JSON 초안으로 새 엑셀
+# ---------------------------------------------------------------- JSON TC 초안으로 새 엑셀 (BLOODFALL·카드팩 스튜디오)
 
-BF_COLS = [("번호", 6), ("우선순위", 9), ("분류 1", 10), ("분류 2", 14), ("확인 항목", 34), ("근거", 10),
-           ("사전 조건", 26), ("테스트 내용", 38), ("테스트 기대 결과", 42), ("비고", 18)]
+def add_cover(wb, tcs):
+    """표지 시트 (TC 작성 규칙 044 S1): 게임 이름, 작성, 우선순위·결과 정의, TC 수"""
+    ws = wb.create_sheet("표지", 0)
+    ws.column_dimensions["A"].width = 2
+    ws.column_dimensions["B"].width = 16
+    ws.column_dimensions["C"].width = 90
+    title = ws.cell(2, 2, tcs["game"] + " TC")
+    title.font = Font(name="Arial", size=16, bold=True)
+    auto_n, manual_n = len(tcs["automated"]), len(tcs["manual"])
+    rows = [("작성", tcs.get("selection_by", "")), ("TC 출처", tcs.get("source_tc", "")),
+            ("대상", tcs["target"]), ("TC 수", f"{auto_n + manual_n}건 (자동 {auto_n} · 수동 {manual_n})"),
+            ("검토", tcs.get("review_rule", "")), ("작성 규칙", "AX부트캠프study/Resources/2026-11-02 044. TC 작성 규칙.md")]
+    r = 4
+    for k, v in rows:
+        style_cell(ws.cell(r, 2, k), head=True)
+        style_cell(ws.cell(r, 3, v))
+        r += 1
+    for head, items in (("우선 순위 설명", PRIORITY_DEF), ("결과 설명", RESULT_DEF)):
+        r += 1
+        ws.cell(r, 2, head).font = Font(name="Arial", size=11, bold=True)
+        r += 1
+        for k, v in items:
+            style_cell(ws.cell(r, 2, k), center=True)
+            style_cell(ws.cell(r, 3, v))
+            r += 1
 
 
-def build_bloodfall(tcs, idx, by_tc, run_time, prev, jira):
+JSON_COLS = [("번호", 6), ("우선순위", 9), ("분류 1", 10), ("분류 2", 14), ("분류 3", 12), ("확인 항목", 30), ("근거", 14),
+             ("사전 조건", 26), ("테스트 내용", 36), ("테스트 기대 결과", 42), ("비고", 24)]
+
+
+def build_from_json(tcs, idx, by_tc, run_time, prev, jira):
     wb = Workbook()
     ws = wb.active
     ws.title = "TC"
     ws.column_dimensions["A"].width = 2
-    info = [("프로젝트 명칭", tcs["game"]), ("플랫폼 종류", "웹 브라우저 (데스크톱, 키보드·마우스)"),
-            ("버전 정보", f"{tcs['target']} (기획서 v0.9 기준)"), ("작성", "Claude Code 초안 / 검토 LKM (검토 칸 참고)")]
+    has_cat3 = any(tc.get("cat3") for k in ("automated", "manual") for tc in tcs[k])
+    cols = [c for c in JSON_COLS if has_cat3 or c[0] != "분류 3"]
+    info = [("프로젝트 명칭", tcs["game"]), ("플랫폼 종류", tcs.get("platform", "웹 브라우저 (데스크톱)")),
+            ("버전 정보", tcs.get("version", tcs["target"])), ("작성", "Claude Code 초안 / 검토 LKM (검토 칸 참고)")]
+    label_col = [n for n, _ in cols].index("테스트 내용") + 2
     for i, (k, v) in enumerate(info, start=2):
-        a, b = ws.cell(i, 9, k), ws.cell(i, 10, v)
+        a, b = ws.cell(i, label_col, k), ws.cell(i, label_col + 1, v)
         style_cell(a, head=True)
         style_cell(b)
         b.font = Font(name="Arial", size=11, bold=True)
     hdr = 2 + len(info)
-    for j, (name, width) in enumerate(BF_COLS, start=2):
+    for j, (name, width) in enumerate(cols, start=2):
         style_cell(ws.cell(hdr, j, name), head=True)
         ws.column_dimensions[get_column_letter(j)].width = width
-    start_col = 2 + len(BF_COLS)
+    start_col = 2 + len(cols)
+    center_names = {"번호", "우선순위", "분류 1", "분류 2", "분류 3", "근거"}
     rows, n = [], 0
     for kind in ("automated", "manual"):
         for tc in tcs[kind]:
             n += 1
             r = hdr + n
-            note = "수동 TC" if kind == "manual" else ""
-            for j, v in enumerate((n, tc.get("priority"), tc.get("cat1"), tc.get("cat2"), tc.get("title"),
-                                   tc.get("basis"), tc.get("pre"), tc.get("steps"), tc.get("expected"), note), start=2):
-                style_cell(ws.cell(r, j, v), center=j in (2, 3, 4, 5, 7))
+            note = " / ".join(x for x in (tc.get("note", ""), "수동 TC" if kind == "manual" else "") if x)
+            values = {"번호": n, "우선순위": tc.get("priority"), "분류 1": tc.get("cat1"), "분류 2": tc.get("cat2"),
+                      "분류 3": tc.get("cat3"), "확인 항목": tc.get("title"), "근거": tc.get("basis"),
+                      "사전 조건": tc.get("pre"), "테스트 내용": tc.get("steps"), "테스트 기대 결과": tc.get("expected"), "비고": note}
+            for j, (name, _) in enumerate(cols, start=2):
+                style_cell(ws.cell(r, j, values[name] or None), center=name in center_names)
             rows.append((r, auto_values(tc["id"], idx[tc["id"]], by_tc, run_time, prev, jira)))
     write_auto_block(ws, hdr, start_col, rows, [r for r, v in rows if v[-1]])
-    widths = {j: w for j, (_, w) in enumerate(BF_COLS + AUTO_COLS, start=2)}
+    widths = {j: w for j, (_, w) in enumerate(cols + AUTO_COLS, start=2)}
     for r, _ in rows:
         fit_height(ws, r, widths)
     ws.row_dimensions[hdr].height = 30
     ws.freeze_panes = ws.cell(hdr + 1, 4)
     ws.auto_filter.ref = f"B{hdr}:{get_column_letter(start_col + len(AUTO_COLS) - 1)}{hdr + n}"
+    add_cover(wb, tcs)
+    wb.active = 0
     return wb, []
 
 
-BUILDERS = {"slimegame": build_slimegame, "bloodfall": build_bloodfall}
+BUILDERS = {"slimegame": build_slimegame}          # 그 밖의 게임은 JSON TC 초안으로 만든다
 
 
 def export(game):
@@ -292,7 +338,7 @@ def export(game):
         stats, rows = load_results(RESULTS_FILE, game)
         if rows:
             by_tc, run_time = results_by_tc(rows), local_time(stats.get("startTime"))
-    wb, missing = BUILDERS[game](tcs, tc_index(tcs), by_tc, run_time, prev, load_jira_state())
+    wb, missing = BUILDERS.get(game, build_from_json)(tcs, tc_index(tcs), by_tc, run_time, prev, load_jira_state())
     try:
         wb.save(path)
     except PermissionError:

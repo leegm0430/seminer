@@ -17,6 +17,7 @@ from common import GAMES, ROOT, load_tcs  # noqa: E402
 
 RULES = {
     "S4": "사전 조건·테스트 내용·기대 결과 중 빈 칸",
+    "W1": "기대 결과가 여러 개 ('/'나 '1. 2.'로 묶음) → TC를 나눈다",
     "W4-끝맺음": "기대 결과가 '확인/되는지'로 끝남 → 결과(~ 됨)로 쓴다",
     "W4-정상": "기대 결과가 '정상/제대로/문제없이'뿐 → 무엇이 보이는지 쓴다",
     "Q1": "기대 결과가 테스트 내용과 똑같음",
@@ -24,13 +25,16 @@ RULES = {
     "Q2": "번호가 비었거나 겹침, 또는 번호만 있고 내용이 없음",
     "P1": "High(높음) 비율이 80% 넘음 → 우선순위 정의대로 다시 보기",
     "Q4": "우선순위 표기가 섞임 (High/Medium/Low 와 높음/보통/낮음)",
+    "C3": "근거 대응표에서 TC가 0건인 근거 (또는 표에 없는 근거를 가리키는 TC)",
 }
+MULTI = re.compile(r"\s/\s|(^|\s)[1-9]\.\s.*\s[2-9]\.\s|①|②")   # 기대 결과를 '/'나 번호로 여러 개 묶음
 END_CHECK = re.compile(r"(확인|되는지|인지|는지)\s*[.)\]]?\s*$")
 VAGUE = re.compile(r"정상|제대로|문제\s*없|이상\s*없")
 # "정상" 같은 말과 흔한 서술어를 빼고 남는 내용이 거의 없으면 막연한 결과로 본다
 FILLER = re.compile(r"정상적으로|정상|제대로|문제없이|이상없이|작동|동작|진행|실행|됨|된다|되어야한다|이|가|을|를|\.")
 RANDOM = re.compile(r"확률(에\s*따른|대로|로)|랜덤(하게|성)|무작위로|분포")   # 결과가 무작위인지·확률대로인지 판정하는 TC
 TRIALS = re.compile(r"\d[\d,]*\s*(회|번)")
+QUOTED = re.compile(r"\"[^\"]*\"|“[^”]*”")
 HIGH = {"high", "높음"}
 EN, KO = {"high", "medium", "low"}, {"높음", "보통", "낮음"}
 
@@ -66,6 +70,8 @@ def check_rows(rows):
                 found["W4-정상"].append(where)
             if exp and exp == steps:
                 found["Q1"].append(where)
+            if exp and MULTI.search(QUOTED.sub("", str(r["expected"]))):   # 따옴표 안 화면 문구("마나 1 / 1")는 빼고 본다
+                found["W1"].append(where)
             text = f"{r['steps']} {r['expected']}"
             if RANDOM.search(text) and not TRIALS.search(text):
                 found["D6"].append(where)
@@ -137,6 +143,38 @@ def rows_from_json(game):
              "steps": t.get("steps", ""), "expected": t.get("expected", "")} for t in items]
 
 
+def coverage_gaps(game):
+    """C3: tc JSON의 coverage(근거 목록)와 TC의 covers를 맞춰 본다. coverage가 없으면 빈 목록."""
+    tcs = load_tcs(game)
+    cov = tcs.get("coverage") or []
+    if not cov:
+        return []
+    ids = {c["id"] for c in cov}
+    count = Counter()
+    gaps = []
+    for t in tcs["automated"] + tcs["manual"]:
+        for c in (t.get("covers") or "").split(","):
+            c = c.strip()
+            if not c:
+                continue
+            if c not in ids:
+                gaps.append((game, f"{t['id']} → 표에 없는 근거 {c}"))
+            count[c] += 1
+    gaps += [(game, f"{c['id']} {c['name']}: TC 0건") for c in cov if not count[c["id"]]]
+    return gaps
+
+
+def coverage_table(game):
+    tcs = load_tcs(game)
+    cov = tcs.get("coverage") or []
+    count = Counter()
+    for t in tcs["automated"] + tcs["manual"]:
+        for c in (t.get("covers") or "").split(","):
+            if c.strip():
+                count[c.strip()] += 1
+    return [(c["id"], c["name"], count[c["id"]]) for c in cov]
+
+
 def rows_for_game(game):
     rows = rows_from_json(game)
     if rows is None:
@@ -147,8 +185,12 @@ def rows_for_game(game):
 
 # ---------------------------------------------------------------- 출력
 
-def report(name, rows, limit=12):
+def report(name, rows, limit=12, game=None):
     found = check_rows(rows)
+    if game:
+        gaps = coverage_gaps(game)
+        if gaps:
+            found["C3"] = gaps
     total = sum(len(v) for v in found.values())
     print(f"\n[{name}] TC {len(rows)}줄 점검 → 규칙에 걸린 곳 {total}건")
     for rule, label in RULES.items():
@@ -165,12 +207,17 @@ def report(name, rows, limit=12):
         print(f"  {rule} {label} ({len(hits)}건)\n     " + "\n     ".join(lines))
     if total == 0:
         print("  걸린 곳 없음. (문장 품질·빠진 케이스는 사람이 따로 본다)")
+    if game and coverage_table(game):
+        print("  근거 대응표 (C3): " + ", ".join(f"{i} {n} {k}건" for i, n, k in coverage_table(game)))
     return found
 
 
 def summary(game):
     """export_tc_xlsx.py가 쓰는 한 줄 요약."""
     found = check_rows(rows_for_game(game))
+    gaps = coverage_gaps(game)
+    if gaps:
+        found["C3"] = gaps
     total = sum(len(v) for v in found.values())
     if not total:
         return "TC 규칙 점검: 걸린 곳 없음"
@@ -187,7 +234,7 @@ def main():
     else:
         games = GAMES if "--all" in args else [args[args.index("--game") + 1] if "--game" in args else GAMES[0]]
         for g in games:
-            report(g, rows_for_game(g))
+            report(g, rows_for_game(g), game=g)
     print("\n규칙 설명: AX부트캠프study/Resources/2026-11-02 044. TC 작성 규칙.md")
 
 

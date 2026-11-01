@@ -41,14 +41,33 @@ npm run jira:tcs:bloodfall     # 한 번만 (다시 돌려도 중복 없음)
 npm run jira:bugs:bloodfall
 ```
 
+## 카드팩 스튜디오 (2026-11-02 추가)
+
+| 항목 | 값 |
+|---|---|
+| 대상 | `스토리게임만들기/card-studio/studio.html` — 카드팩 만들기(속성·카드·밸런스·설명·그림·등록) + 속성 카드 대전 + 카드뽑기 확률 |
+| TC | 기획서가 없어 **화면 안내 문구와 코드 규칙**을 근거로, **TC 작성 규칙(044)에 맞춰** AI가 초안 작성 — 55건(자동 47 + 수동 8). 경계값(이름 1/2글자, 합 7/8/12/13, 등급 코스트, 그림 3/4장, 천장 9/10/100/101)·실패 케이스·새로고침 케이스 포함. 규칙 점검 0건 (`tc/cardstudio_tc.json`) |
+| 판정 방식 | 화면: 진행 상태를 localStorage에 넣어 원하는 단계에서 시작, 무작위는 Date.now 고정. 규칙: 전역 엔진(CardRules·BattleEngine·Gacha)을 직접 불러 판정. 진행 파일 `얼음_진행.json`을 불러오기·저장 테스트에 사용 |
+| 테스트 | 47개, 약 35초 → 46 통과, 1 실패 (`report/cardstudio_report.html`) |
+| 발견 | **CS-46 새로고침하면 카드뽑기 천장 카운트가 0으로 돌아감** — 3팩 뽑은 뒤 새로고침하고 1팩 더 뽑으면 "4 / 천장 20"이 아니라 "1 / 천장 20". flow2.js 178줄 `drawState`가 저장되지 않는 변수. 안내 문구의 "19팩 연속이면 20번째 팩 전설 보장"과 어긋남 → 기획 확인 필요 |
+| Jira | TC 55건 SCRUM-87~141, CS-46 → SCRUM-142 (스크린샷·SCRUM-132 연결·분석 댓글) |
+
+```powershell
+npm run test:cardstudio
+npm run report:cardstudio            # 리포트 + tc/cardstudio_TC.xlsx (표지 포함)
+npm run jira:tcs:cardstudio          # 한 번만
+npm run jira:bugs:cardstudio
+```
+
 ## TC 엑셀 (tc/<게임>_TC.xlsx)
 
 | 파일 | 내용 |
 |---|---|
 | `tc/slimegame_TC.xlsx` | LKM 원본 TC 엑셀을 복사하고 오른쪽에 자동화 칸을 붙인 것. 원본 `TC/슬라임게임_TC.xlsx`는 고치지 않음. 탐색-1은 지정항목 시트 맨 아래에 추가 |
-| `tc/bloodfall_TC.xlsx` | AI 초안 TC 38건을 같은 양식(번호·우선순위·분류·사전 조건·테스트 내용·기대 결과·비고)으로 정리 + 근거 조항 |
+| `tc/bloodfall_TC.xlsx`, `tc/cardstudio_TC.xlsx` | AI 초안 TC를 같은 양식(번호·우선순위·분류·사전 조건·테스트 내용·기대 결과·비고)으로 정리 + 근거. 첫 시트는 **표지**(작성·TC 수·우선순위 정의·결과 정의, 규칙 044 S1) |
 
 - 자동화 칸: TC ID · 자동/수동 · 자동화하지 않은 이유 · 최근 결과 · 실행 시각 · Jira TC · Jira 버그 · 검토
+- 결과 표기는 규칙 044의 결과 정의: PASS / Fail / N/T (수동 TC는 사람이 실행하기 전까지 N/T)
 - `npm run report` / `npm run report:bloodfall` 을 돌리면 그 게임 엑셀이 함께 갱신된다. 엑셀만 다시 만들려면 `npm run tc:xlsx`
 - **검토 칸은 엑셀에서 직접 고친다**(초안/확인함/버림 목록). 다음 갱신 때 `tc/*.json`에 옮겨 적힌다. 다른 칸을 엑셀에서 고치면 다음 갱신 때 지워지니, TC 내용은 JSON에서 고친다
 - 엑셀에서 파일을 연 채로 갱신하면 저장이 안 된다 → 닫고 다시 실행
@@ -67,7 +86,7 @@ TC 엑셀을 만들 때(`tc:xlsx`, 리포트)도 점검 결과가 한 줄로 나
 
 ## 더블클릭 실행 (QA자동화_실행.bat)
 
-1. 게임 선택(1 슬라임 / 2 BLOODFALL / 3 둘 다)
+1. 게임 선택(1 슬라임 / 2 BLOODFALL / 3 카드팩 스튜디오 / 4 전부)
 2. 게임마다 자동 테스트 → 리포트·TC 엑셀 갱신 → 리포트를 브라우저로 열기
 3. **마지막에** "Jira에 등록할까요? (Y/N)" — Y면 실패한 테스트를 Jira 버그로 등록, N이면 건너뜀
 

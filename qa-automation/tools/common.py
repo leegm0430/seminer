@@ -5,8 +5,8 @@ import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESULTS_FILE = os.path.join(ROOT, "out", "results.json")
-GAMES = ("slimegame", "bloodfall")   # tc/<게임>_tc.json, tests/<게임>.spec.js
-TC_ID_RE = re.compile(r"\[((?:공통|플레이|탐색|BF)-\d+)\]")
+GAMES = ("slimegame", "bloodfall", "cardstudio")   # tc/<게임>_tc.json, tests/<게임>.spec.js
+TC_ID_RE = re.compile(r"\[((?:공통|플레이|탐색|BF|CS)-\d+)\]")
 
 
 def game_arg(argv, default="slimegame"):

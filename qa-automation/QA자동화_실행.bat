@@ -7,17 +7,19 @@ rem 실행 전에 TC 엑셀(tc\*.xlsx)을 닫아 두세요. 열려 있으면 엑
 
 echo.
 echo ===== QA 자동화 실행 =====
-echo   1. 슬라임 게임   (약 3분)
-echo   2. BLOODFALL     (약 1.5분)
-echo   3. 둘 다         (약 5분)
+echo   1. 슬라임 게임       (약 3분)
+echo   2. BLOODFALL         (약 1.5분)
+echo   3. 카드팩 스튜디오   (약 1분)
+echo   4. 전부              (약 6분)
 echo.
 set "PICK="
 set /p "PICK=번호를 입력하고 Enter: "
 if "%PICK%"=="1" set "GAMES=slimegame"
 if "%PICK%"=="2" set "GAMES=bloodfall"
-if "%PICK%"=="3" set "GAMES=slimegame bloodfall"
+if "%PICK%"=="3" set "GAMES=cardstudio"
+if "%PICK%"=="4" set "GAMES=slimegame bloodfall cardstudio"
 if not defined GAMES (
-  echo 1, 2, 3 중 하나를 입력하세요.
+  echo 1, 2, 3, 4 중 하나를 입력하세요.
   goto end
 )
 

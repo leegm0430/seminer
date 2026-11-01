@@ -2,7 +2,7 @@
   "name": "qa-automation",
   "version": "1.0.0",
   "private": true,
-  "description": "슬라임 게임 자동 테스트 (Playwright) + 결과 리포트 + Jira 무료 플랜 연동",
+  "description": "슬라임 게임·BLOODFALL·카드팩 스튜디오 자동 테스트 (Playwright) + 결과 리포트 + TC 엑셀 + Jira 무료 플랜 연동",
   "scripts": {
     "test": "playwright test tests/slimegame.spec.js",
     "report": "python -I tools/make_report.py",
@@ -13,6 +13,10 @@
     "report:bloodfall": "python -I tools/make_report.py --game bloodfall",
     "jira:tcs:bloodfall": "python -I tools/jira_sync.py tcs --game bloodfall",
     "jira:bugs:bloodfall": "python -I tools/jira_sync.py bugs --game bloodfall",
+    "test:cardstudio": "playwright test tests/cardstudio.spec.js",
+    "report:cardstudio": "python -I tools/make_report.py --game cardstudio",
+    "jira:tcs:cardstudio": "python -I tools/jira_sync.py tcs --game cardstudio",
+    "jira:bugs:cardstudio": "python -I tools/jira_sync.py bugs --game cardstudio",
     "tc:xlsx": "python -I tools/export_tc_xlsx.py --all",
     "tc:check": "python -I tools/check_tc.py --all"
   },
