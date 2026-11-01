@@ -5,8 +5,18 @@ import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESULTS_FILE = os.path.join(ROOT, "out", "results.json")
-GAMES = ("slimegame", "bloodfall", "cardstudio")   # tc/<게임>_tc.json, tests/<게임>.spec.js
-TC_ID_RE = re.compile(r"\[((?:공통|플레이|탐색|BF|CS)-\d+)\]")
+INPUT_DIR = os.path.join(ROOT, "input")          # input/<게임>/ : 기획서 PDF·이미지·엑셀·게임 파일을 넣는 곳 (git 제외)
+
+
+def _discover_games():
+    """tc/<게임>_tc.json 이 있는 게임 이름. 슬라임 게임이 기본값이라 맨 앞."""
+    tc_dir = os.path.join(ROOT, "tc")
+    keys = sorted(f[:-len("_tc.json")] for f in os.listdir(tc_dir) if f.endswith("_tc.json")) if os.path.isdir(tc_dir) else []
+    return tuple(sorted(keys, key=lambda k: (k != "slimegame", k)))
+
+
+GAMES = _discover_games()   # tc/<게임>_tc.json, tests/<게임>.spec.js — 새 게임은 TC JSON만 만들면 자동으로 잡힌다
+TC_ID_RE = re.compile(r"\[((?:[A-Za-z]+|[가-힣]+)-\d+)\]")   # [CS-101], [BF-04], [공통-3], [탐색-1] …
 
 
 def game_arg(argv, default="slimegame"):

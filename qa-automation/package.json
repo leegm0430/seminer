@@ -18,7 +18,9 @@
     "jira:tcs:cardstudio": "python -I tools/jira_sync.py tcs --game cardstudio",
     "jira:bugs:cardstudio": "python -I tools/jira_sync.py bugs --game cardstudio",
     "tc:xlsx": "python -I tools/export_tc_xlsx.py --all",
-    "tc:check": "python -I tools/check_tc.py --all"
+    "tc:check": "python -I tools/check_tc.py --all",
+    "input": "python -I tools/prepare_input.py",
+    "pipeline": "python -I tools/qa_pipeline.py"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.0"

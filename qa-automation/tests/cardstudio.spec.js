@@ -490,7 +490,7 @@ t(805, async ({ page }) => { await open(page, simState()); await predict(page, 0
 t(806, async ({ page }) => { await open(page, simState()); await predict(page, 100, '상성 우위'); await expect(page.locator('.checks li', { hasText: '내 예상: 불꽃팩 100% 승' })).toBeVisible(); });
 t(807, async ({ page }) => { await open(page, simState()); await predict(page, 70, '상성우'); await expect(bad(page, '왜 그렇게 생각하는지 한 줄로 쓰세요.')).toBeVisible(); });
 t(808, async ({ page }) => { await open(page, simState()); await predict(page, 70, '상성우위'); await expect(page.locator('.checks li', { hasText: '내 예상: 불꽃팩 70% 승 — "상성우위"' })).toBeVisible(); });
-const replayNote = (page) => page.locator('.replay-board span.note');
+const replayNote = (page) => page.locator('.replay-board span.note', { hasText: '턴' });   // 칸의 '비어 있음' 표시와 구분
 t(809, async ({ page }) => { await open(page, simPred()); await btn(page, '한 판 돌리기').click(); await expect(replayNote(page)).toHaveText(/^1 \/ \d+ 턴/); });
 t(810, async ({ page }) => { await open(page, simPred()); await btn(page, '한 판 돌리기').click(); await expect(btn(page, '◀ 이전 턴')).toBeDisabled(); });
 t(811, async ({ page }) => { await open(page, simPred()); await btn(page, '한 판 돌리기').click(); await btn(page, '다음 턴 ▶').click(); await expect(replayNote(page)).toHaveText(/^2 \/ \d+ 턴/); });
@@ -534,10 +534,13 @@ const leagueState = (extra) => makeState({ step: 'f-league', packs: ALL4, extra 
 const PRED = { top: '불꽃', low: '얼음', why: '공격형이 많아서' };
 const packsObj = () => Object.fromEntries(ALL4.map((a) => [a, B.BASE_PACKS[a].map((c) => Object.assign(clone(c), { attr: a }))]));
 const spreadOf = (L) => Math.max(...L.attrs.map((a) => L.overall[a])) - Math.min(...L.attrs.map((a) => L.overall[a]));
-function leagueSeed(cond) {
-  for (let s = 1; s < 300; s++) if (cond(spreadOf(B.attrLeague(packsObj(), 100, s + 1)))) return s;   // 화면: seed = Date.now() % 100000 + 1
+function leagueSeed(cond, packs) {
+  for (let s = 1; s < 300; s++) if (cond(spreadOf(B.attrLeague(packs || packsObj(), 100, s + 1)))) return s;   // 화면: seed = Date.now() % 100000 + 1
   return null;
 }
+// 기본 카드팩은 어느 시드든 차이 15%p 이하, 진행 파일(얼음_진행.json) 카드팩은 52%p 이상 → '초과' TC는 진행 파일 카드팩으로
+const fixtureLeague = () => { const st = fixtureState(); return makeState({ step: 'f-league', packs: st.packs, extra: { leaguePred: PRED } }); };
+const fixturePacksObj = () => { const st = fixtureState(); return Object.fromEntries(Object.keys(st.packs).map((a) => [a, st.packs[a].cards.map((c) => Object.assign({}, c, { attr: a }))])); };
 const FAKE_L = {
   attrs: ALL4,
   table: { '불꽃': { '숲': 70, '기계': 50, '얼음': 50 }, '숲': { '불꽃': 30, '기계': 50, '얼음': 50 }, '기계': { '불꽃': 50, '숲': 50, '얼음': 50 }, '얼음': { '불꽃': 50, '숲': 50, '기계': 50 } },
@@ -572,13 +575,13 @@ t(1008, async ({ page }) => {
   await expect(nextBtn(page)).toBeEnabled();
 });
 t(1009, async ({ page }) => {
-  const s = leagueSeed((d) => d > 25); test.skip(s === null, '기본 카드팩으로 차이 25%p 초과가 나오는 시드가 없음');
-  await open(page, leagueState({ leaguePred: PRED }), s); await btn(page, '100판씩 돌리기').click();
+  const s = leagueSeed((d) => d > 25, fixturePacksObj());
+  await open(page, fixtureLeague(), s); await btn(page, '100판씩 돌리기').click();
   await expect(page.locator('.todo li', { hasText: '카드팩을 AI로 조정해 보세요.' })).toBeVisible();
 });
 t(1010, async ({ page }) => {
-  const s = leagueSeed((d) => d > 25); test.skip(s === null, '기본 카드팩으로 차이 25%p 초과가 나오는 시드가 없음');
-  await open(page, leagueState({ leaguePred: PRED }), s); await btn(page, '100판씩 돌리기').click();
+  const s = leagueSeed((d) => d > 25, fixturePacksObj());
+  await open(page, fixtureLeague(), s); await btn(page, '100판씩 돌리기').click();
   await expect(nextBtn(page)).toBeDisabled();
 });
 t(1011, async ({ page }) => {
@@ -717,6 +720,7 @@ t(1602, async ({ page }) => { await open(page, missionState('m1-boost', ['불꽃
 t(1603, async ({ page }) => {
   const st = missionState('m1-boost', ['불꽃', '숲'], { boost: { attr: '숲', other: '불꽃', before: 40 } });
   st.packs['숲'].cards[1].attack = 20;
+  st.cards[1].attack = 20;                                             // 지금 열린 카드팩(숲)의 작업 사본도 같이
   await open(page, st);
   await expect(page.locator('.todo li .what', { hasText: '카드 규칙을 어긴 카드가 있어요.' })).toBeVisible();
 });

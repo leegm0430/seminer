@@ -6,3 +6,7 @@ out/
 !.env.example
 out_run*.txt
 ~$*.xlsx
+
+# 기획서·이미지·엑셀 자료 (다른 회사 문서일 수 있음) — 안내 파일만 올림
+input/*
+!input/README.md

@@ -46,17 +46,34 @@ npm run jira:bugs:bloodfall
 | 항목 | 값 |
 |---|---|
 | 대상 | `스토리게임만들기/card-studio/studio.html` — 카드팩 만들기(속성·카드·밸런스·설명·그림·등록) + 속성 카드 대전 + 카드뽑기 확률 |
-| TC | 기획서가 없어 **화면 안내 문구와 코드 규칙**을 근거로, **TC 작성 규칙(044)에 맞춰** AI가 초안 작성 — 55건(자동 47 + 수동 8). 경계값(이름 1/2글자, 합 7/8/12/13, 등급 코스트, 그림 3/4장, 천장 9/10/100/101)·실패 케이스·새로고침 케이스 포함. 규칙 점검 0건 (`tc/cardstudio_tc.json`) |
-| 판정 방식 | 화면: 진행 상태를 localStorage에 넣어 원하는 단계에서 시작, 무작위는 Date.now 고정. 규칙: 전역 엔진(CardRules·BattleEngine·Gacha)을 직접 불러 판정. 진행 파일 `얼음_진행.json`을 불러오기·저장 테스트에 사용 |
-| 테스트 | 47개, 약 35초 → 46 통과, 1 실패 (`report/cardstudio_report.html`) |
-| 발견 | **CS-46 새로고침하면 카드뽑기 천장 카운트가 0으로 돌아감** — 3팩 뽑은 뒤 새로고침하고 1팩 더 뽑으면 "4 / 천장 20"이 아니라 "1 / 천장 20". flow2.js 178줄 `drawState`가 저장되지 않는 변수. 안내 문구의 "19팩 연속이면 20번째 팩 전설 보장"과 어긋남 → 기획 확인 필요 |
-| Jira | TC 55건 SCRUM-87~141, CS-46 → SCRUM-142 (스크린샷·SCRUM-132 연결·분석 댓글) |
+| TC (2판) | TC 작성 규칙(044)에 **커버리지 규칙 C1~C5**(화면 요소마다 노출·동작, 안내·오류 문구마다, 근거 대응표, 값마다)를 넣고 다시 씀 → **338건(자동 327 + 수동 11)**. 1판 55건은 한 줄에 확인을 여러 개 묶었었음. 근거 대응표 19칸(화면 16 + 규칙 엔진 3) 모두 TC 있음, 규칙 점검 0건. 번호 앞자리 = 근거(CS-0xx 공통, CS-1xx~12xx 기본 단계, 13xx~16xx 미션, 17xx~19xx 규칙 엔진) |
+| 판정 방식 | **TC 하나 = 테스트 하나**. 화면: 진행 상태를 localStorage에 넣어 원하는 단계에서 시작, 무작위는 Date.now 고정(대전 손패·리그전·뽑기). 대전 끝 화면은 코스트 1·공격 40 카드팩으로 몇 턴 만에 끝냄. 규칙: 전역 엔진(CardRules·BattleEngine·Gacha)을 직접 불러 판정 |
+| 테스트 | 327개, 약 3.6분 → **326 통과, 1 실패** (`report/cardstudio_report.html`) |
+| 발견 | **CS-1116 새로고침하면 카드뽑기 천장 카운트가 0으로 돌아감** — 3팩 뽑은 뒤 새로고침하고 1팩 더 뽑으면 "4 / 천장 30"이 아니라 "1 / 천장 30". flow2.js 178줄 `drawState`가 저장되지 않는 변수. 안내 문구의 천장 약속과 어긋남 → 기획 확인 필요 |
+| Jira | 2판 TC 330건 SCRUM-143~472, 결함은 기존 SCRUM-142에 다시 실패 댓글 + CS-1116(SCRUM-355) 연결. 1판 TC 이슈 SCRUM-87~133은 2판으로 대체됨(정리 여부 미정) |
 
 ```powershell
 npm run test:cardstudio
 npm run report:cardstudio            # 리포트 + tc/cardstudio_TC.xlsx (표지 포함)
 npm run jira:tcs:cardstudio          # 한 번만
 npm run jira:bugs:cardstudio
+```
+
+## 자료로 TC 만들기 — 게임이 없어도 됨 (2026-11-02 추가)
+
+기획서 PDF·이미지·엑셀(기존 TC)을 `input/<게임>/`에 넣으면, 실행할 게임이 없어도 TC를 쓰고 검토까지 하고 끝낸다. 자세한 방법은 [input/README.md](input/README.md).
+
+| 단계 | 도구 | 하는 일 |
+|---|---|---|
+| 자료 정리 | `tools/prepare_input.py` | PDF 글자 뽑기(PyMuPDF), 반복 머리글을 빼고 **내용이 그림인 쪽을 그림으로** 만들기, 엑셀 시트 읽기·기존 TC 시트 찾기, 게임 파일 유무로 모드 결정 |
+| TC 작성 | Claude Code (tc-writing 스킬) | 정리본·그림을 읽고 규칙(044)대로 `tc/<게임>_tc.json` — 기존 TC 검토(`existing_review`), 기획서 모순(`spec_issues`), 추가 제안(`suggestions`) 포함. AI API 호출 없음 |
+| 마무리 | `tools/qa_pipeline.py` | 규칙 점검 → **게임 파일이 있으면** 자동 테스트·리포트, **없으면 건너뜀** → TC 엑셀 → `report/<게임>_review.md` |
+
+시험: 캡스톤 **Return of the Dark Lord** 최종 기획서(PDF 145쪽, 그림 쪽 102개) + 직접 쓴 TC 엑셀 → 문서 전용으로 TC **120건**(근거 14칸, 규칙 점검 0건), 기존 TC 고칠 점 12개(튜토리얼 시트가 로딩 화면 복사본, 멀티 시트 번호 없음 등), **기획서 확인 필요 7개**([Start] 다음 화면이 쪽마다 다름, Spacebar vs Any Key, 낮·밤 2시간 vs 12시간 등), 추가 제안 7개 → `report/rotdl_review.md`, `tc/rotdl_TC.xlsx`
+
+```powershell
+npm run input -- --game rotdl       # 자료 정리 (실행 파일 5번 메뉴: 새 이름이면 폴더를 만들어 열어 줌)
+npm run pipeline -- --game rotdl    # TC JSON이 생긴 뒤 마무리 (실행 파일 6번 메뉴와 같음)
 ```
 
 ## TC 엑셀 (tc/<게임>_TC.xlsx)
@@ -86,7 +103,7 @@ TC 엑셀을 만들 때(`tc:xlsx`, 리포트)도 점검 결과가 한 줄로 나
 
 ## 더블클릭 실행 (QA자동화_실행.bat)
 
-1. 게임 선택(1 슬라임 / 2 BLOODFALL / 3 카드팩 스튜디오 / 4 전부)
+1. 메뉴 선택 — 게임 자동 테스트(1 슬라임 / 2 BLOODFALL / 3 카드팩 스튜디오 / 4 전부), 자료로 TC 만들기(5 자료 넣기·정리 / 6 자료로 만든 TC 마무리 / 7 TC 규칙 점검만)
 2. 게임마다 자동 테스트 → 리포트·TC 엑셀 갱신 → 리포트를 브라우저로 열기
 3. **마지막에** "Jira에 등록할까요? (Y/N)" — Y면 실패한 테스트를 Jira 버그로 등록, N이면 건너뜀
 
