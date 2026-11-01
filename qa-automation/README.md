@@ -54,6 +54,14 @@ npm run jira:bugs:bloodfall
 - 엑셀에서 파일을 연 채로 갱신하면 저장이 안 된다 → 닫고 다시 실행
 - openpyxl(무료 오픈소스 파이썬 라이브러리)이 필요: `pip install openpyxl`
 
+## 더블클릭 실행 (QA자동화_실행.bat)
+
+1. 게임 선택(1 슬라임 / 2 BLOODFALL / 3 둘 다)
+2. 게임마다 자동 테스트 → 리포트·TC 엑셀 갱신 → 리포트를 브라우저로 열기
+3. **마지막에** "Jira에 등록할까요? (Y/N)" — Y면 실패한 테스트를 Jira 버그로 등록, N이면 건너뜀
+
+실행 전에 TC 엑셀을 닫아 둔다. 게임별 결과는 `out/results_<게임>.json`에 따로 남겨 마지막 Jira 단계에서 쓴다.
+
 ## 실행 (PowerShell, 이 폴더에서)
 
 ```powershell
