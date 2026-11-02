@@ -380,6 +380,7 @@
     <li><a href="#games-played">플레이 이력</a></li>
     <li><a href="#tc">TC 모음</a></li>
     <li><a href="#bugs">버그 리포트</a></li>
+    <li><a href="#qa-auto">QA 자동화</a></li>
     <li><a href="#docs">기획서 &amp; 분석</a></li>
     <li><a href="#projects">개발 이력</a></li>
     <li><a href="#vibe">바이브 코딩</a></li>
@@ -730,6 +731,133 @@
       <a class="vibe-cta" href="버그리포트/버그리포트-작성툴.html">🐞 버그 리포트 보러가기 →</a>
     </div>
   </div>
+
+<div class="hr"></div>
+
+<!-- ════════════════ AI 활용 QA 자동화 (상세: qa-automation/index.html) ════════════════ -->
+<style>
+  .qa-flow { display:flex; flex-wrap:wrap; gap:0.45rem; align-items:center; margin:0.4rem 0 0.2rem; font-size:0.84rem; }
+  .qa-flow span { background:#0f1e30; border:1px solid var(--border); border-radius:6px; padding:0.35rem 0.75rem; color:var(--text); }
+  .qa-flow span.ai { border-color:var(--green); color:var(--green-lt); }
+  .qa-flow b { color:var(--text-3); font-weight:400; }
+  .qa-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+  .qa-stats > div { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.9rem 1.1rem; }
+  .qa-sub { font-size:0.95rem; font-weight:700; margin:1.6rem 0 0.7rem; color:var(--text); }
+  .qa-table { width:100%; border-collapse:collapse; font-size:0.82rem; color:var(--text-2); }
+  .qa-table th, .qa-table td { border-bottom:1px solid var(--border); padding:0.55rem 0.6rem; text-align:left; vertical-align:top; line-height:1.6; }
+  .qa-table th { color:var(--text-3); font-weight:600; white-space:nowrap; }
+  .qa-table td:first-child { color:var(--text); white-space:nowrap; }
+  .qa-table a { color:var(--green-lt); }
+  .qa-steps { margin:0.3rem 0 0; padding-left:1.1rem; } .qa-steps li { margin:0.15rem 0; }
+  .qa-note { font-size:0.78rem; color:var(--text-3); margin-top:0.6rem; line-height:1.6; }
+</style>
+<div class="wrap" id="qa-auto">
+  <div class="section-head">
+    <h2>AI 활용 QA 자동화 <span style="font-size:1rem; font-weight:400; color:var(--green-lt); margin-left:0.5rem;">웹 게임 3종</span></h2>
+  </div>
+
+  <div class="qa-stats">
+    <div><div class="stat-num">3개</div><div class="stat-lbl">적용한 웹 게임</div></div>
+    <div><div class="stat-num">810건</div><div class="stat-lbl">TC (직접 쓴 71 + AI 초안 739, 검토 중)</div></div>
+    <div><div class="stat-num">723개</div><div class="stat-lbl">Playwright 자동 테스트 (TC 하나 = 테스트 하나)</div></div>
+    <div><div class="stat-num">8건</div><div class="stat-lbl">자동 테스트로 찾은 결함·불일치</div></div>
+  </div>
+
+  <div style="display:grid; gap:1.5rem;">
+
+    <!-- 흐름 + 첨부 파일별 진행 -->
+    <div class="project-card">
+      <div class="proj-head">
+        <p class="proj-type">무엇을 만들었나</p>
+        <p class="proj-name">파일 첨부 → TC → 자동 테스트 → 리포트 → Jira</p>
+      </div>
+      <div class="proj-body">
+        <div class="qa-flow">
+          <span>파일 첨부</span><b>→</b>
+          <span class="ai">TC 작성 (Claude Code + TC 작성 규칙)</span><b>→</b>
+          <span>규칙 점검</span><b>→</b>
+          <span>Playwright 자동 테스트</span><b>→</b>
+          <span>리포트·TC 엑셀</span><b>→</b>
+          <span>Jira TC·버그 이슈</span>
+        </div>
+
+        <p class="qa-sub">첨부한 파일에 따라 이렇게 진행됩니다</p>
+        <table class="qa-table">
+          <tr><th>첨부한 파일</th><th>진행 순서</th></tr>
+          <tr><td>기획서<br>(PDF·MD·TXT)</td><td><ol class="qa-steps">
+            <li>자료 정리: PDF에서 글자를 뽑고, 글자가 거의 없는 그림·플로우 차트 쪽은 이미지로 만들어 따로 읽음</li>
+            <li>기획서를 장·쪽 단위 근거로 나눠 근거 대응표를 만들고, 근거마다 규칙대로 TC 작성 (근거에 TC 0건인 칸이 없게)</li>
+            <li>기획서 안에서 서로 다른 부분·빠진 부분을 "기획서 확인 필요"로 정리</li></ol></td></tr>
+          <tr><td>이미지<br>(화면 캡처·UI 시안)</td><td><ol class="qa-steps">
+            <li>화면마다 버튼·입력칸·표시 정보·안내 문구 목록을 만듦</li>
+            <li>요소마다 보이는지(노출) TC와 눌렀을 때(동작) TC를 짝으로 작성, 비활성 상태가 있으면 활성·비활성 짝</li></ol></td></tr>
+          <tr><td>기존 TC 엑셀<br>(XLSX)</td><td><ol class="qa-steps">
+            <li>시트를 읽어 TC 시트를 찾고 규칙으로 점검 (빈 칸, 묶인 기대 결과, 번호 중복 등)</li>
+            <li>고칠 점을 목록으로 제안 — 원본 엑셀은 고치지 않음</li>
+            <li>게임이 있으면 자동화할 TC를 골라 테스트 코드를 작성, 없으면 이 단계는 건너뜀</li>
+            <li>규칙으로 빠진 TC를 찾아 별도 번호·시트로 보충</li></ol></td></tr>
+          <tr><td>게임 파일<br>(웹 html)</td><td><ol class="qa-steps">
+            <li>TC마다 Playwright 테스트 코드를 작성하고 크롬에서 실행</li>
+            <li>결과를 HTML 리포트와 TC 엑셀(PASS / Fail / N/T)에 기록</li>
+            <li>실패는 원인을 나눠(테스트 코드 / 게임 결함 / 기획과 다름) 결함만 Jira 버그로 등록</li></ol></td></tr>
+          <tr><td>게임 파일 없음</td><td>자동 테스트를 건너뛰고 <b>검토 리포트</b>(기존 TC 고칠 점 · 기획서 확인 필요 · 추가 제안)로 마무리</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Claude + Jira, Playwright -->
+    <div class="grid-2">
+      <article class="card">
+        <h3>Claude Code + Jira</h3>
+        <p><b style="color:var(--text)">Claude Code</b> — 내 PC의 Claude Code가 TC 작성 규칙을 먼저 읽고(규칙을 불러오는 스킬로 고정) TC 목록과 테스트 코드를 씁니다. 결과는 모두 <b style="color:var(--text)">초안</b>이고, TC 엑셀의 검토 칸에서 제가 확인함/버림으로 정합니다. AI API를 따로 호출하지 않아 추가 비용이 없습니다.</p>
+        <p style="margin-top:0.6rem"><b style="color:var(--text)">Jira</b> — 무료 플랜 REST API로 TC는 작업 이슈, 실패한 테스트는 버그 이슈로 올립니다. 버그에는 실패 스크린샷 첨부와 관련 TC 연결을 붙이고, 같은 실패가 다시 나오면 새 이슈 대신 댓글을 답니다. 토큰은 내 PC 설정 파일에만 두고, 설정이 없으면 보낼 내용만 저장하는 드라이런으로 돕니다. 등록: TC 이슈 410건 · 버그 3건</p>
+        <div class="tags" style="margin-top:1rem"><span class="tag tag-green">tc-writing 스킬</span><span class="tag tag-blue">Jira 무료 플랜</span></div>
+      </article>
+      <article class="card">
+        <h3>Playwright 자동 테스트</h3>
+        <p>오픈소스 Playwright로 크롬을 코드로 조작해 게임을 직접 플레이하며 판정합니다. 테스트 이름에 TC 번호를 넣어 결과가 TC 엑셀·리포트·Jira에 자동으로 연결됩니다.</p>
+        <ul class="qa-steps" style="color:var(--text-2); font-size:0.85rem; line-height:1.7; margin-top:0.5rem">
+          <li><b style="color:var(--text)">상태 맞추기</b> — 보스 등장 직전, 체력 30%처럼 원하는 상황을 바로 만들어 화면과 내부 값을 함께 판정</li>
+          <li><b style="color:var(--text)">숨은 값 읽기</b> — 값이 숨겨진 게임은 물리 엔진을 붙잡아 원하는 슬라임을 원하는 자리에 놓고 경계값(59·60·61%)을 확인</li>
+          <li><b style="color:var(--text)">온라인 기능</b> — 가짜 연결로 연결 문구·시간 초과(시계를 빠르게 돌림)·승패 메시지 확인, 실제 두 기기 연결은 수동 TC</li>
+          <li><b style="color:var(--text)">무작위·확률</b> — 난수를 고정하거나 수천~수만 번 뽑아 범위로 판정 (예: 아이템 박스 2,000마리 중 70~130개)</li>
+          <li><b style="color:var(--text)">실패 기록</b> — 실패 순간 스크린샷·실행 기록을 남기고 리포트에 원인과 함께 표시</li>
+        </ul>
+        <div class="tags" style="margin-top:1rem"><span class="tag tag-green">Playwright</span><span class="tag tag-blue">TC 1개 = 테스트 1개</span></div>
+      </article>
+    </div>
+
+    <!-- 결과 -->
+    <div class="project-card">
+      <div class="proj-head">
+        <p class="proj-type">적용 결과 · 2026-11-02 실제 실행</p>
+        <p class="proj-name">웹 게임 3종</p>
+      </div>
+      <div class="proj-body">
+        <table class="qa-table">
+          <tr><th>대상</th><th>TC</th><th>자동 테스트</th><th>결과물</th></tr>
+          <tr><td>슬라임 게임</td><td>직접 쓴 71 + 규칙으로 보충 190</td><td>202개 → 199 통과</td><td><a href="qa-automation/report/slimegame_report.html">리포트</a> · <a href="qa-automation/tc/slimegame_TC.xlsx">TC 엑셀</a></td></tr>
+          <tr><td>BLOODFALL</td><td>기획서로 38 + 규칙으로 보충 173</td><td>194개 → 190 통과</td><td><a href="qa-automation/report/bloodfall_report.html">리포트</a> · <a href="qa-automation/tc/bloodfall_TC.xlsx">TC 엑셀</a></td></tr>
+          <tr><td>카드팩 스튜디오</td><td>338 (자동 327 · 수동 11)</td><td>327개 → 326 통과</td><td><a href="qa-automation/report/cardstudio_report.html">리포트</a> · <a href="qa-automation/tc/cardstudio_TC.xlsx">TC 엑셀</a></td></tr>
+        </table>
+        <p class="qa-sub">찾은 것</p>
+        <table class="qa-table">
+          <tr><th>게임</th><th>내용</th></tr>
+          <tr><td>슬라임</td><td>게임 오버 뒤에도 물리 엔진이 멈추지 않아 보드 점수가 계속 오름 (간헐적, 3판 중 2판 재현)</td></tr>
+          <tr><td>슬라임</td><td>폭 360px 휴대폰 화면에서 보드 오른쪽이 10px 잘림</td></tr>
+          <tr><td>슬라임</td><td>없는 방 코드를 넣었을 때 [다시 연결 시도] 버튼이 나오지 않음 (직접 쓴 TC의 기대 결과와 다름)</td></tr>
+          <tr><td>카드팩 스튜디오</td><td>새로고침하면 카드뽑기 천장 카운트가 0으로 돌아감</td></tr>
+          <tr><td>BLOODFALL</td><td>주무기 미선택 시 기획서는 피스톨, 구현은 무작위 · 무기 1개면 보스 전리품 카드 2장(기획 3장) · 그레이브 워든 광폭화 1.35배(기획 1.3배) · 게임 중 연결 끊김 안내가 보이지 않음</td></tr>
+        </table>
+
+        <div class="automation-links" style="margin-top:1.2rem">
+          <a class="vibe-cta" href="qa-automation/index.html">QA 자동화 상세 보기 →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <div class="hr"></div>
 
