@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI 활용 게임 QA 자동화 — 이경민</title>
-<!-- 작성자: Claude Code(초안) / LKM 확인 전 (checked: false) · 작성일 2026-11-02 · 숫자는 실제 실행 결과만 -->
+<!-- 작성자: Claude Code(초안) / LKM 확인 전 (checked: false) · 작성일 2026-11-02 (현재 기준으로 다시 씀) · 숫자는 실제 실행 결과만 -->
 <style>
   :root { --bg:#f5f6f8; --card:#fff; --text:#1d2129; --muted:#6b7280; --line:#e3e6ea; --accent:#2f5bd3; --bad:#b91c1c; }
   @media (prefers-color-scheme: dark) { :root { --bg:#111418; --card:#1a1f26; --text:#e6e8eb; --muted:#9aa3ae; --line:#2b313a; --accent:#7aa2ff; --bad:#f87171; } }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--text); font-family:"Pretendard","Malgun Gothic",system-ui,sans-serif; line-height:1.65; }
-  main { max-width:960px; margin:0 auto; padding:28px 22px 48px; }
-  h1 { font-size:24px; margin:0 0 4px; } h2 { font-size:18px; margin:0 0 10px; }
+  main { max-width:980px; margin:0 auto; padding:28px 22px 48px; }
+  h1 { font-size:24px; margin:0 0 4px; } h2 { font-size:18px; margin:0 0 10px; } h3 { font-size:15px; margin:14px 0 6px; }
   .sub { color:var(--muted); margin:0 0 20px; }
   section { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin-bottom:16px; }
   table { width:100%; border-collapse:collapse; font-size:14px; } th, td { border-bottom:1px solid var(--line); padding:7px 8px; text-align:left; vertical-align:top; }
@@ -20,62 +20,105 @@
   .flow { display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:14px; }
   .flow span { border:1px solid var(--line); border-radius:8px; padding:5px 10px; } .flow b { color:var(--muted); }
   .flow .ai { border-color:var(--accent); color:var(--accent); }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; margin-top:6px; }
+  .card { border:1px solid var(--line); border-radius:10px; padding:10px 12px; } .card b { font-size:22px; display:block; } .card span { color:var(--muted); font-size:13px; }
   .btn { display:inline-block; padding:8px 14px; border-radius:8px; background:var(--accent); color:#fff; text-decoration:none; font-size:14px; margin:4px 6px 0 0; }
-  ul { margin:6px 0; padding-left:20px; }
+  ul { margin:6px 0; padding-left:20px; } li { margin:2px 0; }
 </style>
 </head>
 <body>
 <main>
   <h1>AI 활용 게임 QA 자동화</h1>
-  <p class="sub">이경민 · 2026-11-01 ~ 11-02 · 비용 0원 (오픈소스 + Jira 무료 플랜, 유료 앱·AI API 호출 없음)</p>
+  <p class="sub">이경민 · 2026-11-01 ~ 11-02 · 비용 0원 (Playwright·Python 오픈소스 + Jira 무료 플랜, 유료 앱·AI API 호출 없음)</p>
+
+  <section>
+    <h2>한눈에 보기</h2>
+    <div class="cards">
+      <div class="card"><b>4개</b><span>적용한 대상 (웹 게임 3 + 기획서만 있는 캡스톤 1)</span></div>
+      <div class="card"><b>930건</b><span>TC (직접 쓴 71 + AI 초안 859, 모두 검토 중)</span></div>
+      <div class="card"><b>723개</b><span>자동 테스트 (TC 하나 = 테스트 하나)</span></div>
+      <div class="card"><b>8건</b><span>자동 테스트로 찾은 결함·불일치 (+ 캡스톤 기획서 확인 사항 7개)</span></div>
+    </div>
+  </section>
 
   <section>
     <h2>무엇을 만들었나</h2>
-    <p>기획서나 기존 TC를 넣으면 <b>TC 작성 → 규칙 점검 → 게임 자동 테스트 → 결과 리포트·TC 엑셀 → Jira 이슈 등록</b>까지 이어지는 흐름입니다.</p>
+    <p>기획서나 기존 TC를 넣으면 <b>TC 작성 → 규칙 점검 → 게임 자동 테스트 → 결과 리포트·TC 엑셀 → Jira 이슈 등록</b>까지 이어지는 흐름입니다. 중심에는 제가 정리한 <b>TC 작성 규칙</b>이 있고, AI가 TC를 쓸 때와 점검 도구가 TC를 볼 때 모두 이 규칙을 따릅니다.</p>
     <div class="flow">
       <span>기획서 PDF·이미지·기존 TC 엑셀</span><b>→</b>
-      <span class="ai">TC 작성 (Claude Code + 직접 만든 TC 작성 규칙)</span><b>→</b>
+      <span class="ai">TC 작성 (Claude Code + TC 작성 규칙)</span><b>→</b>
       <span>규칙 점검</span><b>→</b>
       <span>Playwright 자동 테스트</span><b>→</b>
       <span>리포트·TC 엑셀</span><b>→</b>
       <span>Jira TC·버그 이슈</span>
     </div>
-    <p class="muted">게임 파일이 없으면 자동 테스트는 건너뛰고, TC 검토 의견·기획서 확인 필요 사항·추가 제안을 정리하고 끝납니다.</p>
+    <p class="muted">게임 파일이 없으면 자동 테스트는 건너뛰고, 기존 TC 검토 의견·기획서 확인 필요 사항·추가 제안을 정리하고 끝납니다.</p>
+    <h3>TC 작성 규칙 (공개 자료 + 제가 쓴 TC 2종을 참고해 정리)</h3>
+    <ul>
+      <li><b>한 줄 쓰기</b> — TC 하나에 확인 하나, 기대 결과는 눈으로 확인할 수 있는 결과(숫자·화면 문구 그대로)</li>
+      <li><b>무엇을 TC로</b> — 정상·실패 짝, 경계값(n−1·n·n+1), 끊김·환경, 확률은 시행 횟수와 판정 범위</li>
+      <li><b>빠짐없이(커버리지)</b> — 화면 요소·안내 문구·규칙 값마다 TC, 근거(기획서 조항·화면)마다 TC가 0건인 칸이 없게</li>
+    </ul>
   </section>
 
   <section>
     <h2>직접 써 보기 (설치 없음)</h2>
-    <p>TC 엑셀이나 기획서 PDF를 넣으면 제가 정한 TC 작성 규칙으로 점검하고, 기획서에는 있는데 TC에 없는 문구·버튼·수치를 찾아 줍니다. 파일은 브라우저 안에서만 읽고 어디에도 올라가지 않습니다.</p>
+    <p>TC 엑셀이나 기획서 PDF를 넣으면 위 규칙으로 점검하고, 기획서에는 있는데 TC에 없는 문구·버튼·수치를 찾아 줍니다. 파일은 브라우저 안에서만 읽고 어디에도 올라가지 않습니다.</p>
     <a class="btn" href="TC점검도구.html">TC 점검 도구 열기</a>
   </section>
 
   <section>
-    <h2>적용 결과 (실제 실행한 숫자)</h2>
+    <h2>적용 결과 (2026-11-02 실제 실행)</h2>
     <table>
-      <tr><th>대상</th><th>TC</th><th>자동 테스트</th><th>찾은 것</th><th>결과물</th></tr>
-      <tr><td>슬라임 게임<br><span class="muted">직접 쓴 TC 71건</span></td><td>22건 자동화 대상 선정</td><td>17개 → 16 통과</td><td><b>게임 오버 뒤에도 보드 점수가 오름</b> (기존 TC에 없던 항목, 3판 중 2판 재현)</td><td><a href="report/slimegame_report.html">리포트</a> · <a href="tc/slimegame_TC.xlsx">TC 엑셀</a></td></tr>
-      <tr><td>BLOODFALL<br><span class="muted">기존 TC 없음</span></td><td>기획서로 38건</td><td>23개 → 22 통과</td><td><b>기획-구현 불일치</b>: 기획서는 "미선택 시 피스톨 자동 배정", 구현은 무작위</td><td><a href="report/bloodfall_report.html">리포트</a> · <a href="tc/bloodfall_TC.xlsx">TC 엑셀</a></td></tr>
-      <tr><td>카드팩 스튜디오</td><td>338건 (자동 327 · 수동 11)</td><td>327개 → 326 통과 (약 3.6분)</td><td><b>새로고침하면 카드뽑기 천장 카운트가 0으로 돌아감</b> (저장되지 않는 변수)</td><td><a href="report/cardstudio_report.html">리포트</a> · <a href="tc/cardstudio_TC.xlsx">TC 엑셀</a></td></tr>
-      <tr><td>캡스톤 RotDL<br><span class="muted">기획서 PDF 145쪽, 게임 파일 없음</span></td><td>120건</td><td>건너뜀 (문서만)</td><td>기존 TC 고칠 점 12개, <b>기획서 서로 다른 부분 7개</b> (예: 낮·밤 길이 2시간 vs 12시간)</td><td><a href="report/rotdl_review.md">검토 리포트</a> · <a href="tc/rotdl_TC.xlsx">TC 엑셀</a></td></tr>
+      <tr><th>대상</th><th>TC</th><th>자동 테스트</th><th>결과물</th></tr>
+      <tr><td>슬라임 게임<br><span class="muted">직접 쓴 TC 71건이 있던 게임</span></td><td>기존 71 + 규칙으로 보충 190</td><td>202개 → 200 통과</td><td><a href="report/slimegame_report.html">리포트</a> · <a href="tc/slimegame_TC.xlsx">TC 엑셀</a></td></tr>
+      <tr><td>BLOODFALL<br><span class="muted">기존 TC 없음, 기획서 v0.9</span></td><td>기획서로 38 + 규칙으로 보충 173</td><td>194개 → 190 통과</td><td><a href="report/bloodfall_report.html">리포트</a> · <a href="tc/bloodfall_TC.xlsx">TC 엑셀</a></td></tr>
+      <tr><td>카드팩 스튜디오</td><td>338 (자동 327 · 수동 11)</td><td>327개 → 326 통과</td><td><a href="report/cardstudio_report.html">리포트</a> · <a href="tc/cardstudio_TC.xlsx">TC 엑셀</a></td></tr>
+      <tr><td>캡스톤 RotDL<br><span class="muted">기획서 PDF 145쪽, 게임 파일 없음</span></td><td>120</td><td>건너뜀 (문서만)</td><td><a href="report/rotdl_review.md">검토 리포트</a> · <a href="tc/rotdl_TC.xlsx">TC 엑셀</a></td></tr>
     </table>
-    <p class="muted">AI가 쓴 TC는 모두 <b>초안</b>이며 제가 검토 중입니다(엑셀의 검토 칸). Jira 이슈는 무료 플랜 개인 사이트에 등록했습니다.</p>
+
+    <h3>찾은 것</h3>
+    <table>
+      <tr><th>게임</th><th>내용</th><th>종류</th></tr>
+      <tr><td>슬라임</td><td>게임 오버 뒤에도 물리 엔진이 멈추지 않아 보드 점수가 계속 오름 (간헐적, 직접 3판 중 2판 재현 · 마지막 실행에서는 미재현)</td><td>결함</td></tr>
+      <tr><td>슬라임</td><td>폭 360px 휴대폰 화면에서 보드 오른쪽이 10px 잘림</td><td>결함</td></tr>
+      <tr><td>슬라임</td><td>없는 방 코드를 넣었을 때 [다시 연결 시도] 버튼이 나오지 않음 (제가 쓴 TC의 기대 결과와 다름)</td><td>TC-구현 불일치</td></tr>
+      <tr><td>카드팩 스튜디오</td><td>새로고침하면 카드뽑기 천장 카운트가 0으로 돌아감 (저장되지 않는 변수)</td><td>결함</td></tr>
+      <tr><td>BLOODFALL</td><td>주무기를 10초 안에 안 고르면 기획서는 피스톨, 구현은 무작위</td><td>기획-구현 불일치</td></tr>
+      <tr><td>BLOODFALL</td><td>무기가 1개뿐이면 보스 전리품 카드가 2장 (기획서는 3장)</td><td>기획-구현 불일치</td></tr>
+      <tr><td>BLOODFALL</td><td>그레이브 워든 광폭화 이동속도 1.35배 (기획서는 1.3배)</td><td>기획-구현 불일치</td></tr>
+      <tr><td>BLOODFALL</td><td>온라인 게임 중 상대 연결이 끊겨도 안내 문구가 화면에 보이지 않음</td><td>결함</td></tr>
+      <tr><td>캡스톤 RotDL</td><td>기획서 안에서 서로 다른 부분 7개 (예: 낮·밤 길이 2시간 vs 12시간), 기존 TC 고칠 점 12개</td><td>문서 검토</td></tr>
+    </table>
+    <p class="muted">AI가 쓴 TC는 모두 <b>초안</b>이며 제가 검토 중입니다(엑셀의 검토 칸). Jira에는 기존 TC·결함을 등록했고, 이번에 보충한 TC는 아직 올리지 않았습니다.</p>
+  </section>
+
+  <section>
+    <h2>어떻게 테스트했나</h2>
+    <ul>
+      <li><b>내부 값을 읽을 수 있는 게임</b>(BLOODFALL·카드팩): 게임 상태를 직접 맞춰 원하는 상황을 빠르게 만들고(보스 등장 직전, 체력 30% 등) 화면과 값을 함께 판정</li>
+      <li><b>내부 값이 숨겨진 게임</b>(슬라임): 페이지가 열리기 전에 물리 엔진 생성 함수를 감싸, 원하는 단계 슬라임을 원하는 자리에 놓아 병합 점수·경고선 경계(59/60/61%)를 확인</li>
+      <li><b>온라인 기능</b>: 실제 P2P 대신 가짜 연결로 연결 문구·시간 초과(시계를 빠르게 돌림)·승패 메시지를 확인, 실제 두 기기 연결은 수동 TC로 남김</li>
+      <li><b>무작위</b>: 난수를 고정하거나, 확률은 수천~수만 번 뽑아 범위로 판정 (예: 아이템 박스 2,000마리 중 70~130개)</li>
+    </ul>
   </section>
 
   <section>
     <h2>AI와 제 역할 나누기</h2>
     <table>
-      <tr><th>제가 정한 것</th><td>무료 도구만 쓰기, TC 작성 규칙(공개 자료·제가 쓴 TC 2종을 참고해 정리), 테스트할 게임과 기획서, AI 결과 검토·채택</td></tr>
+      <tr><th>제가 정한 것</th><td>무료 도구만 쓰기, TC 작성 규칙, 테스트할 게임과 기획서, AI 결과 검토·채택</td></tr>
       <tr><th>AI(Claude Code)가 한 것</th><td>규칙대로 TC 초안 작성, 테스트 코드·도구 코드 작성, 실행 결과 정리</td></tr>
-      <tr><th>배운 점</th><td>처음엔 AI가 확인 항목을 한 줄에 묶어 TC가 55건뿐이었음 → 규칙에 "화면 요소·문구·값마다 TC" 같은 커버리지 규칙을 넣자 338건으로 늘고 실제 결함 1건을 찾음. <b>AI 결과 품질은 규칙을 얼마나 구체적으로 주느냐에 달려 있었습니다.</b></td></tr>
+      <tr><th>배운 점</th><td>처음 카드팩 TC는 확인 항목을 한 줄에 묶어 55건뿐이었음 → 규칙에 "요소·문구·값마다 TC" 같은 커버리지 규칙을 넣자 338건으로 늘고 실제 결함을 찾음. 같은 규칙으로 기존 두 게임을 다시 훑자 결함·불일치 5건이 더 나옴. <b>AI 결과의 품질은 규칙을 얼마나 구체적으로 주느냐에 달려 있었습니다.</b> 또 처음 실패한 테스트 중 상당수는 테스트 쪽 문제(예: 페이지를 열자마자 눌러 쿨다운에 걸림)여서, 실패를 바로 결함으로 보지 않고 원인을 나눠 보는 과정이 필요했습니다.</td></tr>
     </table>
   </section>
 
   <section>
-    <h2>한계</h2>
+    <h2>한계와 다음 단계</h2>
     <ul>
       <li>TC 작성 단계는 제 PC의 Claude Code에서 돌립니다. 나머지(점검·테스트·리포트·Jira)는 AI 없이 돌아갑니다.</li>
-      <li>자동 테스트는 웹(html) 게임 대상입니다. 유니티 빌드 게임은 아직 못 합니다.</li>
+      <li>자동 테스트는 웹(html) 게임 대상입니다. 유니티 게임은 Unity Test Framework(무료)로 같은 리포트·Jira 흐름에 붙이는 것을 다음 단계로 보고 있습니다.</li>
       <li>기획서 대비 빠진 항목 찾기는 글자 비교라서 후보일 뿐이고 사람이 확인해야 합니다.</li>
+      <li>GitHub Actions로 올릴 때마다 테스트를 자동 실행하는 것도 다음 단계입니다.</li>
     </ul>
   </section>
 

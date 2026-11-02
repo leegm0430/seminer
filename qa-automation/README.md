@@ -1,187 +1,164 @@
-# 슬라임 게임 QA 자동화 (Playwright + Jira 무료 플랜)
+# AI 활용 게임 QA 자동화 (Playwright + Jira 무료 플랜)
 
-- 작성일: 2026-11-01
-- 작성자: Claude Code (자동화 대상 선정·코드 초안) / 원본 TC·게임: LKM
-- 비용: 0원 — Playwright(오픈소스), Python 표준 라이브러리 + openpyxl(오픈소스, TC 엑셀용), Jira Cloud 무료 플랜 REST API만 사용. 유료 앱(Zephyr)·Rovo(크레딧)·AI API 호출 없음.
+- 작성일: 2026-11-01 (2026-11-02 현재 기준으로 다시 씀)
+- 작성자: Claude Code (TC 초안·테스트 코드·도구) / 원본 TC·게임·TC 작성 규칙 확인: LKM
+- 비용: 0원 — Playwright(오픈소스), Python 표준 라이브러리 + openpyxl·PyMuPDF(오픈소스), Jira Cloud 무료 플랜 REST API만 사용. 유료 앱(Zephyr)·Rovo(크레딧)·AI API 호출 없음.
+- 소개 페이지: [index.html](index.html) (공개 주소 https://leegm0430.github.io/seminer/qa-automation/)
 
-## 무엇을 하나
+## 1. 전체 흐름
 
 ```
-TC/슬라임게임_TC.xlsx (71건, LKM 작성)
-   └─ 자동화할 22건 + 탐색 중 추가 1건 선정 → tc/slimegame_tc.json (검토: 초안 → LKM이 확인함/버림)
-        └─ tc/slimegame_TC.xlsx : 원본 엑셀 + 자동화 칸(결과·Jira·검토) — 리포트 만들 때 자동 갱신
-        └─ tests/slimegame.spec.js : Playwright가 크롬에서 게임을 직접 조작
-             └─ out/results.json → tools/make_report.py → report/slimegame_report.html
-             └─ 실패 → tools/jira_sync.py bugs → Jira 버그 이슈 + 스크린샷 (같은 실패는 댓글만)
+기획서 PDF·이미지·기존 TC 엑셀
+ → TC 작성 (Claude Code + TC 작성 규칙)
+ → 규칙 점검
+ → Playwright 자동 테스트
+ → 리포트·TC 엑셀
+ → Jira TC·버그 이슈
 ```
 
-## 결과 (2026-11-01)
+| 단계 | 도구 | 하는 일 | AI 필요 |
+|---|---|---|---|
+| 자료 정리 | `tools/prepare_input.py` | `input/<게임>/`의 PDF 글자 뽑기(그림 쪽은 그림으로), 엑셀 시트 읽기·기존 TC 시트 찾기, 게임 파일 유무 확인 | 아니요 |
+| TC 작성 | Claude Code (`tc-writing` 스킬) | 규칙을 먼저 읽고 `tc/<게임>_tc.json` + `tests/<게임>.spec.js` 작성 | **예 (내 PC의 Claude Code)** |
+| 규칙 점검 | `tools/check_tc.py`, `TC점검도구.html` | 규칙 중 기계로 볼 수 있는 것 점검 | 아니요 |
+| 자동 테스트 | Playwright (`tests/*.spec.js`) | 크롬에서 게임을 직접 조작해 TC마다 판정 | 아니요 |
+| 리포트·TC 엑셀 | `tools/make_report.py`, `tools/export_tc_xlsx.py` | `report/<게임>_report.html`, `tc/<게임>_TC.xlsx` | 아니요 |
+| Jira | `tools/jira_sync.py` | TC → 작업 이슈, 실패 → 버그 이슈 + 스크린샷 (같은 실패는 댓글만) | 아니요 |
 
-| 항목 | 값 |
-|---|---|
-| 자동화한 기존 TC | 22 / 71 (나머지 49건은 자동화하지 않은 이유를 리포트·엑셀에 기록) |
-| 테스트 | 17개, 한 번 도는 데 약 3~5분 |
-| 발견한 버그 | **탐색-1: 게임 오버 뒤에도 보드 점수가 오른다** — 결과 창·최고 기록은 게임 오버 순간 점수인데, 물리 엔진이 멈추지 않아 진행 중이던 병합 점수가 보드에만 더해짐. 직접 재현 3판 중 2판. 기존 TC에 없던 항목 |
-| 심은 버그 데모 | 점수 공식 ×8 → ×9로 바꾼 사본에서 병합 점수 테스트가 24 대신 27을 잡아냄 (`report/slimegame_bugdemo.html`) |
+게임 파일이 없으면 자동 테스트를 건너뛰고 `report/<게임>_review.md`(기존 TC 검토·기획서 확인 필요·추가 제안)로 끝난다 (`tools/qa_pipeline.py`).
 
-## BLOODFALL (2026-11-01 추가)
+### 이미 작성된 TC를 넣으면?
 
-| 항목 | 값 |
-|---|---|
-| TC | 기존 TC가 없어 **기획서 v0.9를 근거로 AI가 초안 작성** — 38건(자동 30 + 수동 8), 각 TC에 근거 조항(§) 표기 (`tc/bloodfall_tc.json`) |
-| 판정 방식 | 슬라임과 달리 상태·함수가 전역이라 **내부 값(체력·레벨·타이머)을 직접 읽어** 판정 + 화면 확인. 몬스터·오브·박스를 테스트가 직접 배치해 상황을 빠르게 만듦 |
-| 테스트 | 23개, 약 1.5분 → 22 통과, 1 실패 (`report/bloodfall_report.html`) |
-| 발견 | **BF-04 기획-구현 불일치**: 기획서 §31.1은 "드래프트 10초 미선택 시 피스톨 자동 배정"인데, 구현은 레벨업과 같은 무작위 선택(§33)을 씀. 무작위 값을 고정하지 않고 3번 방치 → 피스톨·샷건·레이저 각 1회 |
-| Jira | TC 38건 SCRUM-48~85, 불일치 SCRUM-86 (스크린샷·TC 연결·분석 댓글) |
+TC 작성 단계를 **건너뛰지 않고**, 하는 일이 "새로 쓰기"에서 "읽고 고르고 보충하기"로 바뀐다. 자동 테스트는 TC마다 테스트 코드가 있어야 돌기 때문에, 기존 TC만 있어도 테스트 코드는 이 단계에서 써야 한다.
 
-```powershell
-npm run test:bloodfall
-npm run report:bloodfall
-npm run jira:tcs:bloodfall     # 한 번만 (다시 돌려도 중복 없음)
-npm run jira:bugs:bloodfall
-```
-
-## 카드팩 스튜디오 (2026-11-02 추가)
-
-| 항목 | 값 |
-|---|---|
-| 대상 | `스토리게임만들기/card-studio/studio.html` — 카드팩 만들기(속성·카드·밸런스·설명·그림·등록) + 속성 카드 대전 + 카드뽑기 확률 |
-| TC (2판) | TC 작성 규칙(044)에 **커버리지 규칙 C1~C5**(화면 요소마다 노출·동작, 안내·오류 문구마다, 근거 대응표, 값마다)를 넣고 다시 씀 → **338건(자동 327 + 수동 11)**. 1판 55건은 한 줄에 확인을 여러 개 묶었었음. 근거 대응표 19칸(화면 16 + 규칙 엔진 3) 모두 TC 있음, 규칙 점검 0건. 번호 앞자리 = 근거(CS-0xx 공통, CS-1xx~12xx 기본 단계, 13xx~16xx 미션, 17xx~19xx 규칙 엔진) |
-| 판정 방식 | **TC 하나 = 테스트 하나**. 화면: 진행 상태를 localStorage에 넣어 원하는 단계에서 시작, 무작위는 Date.now 고정(대전 손패·리그전·뽑기). 대전 끝 화면은 코스트 1·공격 40 카드팩으로 몇 턴 만에 끝냄. 규칙: 전역 엔진(CardRules·BattleEngine·Gacha)을 직접 불러 판정 |
-| 테스트 | 327개, 약 3.6분 → **326 통과, 1 실패** (`report/cardstudio_report.html`) |
-| 발견 | **CS-1116 새로고침하면 카드뽑기 천장 카운트가 0으로 돌아감** — 3팩 뽑은 뒤 새로고침하고 1팩 더 뽑으면 "4 / 천장 30"이 아니라 "1 / 천장 30". flow2.js 178줄 `drawState`가 저장되지 않는 변수. 안내 문구의 천장 약속과 어긋남 → 기획 확인 필요 |
-| Jira | 2판 TC 330건 SCRUM-143~472, 결함은 기존 SCRUM-142에 다시 실패 댓글 + CS-1116(SCRUM-355) 연결. 1판 TC 이슈 SCRUM-87~133은 2판으로 대체됨(정리 여부 미정) |
-
-```powershell
-npm run test:cardstudio
-npm run report:cardstudio            # 리포트 + tc/cardstudio_TC.xlsx (표지 포함)
-npm run jira:tcs:cardstudio          # 한 번만
-npm run jira:bugs:cardstudio
-```
-
-## 자료로 TC 만들기 — 게임이 없어도 됨 (2026-11-02 추가)
-
-기획서 PDF·이미지·엑셀(기존 TC)을 `input/<게임>/`에 넣으면, 실행할 게임이 없어도 TC를 쓰고 검토까지 하고 끝낸다. 자세한 방법은 [input/README.md](input/README.md).
-
-| 단계 | 도구 | 하는 일 |
+| 넣은 자료 | TC 작성 단계에서 하는 일 | 예 |
 |---|---|---|
-| 자료 정리 | `tools/prepare_input.py` | PDF 글자 뽑기(PyMuPDF), 반복 머리글을 빼고 **내용이 그림인 쪽을 그림으로** 만들기, 엑셀 시트 읽기·기존 TC 시트 찾기, 게임 파일 유무로 모드 결정 |
-| TC 작성 | Claude Code (tc-writing 스킬) | 정리본·그림을 읽고 규칙(044)대로 `tc/<게임>_tc.json` — 기존 TC 검토(`existing_review`), 기획서 모순(`spec_issues`), 추가 제안(`suggestions`) 포함. AI API 호출 없음 |
-| 마무리 | `tools/qa_pipeline.py` | 규칙 점검 → **게임 파일이 있으면** 자동 테스트·리포트, **없으면 건너뜀** → TC 엑셀 → `report/<게임>_review.md` |
+| 기획서만 | 규칙대로 TC를 처음부터 씀 | BLOODFALL, 카드팩 스튜디오 |
+| 기존 TC + 게임 | ① 기존 TC에서 자동화할 것을 골라 테스트 코드 작성 ② 규칙 위반·고칠 점 검토(`existing_review`) ③ 규칙으로 빠진 TC 보충(별도 번호·시트) | 슬라임 게임 |
+| 기존 TC + 기획서 (게임 없음) | ② 검토 ③ 기획서 대비 보충 + 기획서 모순(`spec_issues`) | 캡스톤 RotDL |
 
-시험: 캡스톤 **Return of the Dark Lord** 최종 기획서(PDF 145쪽, 그림 쪽 102개) + 직접 쓴 TC 엑셀 → 문서 전용으로 TC **120건**(근거 14칸, 규칙 점검 0건), 기존 TC 고칠 점 12개(튜토리얼 시트가 로딩 화면 복사본, 멀티 시트 번호 없음 등), **기획서 확인 필요 7개**([Start] 다음 화면이 쪽마다 다름, Spacebar vs Any Key, 낮·밤 2시간 vs 12시간 등), 추가 제안 7개 → `report/rotdl_review.md`, `tc/rotdl_TC.xlsx`
+- 사용자가 쓴 TC 엑셀(`TC/*.xlsx`)은 **고치지 않는다**. 고칠 점은 제안만 하고, 보충 TC는 따로 둔다.
+- 기존 TC를 **보충 없이 그대로** 자동화만 하려면 요청할 때 "보충 없이 기존 TC만 자동화"라고 적는다 (①만 함).
+- **점검만** 하려면 TC 작성 단계 없이 `TC점검도구.html`에 엑셀을 넣는다.
+
+## 2. TC 작성 규칙
+
+원본: `AX부트캠프study/Resources/2026-11-02 044. TC 작성 규칙.md` (브런치 TC 글·ISTQB 용어·LKM이 쓴 TC 2종을 참고해 정리). Claude Code는 `tc-writing` 스킬로 TC를 쓰기 전에 이 문서를 읽는다.
+
+| 묶음 | 핵심 |
+|---|---|
+| S 파일 구성 | 표지(우선순위·결과 정의), 머리 정보(버전·기준일), 기본 칸 |
+| W 한 줄 쓰기 | TC 하나 = 확인 하나, 기대 결과는 `~ 됨/표시 됨/없음`, 숫자·문구 그대로 |
+| D 무엇을 TC로 | 정상·실패 짝, 경계값 n−1·n·n+1, 끊김·환경, 확률은 횟수·판정 범위 |
+| C 커버리지 | 화면 요소·안내 문구·규칙 값마다 TC, 근거 대응표에 TC 0건인 칸 없게 |
+| P·Q·A | 우선순위 비율, 번호·표기 통일, AI 초안은 검토 칸 `초안` |
+
+## 3. 적용 결과 (2026-11-02 실제 실행)
+
+| 대상 | TC | 자동 테스트 | 찾은 것 | 결과물 |
+|---|---|---|---|---|
+| 슬라임 게임 (`../slimegame.html`) | LKM 71 + AI 보충 190 (SG-xxx) | 202개 → **200 통과** | 탐색-1 게임 오버 뒤 보드 점수 증가(간헐적, 마지막 실행 미재현) · **SG-1506 폭 360px 화면 보드 10px 잘림** · SG-1010 없는 방 코드에 [다시 연결 시도] 없음(LKM TC 플레이-27과 다름) | `report/slimegame_report.html`, `tc/slimegame_TC.xlsx` |
+| BLOODFALL (`../뱀서라이크/bloodfall_playable.html`) | 기획서 v0.9로 38 + AI 보충 173 (BF-101~) | 194개 → **190 통과** | BF-04 미선택 시 주무기 무작위(기획 피스톨) · **BF-1402 무기 1개면 전리품 카드 2장(기획 3장)** · **BF-1118 그레이브 워든 광폭화 1.35배(기획 1.3배)** · **BF-1714 게임 중 연결 끊김 안내 안 보임** | `report/bloodfall_report.html`, `tc/bloodfall_TC.xlsx` |
+| 카드팩 스튜디오 (`../스토리게임만들기/card-studio/studio.html`) | 338 (자동 327 · 수동 11) | 327개 → **326 통과** | **CS-1116 새로고침하면 카드뽑기 천장 카운트 0** (`flow2.js` 178줄 `drawState` 저장 안 됨) | `report/cardstudio_report.html`, `tc/cardstudio_TC.xlsx` |
+| 캡스톤 RotDL (기획서 PDF 145쪽, 게임 없음) | 120 | 건너뜀 (문서만) | 기존 TC 고칠 점 12 · 기획서 서로 다른 부분 7 (예: 낮·밤 2시간 vs 12시간) · 추가 제안 7 | `report/rotdl_review.md`, `tc/rotdl_TC.xlsx` |
+
+- AI가 쓴 TC는 모두 **초안** — TC 엑셀의 검토 칸에서 LKM이 `확인함`/`버림`으로 바꾼다.
+- 카드팩 TC는 처음 55건(확인을 한 줄에 묶음)이었고, 규칙에 커버리지(C1~C5)를 넣은 뒤 338건이 됐다. 같은 규칙으로 슬라임·BLOODFALL을 다시 훑어 위의 새 결함·불일치 5건을 찾았다.
+- 기획서와 다른 점·기존 TC 고칠 점은 `tc/<게임>_tc.json`의 `spec_issues`·`existing_review`·`suggestions`에 있다.
+
+## 4. 판정 방식
+
+| 게임 | 방법 |
+|---|---|
+| 공통 | **TC 하나 = 테스트 하나**. 테스트 이름에 `[TC 번호]`를 넣어 결과를 TC에 연결 |
+| BLOODFALL·카드팩 | 상태·함수가 전역이라 게임 상태를 직접 맞춰(보스 등장 직전, 체력 30% 등) 내부 값과 화면을 함께 판정. 카드팩은 진행 상태를 localStorage에 넣어 원하는 단계에서 시작 |
+| 슬라임 | 코드가 즉시 실행 함수 안이라 값을 못 읽음 → 페이지가 열리기 전에 물리 엔진(Matter) 생성 함수를 감싸 엔진을 붙잡고, 원하는 단계 슬라임을 원하는 위치에 놓아 병합 점수·경고선 경계(59/60/61%)·0.55초 유예를 확인 |
+| 온라인(P2P) | 실제 연결 대신 가짜 Peer로 서버 응답·상대 메시지를 테스트가 보냄. 시간 초과는 시계를 빠르게 돌려 확인. **실제 두 기기 연결은 수동 TC** |
+| 무작위 | `Math.random`·`Date.now` 고정, 확률은 수천~수만 번 뽑아 범위로 판정 (예: 아이템 박스 2,000마리 중 70~130개) |
+
+주의: 슬라임 게임은 드롭 쿨다운(0.42초)을 페이지가 열린 뒤 시간으로 재서, 테스트는 페이지를 열고 0.7초 기다린 뒤 조작한다. 처음 실패한 테스트 중 상당수가 이런 테스트 쪽 문제였고, 실패는 원인(테스트 / 게임 / 기획)을 나눈 뒤에 결함으로 기록했다.
+
+## 5. 실행
+
+### 처음 한 번
 
 ```powershell
-npm run input -- --game rotdl       # 자료 정리 (실행 파일 5번 메뉴: 새 이름이면 폴더를 만들어 열어 줌)
-npm run pipeline -- --game rotdl    # TC JSON이 생긴 뒤 마무리 (실행 파일 6번 메뉴와 같음)
+npm install
+npx playwright install chromium
+pip install openpyxl pymupdf
 ```
 
-## TC 엑셀 (tc/<게임>_TC.xlsx)
+### 더블클릭
+
+| 파일 | 하는 일 |
+|---|---|
+| `QA자동화_실행.bat` | 메뉴: 1 슬라임 / 2 BLOODFALL / 3 카드팩 / 4 전부 (테스트 → 리포트·엑셀 → **마지막에 Jira 등록 Y/N**), 5 자료 넣기·정리 / 6 자료로 만든 TC 마무리 / 7 TC 규칙 점검만 |
+| `TC점검도구.html` | 서버·설치 없이 브라우저에서 TC 엑셀·JSON 규칙 점검 + 기획서 대비 빠진 문구·버튼·수치 후보. HTML·CSV 내려받기. 파일은 브라우저 밖으로 안 나감 (PDF만 무료 pdf.js를 인터넷에서 불러옴) |
+| `QA자동화_화면.bat` | 내 PC 안에서만 도는 작은 서버(`tools/web_ui.py`) + 실행 화면(`web/index.html`): 게임별 테스트·Jira 등록·자료 올리기·TC 마무리. 127.0.0.1 전용, 정해진 동작만 실행. 검은 창을 닫으면 멈춤 |
+
+### 명령 (이 폴더에서)
+
+```powershell
+npm test                     # 슬라임 (npm run report 로 리포트·엑셀)
+npm run test:bloodfall       # npm run report:bloodfall
+npm run test:cardstudio      # npm run report:cardstudio
+npm run tc:check             # 모든 게임 TC 규칙 점검
+npm run tc:xlsx              # TC 엑셀만 다시 만들기
+npm run input -- --game rotdl      # 자료 정리
+npm run pipeline -- --game rotdl   # TC JSON이 생긴 뒤 마무리 (게임 없으면 테스트 건너뜀)
+npm run bug-demo             # 점수 공식을 틀리게 바꾼 사본으로 슬라임 테스트 → 버그를 잡는지 확인
+```
+
+- `playwright test`에 `--reporter`를 붙이면 `out/results.json`이 안 써져 리포트가 비므로 붙이지 않는다.
+- bug-demo 뒤에는 `out/results.json`이 사본 결과로 바뀐다 → `npm test`를 다시 돌린다.
+
+### 자료로 TC 만들기
+
+`input/<게임>/`에 기획서 PDF·이미지·마크다운·기존 TC 엑셀(게임이 있으면 html 또는 경로를 적은 `game.txt`)을 넣고 `npm run input -- --game <게임>` → Claude Code에 `/tc-writing input/<게임> 자료로 TC 작성해줘 (TC 작성 규칙 044 적용)` → `npm run pipeline -- --game <게임>`. 자세한 방법은 [input/README.md](input/README.md). `input/`의 자료는 git에 올리지 않는다.
+
+## 6. TC 엑셀 (tc/<게임>_TC.xlsx)
 
 | 파일 | 내용 |
 |---|---|
-| `tc/slimegame_TC.xlsx` | LKM 원본 TC 엑셀을 복사하고 오른쪽에 자동화 칸을 붙인 것. 원본 `TC/슬라임게임_TC.xlsx`는 고치지 않음. 탐색-1은 지정항목 시트 맨 아래에 추가 |
-| `tc/bloodfall_TC.xlsx`, `tc/cardstudio_TC.xlsx` | AI 초안 TC를 같은 양식(번호·우선순위·분류·사전 조건·테스트 내용·기대 결과·비고)으로 정리 + 근거. 첫 시트는 **표지**(작성·TC 수·우선순위 정의·결과 정의, 규칙 044 S1) |
+| `slimegame_TC.xlsx` | LKM 원본 엑셀 복사(필수·지정항목 시트) + 오른쪽 자동화 칸 + **'AI 보충 TC' 시트**(SG-xxx). 원본 `TC/슬라임게임_TC.xlsx`는 고치지 않음 |
+| `bloodfall_TC.xlsx`, `cardstudio_TC.xlsx`, `rotdl_TC.xlsx` | 표지(작성·TC 수·우선순위 정의·결과 정의) + TC 시트 (번호·우선순위·분류·확인 항목·근거·사전 조건·테스트 내용·기대 결과·비고) |
 
-- 자동화 칸: TC ID · 자동/수동 · 자동화하지 않은 이유 · 최근 결과 · 실행 시각 · Jira TC · Jira 버그 · 검토
-- 결과 표기는 규칙 044의 결과 정의: PASS / Fail / N/T (수동 TC는 사람이 실행하기 전까지 N/T)
-- `npm run report` / `npm run report:bloodfall` 을 돌리면 그 게임 엑셀이 함께 갱신된다. 엑셀만 다시 만들려면 `npm run tc:xlsx`
-- **검토 칸은 엑셀에서 직접 고친다**(초안/확인함/버림 목록). 다음 갱신 때 `tc/*.json`에 옮겨 적힌다. 다른 칸을 엑셀에서 고치면 다음 갱신 때 지워지니, TC 내용은 JSON에서 고친다
-- 엑셀에서 파일을 연 채로 갱신하면 저장이 안 된다 → 닫고 다시 실행
-- openpyxl(무료 오픈소스 파이썬 라이브러리)이 필요: `pip install openpyxl`
+- 자동화 칸: TC ID · 자동/수동 · 자동화하지 않은 이유 · 최근 결과(PASS/Fail/N/T) · 실행 시각 · Jira TC · Jira 버그 · 검토
+- **검토 칸만 엑셀에서 고친다**(초안/확인함/버림). 다음 갱신 때 JSON에 옮겨 적힌다. TC 내용은 `tc/<게임>_tc.json`에서 고친다.
+- 엑셀을 연 채로 갱신하면 저장이 안 된다 → 닫고 다시 실행.
 
-## TC 작성 규칙 점검 (tools/check_tc.py)
+## 7. Jira (무료 플랜)
 
-TC 작성 규칙(`AX부트캠프study/Resources/2026-11-02 044. TC 작성 규칙.md`) 중 기계로 볼 수 있는 것을 점검한다: 빈 칸, 기대 결과가 "확인/되는지"로 끝남, "정상"뿐인 결과, 내용 복사, 확률 TC 횟수, 번호, High 비율, 우선순위 표기 섞임.
-
-```powershell
-npm run tc:check                                              # qa-automation 게임 전부
-python -I tools/check_tc.py --xlsx "../TC/운빨존많겜TC작성자_이경민.xlsx"   # 직접 쓴 엑셀 TC
-```
-
-TC 엑셀을 만들 때(`tc:xlsx`, 리포트)도 점검 결과가 한 줄로 나온다. 문장 품질·빠진 케이스는 사람이 044 점검표로 본다.
-
-## TC 점검 도구 (TC점검도구.html) — html 파일 하나, 2026-11-02 추가
-
-`TC점검도구.html`을 더블클릭하면 브라우저에서 바로 열린다. 서버·설치가 없고, 미리 등록된 게임 목록도 없다. 필요할 때 파일을 끌어다 놓거나 [파일 고르기]로 넣고 [점검하기]를 누른다.
-
-| 넣는 파일 | 하는 일 |
-|---|---|
-| TC 엑셀(.xlsx) · TC JSON(_tc.json) | TC 작성 규칙(044) 기계 점검 (S4·W1·W4·Q1·Q2·D6·P1·Q4, JSON은 C3 근거 대응표까지). 기준은 `tools/check_tc.py`와 같음 |
-| 기획서(.pdf · .md · .txt) | 따옴표 문구·[버튼]·단위가 붙은 수치를 뽑아 TC에 없는 것을 **추가 제안 후보**로 표시 |
-| 결과 | HTML 리포트·CSV(엑셀용) 내려받기 |
-
-- 파일은 이 PC 브라우저 안에서만 읽는다(어디에도 올리지 않음). PDF를 읽을 때만 무료 pdf.js를 인터넷에서 불러온다.
-- 할 수 없는 것: AI로 TC 쓰기(Claude Code에 `/tc-writing … (TC 작성 규칙 044 적용)` 요청), Playwright 자동 테스트·Jira 등록(아래 도구).
-- 시험: 캡스톤 RotDL 기획서 PDF + 사용자 TC 엑셀 + rotdl_tc.json → 316줄 점검, 엑셀 결과(S4 1건·Q2 24건)가 check_tc.py와 같음.
-
-## 실행 화면 (QA자동화_화면.bat) — 2026-11-02 추가
-
-`QA자동화_화면.bat`을 더블클릭하면 내 PC 안에서만 도는 작은 서버(`tools/web_ui.py`, 파이썬 표준 라이브러리)가 켜지고 브라우저에 실행 화면(`web/index.html`)이 열린다. **뒤에 뜬 검은 창을 닫으면 화면도 멈춘다.** 예전 메뉴 방식(`QA자동화_실행.bat`)도 그대로 쓸 수 있다.
-
-| 화면 | 하는 일 |
-|---|---|
-| 게임 카드 | 게임마다 TC 수·최근 결과(통과/실패) · [테스트 실행] · [Jira 등록](확인 창) · 리포트·검토 리포트·TC 엑셀 열기. 문서 전용 게임은 [TC 마무리] |
-| 자료로 TC 만들기 | 게임 이름 → 기획서 PDF·이미지·엑셀을 **끌어다 놓아 input/<게임>에 올리기** → [자료 정리] → Claude Code 요청 문구 복사 → [TC 마무리] |
-| TC 규칙 점검 | 모든 게임 TC를 규칙(044)으로 점검 |
-| 진행 기록 | 실행 중인 작업의 출력이 1초마다 이어서 나옴 (한 번에 작업 하나) |
-
-안전장치: 127.0.0.1에서만 받음(같은 와이파이의 다른 기기도 접속 불가), Host 머리글 확인, 실행 요청에 전용 머리글 필요(다른 사이트가 몰래 누르기 방지), 정해진 동작만 실행, 게임 이름은 영문 소문자·숫자·_-만, 올릴 수 있는 파일 종류 제한, 파일 열기는 report·tc 폴더만, Jira 토큰은 화면으로 보내지 않음.
-
-## 더블클릭 실행 (QA자동화_실행.bat)
-
-1. 메뉴 선택 — 게임 자동 테스트(1 슬라임 / 2 BLOODFALL / 3 카드팩 스튜디오 / 4 전부), 자료로 TC 만들기(5 자료 넣기·정리 / 6 자료로 만든 TC 마무리 / 7 TC 규칙 점검만)
-2. 게임마다 자동 테스트 → 리포트·TC 엑셀 갱신 → 리포트를 브라우저로 열기
-3. **마지막에** "Jira에 등록할까요? (Y/N)" — Y면 실패한 테스트를 Jira 버그로 등록, N이면 건너뜀
-
-실행 전에 TC 엑셀을 닫아 둔다. 게임별 결과는 `out/results_<게임>.json`에 따로 남겨 마지막 Jira 단계에서 쓴다.
-
-## 실행 (PowerShell, 이 폴더에서)
+1. https://www.atlassian.com/software/jira/free 에서 무료 사이트·스크럼 프로젝트 만들기
+2. API 토큰: https://id.atlassian.com/manage-profile/security/api-tokens
+3. `.env.example`을 `.env`로 복사해 값을 채운다. **`.env`는 git에 올라가지 않는다. 토큰을 다른 파일·코드·채팅에 적지 않는다.**
 
 ```powershell
-npm install                     # 처음 한 번
-npx playwright install chromium # 처음 한 번 (브라우저 내려받기)
-npm test                        # 테스트 실행
-npm run report                  # report/slimegame_report.html 만들기
-npm run bug-demo                # 점수 공식을 틀리게 바꾼 사본으로 같은 테스트 → 버그를 잡는지 확인
-npx playwright show-report out/playwright-report   # Playwright 기본 리포트 보기
+python -I tools/jira_sync.py check                    # 접속 확인 (아무것도 만들지 않음)
+python -I tools/jira_sync.py tcs  --game bloodfall    # TC를 작업 이슈로 (다시 돌려도 중복 없음)
+python -I tools/jira_sync.py bugs --game bloodfall    # 실패 → 버그 + 스크린샷 + TC 연결 (같은 실패는 댓글)
 ```
 
-> bug-demo 뒤에는 `out/results.json`이 사본 결과로 바뀐다. 원래 결과로 돌리려면 `npm test`를 다시 돌린다.
+설정이 비어 있으면 **드라이런**: 보낼 내용만 `out/jira_dryrun.json`에 저장한다. 현재 등록 상태: 슬라임 TC SCRUM-5~46·탐색-1 SCRUM-47, BLOODFALL TC SCRUM-48~85·BF-04 SCRUM-86, 카드팩 TC SCRUM-143~472·CS-1116 SCRUM-142. **이번 보충 TC(SG-xxx·BF-101~)와 새 결함 5건은 아직 올리지 않음.**
 
-## Jira 연결 (무료 플랜)
+## 8. 한계
 
-1. https://www.atlassian.com/software/jira/free 에서 무료 사이트 만들기 (예: `내이름.atlassian.net`)
-2. 프로젝트 만들기: 소프트웨어 → **스크럼 또는 칸반** 템플릿 (작업·버그 유형이 들어 있음). 프로젝트 키 예: `SQA`
-3. API 토큰 만들기: https://id.atlassian.com/manage-profile/security/api-tokens
-4. `.env.example`을 복사해 `.env`로 이름을 바꾸고 값을 채운다. **`.env`는 git에 올라가지 않는다. 토큰을 다른 파일·코드·채팅에 적지 않는다.**
-5. 확인 → 등록
+- TC 작성 단계는 내 PC의 Claude Code가 있어야 한다. 나머지(점검·테스트·리포트·Jira)는 AI 없이 돈다.
+- 자동 테스트는 웹(html) 게임 대상. 유니티는 Unity Test Framework(무료)로 결과를 같은 리포트·Jira 흐름에 붙이는 것이 다음 단계.
+- 온라인 기능은 가짜 연결로 화면 처리만 확인한다. 실제 연결·동기화는 수동 TC.
+- 간헐적 결함(탐색-1)은 여러 판을 돌려도 놓칠 수 있다.
+- 기획서 대비 빠진 항목 찾기(TC점검도구)는 글자 비교라 후보일 뿐이다.
 
-```powershell
-python -I tools/jira_sync.py check   # 접속·프로젝트·이슈 유형 확인 (아무것도 만들지 않음)
-python -I tools/jira_sync.py tcs     # TC를 작업 이슈로 등록 (한 번만, 다시 돌려도 중복 없음)
-npm test
-python -I tools/jira_sync.py bugs    # 실패한 테스트를 버그로 등록 + 스크린샷 첨부 + 관련 TC 연결
-```
-
-설정이 비어 있으면 자동으로 **드라이런**: Jira에 보내지 않고 보낼 내용만 `out/jira_dryrun.json`에 저장한다.
-
-## 판정 방식과 한계
-
-- 게임 코드는 고치지 않았다. 화면에 보이는 값(점수, 다음 슬라임 이름, 결과 창, 버튼 위치)으로만 판정한다.
-- 다음 슬라임은 무작위라 테스트 안에서 `Math.random`을 정해진 순서로 바꿔 매번 같은 결과가 나오게 했다.
-- 탐색-1처럼 매번 생기지 않는 버그는 최대 3판을 이어서 확인한다. 그래도 놓칠 수 있다.
-- 커서 위치·경고선 60% 판정·애니메이션처럼 캔버스 안이나 게임 내부 값은 화면으로 읽을 수 없어 수동 TC로 남겼다.
-- 멀티(P2P) 대결은 외부 중계 서버와 두 사람이 필요해 이번 범위에서 뺐다.
-
-## 파일
+## 9. 파일
 
 | 경로 | 내용 | git |
 |---|---|---|
-| `tests/slimegame.spec.js` | 테스트 코드 | 올림 |
-| `tc/*_tc.json` | 자동화 TC·검토 상태·수동 TC 이유 (스크립트가 읽는 원본) | 올림 |
+| `tests/*.spec.js` | 게임별 테스트 코드 | 올림 |
+| `tc/*_tc.json` | TC 원본(자동/수동·검토 상태·근거 대응표·검토 의견) | 올림 |
 | `tc/*_TC.xlsx` | 사람이 보는 TC 엑셀 (자동 생성) | 올림 |
-| `tools/` | 리포트·Jira 연동·버그 데모 (Python 표준 라이브러리) | 올림 |
-| `report/` | 포트폴리오용 결과 리포트 | 올림 |
+| `tools/` | 자료 정리·규칙 점검·엑셀·리포트·마무리·Jira·실행 화면 서버 | 올림 |
+| `report/` | 결과 리포트·검토 리포트 | 올림 |
+| `TC점검도구.html`, `index.html`, `web/` | 점검 도구, 소개 페이지, 실행 화면 | 올림 |
+| `input/` | 기획서 등 넣은 자료 (`README.md`만 올림) | 안 올림 |
 | `out/` | 실행 결과·스크린샷·Jira 기록 | 안 올림 |
 | `.env` | Jira 토큰 | **절대 안 올림** |
