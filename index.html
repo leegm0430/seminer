@@ -1011,52 +1011,198 @@
     <h2>개발 이력 <span style="font-size:1rem; font-weight:400; color:var(--green-lt); margin-left:0.5rem;">프로젝트 3 · 바이브 코딩 9</span></h2>
     <p>직접 개발하고 QA한 게임 프로젝트와, Claude AI로 만든 바이브 코딩 작품</p>
   </div>
-  <div class="mini-grid">
-    <div class="project-card mini"><div class="proj-head">
+  <div style="display:grid; gap:1.5rem; margin-bottom:1.5rem;">
+    <!-- Weird Space -->
+    <div class="project-card">
+      <div class="proj-head">
         <p class="proj-type">창업 동아리(게개팀) · 팀장</p>
         <p class="proj-name">Weird Space — 서스펜스 퍼즐 모바일 게임</p>
-      </div><img class="mini-img" src="images/weirdspace_promo.png" alt="Weird Space 홍보 이미지" onclick="openLightbox(this.src)"
-              ><div class="proj-meta">
+      </div>
+      <div class="proj-meta">
         <div class="proj-meta-item">팀 구성 <span>4인</span></div>
         <div class="proj-meta-item">포지션 <span>기획 · Unity 개발 · QA (팀장)</span></div>
         <div class="proj-meta-item">기여도 <span>기획 80% · 개발 60% · QA 80%</span></div>
         <div class="proj-meta-item">플랫폼 <span>Google Play Store</span></div>
-      </div><div class="proj-body"><p class="proj-desc">
+      </div>
+      <div class="proj-body">
+        <div style="display:grid; grid-template-columns:1fr 2fr; gap:0.6rem; margin-bottom:1.2rem;">
+          <img src="images/weirdspace_promo.png" alt="Weird Space 홍보 이미지" onclick="openLightbox(this.src)"
+               style="width:100%; height:260px; object-fit:contain; background:#0a121e; border-radius:6px; border:1px solid var(--border); display:block; cursor:pointer;">
+          <img src="images/weirdspace_revenue.png" alt="Weird Space 광고 수익 대시보드" onclick="openLightbox(this.src)"
+               style="width:100%; height:260px; object-fit:contain; background:#0a121e; border-radius:6px; border:1px solid var(--border); display:block; cursor:pointer;">
+        </div>
+        <p class="proj-desc">
           기획부터 코딩, QA, 라이브 운영까지 전 사이클을 팀장으로 직접 책임진 서스펜스 퍼즐 게임. 구글 플레이 스토어 정식 출시 후 유저 피드백 기반의 업데이트 품질 검증까지 완수했습니다.
-        </p><div class="tags">
+        </p>
+
+        <div class="story-block">
+          <div class="story-item">
+            <div class="story-label">문제</div>
+            <p>초반에 체계적인 시스템 없이 파일을 공유하다보니 의사소통 부족으로 코드가 꼬이는 충돌이 반복 발생. 씬 전환 시 간헐적 크래시 같은 출시 후 치명적 결함도 검출에 실패했습니다.</p>
+          </div>
+          <div class="story-item">
+            <div class="story-label">해결</div>
+            <p>체계적인 파일 관리 시스템과 의사소통 방식을 개선해 팀 협업 구조를 재구축. 로그 분석·프로파일러로 카메라 오브젝트 중첩 생성이라는 기술적 원인을 규명해 TC를 전면 재설계했습니다.</p>
+          </div>
+          <div class="story-item">
+            <div class="story-label">미래 적용</div>
+            <p>QA 프로세스 초기 단계에 커뮤니케이션 체계와 파일 관리 기준을 수립해 팀 협업 충돌을 사전 차단. 빌드 안정성 검증 기준은 장르·플랫폼별로 표준화해 적용합니다.</p>
+          </div>
+        </div>
+
+        <ul class="list-check">
+          <li>구글 플레이 스토어 정식 출시 · 누적 다운로드 45회 · 광고 수익 $2.1 달성</li>
+          <li>카메라 오브젝트 중첩 생성 버그 — 로그 분석으로 원인 추적·해결</li>
+          <li>스팀 예외 상황 리스크 TC 설계 (오프라인 모드, 해상도 전환, 오버레이 충돌)</li>
+          <li>Excel 기반 TC 설계 + 블랙박스 테스팅 전면 재설계</li>
+          <li>유저 피드백 기반 라이브 서비스 업데이트 품질 검증</li>
+        </ul>
+        <div class="tags">
           <span class="tag tag-blue">Unity</span>
           <span class="tag tag-blue">Google Play</span>
           <span class="tag tag-green">TC 설계</span>
           <span class="tag tag-green">버그 리포트</span>
           <span class="tag tag-green">로그 분석</span>
           <span class="tag tag-blue">라이브 서비스</span>
-        </div></div></div><div class="project-card mini"><div class="proj-head">
+        </div>
+      </div>
+    </div>
+
+    <!-- Return of the Dark Lord -->
+    <div class="project-card">
+      <div class="proj-head">
         <p class="proj-type">캡스톤 디자인 · QA 담당</p>
         <p class="proj-name">Return of the Dark Lord — 전략 디펜스 게임</p>
-      </div><img class="mini-img" src="images/darkLord_title.png"    alt="Return of the Dark Lord 타이틀 화면" onclick="openLightbox(this.src)"><div class="proj-meta">
+      </div>
+      <div class="proj-meta">
         <div class="proj-meta-item">팀 구성 <span>5인</span></div>
         <div class="proj-meta-item">포지션 <span>QA 전담</span></div>
         <div class="proj-meta-item">기여도 <span>QA 80%</span></div>
         <div class="proj-meta-item">플랫폼 <span>PC (Unity)</span></div>
-      </div><div class="proj-body"><p class="proj-desc">
+      </div>
+      <div class="proj-body">
+        <div class="img-gallery cols-4">
+          <img src="images/darkLord_title.png"    alt="Return of the Dark Lord 타이틀 화면" onclick="openLightbox(this.src)">
+          <img src="images/darkLord_ui.png"       alt="Return of the Dark Lord 캐릭터 설명 UI" onclick="openLightbox(this.src)">
+          <img src="images/darkLord_scene.png"    alt="Return of the Dark Lord 배경 씬" onclick="openLightbox(this.src)">
+          <img src="images/darkLord_gameplay.png" alt="Return of the Dark Lord 인게임 화면" onclick="openLightbox(this.src)">
+        </div>
+        <p class="proj-desc">
           전략 디펜스 장르 팀 프로젝트. QA를 전담하여 장르에 특화된 시나리오 기반 테스트 케이스를 직접 설계하고 버그 리포트를 체계화했습니다.
-        </p><div class="tags">
+        </p>
+
+        <div class="story-block">
+          <div class="story-item">
+            <div class="story-label">문제</div>
+            <p>멀티플레이 환경의 동기화 예외 케이스 및 타격 판정 결함처럼, 장르 고유의 리스크를 사전에 정의하는 TC 설계 기준이 없어 검증 범위가 불명확했습니다.</p>
+          </div>
+          <div class="story-item">
+            <div class="story-label">해결</div>
+            <p>8개 핵심 시스템 화면을 기준으로 장르 특화 시나리오 기반 TC를 설계. 네트워크 단절·동기화 오류 예외 케이스를 포함하고, 재현 경로·로그를 구조화한 표준 버그 리포트를 작성했습니다.</p>
+          </div>
+          <div class="story-item">
+            <div class="story-label">미래 적용</div>
+            <p>라이브 서비스 QA에서 장르별 TC 템플릿과 예외 리스크 체크리스트를 선제적으로 구축해, 신규 콘텐츠 업데이트 시 반복 설계 공수를 최소화합니다.</p>
+          </div>
+        </div>
+
+        <ul class="list-check">
+          <li>장르 특화 시나리오 기반 TC 설계 (8개 핵심 시스템)</li>
+          <li>타격 판정 버그 발견 및 표준 결함 리포트 작성·전달</li>
+          <li>멀티플레이 동기화·데이터 무결성 예외 TC 구성</li>
+          <li>P2P 네트워크 단절 상태 예외 처리 검증</li>
+          <li>재현 경로 + 기대 결과 + 로그 첨부 구조화 리포팅</li>
+        </ul>
+        <div class="tags">
           <span class="tag tag-blue">Unity</span>
           <span class="tag tag-green">시나리오 TC</span>
           <span class="tag tag-blue">멀티플레이</span>
           <span class="tag tag-green">버그 리포트</span>
           <span class="tag tag-blue">네트워크 테스트</span>
-        </div></div></div><div class="project-card mini"><div class="proj-head">
+        </div>
+      </div>
+    </div>
+  
+    <!-- Hardcore Obby -->
+    <div class="project-card">
+      <div class="proj-head">
         <p class="proj-type">개인 프로젝트 · AI 바이브코딩</p>
         <p class="proj-name">Hardcore Obby — Roblox 하드코어 점프맵</p>
-      </div><img class="mini-img" src="images/로블록스1.png" alt="Hardcore Obby 맵 전경" onclick="openLightbox(this.src)"><div class="proj-meta">
+      </div>
+      <div class="proj-meta">
         <div class="proj-meta-item">팀 구성 <span>1인</span></div>
         <div class="proj-meta-item">포지션 <span>기획 · 프롬프트 엔지니어링 · QA</span></div>
         <div class="proj-meta-item">기여도 <span>100%</span></div>
         <div class="proj-meta-item">플랫폼 <span>Roblox Studio</span></div>
-      </div><div class="proj-body"><p class="proj-desc">
+      </div>
+      <div class="proj-body">
+        <div class="img-gallery cols-4">
+          <img src="images/로블록스1.png" alt="Hardcore Obby 맵 전경" onclick="openLightbox(this.src)">
+          <img src="images/로블록스2.png" alt="Hardcore Obby 기믹 구간" onclick="openLightbox(this.src)">
+          <img src="images/로블록스3.png" alt="Hardcore Obby 인게임 플레이" onclick="openLightbox(this.src)">
+          <img src="images/로블록스4.png" alt="Hardcore Obby 피날레 구간" onclick="openLightbox(this.src)">
+        </div>
+        <p class="proj-desc">
           Claude AI에 텍스트 프롬프트만 입력하는 바이브코딩 방식으로 Roblox Studio 게임을 개발한 개인 연구 프로젝트. Lua 서버 코드를 직접 작성하지 않고, AI와의 대화만으로 맵 자동 생성 시스템과 5가지 기믹 시스템 전체를 구현했습니다.
-        </p><div class="tags">
+        </p>
+
+        <div style="background:#0f1e30; border:1px solid var(--border); border-left:3px solid var(--blue); border-radius:0 6px 6px 0; padding:1rem 1.25rem; margin-bottom:1.2rem;">
+          <p style="font-size:0.72rem; color:var(--blue-lt); font-weight:600; margin-bottom:0.5rem; letter-spacing:0.05em;">요구사항 분석</p>
+          <p style="font-size:0.83rem; color:var(--text-2); line-height:1.75;">
+            AI 프롬프트 엔지니어링만으로 상용 게임 수준의 기믹 시스템을 구현할 수 있는지 검증하기 위해 제작. 80×80 스터드 맵 안에 7개 구간·55개 이상 발판을 배치하고, 각 구간마다 독립된 기믹(페이딩·레이저·회전·버프디버프·페이크)이 자동 적용되는 CollectionService 태그 기반 아키텍처를 요구사항으로 정의했습니다.
+          </p>
+        </div>
+
+        <div class="story-block">
+          <div class="story-item">
+            <div class="story-label">문제</div>
+            <p>레이저 기믹 초기 구현에서 EasingStyle.Sine 적용으로 레이저가 플레이어를 쫓는 것처럼 가속·감속해 난이도 예측이 불가능한 문제가 발생했습니다.</p>
+          </div>
+          <div class="story-item">
+            <div class="story-label">해결</div>
+            <p>프롬프트로 원인을 분석하게 한 뒤 EasingStyle.Linear로 수정 지시. 처음부터 끝까지 일정한 속도로 왕복하도록 변경해 플레이어가 패턴을 예측할 수 있는 구조로 개선했습니다.</p>
+          </div>
+          <div class="story-item">
+            <div class="story-label">미래 적용</div>
+            <p>AI 바이브코딩으로 빠르게 프로토타입을 생성하고 QA 관점에서 즉시 검증하는 사이클을 반복해, 라이브 서비스 핫픽스 검증 자동화 연구에 활용합니다.</p>
+          </div>
+        </div>
+
+        <div class="grid-3" style="gap:0.75rem; margin-bottom:1.2rem;">
+          <div style="background:#0f1e30; border:1px solid var(--border); border-radius:6px; padding:0.9rem;">
+            <p style="font-size:0.72rem; color:var(--green-lt); font-weight:600; margin-bottom:0.35rem;">기믹 1 · Fading</p>
+            <p style="font-size:0.82rem; color:var(--text-2);">밟는 순간 카운트다운 후 서서히 투명해지며 사라지는 발판. 멈추지 않고 연속 이동 강제.</p>
+          </div>
+          <div style="background:#0f1e30; border:1px solid var(--border); border-radius:6px; padding:0.9rem;">
+            <p style="font-size:0.72rem; color:var(--green-lt); font-weight:600; margin-bottom:0.35rem;">기믹 2 · Laser</p>
+            <p style="font-size:0.82rem; color:var(--text-2);">발판 위를 일정 속도로 왕복하는 즉사 레이저. Linear 이동으로 패턴 예측 가능.</p>
+          </div>
+          <div style="background:#0f1e30; border:1px solid var(--border); border-radius:6px; padding:0.9rem;">
+            <p style="font-size:0.72rem; color:var(--green-lt); font-weight:600; margin-bottom:0.35rem;">기믹 3 · Rotating</p>
+            <p style="font-size:0.82rem; color:var(--text-2);">시계·반시계 방향 번갈아 회전하며 구간마다 속도 상승 (45→75 deg/s).</p>
+          </div>
+          <div style="background:#0f1e30; border:1px solid var(--border); border-radius:6px; padding:0.9rem;">
+            <p style="font-size:0.72rem; color:var(--green-lt); font-weight:600; margin-bottom:0.35rem;">기믹 4 · Buff / Debuff</p>
+            <p style="font-size:0.82rem; color:var(--text-2);">SpeedBoost·JumpDebuff 존으로 이동속도·점프력을 변화시켜 조작 난이도 상승.</p>
+          </div>
+          <div style="background:#0f1e30; border:1px solid var(--border); border-radius:6px; padding:0.9rem;">
+            <p style="font-size:0.72rem; color:var(--green-lt); font-weight:600; margin-bottom:0.35rem;">기믹 5 · Fake</p>
+            <p style="font-size:0.82rem; color:var(--text-2);">NoCollide·Fall·Delay 3가지 타입의 페이크 발판. 진짜와 동일한 색으로 반복 학습 유도.</p>
+          </div>
+          <div style="background:#0f1e30; border:1px solid var(--border); border-radius:6px; padding:0.9rem;">
+            <p style="font-size:0.72rem; color:var(--green-lt); font-weight:600; margin-bottom:0.35rem;">섹션 7 · Finale</p>
+            <p style="font-size:0.82rem; color:var(--text-2);">5가지 기믹 전부 혼합. 레이저 최고속·회전 75deg/s·Delay 0.15초 페이크로 최고 난이도.</p>
+          </div>
+        </div>
+
+        <ul class="list-check">
+          <li>Claude AI 프롬프트만으로 Lua 서버 코드 전체 생성 (MapGenerator + GimmickManager)</li>
+          <li>CollectionService 태그 방식으로 파트에 태그만 추가하면 기믹 자동 적용되는 구조 설계</li>
+          <li>Rojo 7.6.1 + VS Code 툴체인으로 외부 에디터 연동 개발 환경 구축</li>
+          <li>레이저 EasingStyle 버그를 QA 관점에서 발견·분석·수정 지시하여 해결</li>
+          <li>7구간 55개 이상 발판 · 최대 높이 차 +4스터드 · 수평 거리 17스터드 설계 원칙 수립</li>
+        </ul>
+        <div class="tags">
           <span class="tag tag-blue">Roblox Studio</span>
           <span class="tag tag-blue">Lua</span>
           <span class="tag tag-blue">Rojo 7.6.1</span>
@@ -1064,7 +1210,9 @@
           <span class="tag tag-green">바이브코딩</span>
           <span class="tag tag-green">프롬프트 엔지니어링</span>
           <span class="tag tag-blue">CollectionService</span>
-        </div></div></div>
+        </div>
+      </div>
+    </div>
   </div>
   <p class="qa-sub" style="font-size:0.95rem; font-weight:700; margin:2.2rem 0 0.8rem;">바이브 코딩</p>
   <div class="mini-grid">
