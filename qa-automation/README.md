@@ -139,6 +139,8 @@ python -I tools/jira_sync.py tcs  --game bloodfall    # TC를 작업 이슈로 (
 python -I tools/jira_sync.py bugs --game bloodfall    # 실패 → 버그 + 스크린샷 + TC 연결 (같은 실패는 댓글)
 ```
 
+버그 본문은 LKM 버그 리포트 템플릿(`../버그리포트/버그리포트-템플릿-가이드.md`) 양식을 따른다 — 항목 표(우선순위 제안·심각도 미정·재현율)·발생 환경·사전 조건·재현 스텝·기대/실제 결과·첨부·비고(진행 전 체크리스트). 기준: [2026-11-02 Jira 버그 리포트 작성 가이드.md](<2026-11-02 Jira 버그 리포트 작성 가이드.md>).
+
 설정이 비어 있으면 **드라이런**: 보낼 내용만 `out/jira_dryrun.json`에 저장한다. 현재 등록 상태: 슬라임 TC SCRUM-5~46·탐색-1 SCRUM-47, BLOODFALL TC SCRUM-48~85·BF-04 SCRUM-86, 카드팩 TC SCRUM-143~472·CS-1116 SCRUM-142. **이번 보충 TC(SG-xxx·BF-101~)와 새 결함 5건은 아직 올리지 않음.**
 
 ## 8. 한계

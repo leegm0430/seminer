@@ -24,12 +24,15 @@
   .card { border:1px solid var(--line); border-radius:10px; padding:10px 12px; } .card b { font-size:22px; display:block; } .card span { color:var(--muted); font-size:13px; }
   .btn { display:inline-block; padding:8px 14px; border-radius:8px; background:var(--accent); color:#fff; text-decoration:none; font-size:14px; margin:4px 6px 0 0; }
   ul { margin:6px 0; padding-left:20px; } li { margin:2px 0; }
+  .steps { margin:8px 0; padding-left:20px; font-size:14.5px; } .steps > li { margin:8px 0; } .steps ul { margin:4px 0; }
+  code { background:var(--bg); padding:1px 5px; border-radius:4px; font-size:12.5px; }
+  .story { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; }
+  .story > div { border:1px solid var(--line); border-radius:10px; padding:12px 14px; } .story b { color:var(--accent); font-size:13px; } .story p { margin:6px 0 0; font-size:14px; }
 </style>
 </head>
 <body>
 <main>
   <h1>AI 활용 게임 QA 자동화</h1>
-  <p class="sub">이경민 · 2026-11-01 ~ 11-02 · 비용 0원 (Playwright·Python 오픈소스 + Jira 무료 플랜, 유료 앱·AI API 호출 없음)</p>
 
   <section>
     <h2>한눈에 보기</h2>
@@ -116,27 +119,38 @@
   </section>
 
   <section>
-    <h2>AI와 제 역할 나누기</h2>
-    <table>
-      <tr><th>제가 정한 것</th><td>무료 도구만 쓰기, TC 작성 규칙, 테스트할 게임과 기획서, AI 결과 검토·채택</td></tr>
-      <tr><th>AI(Claude Code)가 한 것</th><td>규칙대로 TC 초안 작성, 테스트 코드·도구 코드 작성, 실행 결과 정리</td></tr>
-      <tr><th>배운 점</th><td>처음 카드팩 TC는 확인 항목을 한 줄에 묶어 55건뿐이었음 → 규칙에 "요소·문구·값마다 TC" 같은 커버리지 규칙을 넣자 338건으로 늘고 실제 결함을 찾음. 같은 규칙으로 기존 두 게임을 다시 훑자 결함·불일치 5건이 더 나옴. <b>AI 결과의 품질은 규칙을 얼마나 구체적으로 주느냐에 달려 있었습니다.</b> 또 처음 실패한 테스트 중 상당수는 테스트 쪽 문제(예: 페이지를 열자마자 눌러 쿨다운에 걸림)여서, 실패를 바로 결함으로 보지 않고 원인을 나눠 보는 과정이 필요했습니다.</td></tr>
-    </table>
+    <h2>버그·문제가 생기면 Jira에 이렇게 저장됩니다</h2>
+    <p>자동 테스트가 끝나면 결과 파일을 읽어 Jira 무료 플랜(REST API)에 올립니다. 토큰은 제 PC의 설정 파일에만 두고, 설정이 없으면 Jira에 보내지 않고 보낼 내용만 파일로 저장하는 <b>드라이런</b>으로 돕니다.</p>
+    <ol class="steps">
+      <li><b>TC를 먼저 이슈로</b> — TC마다 작업 이슈 <code>[TC 번호] 제목</code>을 만듭니다. 본문에 게임·원본 TC·기획서 근거·자동화 여부·검토 상태, 라벨에 <code>TC · 게임 이름 · 자동/수동</code>. 한 번 올린 TC는 다시 올리지 않습니다.</li>
+      <li><b>실패한 테스트를 찾기</b> — 테스트 결과에서 실패·시간 초과만 고릅니다. 테스트 이름에 TC 번호가 들어 있어 어느 TC가 실패했는지 바로 압니다.</li>
+      <li><b>버그 이슈 만들기</b> — 제가 쓰던 버그 리포트 템플릿과 같은 양식으로 본문을 채웁니다. 제목은 <code>[자동] [모듈] 무엇이 — "기대 결과" 아님</code>, 라벨은 <code>auto-qa · 게임 이름 · 초안</code>.
+        <ul>
+          <li><b>항목 표</b> — 발견일, 보고자, 모듈/기능(TC 분류), 우선순위(TC 우선순위로 제안), 심각도(재현 후 지정), 재현율, 상태</li>
+          <li><b>발생 환경</b> — 게임 파일과 수정일, 크롬·화면 1280×800, OS, 실행 시각</li>
+          <li><b>사전 조건 · 재현 스텝 · 기대 결과</b> — 실패한 TC 내용을 그대로 옮김</li>
+          <li><b>실제 결과</b> — 오류 원문 (기대 값과 실제 값 — 예: <i>결과 창 19,472점, 3초 뒤 보드 19,984점</i>)</li>
+          <li><b>비고</b> — 진행 전 체크리스트(직접 재현되는가, 기대 결과의 근거가 있는가, 심각도·우선순위 구분)</li>
+        </ul></li>
+      <li><b>증거 붙이기</b> — 실패 순간 스크린샷을 첨부하고, 관련 TC 이슈와 "관련 있음(Relates)"으로 연결합니다.</li>
+      <li><b>같은 실패는 새 이슈 대신 댓글</b> — 이미 올린 실패가 다시 나오면 "○월 ○일 실행에서 다시 실패 (누적 n회)" 댓글과 오류 내용을 기존 이슈에 답니다. 이슈 번호는 PC의 기록 파일에 남겨 중복 등록을 막습니다.</li>
+      <li><b>사람이 마무리</b> — 자동으로 만든 버그는 모두 <b>초안</b>입니다. 제가 직접 재현한 뒤 진행하고, 재현되지 않으면 테스트 쪽 문제로 분류합니다.</li>
+    </ol>
   </section>
 
   <section>
-    <h2>한계와 다음 단계</h2>
-    <ul>
-      <li>TC 작성 단계는 제 PC의 Claude Code에서 돌립니다. 나머지(점검·테스트·리포트·Jira)는 AI 없이 돌아갑니다.</li>
-      <li>자동 테스트는 웹(html) 게임 대상입니다. 유니티 게임은 Unity Test Framework(무료)로 같은 리포트·Jira 흐름에 붙이는 것을 다음 단계로 보고 있습니다.</li>
-      <li>기획서 대비 빠진 항목 찾기는 글자 비교라서 후보일 뿐이고 사람이 확인해야 합니다.</li>
-      <li>GitHub Actions로 올릴 때마다 테스트를 자동 실행하는 것도 다음 단계입니다.</li>
-    </ul>
+    <h2>역할 · 배운 점 · 검증 · 한계</h2>
+    <div class="story">
+      <div><b>역할</b><p>TC 작성 규칙과 테스트 대상·범위, AI 결과의 검토·채택은 제가 정하고, TC 초안·테스트 코드·도구 코드는 Claude Code가 작성했습니다.</p></div>
+      <div><b>배운 점</b><p>카드팩 TC는 처음 확인을 한 줄에 묶어 55건뿐이었지만, 규칙에 "요소·문구·값마다 TC"를 넣자 338건이 되고 실제 결함을 찾았습니다. 같은 규칙으로 다른 두 게임을 다시 보자 결함·불일치 5건이 더 나왔습니다. AI 결과의 품질은 규칙을 얼마나 구체적으로 주느냐에 달려 있었습니다.</p></div>
+      <div><b>검증</b><p>처음 실패한 테스트 13개 중 11개는 테스트 쪽 문제(예: 페이지를 열자마자 눌러 드롭 쿨다운에 걸림)였습니다. 실패를 바로 결함으로 보지 않고 원인을 나눈 뒤에 결함으로 기록했습니다.</p></div>
+      <div><b>한계·다음</b><p>TC 작성은 제 PC의 Claude Code가 필요하고, 자동 테스트는 웹 게임 대상입니다. 온라인 기능은 가짜 연결로 화면 처리만 확인합니다. 다음 단계는 유니티 게임(Unity Test Framework)과 GitHub Actions 자동 실행입니다.</p></div>
+    </div>
   </section>
 
   <section>
     <h2>더 보기</h2>
-    <p><a href="https://github.com/leegm0430/seminer/tree/main/qa-automation">코드 전체 (GitHub)</a> · <a href="https://github.com/leegm0430/seminer/blob/main/qa-automation/README.md">설명서 (README)</a></p>
+    <p><a href="https://github.com/leegm0430/seminer/blob/main/qa-automation/README.md">설명서 (README)</a></p>
   </section>
 </main>
 </body>
