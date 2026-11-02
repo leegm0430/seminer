@@ -243,6 +243,11 @@ def build_slimegame(tcs, idx, by_tc, run_time, prev, jira):
         note = ws.cell(hdr - 1, start_col, "← 원본 TC (LKM)   |   자동화 칸 (export_tc_xlsx.py가 매번 다시 씀, 검토 칸만 직접 수정)")
         note.font = Font(name="Arial", size=9, italic=True, color="6B7280")
         ws.freeze_panes = ws.cell(hdr + 1, 3)
+    # TC 작성 규칙(044) 커버리지로 보충한 AI TC(SG-xxx)는 원본 시트를 건드리지 않고 별도 시트에 둔다
+    extra = [(k, tc) for k in ("automated", "manual") for tc in tcs[k] if tc["id"].startswith("SG-")]
+    if extra:
+        fill_json_sheet(wb.create_sheet("AI 보충 TC"), tcs, extra, idx, by_tc, run_time, prev, jira)
+        used.update(tc["id"] for _, tc in extra)
     missing = [i for i in idx if i not in used]
     return wb, missing
 
@@ -284,8 +289,16 @@ def build_from_json(tcs, idx, by_tc, run_time, prev, jira):
     wb = Workbook()
     ws = wb.active
     ws.title = "TC"
+    fill_json_sheet(ws, tcs, [(k, tc) for k in ("automated", "manual") for tc in tcs[k]], idx, by_tc, run_time, prev, jira)
+    add_cover(wb, tcs)
+    wb.active = 0
+    return wb, []
+
+
+def fill_json_sheet(ws, tcs, items, idx, by_tc, run_time, prev, jira):
+    """JSON TC(items = [(automated|manual, tc)])를 한 시트에 쓴다 (머리 정보 + 표 + 자동화 칸)."""
     ws.column_dimensions["A"].width = 2
-    has_cat3 = any(tc.get("cat3") for k in ("automated", "manual") for tc in tcs[k])
+    has_cat3 = any(tc.get("cat3") for _, tc in items)
     cols = [c for c in JSON_COLS if has_cat3 or c[0] != "분류 3"]
     info = [("프로젝트 명칭", tcs["game"]), ("플랫폼 종류", tcs.get("platform", "웹 브라우저 (데스크톱)")),
             ("버전 정보", tcs.get("version", tcs["target"])), ("작성", "Claude Code 초안 / 검토 LKM (검토 칸 참고)")]
@@ -302,17 +315,16 @@ def build_from_json(tcs, idx, by_tc, run_time, prev, jira):
     start_col = 2 + len(cols)
     center_names = {"번호", "우선순위", "분류 1", "분류 2", "분류 3", "근거"}
     rows, n = [], 0
-    for kind in ("automated", "manual"):
-        for tc in tcs[kind]:
-            n += 1
-            r = hdr + n
-            note = " / ".join(x for x in (tc.get("note", ""), "수동 TC" if kind == "manual" else "") if x)
-            values = {"번호": n, "우선순위": tc.get("priority"), "분류 1": tc.get("cat1"), "분류 2": tc.get("cat2"),
-                      "분류 3": tc.get("cat3"), "확인 항목": tc.get("title"), "근거": tc.get("basis"),
-                      "사전 조건": tc.get("pre"), "테스트 내용": tc.get("steps"), "테스트 기대 결과": tc.get("expected"), "비고": note}
-            for j, (name, _) in enumerate(cols, start=2):
-                style_cell(ws.cell(r, j, values[name] or None), center=name in center_names)
-            rows.append((r, auto_values(tc["id"], idx[tc["id"]], by_tc, run_time, prev, jira)))
+    for kind, tc in items:
+        n += 1
+        r = hdr + n
+        note = " / ".join(x for x in (tc.get("note", ""), "수동 TC" if kind == "manual" else "") if x)
+        values = {"번호": n, "우선순위": tc.get("priority"), "분류 1": tc.get("cat1"), "분류 2": tc.get("cat2"),
+                  "분류 3": tc.get("cat3"), "확인 항목": tc.get("title"), "근거": tc.get("basis"),
+                  "사전 조건": tc.get("pre"), "테스트 내용": tc.get("steps"), "테스트 기대 결과": tc.get("expected"), "비고": note}
+        for j, (name, _) in enumerate(cols, start=2):
+            style_cell(ws.cell(r, j, values[name] or None), center=name in center_names)
+        rows.append((r, auto_values(tc["id"], idx[tc["id"]], by_tc, run_time, prev, jira)))
     write_auto_block(ws, hdr, start_col, rows, [r for r, v in rows if v[-1]])
     widths = {j: w for j, (_, w) in enumerate(cols + AUTO_COLS, start=2)}
     for r, _ in rows:
@@ -320,9 +332,6 @@ def build_from_json(tcs, idx, by_tc, run_time, prev, jira):
     ws.row_dimensions[hdr].height = 30
     ws.freeze_panes = ws.cell(hdr + 1, 4)
     ws.auto_filter.ref = f"B{hdr}:{get_column_letter(start_col + len(AUTO_COLS) - 1)}{hdr + n}"
-    add_cover(wb, tcs)
-    wb.active = 0
-    return wb, []
 
 
 BUILDERS = {"slimegame": build_slimegame}          # 그 밖의 게임은 JSON TC 초안으로 만든다

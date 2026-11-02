@@ -373,3 +373,614 @@ test('[BF-30] 몬스터 스폰·사격이 이어지는 20초 플레이 동안 �
   expect(await ev(page, () => game.kills)).toBeGreaterThan(0);     // 실제로 전투가 일어났는지
   expect(errors).toEqual([]);
 });
+
+// =====================================================================================
+// AI 보충 TC (BF-101~) — TC 작성 규칙 044 커버리지(C1~C5)로 2026-11-02 추가. TC 하나 = 테스트 하나.
+// - 테스트 이름은 tc/bloodfall_tc.json의 [번호] 제목. 번호 앞자리 = 근거 칸(B01~B18).
+// - 온라인 테스트는 P2P 라이브러리 대신 가짜 Peer를 넣어 서버 응답을 테스트가 직접 보낸다.
+// =====================================================================================
+const BFT = require('../tc/bloodfall_tc.json');
+const BTITLE = Object.fromEntries(BFT.automated.map((x) => [x.id, x.title]));
+function t(num, fn, opts) {
+  const id = 'BF-' + num;
+  if (!BTITLE[id]) throw new Error('TC JSON에 없는 번호: ' + id);
+  test(`[${id}] ${BTITLE[id]}`, opts || {}, fn);
+}
+const CX = 1350, CY = 840;                                   // 월드 중앙(시작 위치)
+const dmg = (page, i, v) => ev(page, ([i, v]) => applyDamageToPlayer(game.players[i], v), [i, v]);
+/** 카드 풀을 n번 뽑아 나온 카드 id·제목을 모두 모은다 (풀에서 3장만 무작위로 뽑기 때문) */
+const poolOf = (page, i = 0, n = 300) => ev(page, ([i, n]) => {
+  const ids = new Set(), titles = new Set();
+  for (let k = 0; k < n; k++) for (const c of buildCardPool(game.players[i])) { ids.add(c.id); titles.add(c.title); }
+  return { ids: [...ids], titles: [...titles] };
+}, [i, n]);
+/** 카드 id가 들어간 레벨업 창을 연다 */
+const openWith = (page, id, i = 0) => ev(page, ([id, i]) => {
+  const p = game.players[i];
+  for (let k = 0; k < 500; k++) {
+    const cards = buildCardPool(p);
+    if (cards.some((c) => c.id === id)) {
+      p.choosing = { kind: 'levelup', cards, timer: 10, total: 10 };
+      fillChoicePanel(p.id, 'levelup', cards, (cid) => resolveChoice(p, cid));
+      return true;
+    }
+  }
+  return false;
+}, [id, i]);
+const card = (page, text) => page.locator('#choiceCards .card', { hasText: text }).first();
+/** 무기·패시브를 모두 최대로 (evolved: 피스톨까지 진화) */
+const maxOut = (page, evolved) => ev(page, (evolved) => {
+  const p = game.players[0];
+  p.weapons = ['bullet', 'whip', 'aura', 'shuriken', 'drone'].map((type) => ({ type, level: 5, timer: 9, manual: type === 'bullet', evolved: type === 'bullet' ? evolved : true, phase: 0 }));
+  Object.keys(p.passivesOwned).forEach((k) => { p.passivesOwned[k] = 5; });
+}, evolved);
+const killBoss = (page, type) => ev(page, (type) => {
+  spawnBoss(type); const m = game.monsters[game.monsters.length - 1]; m.attackTimer = 99;
+  damageMonster(m, 1e6, game.players[0]);
+}, type);
+const spawnB = (page, type, ratio = 1) => ev(page, ([type, r]) => {
+  spawnBoss(type); const m = game.monsters[game.monsters.length - 1];
+  m.hp = m.maxHp * r; m.attackTimer = 99; return game.monsters.length - 1;
+}, [type, ratio]);
+
+// ---------------------------------------------------------------- B01 메뉴
+t(101, async ({ page }) => { await page.goto(URL); await expect(page.locator('#btnSolo')).toHaveText('1인 플레이'); });
+t(102, async ({ page }) => { await page.goto(URL); await expect(page.locator('#btnCoop')).toHaveText('2인 협동 (로컬)'); });
+t(103, async ({ page }) => { await page.goto(URL); await expect(page.locator('#joinPanel')).toBeHidden(); });
+t(104, async ({ page }) => { await page.goto(URL); await page.click('#btnJoinShow'); await expect(page.locator('#joinPanel')).toBeVisible(); });
+t(105, async ({ page }) => { await page.goto(URL); await page.click('#btnJoinShow'); await page.click('#btnJoinShow'); await expect(page.locator('#joinPanel')).toBeHidden(); });
+t(106, async ({ page }) => { await page.goto(URL); await page.click('#btnJoinShow'); await expect(page.locator('#joinCodeInput')).toHaveAttribute('placeholder', '방 코드 4자리'); });
+t(107, async ({ page }) => {
+  await page.goto(URL); await page.click('#btnJoinShow');
+  await page.locator('#joinCodeInput').pressSequentially('ABCDE');
+  await expect(page.locator('#joinCodeInput')).toHaveValue('ABCD');
+});
+for (const [n, v] of [[108, 'ABC'], [109, ' AB ']]) t(n, async ({ page }) => {
+  await page.goto(URL); await page.click('#btnJoinShow');
+  await page.fill('#joinCodeInput', v); await page.click('#btnJoinGo');
+  await expect(page.locator('#netStatus')).toHaveText('4자리 방 코드를 입력해주세요.');
+});
+
+// ---------------------------------------------------------------- B02 드래프트
+const DESC = ['표준형 — 단발 조준 사격. 무난한 사거리와 연사', '근거리형 — 부채꼴 5발 동시 발사. 짧은 사거리, 순간 화력', '관통형 — 조준 방향 자동 관통 광선. 일직선 다수 처리'];
+DESC.forEach((d, i) => t(201 + i, async ({ page }) => {
+  await page.goto(URL); await page.click('#btnSolo');
+  await expect(page.locator('#choiceCards .card p').nth(i)).toHaveText(d);
+}));
+t(204, async ({ page }) => {
+  await page.goto(URL); await page.click('#btnSolo');
+  expect(await page.locator('#choiceCards .card .rarity').allTextContents()).toEqual(['MAIN WEAPON', 'MAIN WEAPON', 'MAIN WEAPON']);
+});
+const fillPct = (page) => page.$eval('#choiceTimerFill', (e) => parseFloat(e.style.width));
+t(205, async ({ page }) => { await page.goto(URL); await page.click('#btnSolo'); expect(await fillPct(page)).toBeGreaterThanOrEqual(95); });
+t(206, async ({ page }) => {
+  await page.goto(URL); await page.click('#btnSolo'); await page.waitForTimeout(5000);
+  const v = await fillPct(page); expect(v).toBeGreaterThanOrEqual(40); expect(v).toBeLessThanOrEqual(60);
+});
+t(207, async ({ page }) => { await start(page, 'solo', ['피스톨']); expect((await P(page)).weapons).toEqual(['bullet']); });
+t(208, async ({ page }) => { await start(page, 'solo', ['레이저']); expect((await P(page)).weapons).toEqual(['laser']); });
+t(209, async ({ page }) => {
+  await page.goto(URL); await page.click('#btnCoop');
+  await card(page, '샷건').click();
+  await expect(page.locator('#choiceTitle')).toHaveText('P2 주무기 선택');
+});
+t(210, async ({ page }) => {
+  await start(page, 'coop', ['샷건', '샷건']);
+  expect((await P(page, 0)).main).toBe('shotgun'); expect((await P(page, 1)).main).toBe('shotgun');
+});
+
+// ---------------------------------------------------------------- B03 HUD
+t(301, async ({ page }) => { await start(page); await expect(page.locator('#timerChip')).toHaveText('20:00'); });
+t(302, async ({ page }) => { await start(page); await ev(page, () => { game.elapsed = 0.5; }); await page.waitForTimeout(100); await expect(page.locator('#timerChip')).toHaveText('20:00'); });
+t(303, async ({ page }) => { await start(page); await ev(page, () => { game.elapsed = 60; }); await expect(page.locator('#timerChip')).toHaveText('19:00'); });
+t(304, async ({ page }) => { await start(page); await expect(page.locator('#killCount')).toContainText('0 KILLS'); });
+t(305, async ({ page }) => { await start(page); await expect(page.locator('#lvP1')).toHaveText('Lv1'); });
+t(306, async ({ page }) => { await start(page); await ev(page, () => { game.players[0].exp = 10; }); await expect.poll(() => page.$eval('#expP1', (e) => e.style.width)).toBe('50%'); });
+t(307, async ({ page }) => { await start(page); await ev(page, () => { game.players[0].hp = 70; }); await expect.poll(() => page.$eval('#hpP1', (e) => e.style.width)).toBe('70%'); });
+t(308, async ({ page }) => { await start(page); await expect(page.locator('#rowP2')).toBeHidden(); });
+t(309, async ({ page }) => { await start(page, 'coop', ['피스톨', '피스톨']); await expect(page.locator('#rowP2')).toBeVisible(); });
+['잠긴 묘지', '무너진 납골당', '저주받은 안뜰', '나이트폴 첨탑'].forEach((nm, i) => t(310 + i, async ({ page }) => {
+  await start(page); await ev(page, (s) => { game.stage = s; }, i + 1);
+  await expect(page.locator('#stageLabel')).toHaveText(`ACT ${i + 1} · ${nm}`);
+}));
+t(314, async ({ page }) => { await start(page); await expect(page.locator('#bossHpWrap')).toBeHidden(); });
+
+// ---------------------------------------------------------------- B04 조작
+const ownShots = (page, i) => ev(page, (i) => game.projectiles.filter((pr) => pr.owner === game.players[i]).length, i);
+t(401, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']); const x0 = (await P(page, 1)).x;
+  await page.keyboard.down('ArrowRight'); await page.waitForTimeout(500); await page.keyboard.up('ArrowRight');
+  expect((await P(page, 1)).x).toBeGreaterThan(x0 + 40);
+});
+t(402, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']);
+  await page.keyboard.down('Enter'); await page.waitForTimeout(400);
+  expect(await ownShots(page, 1)).toBeGreaterThan(0);
+  await page.keyboard.up('Enter');
+});
+t(403, async ({ page }) => {
+  await start(page);
+  await page.keyboard.down(' '); await page.waitForTimeout(500);
+  expect(await ownShots(page, 0)).toBe(0);
+  await page.keyboard.up(' ');
+});
+t(404, async ({ page }) => {
+  await start(page);
+  await ev(page, () => { mouseDown = true; }); await page.waitForTimeout(400);
+  await ev(page, () => { mouseDown = false; game.projectiles = []; }); await page.waitForTimeout(600);
+  expect(await ownShots(page, 0)).toBe(0);
+});
+t(405, async ({ page }) => {
+  await start(page); const p0 = await P(page);
+  await page.keyboard.down('w'); await page.keyboard.down('d'); await page.waitForTimeout(500);
+  await page.keyboard.up('w'); await page.keyboard.up('d');
+  const p1 = await P(page);
+  expect(p1.x).toBeGreaterThan(p0.x + 20); expect(p1.y).toBeLessThan(p0.y - 20);
+});
+
+// ---------------------------------------------------------------- B05 카드 풀
+t(501, async ({ page }) => { await start(page); expect((await poolOf(page)).titles).toContain('피스톨 강화 (1→2/5)'); });
+t(502, async ({ page }) => { await start(page); expect((await poolOf(page)).titles).toContain('질풍의 가호 (1/5)'); });
+t(503, async ({ page }) => {
+  await start(page); const ids = (await poolOf(page)).ids;
+  for (const s of ['new_whip', 'new_aura', 'new_shuriken', 'new_drone']) expect(ids).toContain(s);
+});
+t(504, async ({ page }) => { await start(page); await ev(page, () => { game.players[0].passivesOwned.speed = 5; }); expect((await poolOf(page)).ids).not.toContain('p_speed'); });
+t(505, async ({ page }) => { await start(page); await ev(page, () => { game.players[0].passivesOwned.speed = 4; }); expect((await poolOf(page)).titles).toContain('질풍의 가호 (5/5)'); });
+const setBullet = (page, o) => ev(page, (o) => { Object.assign(game.players[0].weapons.find((w) => w.type === 'bullet'), o); }, o);
+t(506, async ({ page }) => { await start(page); await setBullet(page, { level: 5 }); expect((await poolOf(page)).ids).not.toContain('up_bullet'); });
+t(507, async ({ page }) => {
+  await start(page); await setBullet(page, { level: 5 }); await ev(page, () => { game.players[0].passivesOwned.speed = 1; });
+  expect((await poolOf(page)).titles).toContain('관통탄');
+});
+t(508, async ({ page }) => {
+  await start(page); await setBullet(page, { level: 5 }); await ev(page, () => { game.players[0].passivesOwned.power = 1; });
+  expect((await poolOf(page)).ids).not.toContain('evo_bullet');
+});
+t(509, async ({ page }) => {
+  await start(page); await setBullet(page, { level: 5, evolved: true }); await ev(page, () => { game.players[0].passivesOwned.speed = 1; });
+  expect((await poolOf(page)).ids).not.toContain('evo_bullet');
+});
+t(510, async ({ page }) => {
+  await start(page); await maxOut(page, false);
+  await ev(page, () => startChoice(game.players[0], 'levelup'));
+  await expect(page.locator('#choiceCards .card.evolution')).toHaveCount(1);
+  await expect(page.locator('#choiceCards .card.evolution .rarity')).toHaveText('EVOLUTION');
+});
+t(511, async ({ page }) => {
+  await start(page); await maxOut(page, true);
+  await ev(page, () => startChoice(game.players[0], 'levelup'));
+  await expect(page.locator('#choiceCards .card')).toHaveCount(1);
+  await expect(page.locator('#choiceCards .card h3')).toHaveText('응급 처치');
+});
+t(512, async ({ page }) => { await start(page, 'coop', ['피스톨', '피스톨']); expect((await poolOf(page)).ids).toContain('synergy'); });
+t(513, async ({ page }) => { await start(page); expect((await poolOf(page)).ids).not.toContain('synergy'); });
+t(514, async ({ page }) => { await start(page); await ev(page, () => startChoice(game.players[0], 'levelup')); await expect(page.locator('#choiceCards .card')).toHaveCount(3); });
+t(515, async ({ page }) => {
+  await start(page, 'solo', ['샷건']);
+  await ev(page, () => { const p = game.players[0]; p.weapons[0].level = 5; p.passivesOwned.speed = 1; });
+  expect((await poolOf(page)).ids).not.toContain('evo_bullet');
+});
+/** 피스톨 한 발을 쏴서 피해량을 읽는다 */
+const shotDmg = (page) => ev(page, () => new Promise((res) => {
+  game.projectiles = []; mouseDown = true;
+  const iv = setInterval(() => { const s = game.projectiles.find((pr) => pr.owner === game.players[0]); if (s) { clearInterval(iv); mouseDown = false; res(s.dmg); } }, 20);
+}));
+t(516, async ({ page }) => {
+  await start(page); await setBullet(page, { level: 5 });
+  const before = await shotDmg(page); await page.waitForTimeout(400);
+  await setBullet(page, { evolved: true });
+  const after = await shotDmg(page);
+  expect(after / before).toBeCloseTo(1.6, 5);
+});
+t(517, async ({ page }) => {
+  await start(page); expect(await openWith(page, 'new_whip')).toBe(true);
+  await card(page, '채찍').click();
+  expect((await P(page)).weapons).toContain('whip');
+});
+t(518, async ({ page }) => {
+  await start(page); expect(await openWith(page, 'up_bullet')).toBe(true);
+  await card(page, '피스톨 강화').click();
+  expect(await ev(page, () => game.players[0].weapons.find((w) => w.type === 'bullet').level)).toBe(2);
+});
+
+// ---------------------------------------------------------------- B06 패시브 효과
+const PASSIVE = [['p_speed', '질풍의 가호', () => game.players[0].speed, 187],
+  ['p_hp', '불사의 심장', () => game.players[0].maxHp, 120],
+  ['p_cd', '광기의 손놀림', () => game.globalCooldownMul, 0.92],
+  ['p_pick', '탐욕의 시야', () => game.players[0].pickupRadius, 71.5],
+  ['p_armor', '방탄조끼', () => game.players[0].damageTakenMul, 0.92],
+  ['p_power', '강화장갑', () => game.globalDamageMul, 1.1]];
+PASSIVE.forEach(([id, nm, read, v], i) => t(601 + i, async ({ page }) => {
+  await start(page); expect(await openWith(page, id)).toBe(true);
+  await card(page, nm).click();
+  expect(await page.evaluate(read)).toBeCloseTo(v, 5);
+}));
+t(607, async ({ page }) => {
+  await start(page); await ev(page, () => { game.players[0].hp = 50; });
+  expect(await openWith(page, 'p_hp')).toBe(true); await card(page, '불사의 심장').click();
+  expect((await P(page)).hp).toBe(70);
+});
+t(608, async ({ page }) => {
+  await start(page); await ev(page, () => { game.players[0].damageTakenMul = 0.92; });
+  await dmg(page, 0, 10);
+  expect((await P(page)).hp).toBeCloseTo(90.8, 5);
+});
+
+// ---------------------------------------------------------------- B07 경험치
+const gain = (page, v, i = 0) => ev(page, ([v, i]) => gainExp(game.players[i], v), [v, i]);
+[[3, [20, 24], 29], [4, [20, 24, 29], 35], [5, [20, 24, 29, 35], 41]].forEach(([lv, steps, need], k) => t(701 + k, async ({ page }) => {
+  await start(page); for (const s of steps) await gain(page, s);
+  const p = await P(page); expect(p.level).toBe(lv); expect(p.expToNext).toBe(need);
+}));
+t(704, async ({ page }) => { await start(page); await gain(page, 19); const p = await P(page); expect(p.level).toBe(1); expect(p.exp).toBe(19); });
+t(705, async ({ page }) => { await start(page); await gain(page, 20); const p = await P(page); expect(p.level).toBe(2); expect(p.exp).toBe(0); });
+t(706, async ({ page }) => { await start(page); await gain(page, 25); const p = await P(page); expect([p.level, p.exp, p.expToNext]).toEqual([2, 5, 24]); });
+t(707, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']); await dropOrb(page, 5, 0);
+  await expect.poll(async () => (await P(page, 1)).exp).toBe(4);
+});
+t(708, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']);
+  await ev(page, () => startChoice(game.players[1], 'levelup'));
+  await dropOrb(page, 10, 0);
+  await expect.poll(async () => (await P(page, 1)).exp).toBe(7);
+});
+t(709, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']);
+  await ev(page, () => { game.players[0].magnetTimer = 3; });
+  await dropOrb(page, 10, 0, -500);
+  await expect.poll(async () => (await P(page, 1)).exp, { timeout: 4000 }).toBe(7);
+});
+
+// ---------------------------------------------------------------- B08 무정지
+t(801, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']);
+  const who = await ev(page, () => {
+    startChoice(game.players[0], 'levelup');
+    const m = makeMonster('ghoul', game.players[0].x + 20, game.players[0].y);
+    return nearestTarget(m, aliveNonDownedPlayers()).id;
+  });
+  expect(who).toBe('P2');
+});
+t(802, async ({ page }) => {
+  await start(page);
+  await ev(page, () => { const p = game.players[0]; startChoice(p, 'levelup'); game.boxes.push({ x: p.x, y: p.y, r: 14 }); });
+  await page.waitForTimeout(500);
+  expect(await ev(page, () => game.boxes.length)).toBe(1);
+});
+t(803, async ({ page }) => {
+  await start(page); await ev(page, () => startChoice(game.players[0], 'levelup'));
+  await dropOrb(page, 5, 0); await page.waitForTimeout(500);
+  expect(await ev(page, () => game.orbs.length)).toBe(1);
+});
+t(804, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']);
+  await ev(page, () => { const [a, b] = game.players; applyDamageToPlayer(b, 999); a.x = b.x - 30; a.y = b.y; startChoice(a, 'levelup'); });
+  await page.waitForTimeout(3000);
+  expect((await P(page, 1)).downed).toBe(true);
+});
+t(805, async ({ page }) => { await start(page); await ev(page, () => startChoice(game.players[0], 'levelup')); await expect(page.locator('#choiceTitle')).toHaveText('P1 LEVEL UP'); });
+
+// ---------------------------------------------------------------- B09 소생
+const downP2At = (page, d) => ev(page, (d) => { const [a, b] = game.players; applyDamageToPlayer(b, 999); a.x = b.x - d; a.y = b.y; }, d);
+t(901, async ({ page }) => { await start(page, 'coop', ['피스톨', '피스톨']); await downP2At(page, 45); await page.waitForTimeout(3000); expect((await P(page, 1)).downed).toBe(false); });
+t(902, async ({ page }) => { await start(page, 'coop', ['피스톨', '피스톨']); await downP2At(page, 48); await page.waitForTimeout(3000); expect((await P(page, 1)).downed).toBe(true); });
+t(903, async ({ page }) => { await start(page, 'coop', ['피스톨', '피스톨']); await downP2At(page, 45); await page.waitForTimeout(2300); expect((await P(page, 1)).downed).toBe(true); });
+t(904, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']); await downP2At(page, 45); await page.waitForTimeout(2000);
+  await ev(page, () => { game.players[0].x -= 300; }); await page.waitForTimeout(1000);
+  await ev(page, () => { game.players[0].x += 300; }); await page.waitForTimeout(700);
+  expect((await P(page, 1)).downed).toBe(true);           // 진행도가 줄지 않았다면 2.0+0.7 ≥ 2.6으로 이미 일어났을 것
+});
+t(905, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']); await dmg(page, 1, 999); await dmg(page, 0, 999);
+  await expect(page.locator('#resultTitle')).toHaveText('전멸');
+});
+t(906, async ({ page }) => { await start(page, 'coop', ['피스톨', '피스톨']); await dmg(page, 1, 999); await expect(page.locator('#downFlagP2')).toBeVisible(); await expect(page.locator('#downFlagP2')).toHaveText('P2 DOWN'); });
+t(907, async ({ page }) => { await start(page); await dmg(page, 0, 999); await expect(page.locator('#resultTitle')).toHaveText('전멸'); });
+
+// ---------------------------------------------------------------- B10 보스 게이트
+[[300, '블러드 배런'], [600, '그레이브 워든'], [900, '커스 마더'], [1200, '나이트폴 공작']].forEach(([sec, nm], i) => t(1001 + i, async ({ page }) => {
+  await start(page);
+  await ev(page, ([i, sec]) => { game.stage = i + 1; for (let k = 0; k < i; k++) game.bossSpawned[k] = true; game.elapsed = sec - 0.5; }, [i, sec]);
+  await expect(page.locator('#bossHpLabel')).toHaveText(nm, { timeout: 3000 });
+}));
+const toBoss = (page, i, sec) => ev(page, ([i, sec]) => { game.stage = i + 1; for (let k = 0; k < i; k++) game.bossSpawned[k] = true; game.elapsed = sec - 0.2; }, [i, sec]);
+t(1005, async ({ page }) => { await start(page); await toBoss(page, 0, 300); await expect(page.locator('#stageLabel')).toHaveText('보스를 처치하면 시간이 다시 흐릅니다'); });
+t(1006, async ({ page }) => { await start(page); await toBoss(page, 3, 1200); await expect(page.locator('#stageLabel')).toHaveText('최종 보스를 처치해야 클리어됩니다'); });
+t(1007, async ({ page }) => { await start(page); await toBoss(page, 0, 300); await expect(page.locator('#timerChip')).toHaveText('⚔ 15:00'); });
+for (const [n, i, type, label] of [[1008, 1, 'graveWarden', 'ACT 3 · 저주받은 안뜰'], [1009, 2, 'curseMother', 'ACT 4 · 나이트폴 첨탑']]) t(n, async ({ page }) => {
+  await start(page); await ev(page, (s) => { game.stage = s; }, i + 1);
+  await killBoss(page, type);
+  await expect(page.locator('#choiceTitle')).toHaveText('P1 보스 전리품');
+  await page.locator('#choiceCards .card').first().click();
+  await expect(page.locator('#stageLabel')).toHaveText(label);
+});
+for (const [n, type, stage] of [[1010, 'boss', 1], [1011, 'nightfallDuke', 4]]) t(n, async ({ page }) => {
+  await start(page);
+  await ev(page, ([type, s]) => { game.stage = s; game.bossSpawned.fill(true); spawnBoss(type); game.monsters[0].attackTimer = 99; game.spawnTimer = 0; }, [type, stage]);
+  await page.waitForTimeout(3000);
+  expect(await ev(page, () => game.monsters.filter((m) => !isBossType(m.type)).length)).toBeGreaterThan(0);
+});
+t(1012, async ({ page }) => {
+  await start(page);
+  await ev(page, () => { game.elapsed = 300; game.bossSpawned[0] = true; spawnBoss('boss'); game.monsters[0].attackTimer = 99; game.spawnTimer = 0; });
+  await page.waitForTimeout(2000);
+  const r = await ev(page, () => new Promise((res) => {
+    const n0 = game.monsters.length; game.spawnTimer = 0;
+    const iv = setInterval(() => { if (game.monsters.length > n0) { clearInterval(iv); res({ timer: game.spawnTimer, elapsed: game.elapsed }); } }, 5);
+  }));
+  expect(r.elapsed).toBe(300);
+  expect(r.timer).toBeGreaterThan(0.8); expect(r.timer).toBeLessThanOrEqual(0.88 + 1e-9);   // 1.15 − 0.0009×300 = 0.88
+});
+
+// ---------------------------------------------------------------- B11 보스 페이즈·패턴
+const phaseAt = async (page, type, ratio) => { const i = await spawnB(page, type, ratio); await page.waitForTimeout(150); return ev(page, (i) => game.monsters[i].phase, i); };
+[[1101, 0.61, 1], [1102, 0.6, 2], [1103, 0.31, 2], [1104, 0.3, 3]].forEach(([n, r, ph]) => t(n, async ({ page }) => {
+  await start(page); expect(await phaseAt(page, 'boss', r)).toBe(ph);
+}));
+const PATS = {
+  boss: [['slam', 'burst'], ['slam', 'burst', 'summon'], ['slam', 'burst', 'summon', 'charge']],
+  graveWarden: [['chainSweep', 'boneCage'], ['chainSweep', 'boneCage', 'graveBurst'], ['chainSweep', 'boneCage', 'graveBurst', 'chainSlam']],
+  curseMother: [['curseBarrage'], ['curseBarrage', 'summonCaster'], ['curseBarrage', 'summonCaster', 'poisonFog', 'teleportBurst']],
+  nightfallDuke: [['slam', 'summonWraith'], ['slam', 'summonWraith', 'bloodRail'], ['slam', 'summonWraith', 'bloodRail', 'charge', 'bloodRain']],
+};
+let pn = 1105;
+for (const [type, phases] of Object.entries(PATS)) phases.forEach((pats, k) => t(pn++, async ({ page }) => {
+  await start(page);
+  const i = await spawnB(page, type, [1, 0.5, 0.2][k]); await page.waitForTimeout(150);
+  expect(await ev(page, (i) => bossAvailablePatterns(game.monsters[i]), i)).toEqual(pats);
+}));
+/** 광폭화 보스의 실제 이동 배율 = 이동 거리 / (기본 속도 × 흐른 시간) */
+const rageMul = async (page, type) => {
+  await start(page);
+  const i = await spawnB(page, type, 0.2);
+  return ev(page, (i) => new Promise((res) => {
+    const m = game.monsters[i]; const p = game.players[0];
+    m.x = p.x + 900; m.y = p.y;                          // 멀리 두어 1초 안에 닿지 않게
+    const x0 = m.x, y0 = m.y, t0 = game.animTime;
+    setTimeout(() => res(Math.hypot(m.x - x0, m.y - y0) / (CONFIG.MONSTER[m.type].speed * (game.animTime - t0))), 1000);
+  }), i);
+};
+t(1117, async ({ page }) => { expect(await rageMul(page, 'boss')).toBeCloseTo(1.35, 1); });
+t(1118, async ({ page }) => { expect(await rageMul(page, 'graveWarden')).toBeCloseTo(1.3, 2); });
+t(1119, async ({ page }) => {
+  await start(page); const i = await spawnB(page, 'boss', 0.2);
+  const cd = await ev(page, (i) => new Promise((res) => {
+    const m = game.monsters[i]; m.x = game.players[0].x + 600;
+    const real = Math.random; Math.random = () => 0;        // 첫 패턴(강타, 대기 4.5초) 고정
+    m.attackTimer = 0;
+    const iv = setInterval(() => { if (m.currentPattern && m.patternState === 'idle') { clearInterval(iv); Math.random = real; res(m.attackTimer); } }, 5);
+  }), i);
+  expect(cd).toBeLessThanOrEqual(4.5 * 0.7 + 1e-9); expect(cd).toBeGreaterThan(4.5 * 0.7 - 0.1);
+});
+
+// ---------------------------------------------------------------- B12 스폰
+const pickCount = (page, stage, elapsed, n, type) => ev(page, ([s, e, n, type]) => {
+  game.stage = s; game.elapsed = e; let c = 0; for (let k = 0; k < n; k++) if (pickMonsterType() === type) c++; return c;
+}, [stage, elapsed, n, type]);
+t(1201, async ({ page }) => { await start(page); expect(await pickCount(page, 1, 20, 1000, 'ghoul')).toBe(1000); });
+t(1202, async ({ page }) => { await start(page); expect(await pickCount(page, 1, 200, 1000, 'caster')).toBe(0); });
+const between = (v, lo, hi) => { expect(v).toBeGreaterThanOrEqual(lo); expect(v).toBeLessThanOrEqual(hi); };
+t(1203, async ({ page }) => { await start(page); between(await pickCount(page, 2, 400, 10000, 'caster'), 1450, 1750); });
+t(1204, async ({ page }) => { await start(page); between(await pickCount(page, 2, 400, 10000, 'bat'), 1250, 1550); });
+t(1205, async ({ page }) => { await start(page); expect(await pickCount(page, 2, 400, 1000, 'bomber')).toBe(0); });
+t(1206, async ({ page }) => { await start(page); between(await pickCount(page, 3, 700, 10000, 'bomber'), 850, 1150); });
+t(1207, async ({ page }) => { await start(page); between(await pickCount(page, 4, 1000, 10000, 'golem'), 480, 720); });
+const redCount = (page, stage, n) => ev(page, ([s, n]) => { game.stage = s; let c = 0; for (let k = 0; k < n; k++) if (makeMonster('ghoul', 0, 0).redMark) c++; return c; }, [stage, n]);
+t(1208, async ({ page }) => { await start(page); expect(await redCount(page, 3, 1000)).toBe(0); });
+t(1209, async ({ page }) => { await start(page); between(await redCount(page, 4, 5000), 500, 700); });
+const redGhoul = (page) => ev(page, () => { game.stage = 4; for (let k = 0; k < 2000; k++) { const m = makeMonster('ghoul', 0, 0); if (m.redMark) return { hp: m.hp, exp: m.exp }; } return null; });
+t(1210, async ({ page }) => { await start(page); expect((await redGhoul(page)).hp).toBe(32); });
+t(1211, async ({ page }) => { await start(page); expect((await redGhoul(page)).exp).toBe(10); });
+t(1212, async ({ page }) => {
+  await start(page);
+  const sizes = await ev(page, () => {
+    const real = pickMonsterType; pickMonsterType = () => 'bat'; const out = [];
+    for (let k = 0; k < 60; k++) { const n0 = game.monsters.length; spawnMonster(); out.push(game.monsters.length - n0); }
+    pickMonsterType = real; game.monsters = []; return out;
+  });
+  expect(Math.min(...sizes)).toBe(3); expect(Math.max(...sizes)).toBe(5);
+});
+t(1213, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']);
+  const timer = await ev(page, () => new Promise((res) => {
+    game.elapsed = 0; const n0 = game.monsters.length; game.spawnTimer = 0;
+    const iv = setInterval(() => { if (game.monsters.length > n0) { clearInterval(iv); res(game.spawnTimer); } }, 5);
+  }));
+  expect(timer).toBeLessThanOrEqual(1.15 / 1.7 + 1e-9); expect(timer).toBeGreaterThan(1.15 / 1.7 - 0.1);
+});
+
+// ---------------------------------------------------------------- B13 몬스터 행동
+const bomberNear = (page) => ev(page, () => { const p = game.players[0]; const m = makeMonster('bomber', p.x + 40, p.y); game.monsters.push(m); return game.monsters.length - 1; });
+t(1301, async ({ page }) => {
+  await start(page); const i = await bomberNear(page);
+  await expect.poll(() => ev(page, (i) => game.monsters[i] && game.monsters[i].fuseState, i)).toBe('fusing');
+  await ev(page, (i) => damageMonster(game.monsters[i], 999, game.players[0]), i);
+  await page.waitForTimeout(1200);
+  expect((await P(page)).hp).toBe(100);
+});
+t(1302, async ({ page }) => { await start(page); await bomberNear(page); await page.waitForTimeout(1300); expect((await P(page)).hp).toBe(80); });
+t(1303, async ({ page }) => { await start(page); await bomberNear(page); await page.waitForTimeout(1300); expect(await ev(page, () => game.orbs.length)).toBe(0); });
+t(1304, async ({ page }) => {
+  await start(page);
+  const o = await ev(page, ([cx, cy]) => { const m = makeMonster('ghoul', cx + 300, cy); game.monsters.push(m); damageMonster(m, 999, game.players[0]); return game.orbs.map((x) => x.exp); }, [CX, CY]);
+  expect(o).toEqual([5]);
+});
+
+// ---------------------------------------------------------------- B14 전리품
+const lootOpen = async (page) => { await killBoss(page, 'boss'); await expect(page.locator('#choiceTitle')).toHaveText('P1 보스 전리품'); };
+t(1401, async ({ page }) => { await start(page); await lootOpen(page); });
+t(1402, async ({ page }) => { await start(page); await lootOpen(page); await expect(page.locator('#choiceCards .card')).toHaveCount(3, { timeout: 2000 }); });
+for (const [n, from, to] of [[1403, 2, 4], [1404, 4, 5]]) t(n, async ({ page }) => {
+  await start(page); await setBullet(page, { level: from }); await lootOpen(page);
+  await card(page, '피스톨 희귀 강화 (+2)').click();
+  expect(await ev(page, () => game.players[0].weapons.find((w) => w.type === 'bullet').level)).toBe(to);
+});
+for (const [n, hp, want] of [[1405, 30, 80], [1407, 90, 100]]) t(n, async ({ page }) => {
+  await start(page); await ev(page, (h) => { game.players[0].hp = h; }, hp); await lootOpen(page);
+  await card(page, '재정비').click();
+  expect((await P(page)).hp).toBe(want);
+});
+t(1406, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']); await dmg(page, 1, 999); await lootOpen(page);
+  await card(page, '재정비').click();
+  const p2 = await P(page, 1); expect(p2.downed).toBe(false); expect(p2.hp).toBe(50);
+});
+
+// ---------------------------------------------------------------- B15 아이템 박스
+t(1501, async ({ page }) => {
+  await start(page);
+  between(await ev(page, () => { for (let k = 0; k < 2000; k++) { const m = makeMonster('ghoul', 0, 0); damageMonster(m, 999, game.players[0]); } const n = game.boxes.length; game.boxes = []; game.orbs = []; return n; }), 70, 130);
+});
+t(1502, async ({ page }) => {
+  await start(page);
+  expect(await ev(page, () => { for (let k = 0; k < 300; k++) { const m = makeMonster('boss', 0, 0); damageMonster(m, 1e6, game.players[0]); } const n = game.boxes.length; game.orbs = []; return n; })).toBe(0);
+});
+t(1503, async ({ page }) => {
+  await start(page);
+  const c = await ev(page, () => {
+    const p = game.players[0]; const c = { potion: 0, bomb: 0, magnet: 0 };
+    for (let k = 0; k < 3000; k++) {
+      p.hp = 50; p.magnetTimer = 0; game.screenFlash = 0; game.monsters = [];
+      applyBoxEffect(p);
+      if (p.hp > 50) c.potion++; else if (game.screenFlash > 0) c.bomb++; else if (p.magnetTimer > 0) c.magnet++;
+    }
+    p.hp = 100; p.magnetTimer = 0; return c;
+  });
+  for (const v of Object.values(c)) between(v, 900, 1100);
+});
+const bomb = (page, n) => ev(page, (n) => {
+  const p = game.players[0]; for (let k = 0; k < n; k++) game.monsters.push(makeMonster('ghoul', p.x + 200 + k * 10, p.y));
+  const real = Math.random; Math.random = () => 0.5; applyBoxEffect(p); Math.random = real;
+  return { dead: game.monsters.filter((m) => m.dead).length, flash: game.screenFlash };
+}, n);
+t(1504, async ({ page }) => { await start(page); expect((await bomb(page, 4)).dead).toBe(4); });
+t(1505, async ({ page }) => { await start(page); expect((await bomb(page, 1)).flash).toBeGreaterThan(0); });
+t(1506, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']);
+  await ev(page, () => { const b = game.players[1]; applyDamageToPlayer(b, 999); game.boxes.push({ x: b.x, y: b.y, r: 14 }); });
+  await page.waitForTimeout(500);
+  expect(await ev(page, () => game.boxes.length)).toBe(1);
+});
+
+// ---------------------------------------------------------------- B16 결과 창
+['생존 시간', '총 처치 수', '평균 레벨', '결과'].forEach((lb, i) => t(1601 + i, async ({ page }) => {
+  await start(page); await dmg(page, 0, 999);
+  await expect(page.locator('#resultStats .l').nth(i)).toHaveText(lb);
+}));
+t(1605, async ({ page }) => {
+  await start(page); await ev(page, () => { game.elapsed = 125; applyDamageToPlayer(game.players[0], 999); });
+  await expect(page.locator('#resultStats .v').nth(0)).toHaveText('02:05');
+});
+t(1606, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']);
+  await ev(page, () => { const [a, b] = game.players; a.level = 3; b.level = 4; applyDamageToPlayer(b, 999); applyDamageToPlayer(a, 999); });
+  await expect(page.locator('#resultStats .v').nth(2)).toHaveText('Lv 4');
+});
+t(1607, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']); await dmg(page, 1, 999); await dmg(page, 0, 999);
+  await page.click('#btnRetry');
+  await expect(page.locator('#choiceTitle')).toHaveText('P1 주무기 선택');
+  await card(page, '피스톨').click();
+  await expect(page.locator('#choiceTitle')).toHaveText('P2 주무기 선택');
+});
+t(1608, async ({ page }) => {
+  await start(page); await ev(page, () => { game.kills = 7; applyDamageToPlayer(game.players[0], 999); });
+  await expect(page.locator('#resultStats .v').nth(1)).toHaveText('7');
+});
+
+// ---------------------------------------------------------------- B17 온라인 (가짜 연결)
+function BF_FAKE_PEER() {
+  window.__peers = [];
+  class FakeConn {
+    constructor(code) { this.code = code; this.open = false; this.h = {}; this.sent = []; this.closed = false; }
+    on(e, f) { (this.h[e] = this.h[e] || []).push(f); }
+    emit(e, ...a) { (this.h[e] || []).forEach((f) => f(...a)); }
+    send(o) { this.sent.push(o); }
+    close() { if (this.closed) return; this.closed = true; this.open = false; this.emit('close'); }
+  }
+  class FakePeer {
+    constructor(id) { this.id = id; this.h = {}; this.destroyed = false; this.conns = []; window.__peers.push(this); }
+    on(e, f) { (this.h[e] = this.h[e] || []).push(f); }
+    emit(e, ...a) { (this.h[e] || []).forEach((f) => f(...a)); }
+    connect(code) { const c = new FakeConn(code); this.conns.push(c); window.__conn = c; return c; }
+    destroy() { this.destroyed = true; }
+  }
+  window.__FakeConn = FakeConn;
+  window.Peer = FakePeer;
+}
+async function online(page, { block = false, clock = false } = {}) {
+  await page.route(/peerjs/, (r) => (block ? r.abort() : r.fulfill({ body: '/* 가짜 Peer 사용 */', contentType: 'application/javascript' })));
+  if (!block) await page.addInitScript(BF_FAKE_PEER);
+  if (clock) await page.clock.install();
+  await page.goto(URL);
+}
+const peerDo = (page, fn, arg) => page.evaluate(([f, a]) => (0, eval)(f)(window.__peers[window.__peers.length - 1], a), [fn.toString(), arg]);
+const net = (page) => page.locator('#netStatus');
+async function joinBF(page, code = 'ABCD', opts) { await online(page, opts); await page.click('#btnJoinShow'); await page.fill('#joinCodeInput', code); await page.click('#btnJoinGo'); }
+t(1701, async ({ page }) => { await online(page); await page.click('#btnHost'); await expect(net(page)).toHaveText('방을 여는 중...'); });
+t(1702, async ({ page }) => {
+  await online(page); await page.click('#btnHost'); await peerDo(page, (p) => p.emit('open'));
+  await expect(page.locator('#netStatus .room-code')).toHaveText(/^[A-Z2-9]{4}$/);
+});
+t(1703, async ({ page }) => {
+  await page.goto(URL);
+  expect(await ev(page, () => { let bad = 0; for (let k = 0; k < 1000; k++) if (/[0O1I]/.test(makeRoomCode())) bad++; return bad; })).toBe(0);
+});
+t(1704, async ({ page }) => { await online(page, { clock: true }); await page.click('#btnHost'); await page.clock.runFor(11900); await expect(net(page)).not.toContainText('시간 초과'); });
+t(1705, async ({ page }) => {
+  await online(page, { clock: true }); await page.click('#btnHost'); await page.clock.runFor(12100);
+  await expect(net(page)).toContainText('연결 서버에 접속하지 못했습니다 (시간 초과). 인터넷 연결을 확인해주세요.');
+});
+t(1706, async ({ page }) => {
+  await online(page); await page.click('#btnHost'); await peerDo(page, (p) => p.emit('error', { type: 'server-error' }));
+  await expect(net(page)).toContainText('연결 오류가 발생했습니다 (server-error).');
+});
+t(1707, async ({ page }) => { await joinBF(page); await expect(net(page)).toHaveText('연결하는 중...'); });
+t(1708, async ({ page }) => { await joinBF(page, 'abcd'); await peerDo(page, (p) => p.emit('open')); expect(await peerDo(page, (p) => p.conns[0].code)).toBe('bloodfall-ABCD'); });
+t(1709, async ({ page }) => {
+  await joinBF(page); await peerDo(page, (p) => p.emit('open'));
+  await peerDo(page, (p) => { p.conns[0].open = true; p.conns[0].emit('open'); });
+  await expect(net(page)).toHaveText('호스트에 연결됨. 게임 시작을 기다리는 중...');
+});
+t(1710, async ({ page }) => {
+  await joinBF(page); await peerDo(page, (p) => p.emit('error', { type: 'peer-unavailable' }));
+  await expect(net(page)).toContainText('해당 방 코드를 찾을 수 없습니다. 코드를 다시 확인해주세요.');
+});
+t(1711, async ({ page }) => {
+  await joinBF(page); await peerDo(page, (p) => p.emit('error', { type: 'peer-unavailable' }));
+  await expect(net(page).getByRole('button', { name: '다시 시도' })).toBeVisible();
+});
+t(1712, async ({ page }) => {
+  await joinBF(page, 'ABCD', { clock: true }); await page.clock.runFor(12100);
+  await expect(net(page)).toContainText('연결 시간이 초과됐습니다. 방 코드와 인터넷 연결을 확인해주세요.');
+});
+t(1713, async ({ page }) => {
+  await online(page, { block: true }); await page.click('#btnHost');
+  await expect(net(page)).toHaveText('P2P 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인하고 새로고침 해주세요.');
+});
+async function hostGame(page) {
+  await online(page); await page.click('#btnHost'); await peerDo(page, (p) => p.emit('open'));
+  await ev(page, () => { const c = new window.__FakeConn('guest'); c.open = true; window.__conn = c; window.__peers[0].emit('connection', c); c.emit('open'); });
+}
+t(1714, async ({ page }) => {
+  await hostGame(page);
+  await ev(page, () => window.__conn.close());
+  await expect(page.getByText('상대방과의 연결이 끊어졌습니다.')).toBeVisible({ timeout: 2000 });
+});
+t(1715, async ({ page }) => { await hostGame(page); await expect(page.locator('#choiceTitle')).toHaveText('P1 주무기 선택'); });
+
+// ---------------------------------------------------------------- B18 카메라
+t(1801, async ({ page }) => {
+  await start(page, 'coop', ['피스톨', '피스톨']);
+  await ev(page, ([cx, cy]) => { game.players[0].x = cx - 200; game.players[1].x = cx + 200; game.players[0].y = game.players[1].y = cy; }, [CX, CY]);
+  await page.waitForTimeout(2000);
+  expect(await ev(page, () => game.camera.x)).toBeCloseTo(CX, -1);
+});
+t(1802, async ({ page }) => {
+  await start(page); await ev(page, () => { game.players[0].x = 0; });
+  await page.waitForTimeout(2000);
+  expect(await ev(page, () => game.camera.x)).toBe(450);
+});
