@@ -238,7 +238,8 @@ def bug_report(r, tc, tcs, game, when, tc_keys):
     # 제목: [모듈] 무엇이 + 어떻게 잘못되는가 (가이드 '제목' 기준) — 자동이라 '기대한 결과가 나오지 않음'으로 쓴다
     what = tc.get("cat3") or tc.get("title") or r["title"]
     exp = (tc.get("expected") or "").splitlines()[0][:60]
-    summary = f"[자동] [{tc.get('cat2') or tcs['game']}] {what}" + (f" — \"{exp}\" 아님" if exp else " — 기대 결과와 다름")
+    quoted = exp if '"' in exp else f'"{exp}"'   # 기대 결과에 이미 따옴표 문구가 있으면 겹치지 않게
+    summary = f"[자동] [{tc.get('cat2') or tcs['game']}] {what}" + (f" — {quoted} 아님" if exp else " — 기대 결과와 다름")
     return summary, "\n\n".join(parts)
 
 
