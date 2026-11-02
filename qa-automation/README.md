@@ -57,7 +57,7 @@ TC 작성 단계를 **건너뛰지 않고**, 하는 일이 "새로 쓰기"에서
 
 | 대상 | TC | 자동 테스트 | 찾은 것 | 결과물 |
 |---|---|---|---|---|
-| 슬라임 게임 (`../slimegame.html`) | LKM 71 + AI 보충 190 (SG-xxx) | 202개 → **200 통과** | 탐색-1 게임 오버 뒤 보드 점수 증가(간헐적, 마지막 실행 미재현) · **SG-1506 폭 360px 화면 보드 10px 잘림** · SG-1010 없는 방 코드에 [다시 연결 시도] 없음(LKM TC 플레이-27과 다름) | `report/slimegame_report.html`, `tc/slimegame_TC.xlsx` |
+| 슬라임 게임 (`../slimegame.html`) | LKM 71 + AI 보충 190 (SG-xxx) | 202개 → **199 통과** | 탐색-1 게임 오버 뒤 보드 점수 증가(간헐적, 3판 중 2판꼴로 재현) · **SG-1506 폭 360px 화면 보드 10px 잘림** · SG-1010 없는 방 코드에 [다시 연결 시도] 없음(LKM TC 플레이-27과 다름) | `report/slimegame_report.html`, `tc/slimegame_TC.xlsx` |
 | BLOODFALL (`../뱀서라이크/bloodfall_playable.html`) | 기획서 v0.9로 38 + AI 보충 173 (BF-101~) | 194개 → **190 통과** | BF-04 미선택 시 주무기 무작위(기획 피스톨) · **BF-1402 무기 1개면 전리품 카드 2장(기획 3장)** · **BF-1118 그레이브 워든 광폭화 1.35배(기획 1.3배)** · **BF-1714 게임 중 연결 끊김 안내 안 보임** | `report/bloodfall_report.html`, `tc/bloodfall_TC.xlsx` |
 | 카드팩 스튜디오 (`../스토리게임만들기/card-studio/studio.html`) | 338 (자동 327 · 수동 11) | 327개 → **326 통과** | **CS-1116 새로고침하면 카드뽑기 천장 카운트 0** (`flow2.js` 178줄 `drawState` 저장 안 됨) | `report/cardstudio_report.html`, `tc/cardstudio_TC.xlsx` |
 | 캡스톤 RotDL (기획서 PDF 145쪽, 게임 없음) | 120 | 건너뜀 (문서만) | 기존 TC 고칠 점 12 · 기획서 서로 다른 부분 7 (예: 낮·밤 2시간 vs 12시간) · 추가 제안 7 | `report/rotdl_review.md`, `tc/rotdl_TC.xlsx` |
