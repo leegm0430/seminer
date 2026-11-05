@@ -139,6 +139,78 @@ async function run(gamePath, planPath, outPath, shotDir) {
   fs.writeFileSync(outPath, JSON.stringify({ results, blocked: counters.blocked }, null, 1), 'utf8');
 }
 
+// 탐색 테스트: 기획서·AI 없이 보이는 요소를 무작위로 눌러 스크립트 오류·멈춤을 찾는다. 같은 씨앗이면 같은 순서로 누른다.
+async function explore(gamePath, outPath, shotDir, runs, stepsPerRun) {
+  const url = pathToFileURL(gamePath).href;
+  fs.mkdirSync(shotDir, { recursive: true });
+  const counters = { blocked: 0 };
+  const browser = await chromium.launch();
+  const issues = new Map();
+  const pressed = new Map();
+  let clicks = 0;
+  for (let seed = 1; seed <= runs; seed += 1) {
+    let x = seed * 7919;
+    const rnd = n => { x = (x * 1103515245 + 12345) % 2147483648; return x % n; };
+    const { context, page } = await openPage(browser, url, counters);
+    const path_ = [];
+    const report = async (kind, text) => {
+      const key = `${kind}: ${text}`;
+      if (issues.has(key)) { issues.get(key).count += 1; return; }
+      const shot = path.join(shotDir, `탐색${issues.size + 1}.png`);
+      await page.screenshot({ path: shot, timeout: 3000 }).catch(() => {});
+      issues.set(key, { kind, text, count: 1, seed, steps: path_.slice(-12), screenshot: fs.existsSync(shot) ? path.basename(shot) : '' });
+    };
+    const pending = [];
+    page.on('pageerror', e => pending.push(['스크립트 오류', String(e.message || e).split('\n')[0].slice(0, 160)]));
+    page.on('console', m => { if (m.type() === 'error' && !/ERR_FAILED|Failed to load resource/.test(m.text())) pending.push(['콘솔 오류', m.text().split('\n')[0].slice(0, 160)]); });
+    for (let step = 0; step < stepsPerRun; step += 1) {
+      let elements = [];
+      try {
+        elements = await page.evaluate(() => {
+          const out = [];
+          for (const el of document.querySelectorAll('button,a[href],input,select,[role=button],[onclick]')) {
+            const r = el.getBoundingClientRect();
+            if (!r.width || !r.height || el.disabled || getComputedStyle(el).visibility === 'hidden') continue;
+            const label = (el.id ? `#${el.id} ` : '') + (el.innerText || el.value || el.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ').slice(0, 24);
+            out.push({ label, x: r.x + r.width / 2, y: r.y + r.height / 2 });
+          }
+          return out;
+        });
+      } catch { await report('멈춤', '페이지 응답 없음'); break; }
+      if (!elements.length) {            // 버튼이 없으면 게임 화면(canvas): 이동 키와 화면 클릭으로 조작한다
+        const key = ['w', 'a', 's', 'd', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight', ' '][rnd(9)];
+        const label = `(키 ${key})`;
+        path_.push(label);
+        pressed.set('(키·화면 조작)', (pressed.get('(키·화면 조작)') || 0) + 1);
+        clicks += 1;
+        await page.keyboard.down(key).catch(() => {});
+        await page.mouse.click(100 + rnd(1080), 100 + rnd(600)).catch(() => {});
+        await page.waitForTimeout(300);
+        await page.keyboard.up(key).catch(() => {});
+        for (const [k, t] of pending.splice(0)) await report(k, t);
+        continue;
+      }
+      const el = elements[rnd(elements.length)];
+      path_.push(el.label);
+      pressed.set(el.label, (pressed.get(el.label) || 0) + 1);
+      clicks += 1;
+      await page.mouse.click(el.x, el.y).catch(() => {});
+      await page.waitForTimeout(120);
+      const alive = await Promise.race([page.evaluate(() => 1).catch(() => 0), new Promise(res => setTimeout(() => res(0), 5000))]);
+      for (const [k, t] of pending.splice(0)) await report(k, t);
+      if (!alive) { await report('멈춤', '5초 안에 응답 없음'); break; }
+    }
+    await context.close().catch(() => {});
+  }
+  await browser.close();
+  const result = { runs, stepsPerRun, clicks, distinct: pressed.size, blocked: counters.blocked, issues: [...issues.values()], pressed: [...pressed.entries()].sort((a, b) => b[1] - a[1]) };
+  fs.writeFileSync(outPath, JSON.stringify(result, null, 1), 'utf8');
+  console.log(`  탐색: ${runs}판 · 클릭 ${clicks}회 · 눌러 본 요소 ${pressed.size}종 · 발견 ${issues.size}종 · 막은 외부 요청 ${counters.blocked}건`);
+}
+
 const [mode, ...rest] = process.argv.slice(2);
-const job = mode === 'scan' ? scan(rest[0], rest[1]) : mode === 'run' ? run(rest[0], rest[1], rest[2], rest[3]) : Promise.reject(new Error('scan 또는 run'));
+const job = mode === 'scan' ? scan(rest[0], rest[1])
+  : mode === 'run' ? run(rest[0], rest[1], rest[2], rest[3])
+    : mode === 'explore' ? explore(rest[0], rest[1], rest[2], Number(rest[3] || 5), Number(rest[4] || 40))
+      : Promise.reject(new Error('scan, run 또는 explore'));
 job.catch(e => { console.error('실행기 오류:', String(e.message || e).split('\n')[0].slice(0, 120)); process.exit(1); });
