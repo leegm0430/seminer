@@ -10,3 +10,6 @@ out_run*.txt
 # 기획서·이미지·엑셀 자료 (다른 회사 문서일 수 있음) — 안내 파일만 올림
 input/*
 !input/README.md
+
+# 기밀 자료와 로컬 AI 결과 — 어떤 경우에도 올리지 않음 (tools/secure_tc.py)
+기밀/

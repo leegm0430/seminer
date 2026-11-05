@@ -1,6 +1,6 @@
 # AI 활용 게임 QA 자동화 (Playwright + Jira 무료 플랜)
 
-- 작성일: 2026-11-01 (2026-11-02 현재 기준으로 다시 씀)
+- 작성일: 2026-11-01 (2026-11-02 현재 기준으로 다시 씀, 2026-11-05 자료 등급·로컬 AI 추가)
 - 작성자: Claude Code (TC 초안·테스트 코드·도구) / 원본 TC·게임·TC 작성 규칙 확인: LKM
 - 비용: 0원 — Playwright(오픈소스), Python 표준 라이브러리 + openpyxl·PyMuPDF(오픈소스), Jira Cloud 무료 플랜 REST API만 사용. 유료 앱(Zephyr)·Rovo(크레딧)·AI API 호출 없음.
 - 소개 페이지: [index.html](index.html) (공개 주소 https://leegm0430.github.io/seminer/qa-automation/)
@@ -18,6 +18,7 @@
 
 | 단계 | 도구 | 하는 일 | AI 필요 |
 |---|---|---|---|
+| 자료 등급 확인 | 사람 + `tools/prepare_input.py` | 기밀 자료면 로컬 AI 경로로 ([8절](#8-자료-등급과-로컬-ai)) | 아니요 |
 | 자료 정리 | `tools/prepare_input.py` | `input/<게임>/`의 PDF 글자 뽑기(그림 쪽은 그림으로), 엑셀 시트 읽기·기존 TC 시트 찾기, 게임 파일 유무 확인 | 아니요 |
 | TC 작성 | Claude Code (`tc-writing` 스킬) | 규칙을 먼저 읽고 `tc/<게임>_tc.json` + `tests/<게임>.spec.js` 작성 | **예 (내 PC의 Claude Code)** |
 | 규칙 점검 | `tools/check_tc.py`, `TC점검도구.html` | 규칙 중 기계로 볼 수 있는 것 점검 | 아니요 |
@@ -143,15 +144,62 @@ python -I tools/jira_sync.py bugs --game bloodfall    # 실패 → 버그 + 스�
 
 설정이 비어 있으면 **드라이런**: 보낼 내용만 `out/jira_dryrun.json`에 저장한다. 현재 등록 상태: 슬라임 TC SCRUM-5~46·탐색-1 SCRUM-47, BLOODFALL TC SCRUM-48~85·BF-04 SCRUM-86, 카드팩 TC SCRUM-143~472·CS-1116 SCRUM-142. **이번 보충 TC(SG-xxx·BF-101~)와 새 결함 5건은 아직 올리지 않음.**
 
-## 8. 한계
+## 8. 자료 등급과 로컬 AI
 
-- TC 작성 단계는 내 PC의 Claude Code가 있어야 한다. 나머지(점검·테스트·리포트·Jira)는 AI 없이 돈다.
+Claude Code가 읽은 기획서는 Anthropic 서버로 간다. 그래서 자료를 넣기 전에 등급을 나누고, 기밀 자료는 이 PC 안의 AI로만 TC 초안을 쓴다. 이 규칙은 이 폴더(qa-automation)에만 적용한다.
+
+```
+자료 등급 확인
+ ├ 공개·본인 자료 → input/<게임>/ → Claude Code → 규칙 점검 → 자동 테스트 → 리포트 → Jira
+ └ 기밀 자료     → 기밀 폴더 → 로컬 AI(Ollama) → 규칙 점검 → TC 엑셀·검토표 (이 PC 안에서 끝)
+```
+
+| 등급 | 예 | 경로 |
+|---|---|---|
+| 공개 | 공개된 게임, 포트폴리오용 기획서 | Claude Code |
+| 본인 | 직접 만든 게임·기획서 | Claude Code |
+| 기밀 | 회사·팀 내부 기획서, NDA 자료, 미공개 정보 | 로컬 AI만 |
+
+### 막는 장치
+
+| 장치 | 하는 일 |
+|---|---|
+| 기밀 표시 감지 (`tools/prepare_input.py`) | `input/`의 문서에서 대외비·사내 한정·NDA·confidential 같은 표시를 찾으면 정리본을 만들지 않고 멈춘다 (종료 코드 3). 사람이 공개 자료로 확인하면 그 폴더에 `공개확인.txt`를 직접 만든다. AI는 이 파일을 만들지 않는다 |
+| Claude Code 차단 (`.claude/scripts/block_homework.py`, `settings.local.json`) | Claude Code가 기밀 폴더를 읽거나 고치는 명령을 막는다 |
+| git 제외 (`.gitignore`) | 기밀 폴더는 GitHub·자동 업로드에 올라가지 않는다 |
+
+### 로컬 AI 쓰는 법
+
+프로그램: [Ollama](https://ollama.com)(MIT, 무료) + 모델 `qwen2.5:7b`(Apache 2.0, 4.4GB) + VS Code 확장 [Continue](https://www.continue.dev)(Apache-2.0, 무료). 설치 위치는 E 드라이브(`E:\Ollama`, `E:\OllamaModels`, `E:\VSCodeExtensions`), Ollama 클라우드 기능은 꺼 두었다.
+
+```powershell
+python -I tools/secure_tc.py status                        # Ollama·모델·기밀 자료 상태
+python -I tools/secure_tc.py add --game <이름> --from <파일> # 자료를 기밀 폴더로 복사 (원본은 직접 지움)
+python -I tools/secure_tc.py run --game <이름>              # TC 초안 + 규칙 점검 + 엑셀·검토표
+python -I tools/secure_tc.py remove --game <이름> --yes     # 이 게임의 자료·결과를 모두 지움
+```
+
+- `QA자동화_실행.bat` 8번 메뉴로도 실행한다. **이 명령은 Claude Code가 아니라 사람이 터미널에서 돌린다.** 결과는 기밀 폴더 안 `<이름>/_결과/`에 남고, 화면에는 건수만 나온다.
+- 기획서를 보며 대화로 물어볼 때는 VS Code에서 Continue(Ctrl+L)를 연다. 설정에는 이 PC의 Ollama 모델만 넣어 두었다.
+
+### 시험 결과와 한계 (2026-11-03~05, 지어낸 시험 문서 4개 절로 실행)
+
+- 4개 절 전체: 16건 생성, 약 18분(CPU, 내장 그래픽). 규칙 점검 위반 없음. 첫 절만 실제 `add`→`run`으로 돌린 시험: 2건, 약 4분.
+- **내용 오류가 있었다.** 경계값을 틀리게 쓰거나(물 3번 제한인데 2번에서 비활성화) 기획서에 없는 문구를 지어내고, 시작 코인·수확 코인·8칸 경계를 빠뜨렸다. Claude보다 품질이 낮다. **사람이 고칠 초안으로만 쓴다.** 자료에 없는 숫자·따옴표 문구는 비고에 `확인 필요`로 표시하지만, 문구가 아닌 내용 오류는 잡지 못한다.
+- 생성 중 Ollama 연결(약 15분 동안 표본 310회)은 모두 127.0.0.1이었다. 다만 Ollama는 앱 실행 때 ollama.com에 접속한다(업데이트 확인 등으로 보이며 내용은 확인하지 못함). "외부 연결 0"을 보장하려면 Windows 방화벽으로 `E:\Ollama\ollama.exe`, `ollama app.exe`의 나가는 연결을 막는다(관리자 권한 필요, 막는 동안 모델 받기·업데이트 불가).
+- 글자만 읽는다. 그림은 읽지 못하므로 그림 위주 기획서는 사람이 글로 옮겨야 한다.
+- 기밀 경로는 TC 초안까지다. 테스트 코드는 사람이 쓰거나 Continue로 도움을 받는다. Jira Cloud도 외부 서비스이므로 기밀 내용을 올리지 않는다.
+- 기밀 표시 감지는 글자 찾기다. 표시가 없는 문서나 스캔본은 잡지 못하므로 **등급 판단은 사람이 한다.** 훅은 실수를 막는 장치이지 보안 경계가 아니다.
+
+## 9. 한계
+
+- TC 작성 단계는 내 PC의 Claude Code(기밀 자료는 로컬 AI)가 있어야 한다. 나머지(점검·테스트·리포트·Jira)는 AI 없이 돈다.
 - 자동 테스트는 웹(html) 게임 대상. 유니티는 Unity Test Framework(무료)로 결과를 같은 리포트·Jira 흐름에 붙이는 것이 다음 단계.
 - 온라인 기능은 가짜 연결로 화면 처리만 확인한다. 실제 연결·동기화는 수동 TC.
 - 간헐적 결함(탐색-1)은 여러 판을 돌려도 놓칠 수 있다.
 - 기획서 대비 빠진 항목 찾기(TC점검도구)는 글자 비교라 후보일 뿐이다.
 
-## 9. 파일
+## 10. 파일
 
 | 경로 | 내용 | git |
 |---|---|---|
@@ -162,5 +210,6 @@ python -I tools/jira_sync.py bugs --game bloodfall    # 실패 → 버그 + 스�
 | `report/` | 결과 리포트·검토 리포트 | 올림 |
 | `TC점검도구.html`, `index.html`, `web/` | 점검 도구, 소개 페이지, 실행 화면 | 올림 |
 | `input/` | 기획서 등 넣은 자료 (`README.md`만 올림) | 안 올림 |
+| 기밀 폴더 | 기밀 자료와 로컬 AI 결과 (`tools/secure_tc.py`로만 다룸) | **절대 안 올림** |
 | `out/` | 실행 결과·스크린샷·Jira 기록 | 안 올림 |
 | `.env` | Jira 토큰 | **절대 안 올림** |

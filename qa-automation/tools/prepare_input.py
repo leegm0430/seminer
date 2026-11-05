@@ -16,6 +16,7 @@
 """
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -30,6 +31,10 @@ KINDS = {
 LOW_TEXT = 40           # 머리글을 뺀 한 쪽 글자가 이보다 적으면 그림·스캔 쪽으로 본다
 RENDER_ZOOM = 1.4       # 직접 볼 쪽을 그림으로 만들 때 배율
 MAX_ROWS = 400          # 엑셀 시트마다 뽑을 최대 줄 수
+PUBLIC_OK = "공개확인.txt"  # 사람이 보고 공개 자료라고 판단했다는 표시 (AI가 만들지 않는다)
+# 자료 등급 검사: 이 표시가 있으면 외부 AI 경로(input/ → Claude Code)로 넘기지 않는다. 게임 이야기 속 '기밀' 같은 말은 일부러 뺐다
+CONFIDENTIAL = re.compile(r"대외비|사내\s*(?:한정|전용|용|비공개|기밀)|회사\s*기밀|영업\s*비밀|기밀\s*(?:문서|자료|등급)|비밀\s*유지|배포\s*금지|외부\s*유출\s*금지"
+                          r"|\bNDA\b|\bconfidential\b|internal\s+use\s+only|\bproprietary\b|do\s+not\s+distribute", re.I)
 
 
 def kind_of(name):
@@ -144,11 +149,52 @@ def game_target(folder, files):
     return None
 
 
-def prepare(game):
-    folder = os.path.join(INPUT_DIR, game)
+def grade_scan(folder, files):
+    """자료 등급 검사: 기밀 표시가 있는 파일 [(파일, 표시)]와 글자를 읽지 못해 사람이 봐야 하는 파일 목록."""
+    hits, unread = [], []
+    for f in files:
+        p, k = os.path.join(folder, f), kind_of(f)
+        found = CONFIDENTIAL.search(f)
+        if k == "pdf":
+            pages = pdf_text(p)
+            if pages is None:
+                unread.append(f)
+            else:
+                found = found or CONFIDENTIAL.search("\n".join(pages))
+                if any(n < LOW_TEXT for n in content_chars(pages)):
+                    unread.append(f + " (그림인 쪽)")
+        elif k == "xlsx":
+            found = found or CONFIDENTIAL.search("\n".join(line for _, lines, _ in xlsx_dump(p) for line in lines))
+        elif k == "text":
+            found = found or CONFIDENTIAL.search(open(p, encoding="utf-8", errors="replace").read())
+        elif k == "image":
+            unread.append(f)
+        if found:
+            hits.append((f, found.group().strip()))
+    return hits, unread
+
+
+def prepare(game, folder=None, secure=False):
+    """secure=True: 기밀 경로(tools/secure_tc.py)에서 부른다 — 등급 검사를 건너뛰고, 내용이 나올 수 있는 파일 이름도 출력하지 않는다."""
+    folder = folder or os.path.join(INPUT_DIR, game)
     if not os.path.isdir(folder):
         sys.exit(f"자료 폴더가 없습니다: {folder}\n  → 폴더를 만들고 기획서·이미지·엑셀을 넣은 뒤 다시 실행하세요.")
-    files = sorted(f for f in os.listdir(folder) if not f.startswith("_") and f != "game.txt" and os.path.isfile(os.path.join(folder, f)))
+    files = sorted(f for f in os.listdir(folder) if not f.startswith("_") and f != "game.txt" and f != PUBLIC_OK and os.path.isfile(os.path.join(folder, f)))
+    if not secure:
+        hits, unread = grade_scan(folder, files)
+        if hits and not os.path.exists(os.path.join(folder, PUBLIC_OK)):
+            for name in ("_입력정리.md", "_입력정보.json"):      # 예전 정리본이 남아 있으면 외부 AI가 읽을 수 있으니 지운다
+                old = os.path.join(folder, name)
+                if os.path.exists(old):
+                    os.remove(old)
+            print(f"[{game}] 중단: 기밀 표시를 찾았습니다. 정리본을 만들지 않습니다 (외부 AI 경로 차단).")
+            for f, mark in hits:
+                print(f"  - {f}: '{mark}'")
+            print("  → 기밀 자료면: python -I tools/secure_tc.py add --game <이름> --from <파일> 로 옮겨 로컬 AI로 작성하세요.")
+            print(f"  → 사람이 보고 공개 자료가 맞으면: 이 폴더에 빈 파일 {PUBLIC_OK} 를 직접 만들고 다시 실행하세요. AI는 이 파일을 만들지 않습니다.")
+            sys.exit(3)
+        if unread:
+            print(f"[{game}] 주의: 글자를 읽지 못해 기밀 표시를 검사하지 못한 자료가 있습니다 — 사람이 등급을 확인하세요: " + ", ".join(unread[:8]))
     target = game_target(folder, files)
     mode = "자동 테스트" if target else "문서 전용"
     md = [f"# {game} 입력 정리", "", "- 정리 도구: tools/prepare_input.py (자동 생성, 원본 자료가 바뀌면 다시 실행)",
@@ -215,6 +261,8 @@ def prepare(game):
         fp.write("\n".join(md + body))
     with open(os.path.join(folder, "_입력정보.json"), "w", encoding="utf-8") as fp:
         json.dump(info, fp, ensure_ascii=False, indent=2)
+    if secure:
+        return info
     print(f"[{game}] 모드: {mode}")
     for x in info["files"]:
         print(f"  - {x['name']} ({x['kind'] or '기타'}) {x['memo']}")

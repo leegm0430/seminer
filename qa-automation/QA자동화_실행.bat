@@ -18,6 +18,8 @@ echo  [자료로 TC 만들기 - 게임이 없어도 됨]
 echo   5. 자료 넣기·정리     (input 폴더에 기획서 PDF·이미지·엑셀을 넣고 TC 작성용으로 정리)
 echo   6. 자료로 만든 TC 마무리 (규칙 점검 · TC 엑셀 · 검토 리포트, 게임 파일이 있으면 자동 테스트까지)
 echo   7. TC 규칙 점검만     (모든 게임 TC를 작성 규칙 044로 점검)
+echo  [기밀 자료 - 외부 AI에 보내지 않음]
+echo   8. 로컬 AI로 TC 초안  (기밀 폴더 자료를 이 PC의 Ollama로만 처리, GitHub·Jira에 안 올림)
 echo.
 set "PICK="
 set /p "PICK=번호를 입력하고 Enter: "
@@ -28,8 +30,9 @@ if "%PICK%"=="4" set "GAMES=slimegame bloodfall cardstudio"
 if "%PICK%"=="5" goto prepare
 if "%PICK%"=="6" goto pipeline
 if "%PICK%"=="7" goto check
+if "%PICK%"=="8" goto secure
 if not defined GAMES (
-  echo 1~7 중 하나를 입력하세요.
+  echo 1~8 중 하나를 입력하세요.
   goto end
 )
 
@@ -109,6 +112,27 @@ rem ---------------------------------------------------------------- 7. TC 규�
 :check
 echo.
 python -I tools\check_tc.py --all
+goto end
+
+rem ---------------------------------------------------------------- 8. 기밀 자료: 로컬 AI
+:secure
+echo.
+python -I tools\secure_tc.py status
+if errorlevel 1 goto end
+echo 게임 이름을 쓰세요 (영문 소문자, 예: mygame). 자료는 기밀\게임이름 폴더에 넣습니다.
+set "PGAME="
+set /p "PGAME=게임 이름: "
+if not defined PGAME goto end
+if not exist "기밀\%PGAME%\" (
+  mkdir "기밀\%PGAME%"
+  echo.
+  echo 기밀\%PGAME% 폴더를 만들고 열었습니다. 기획서 PDF·마크다운·글·엑셀을 넣으세요.
+  start "" "기밀\%PGAME%"
+  echo 다 넣었으면 아무 키나 누르세요.
+  pause > nul
+)
+python -I tools\secure_tc.py run --game %PGAME%
+if exist "기밀\%PGAME%\_결과\" start "" "기밀\%PGAME%\_결과"
 goto end
 
 :end

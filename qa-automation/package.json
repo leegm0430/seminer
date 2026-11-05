@@ -20,7 +20,10 @@
     "tc:xlsx": "python -I tools/export_tc_xlsx.py --all",
     "tc:check": "python -I tools/check_tc.py --all",
     "input": "python -I tools/prepare_input.py",
-    "pipeline": "python -I tools/qa_pipeline.py"
+    "pipeline": "python -I tools/qa_pipeline.py",
+    "secure:status": "python -I tools/secure_tc.py status",
+    "secure:add": "python -I tools/secure_tc.py add",
+    "secure:run": "python -I tools/secure_tc.py run"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.0"
