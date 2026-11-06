@@ -34,7 +34,11 @@ function collect() {
     const id = el.id || '';
     if (!id && !text) continue;
     if (!id && /["\\]/.test(text)) continue;
-    out.push({ tag, text, sel: id ? `[id="${id.replace(/"/g, '\\"')}"]` : `${tag}:text-is("${text}")` });
+    const ph = el.getAttribute('placeholder');   // 입력칸은 글자가 없어 안내 문구로 찾는다
+    // text-is는 자식 요소(<span> 등)가 있는 버튼을 찾지 못한다. has-text로 내부 글자(textContent)를 찾는다 (같은 글자를 포함한 버튼이 여럿이면 첫 번째)
+    const inner = (el.textContent || '').trim().replace(/\s+/g, ' ');
+    const sel = id ? `[id="${id.replace(/"/g, '\\"')}"]` : (ph && !/["\\]/.test(ph) ? `${tag}[placeholder="${ph}"]` : `${tag}:has-text("${inner.replace(/"/g, '\\"')}")`);
+    out.push({ tag, text, sel });
   }
   return { elements: out, canvas: document.querySelectorAll('canvas').length };
 }
@@ -65,7 +69,8 @@ async function scan(gamePath, outPath) {
 
 async function holds(page, check) {
   if (check.kind === 'text_visible' || check.kind === 'text_hidden') {
-    const visible = await page.getByText(check.text).filter({ visible: true }).count() > 0;
+    const visible = await page.getByText(check.text).filter({ visible: true }).count() > 0
+      || await page.getByPlaceholder(check.text).filter({ visible: true }).count() > 0;   // 입력칸 안내 문구도 화면에 보이는 글자다
     return check.kind === 'text_visible' ? visible : !visible;
   }
   const loc = page.locator(check.sel).first();
@@ -96,10 +101,13 @@ async function runOne(browser, url, plan, shotDir, counters) {
           const loc = page.locator(a.sel).first();
           if (a.do === 'fill') await loc.fill(a.value, { timeout: CLICK_MS });
           else if (a.do === 'press') await page.keyboard.press(a.value);
+          else if (a.do === 'wait') await page.waitForTimeout(Math.min(Number(a.value) || 0, 120000));
+          else if (a.do === 'reload') await page.reload({ waitUntil: 'load', timeout: 15000 });
           else await loc.click({ timeout: CLICK_MS });
-        } catch {
+        } catch (e) {
           r.status = 'blocked';
-          r.detail = `${i + 1}번째 조작(${n + 1}회째)을 할 수 없음`;
+          const why = /not enabled|disabled/i.test(String(e.message)) ? '비활성 상태' : /intercepts pointer/i.test(String(e.message)) ? '다른 요소에 가려짐' : /not visible|hidden/i.test(String(e.message)) ? '화면에 안 보임' : /Timeout/i.test(String(e.message)) ? '요소를 찾지 못했거나 누를 수 없음' : '실행 오류';
+          r.detail = `${i + 1}번째 조작(${n + 1}회째)을 할 수 없음: ${why} (${a.sel || a.do})`;
           break;
         }
       }
@@ -119,7 +127,7 @@ async function runOne(browser, url, plan, shotDir, counters) {
     r.detail = '실행 오류';
   }
   if (r.status === 'failed' || r.status === 'blocked') {
-    const shot = path.join(shotDir, `${plan.id}.png`);
+    const shot = path.join(shotDir, `${String(plan.id).replace(/[\\/:*?"<>|]/g, '_')}.png`);
     await page.screenshot({ path: shot }).catch(() => {});
     if (fs.existsSync(shot)) r.screenshot = path.basename(shot);
   }

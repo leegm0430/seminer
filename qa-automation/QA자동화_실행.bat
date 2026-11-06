@@ -21,6 +21,9 @@ echo   7. TC 규칙 점검만     (모든 게임 TC를 작성 규칙 044로 점�
 echo  [기밀 자료 - 외부 AI에 보내지 않음]
 echo   8. 로컬 AI로 TC 초안  (기밀 폴더 자료를 이 PC의 Ollama로만 처리, GitHub·Jira에 안 올림)
 echo.
+echo  [AI 없이 - 규칙 위키로 TC를 읽어 테스트]
+echo   9. 위키 자동 테스트  (TC 파일 + html 게임, LLM 회사로 보내지 않음)
+echo.
 set "PICK="
 set /p "PICK=번호를 입력하고 Enter: "
 if "%PICK%"=="1" set "GAMES=slimegame"
@@ -31,8 +34,9 @@ if "%PICK%"=="5" goto prepare
 if "%PICK%"=="6" goto pipeline
 if "%PICK%"=="7" goto check
 if "%PICK%"=="8" goto secure
+if "%PICK%"=="9" goto wiki
 if not defined GAMES (
-  echo 1~8 중 하나를 입력하세요.
+  echo 1~9 중 하나를 입력하세요.
   goto end
 )
 
@@ -133,6 +137,32 @@ if not exist "기밀\%PGAME%\" (
 )
 python -I tools\secure_tc.py run --game %PGAME%
 if exist "기밀\%PGAME%\_결과\" start "" "기밀\%PGAME%\_결과"
+goto end
+
+:wiki
+echo.
+echo ===== 위키 자동 테스트 (AI 없음) =====
+set "WGAME="
+set /p "WGAME=게임 이름 (영문 소문자): "
+set "WFILE="
+set /p "WFILE=게임 html 파일 경로: "
+set "WTC="
+set /p "WTC=TC 파일 경로 (xlsx 또는 json): "
+set "WFILE=%WFILE:"=%"
+set "WTC=%WTC:"=%"
+set "WJIRA="
+set /p "WJIRA=실패한 TC를 Jira에 버그로 등록할까요? (Y/N): "
+python -I -X utf8 tools\wiki_run.py scan --game %WGAME% --file "%WFILE%"
+if errorlevel 1 goto end
+if /i "%WJIRA%"=="Y" (
+  python -I -X utf8 tools\wiki_run.py run --game %WGAME% --file "%WFILE%" --tc "%WTC%" --jira
+) else (
+  python -I -X utf8 tools\wiki_run.py run --game %WGAME% --file "%WFILE%" --tc "%WTC%"
+)
+if errorlevel 1 goto end
+echo.
+echo 못 읽은 줄: out\wiki\%WGAME%\못읽은줄.md 를 보고 wiki\%WGAME%.md 에 등록한 뒤 다시 실행하세요.
+if not defined WNOOPEN start "" "out\wiki\%WGAME%\report.html"
 goto end
 
 :end
