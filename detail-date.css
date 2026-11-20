@@ -1,0 +1,1 @@
+.detail-due-fields{display:flex;gap:7px}.detail-due-fields>#detailDue{flex:1}.detail-due-month{width:92px;flex:none}.detail-due-month select{padding-right:5px;padding-left:9px}@media(max-width:700px){.detail-due-month{width:86px}}

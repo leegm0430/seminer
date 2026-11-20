@@ -1,0 +1,80 @@
+{
+  "users": {
+    "jiwoo@example.com": {
+      "enabled": true,
+      "items": [
+        {
+          "id": "1795163640547",
+          "name": "codex",
+          "price": 220000,
+          "due": 26,
+          "dueMonth": 11,
+          "cycle": "monthly",
+          "cancelAt": "",
+          "cancelAfter": ""
+        },
+        {
+          "id": "1795161710202",
+          "name": "netflix",
+          "price": 13500,
+          "due": 28,
+          "dueMonth": 11,
+          "cycle": "monthly",
+          "cancelAt": "",
+          "cancelAfter": ""
+        },
+        {
+          "id": "1795161695302",
+          "name": "디즈니",
+          "price": 13500,
+          "due": 26,
+          "dueMonth": 11,
+          "cycle": "monthly",
+          "cancelAt": "",
+          "cancelAfter": ""
+        },
+        {
+          "id": "2",
+          "name": "YouTube Premium",
+          "price": 14900,
+          "due": 24,
+          "dueMonth": 11,
+          "cycle": "monthly",
+          "cancelAt": "",
+          "cancelAfter": ""
+        },
+        {
+          "id": "3",
+          "name": "쿠팡 와우",
+          "price": 7890,
+          "due": 27,
+          "dueMonth": 11,
+          "cycle": "monthly",
+          "cancelAt": "",
+          "cancelAfter": ""
+        },
+        {
+          "id": "4",
+          "name": "ChatGPT Plus",
+          "price": 29000,
+          "due": 26,
+          "dueMonth": 11,
+          "cycle": "monthly",
+          "cancelAt": "",
+          "cancelAfter": ""
+        },
+        {
+          "id": "5",
+          "name": "Spotify Premium",
+          "price": 10900,
+          "due": 29,
+          "dueMonth": 11,
+          "cycle": "monthly",
+          "cancelAt": "",
+          "cancelAfter": ""
+        }
+      ]
+    }
+  },
+  "sent": {}
+}
